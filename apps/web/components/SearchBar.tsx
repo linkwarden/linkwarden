@@ -12,59 +12,29 @@ type Props = {
 
 const ADVANCED_SEARCH_OPERATORS = [
   {
-    operator: "name:",
-    labelKey: "search_operator_name",
-    icon: "bi-type",
-  },
-  {
     operator: "url:",
-    labelKey: "search_operator_url",
+    labelKey: "url",
     icon: "bi-link-45deg",
   },
   {
     operator: "tag:",
-    labelKey: "search_operator_tag",
+    labelKey: "tag",
     icon: "bi-tag",
   },
   {
-    operator: "collection:",
-    labelKey: "search_operator_collection",
-    icon: "bi-folder2",
-  },
-  {
     operator: "before:",
-    labelKey: "search_operator_before",
+    labelKey: "before",
     icon: "bi-calendar-minus",
   },
   {
     operator: "after:",
-    labelKey: "search_operator_after",
+    labelKey: "after",
     icon: "bi-calendar-plus",
   },
   {
-    operator: "public:true",
-    labelKey: "search_operator_public",
-    icon: "bi-globe2",
-  },
-  {
-    operator: "description:",
-    labelKey: "search_operator_description",
-    icon: "bi-card-text",
-  },
-  {
-    operator: "type:",
-    labelKey: "search_operator_type",
-    icon: "bi-file-earmark",
-  },
-  {
     operator: "pinned:true",
-    labelKey: "search_operator_pinned",
+    labelKey: "pinned",
     icon: "bi-pin-angle",
-  },
-  {
-    operator: "!",
-    labelKey: "search_operator_exclude",
-    icon: "bi-slash-circle",
   },
 ] as const;
 
@@ -118,6 +88,7 @@ export default function SearchBar({ placeholder }: Props) {
           e.target.value.includes("%") &&
             toast.error(t("search_query_invalid_symbol"));
           setSearchQuery(e.target.value.replace("%", ""));
+          setShowSuggestions(false);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
@@ -150,7 +121,7 @@ export default function SearchBar({ placeholder }: Props) {
           >
             <div className="flex items-center justify-between">
               <p className="text-xs font-bold text-neutral">
-                {t("search_operators")}
+                {t("suggested_search_operators")}
               </p>
             </div>
             <div className="flex flex-col gap-1">
@@ -178,7 +149,7 @@ export default function SearchBar({ placeholder }: Props) {
                 <Link
                   href="https://docs.linkwarden.app/Usage/advanced-search"
                   target="_blank"
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 w-full"
                 >
                   {t("learn_more")}
                   <i className="bi-box-arrow-up-right text-xs" />
