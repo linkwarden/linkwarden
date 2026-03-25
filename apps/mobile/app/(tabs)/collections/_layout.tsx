@@ -31,8 +31,11 @@ export default function Layout() {
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
         headerShadowVisible: false,
-        headerBlurEffect:
-          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerBlurEffect: isIOS26Plus
+          ? "none"
+          : colorScheme === "dark"
+            ? "systemMaterialDark"
+            : "systemMaterial",
         headerLargeStyle: {
           backgroundColor: isIOS26Plus
             ? "transparent"

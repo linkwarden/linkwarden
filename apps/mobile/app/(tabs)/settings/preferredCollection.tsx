@@ -8,8 +8,6 @@ import { Folder, Check } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useLocalSearchParams } from "expo-router";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PreferredCollectionScreen = () => {
   const { auth } = useAuthStore();
@@ -20,8 +18,6 @@ const PreferredCollectionScreen = () => {
   const [filteredCollections, setFilteredCollections] = useState<
     CollectionIncludingMembersAndLinkCount[]
   >([]);
-  const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const filter =
@@ -80,11 +76,10 @@ const PreferredCollectionScreen = () => {
         data={filteredCollections}
         keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={renderCollection}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingHorizontal: 16,
-          flexGrow: 1,
-          paddingTop: Platform.OS === "ios" ? headerHeight + 10 : 10,
-          paddingBottom: insets.bottom + 60,
+          paddingTop: 10,
         }}
         ListEmptyComponent={
           <View
