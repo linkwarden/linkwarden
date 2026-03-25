@@ -48,11 +48,8 @@ export default function Layout() {
           headerTitle: "Preferred Collection",
           headerLargeTitle: false,
           headerTransparent: Platform.OS === "ios",
-          headerBlurEffect: isIOS26Plus
-            ? "none"
-            : colorScheme === "dark"
-              ? "systemMaterialDark"
-              : "systemMaterial",
+          headerBlurEffect:
+            colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
           headerSearchBarOptions: {
             placeholder: "Search Collections",
             autoCapitalize: "none",
