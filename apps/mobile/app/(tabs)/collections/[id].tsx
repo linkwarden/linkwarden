@@ -25,7 +25,9 @@ export default function LinksScreen() {
   const collections = useCollections(auth);
 
   const navigation = useNavigation();
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   useEffect(() => {
     const activeCollection = collections.data?.filter(

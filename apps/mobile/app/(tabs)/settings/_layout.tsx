@@ -6,7 +6,8 @@ import { Platform, View } from "react-native";
 export default function Layout() {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   const themeBackgroundColor = rawTheme[colorScheme as ThemeName]["base-100"];
 

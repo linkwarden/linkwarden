@@ -133,7 +133,8 @@ const RootComponent = ({
 
   const { tmp } = useTmpStore();
 
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   return (
     <KeyboardProvider>
