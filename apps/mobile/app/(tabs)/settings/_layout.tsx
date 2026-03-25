@@ -50,14 +50,18 @@ export default function Layout() {
           headerTransparent: Platform.OS === "ios",
           headerBlurEffect:
             colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
-          headerBackground: () => (
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: themeBackgroundColor,
-              }}
-            />
-          ),
+          ...(isIOS26Plus
+            ? {
+                headerBackground: () => (
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor: themeBackgroundColor,
+                    }}
+                  />
+                ),
+              }
+            : {}),
           headerSearchBarOptions: {
             placeholder: "Search Collections",
             autoCapitalize: "none",
