@@ -1,7 +1,7 @@
 import MainLayout from "@/layouts/MainLayout";
 import React, { ReactElement, useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import { Sort, ViewMode } from "@linkwarden/types";
+import { Sort, ViewMode } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
@@ -27,7 +27,7 @@ const Page: NextPageWithLayout = () => {
   const [editMode, setEditMode] = useState(false);
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <LinkListOptions
         t={t}
         viewMode={viewMode}
@@ -74,7 +74,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

@@ -1,9 +1,9 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import useLocalSettingsStore from "@/store/localSettings";
 import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useEffect, useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -17,7 +17,7 @@ import {
 import useOnScreen from "@/hooks/useOnScreen";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink, useLinks } from "@linkwarden/router/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import openLink from "@/lib/client/openLink";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
@@ -26,7 +26,7 @@ import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
 import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { useTranslation } from "next-i18next";
 
 export function DashboardLinks({
@@ -40,7 +40,7 @@ export function DashboardLinks({
 }) {
   return (
     <div
-      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
+      className={`flex gap-3 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
     >
       {isLoading ? (
         <div className="flex flex-col gap-4 min-w-60 w-60">
@@ -82,8 +82,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const { links } = useLinks();
-
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
@@ -102,7 +100,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
         (e) => e.id === link.collection.id
       ) as CollectionIncludingMembersAndLinkCount
     );
-  }, [collections, links]);
+  }, [collections, link]);
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
@@ -110,7 +108,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
   const [linkModal, setLinkModal] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (
       isVisible &&

@@ -1,6 +1,8 @@
-import { delay, meiliClient } from "@linkwarden/lib";
+import { meiliClient } from "@linkwarden/lib/meilisearchClient";
+import { delay } from "@linkwarden/lib/utils";
 import { prisma } from "@linkwarden/prisma";
 import getLinkBatch from "../lib/getLinkBatch";
+import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 
 const takeCount = Number(process.env.INDEX_TAKE_COUNT || "") || 50;
 
@@ -65,7 +67,8 @@ export async function startIndexing(interval = 10) {
 
   console.log("\x1b[34m%s\x1b[0m", "Starting link indexing...");
 
-  const INDEX_VERSION = 1;
+  const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+  const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
   while (true) {
     const links = await getLinkBatch({
@@ -73,17 +76,33 @@ export async function startIndexing(interval = 10) {
         AND: [
           {
             OR: [
-              { indexVersion: { not: INDEX_VERSION } },
+              { indexVersion: { not: MEILI_INDEX_VERSION } },
               { indexVersion: null },
             ],
           },
           {
-            OR: [
-              { lastPreserved: { not: null } },
-              {
-                url: null,
-              },
-            ],
+            ...(process.env.STRIPE_SECRET_KEY
+              ? {
+                  createdBy: {
+                    OR: [
+                      { subscriptions: { is: { active: true } } },
+                      { parentSubscription: { is: { active: true } } },
+                      ...(REQUIRE_CC
+                        ? []
+                        : [
+                            {
+                              createdAt: {
+                                gte: new Date(
+                                  new Date().getTime() -
+                                    Number(TRIAL_PERIOD_DAYS) * 86400000
+                                ),
+                              },
+                            },
+                          ]),
+                    ],
+                  },
+                }
+              : {}),
           },
         ],
       },
@@ -120,7 +139,7 @@ export async function startIndexing(interval = 10) {
       tags: link.tags.map((t) => t.name),
       pinnedBy: link.pinnedBy.map((p) => p.id),
       creationTimestamp: Date.parse(link.createdAt.toISOString()) / 1000,
-      indexVersion: INDEX_VERSION,
+      indexVersion: MEILI_INDEX_VERSION,
     }));
 
     const task = await meiliClient.index("links").addDocuments(docs);
@@ -136,13 +155,15 @@ export async function startIndexing(interval = 10) {
     const ids = links.map((l) => l.id);
     await prisma.link.updateMany({
       where: { id: { in: ids } },
-      data: { indexVersion: INDEX_VERSION },
+      data: { indexVersion: MEILI_INDEX_VERSION },
     });
 
     const indexesLeft = await prisma.link.count({
       where: {
-        OR: [{ indexVersion: { not: INDEX_VERSION } }, { indexVersion: null }],
-        lastPreserved: { not: null },
+        OR: [
+          { indexVersion: { not: MEILI_INDEX_VERSION } },
+          { indexVersion: null },
+        ],
       },
     });
 

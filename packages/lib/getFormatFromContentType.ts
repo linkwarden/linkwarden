@@ -1,4 +1,4 @@
-import { ArchivedFormat } from "@linkwarden/types";
+import { ArchivedFormat } from "@linkwarden/types/global";
 
 const getFormatFromContentType = (contentType: string): ArchivedFormat => {
   switch (contentType) {

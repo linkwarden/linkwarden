@@ -11,10 +11,15 @@ import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf"
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
-import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
-import { isArchivalTag } from "@linkwarden/lib";
-import { ArchivalSettings } from "@linkwarden/types";
+import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
+import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
+import { ArchivalSettings } from "@linkwarden/types/global";
 import { getDefaultContextOptions } from "./browser";
+import {
+  assertUrlIsSafeForServerSideFetch,
+  UnsafeUrlError,
+} from "@linkwarden/lib/ssrf";
+import protectPageRequests from "./protectPageRequests";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
@@ -23,9 +28,22 @@ export default async function archiveHandler(
   browser: Browser
 ) {
   const user = link.collection?.owner;
+  let skipPreservation = process.env.DISABLE_PRESERVATION === "true";
+
+  if (!skipPreservation && link.url) {
+    try {
+      await assertUrlIsSafeForServerSideFetch(link.url);
+    } catch (error) {
+      if (error instanceof UnsafeUrlError) {
+        skipPreservation = true;
+      } else {
+        throw error;
+      }
+    }
+  }
 
   if (
-    process.env.DISABLE_PRESERVATION === "true" ||
+    skipPreservation ||
     (!link.url?.startsWith("http://") && !link.url?.startsWith("https://"))
   ) {
     await prisma.link.update({
@@ -50,14 +68,17 @@ export default async function archiveHandler(
             process.env.PERPLEXITY_API_KEY)
             ? true
             : undefined,
+        indexVersion: null,
       },
     });
     return;
   }
 
   const abortController = new AbortController();
+  let timeoutId: NodeJS.Timeout | undefined;
+
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       abortController.abort();
       reject(
         new Error(
@@ -69,6 +90,7 @@ export default async function archiveHandler(
 
   const contextOptions = getDefaultContextOptions();
   const context = await browser.newContext(contextOptions);
+  await protectPageRequests(context);
   const page = await context.newPage();
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
@@ -147,6 +169,14 @@ export default async function archiveHandler(
             return description?.getAttribute("content") ?? undefined;
           });
 
+          await prisma.link.update({
+            where: { id: link.id },
+            data: {
+              metaDescription:
+                metaDescription?.trim().slice(0, 500) ?? undefined,
+            },
+          });
+
           const content = await page.content();
 
           // Preview
@@ -176,7 +206,7 @@ export default async function archiveHandler(
               process.env.OPENROUTER_API_KEY ||
               process.env.PERPLEXITY_API_KEY)
           ) {
-            await autoTagLink(user, link.id, metaDescription);
+            await autoTagLink(user, link.id);
           }
 
           // Monolith
@@ -200,6 +230,10 @@ export default async function archiveHandler(
     console.log("Reason:", err);
     throw err;
   } finally {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+
     const finalLink = await prisma.link.findUnique({
       where: { id: link.id },
     });
@@ -219,6 +253,7 @@ export default async function archiveHandler(
             !finalLink.aiTagged
               ? true
               : undefined,
+          indexVersion: null,
         },
       });
     } else {

@@ -31,9 +31,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("access_tokens")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-key text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("access_tokens")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
@@ -99,7 +102,7 @@ const Page: NextPageWithLayout = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:text-error"
+                        className="hover:text-error ml-auto block"
                         onClick={() => openRevokeModal(token as AccessToken)}
                       >
                         <i className="bi-x text-lg"></i>
@@ -129,7 +132,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

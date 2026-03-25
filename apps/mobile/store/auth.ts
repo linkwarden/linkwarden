@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-import { MobileAuth } from "@linkwarden/types";
+import { MobileAuth } from "@linkwarden/types/global";
 import { Alert } from "react-native";
 import { queryClient } from "@/lib/queryClient";
 import { mmkvPersister } from "@/lib/queryPersister";
@@ -52,13 +52,20 @@ const useAuthStore = create<AuthStore>((set) => ({
       console.log("Signing into", instance);
 
     if (token) {
-      // make a request to the API to validate the token
-      await fetch(instance + "/api/v1/users/me", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(async (res) => {
+      try {
+        // make a request to the API to validate the token
+        const res = await Promise.race([
+          fetch(instance + "/api/v1/users/me", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Error("TIMEOUT")), 30000)
+          ),
+        ]);
+
         if (res.ok) {
           await SecureStore.setItemAsync("INSTANCE", instance);
           await SecureStore.setItemAsync("TOKEN", token);
@@ -73,7 +80,19 @@ const useAuthStore = create<AuthStore>((set) => ({
         } else {
           Alert.alert("Error", "Invalid token");
         }
-      });
+      } catch (err: any) {
+        if (err?.message === "TIMEOUT") {
+          Alert.alert(
+            "Request timed out",
+            "Unable to reach the server in time. Please check your network configuration and try again."
+          );
+        } else {
+          Alert.alert(
+            "Network error",
+            "Could not connect to the server. Please check your network configuration and try again."
+          );
+        }
+      }
     } else {
       try {
         const res = await Promise.race([

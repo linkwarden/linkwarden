@@ -1,5 +1,5 @@
-import { useState, useEffect, ChangeEvent, ReactElement } from "react";
-import { AccountSettings } from "@linkwarden/types";
+import { useState, useEffect, ChangeEvent, ReactElement, useMemo } from "react";
+import { AccountSettings } from "@linkwarden/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
 import TextInput from "@/components/TextInput";
@@ -7,7 +7,6 @@ import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import React from "react";
 import Link from "next/link";
-import Checkbox from "@/components/Checkbox";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
 import { Button } from "@/components/ui/button";
 import { i18n } from "next-i18next.config";
@@ -45,10 +44,8 @@ const Page: NextPageWithLayout = () => {
           emailVerified: null,
           password: undefined,
           image: "",
-          isPrivate: false,
           // @ts-ignore
           createdAt: null,
-          whitelistedUsers: [],
         } as unknown as AccountSettings)
   );
 
@@ -56,16 +53,13 @@ const Page: NextPageWithLayout = () => {
 
   const { t } = useTranslation();
 
-  const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
-
   useEffect(() => {
     if (!account?.id) return;
 
     setUser({
       ...account,
-      whitelistedUsers: stringToArray(whitelistedUsersTextbox),
     });
-  }, [account, whitelistedUsersTextbox]);
+  }, [account]);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,6 +86,8 @@ const Page: NextPageWithLayout = () => {
   };
 
   const submit = async (password?: string) => {
+    if (!account?.id || !hasAccountChanges) return;
+
     if (!/^[a-z0-9_-]{3,50}$/.test(user.username || "")) {
       return toast.error(t("username_invalid_guide"));
     }
@@ -108,7 +104,13 @@ const Page: NextPageWithLayout = () => {
 
     await updateUser.mutateAsync(
       {
-        ...user,
+        id: account.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        locale: user.locale,
+        image: user.image,
+        isPrivate: user.isPrivate,
         password: password ? password : undefined,
       },
       {
@@ -137,24 +139,41 @@ const Page: NextPageWithLayout = () => {
     }
   };
 
-  useEffect(() => {
-    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
-  }, [account]);
-
   const stringToArray = (str: string) => {
     return str?.replace(/\s+/g, "").split(",");
   };
 
+  const normalizeUserList = (list: string[] = []) =>
+    list
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .sort();
+
+  const hasAccountChanges = useMemo(() => {
+    if (!account?.id) return false;
+
+    return (
+      (user.name || "") !== (account.name || "") ||
+      (user.username || "") !== (account.username || "") ||
+      (user.email || "") !== (account.email || "") ||
+      (user.locale || "") !== (account.locale || "") ||
+      (user.image || "") !== (account.image || "")
+    );
+  }, [account, user]);
+
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("accountSettings")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-person text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("accountSettings")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
-        <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
+        <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto max-w-screen-lg">
           <div className="flex flex-col gap-3">
             <div>
               <p className="mb-2">{t("display_name")}</p>
@@ -263,31 +282,6 @@ const Page: NextPageWithLayout = () => {
           </div>
         </div>
 
-        <div className="sm:-mt-3">
-          <Checkbox
-            label={t("make_profile_private")}
-            state={user.isPrivate}
-            onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
-          />
-
-          <p className="text-neutral text-sm">{t("profile_privacy_info")}</p>
-
-          {user.isPrivate && (
-            <div className="pl-5">
-              <p className="mt-2">{t("whitelisted_users")}</p>
-              <p className="text-neutral text-sm mb-3">
-                {t("whitelisted_users_info")}
-              </p>
-              <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
-                placeholder={t("whitelisted_users_placeholder")}
-                value={whitelistedUsersTextbox}
-                onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-
         <Button
           variant="accent"
           onClick={() => {
@@ -297,15 +291,16 @@ const Page: NextPageWithLayout = () => {
               submit();
             }
           }}
-          disabled={submitLoader}
-          className="mt-2 w-full sm:w-fit"
+          disabled={submitLoader || !hasAccountChanges}
+          className="w-full sm:w-fit"
         >
           {t("save_changes")}
         </Button>
 
         <div>
-          <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="truncate w-full pr-7 text-3xl font-thin">
+          <div className="flex items-center gap-2">
+            <i className="bi-arrow-down-up text-primary text-2xl"></i>
+            <p className="capitalize text-3xl font-thin inline">
               {t("import_export")}
             </p>
           </div>
@@ -363,7 +358,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

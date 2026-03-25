@@ -4,7 +4,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   Sort,
   ViewMode,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
@@ -41,7 +41,7 @@ const Page: NextPageWithLayout = () => {
   });
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <LinkListOptions
         t={t}
         viewMode={viewMode}
@@ -66,7 +66,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

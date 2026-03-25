@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import LinkListing from "@/components/LinkListing";
 import React, { useState } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
@@ -68,6 +68,13 @@ export default function Links({ links, data }: Props) {
             Nothing found...
           </Text>
         </View>
+      }
+      ListFooterComponent={
+        data.isFetchingNextPage ? (
+          <View className="py-4 items-center">
+            <ActivityIndicator size="small" />
+          </View>
+        ) : null
       }
       onViewableItemsChanged={({
         viewableItems,

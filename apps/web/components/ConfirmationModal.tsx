@@ -23,7 +23,7 @@ export default function ConfirmationModal({
   const { t } = useTranslation();
 
   return (
-    <Modal toggleModal={toggleModal} className={className}>
+    <Modal toggleModal={() => toggleModal()} className={className}>
       <p className="text-xl font-thin">{title}</p>
       <Separator className="mb-3 mt-1" />
       {children}

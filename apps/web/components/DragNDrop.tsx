@@ -11,7 +11,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import toast from "react-hot-toast";
 import { useUpdateLink } from "@linkwarden/router/links";
 import { useTranslation } from "react-i18next";
@@ -53,7 +53,7 @@ export default function DragNDrop({
   onDragEnd: onDragEndProp,
 }: DragNDropProps) {
   const { t } = useTranslation();
-  const updateLink = useUpdateLink();
+  const updateLink = useUpdateLink({ toast, t });
   const pinLink = usePinLink();
   const { data: user } = useUser();
   const queryClient = useQueryClient();
@@ -104,25 +104,7 @@ export default function DragNDrop({
       updatedLink: LinkIncludingShortenedCollectionAndTags,
       opts?: { invalidateDashboardOnError?: boolean }
     ) => {
-      const load = toast.loading(t("updating"));
-      await updateLink.mutateAsync(updatedLink, {
-        onSettled: async (_, error) => {
-          toast.dismiss(load);
-          if (error) {
-            if (
-              opts?.invalidateDashboardOnError &&
-              typeof queryClient !== "undefined"
-            ) {
-              await queryClient.invalidateQueries({
-                queryKey: ["dashboardData"],
-              });
-            }
-            toast.error(error.message);
-          } else {
-            toast.success(t("updated"));
-          }
-        },
-      });
+      updateLink.mutateAsync(updatedLink);
     };
 
     // DROP ON TAG

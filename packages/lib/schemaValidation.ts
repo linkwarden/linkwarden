@@ -1,4 +1,4 @@
-import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
+import { ArchivedFormat, TokenExpiry } from "@linkwarden/types/global";
 import {
   AiTaggingMethod,
   LinksRouteTo,
@@ -90,7 +90,6 @@ export const UpdateUserSchema = () => {
     preventDuplicateLinks: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.enum(LinksRouteTo).optional(),
-    whitelistedUsers: z.array(z.string().max(50)).optional(),
     referredBy: z.string().max(100).nullish(),
   });
 };
@@ -236,6 +235,7 @@ export const UpdateCollectionSchema = z.object({
       canDelete: z.boolean(),
     })
   ),
+  propagateToSubcollections: z.boolean().optional(),
 });
 
 export type UpdateCollectionSchemaType = z.infer<typeof UpdateCollectionSchema>;
@@ -294,12 +294,19 @@ export const PostHighlightSchema = z.object({
 export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
 
 export const LinkArchiveActionSchema = z.object({
-  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]).optional(),
   linkIds: z.array(z.number()).optional(),
 });
 
 export type LinkArchiveActionSchemaType = z.infer<
   typeof LinkArchiveActionSchema
+>;
+
+export const DeletePreservationsSchema = z.object({
+  action: z.enum(["allAndRePreserve", "allBroken"]),
+});
+
+export type DeletePreservationsSchemaType = z.infer<
+  typeof DeletePreservationsSchema
 >;
 
 export const UpdateDashboardLayoutSchema = z.array(

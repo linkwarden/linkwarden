@@ -2,7 +2,7 @@ import { Tag } from "@linkwarden/prisma/client";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Droppable from "./Droppable";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { useDndContext } from "@dnd-kit/core";
 
 interface TagListingProps {
@@ -13,9 +13,6 @@ interface TagListingProps {
 export default function TagListing({ tags, active }: TagListingProps) {
   const { active: droppableActive } = useDndContext();
   const { t } = useTranslation();
-
-  const ctx = useDndContext();
-  console.log("DndContext active?", ctx.active);
 
   if (!tags[0]) {
     return (

@@ -1,6 +1,6 @@
 import { View, Text, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types/global";
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";

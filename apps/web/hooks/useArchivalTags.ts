@@ -5,7 +5,7 @@ import {
 } from "@linkwarden/types/inputSelect";
 import { useState, useEffect } from "react";
 import { useTranslation } from "next-i18next";
-import { isArchivalTag } from "@linkwarden/lib";
+import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 
 const useArchivalTags = (initialTags: Tag[]) => {
   const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);

@@ -14,7 +14,7 @@ import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useCollections } from "@linkwarden/router/collections";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 
 export default function CollectionsScreen() {
   const { colorScheme } = useColorScheme();

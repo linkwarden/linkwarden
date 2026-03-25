@@ -1,7 +1,7 @@
 import {
   CollectionIncludingMembersAndLinkCount,
   Member,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 import { TFunction } from "i18next";
@@ -16,12 +16,8 @@ const addMemberToCollection = async (
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
     const username = (e.user.username || "").toLowerCase();
-    const email = (e.user.email || "").toLowerCase();
 
-    return (
-      username === memberIdentifier.toLowerCase() ||
-      email === memberIdentifier.toLowerCase()
-    );
+    return username === memberIdentifier.toLowerCase();
   });
 
   if (
@@ -47,7 +43,6 @@ const addMemberToCollection = async (
           id: user.id,
           name: user.name,
           username: user.username,
-          email: user.email,
           image: user.image,
         },
       });

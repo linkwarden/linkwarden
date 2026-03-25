@@ -6,20 +6,20 @@ type TagIncludingCount = Tag & { _count: { links: number } };
 
 const usePublicTags = (): UseQueryResult<TagIncludingCount[]> => {
   const router = useRouter();
+  const collectionId = Number(router.query.id);
 
   return useQuery({
-    queryKey: ["tags"],
+    queryKey: ["publicTags", collectionId],
     queryFn: async () => {
       const response = await fetch(
-        "/api/v1/public/collections/tags" +
-        "?collectionId=" +
-        router.query.id || ""
+        `/api/v1/public/collections/tags?collectionId=${collectionId}`
       );
       if (!response.ok) throw new Error("Failed to fetch tags.");
 
       const data = await response.json();
-      return data.response;
+      return data.data.tags;
     },
+    enabled: Number.isFinite(collectionId),
   });
 };
 

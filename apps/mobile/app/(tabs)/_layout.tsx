@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import HapticTab from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -16,7 +15,6 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarActiveTintColor: rawTheme[colorScheme as ThemeName].primary,
         tabBarInactiveTintColor: rawTheme[colorScheme as ThemeName].neutral,
-        tabBarButton: HapticTab,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",

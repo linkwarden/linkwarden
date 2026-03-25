@@ -25,6 +25,7 @@ export default function LinksScreen() {
   const collections = useCollections(auth);
 
   const navigation = useNavigation();
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
 
   useEffect(() => {
     const activeCollection = collections.data?.filter(
@@ -36,6 +37,10 @@ export default function LinksScreen() {
         headerTitle: activeCollection?.name,
         headerSearchBarOptions: {
           placeholder: `Search ${activeCollection.name}`,
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+            placement: "integratedButton",
+          }),
         },
       });
   }, [navigation]);

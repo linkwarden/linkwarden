@@ -6,7 +6,8 @@ import {
   PostLinkSchema,
   PostLinkSchemaType,
 } from "@linkwarden/lib/schemaValidation";
-import { hasPassedLimit } from "@linkwarden/lib";
+import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 
 export default async function postLink(
   body: PostLinkSchemaType,
@@ -24,6 +25,9 @@ export default async function postLink(
   }
 
   const link = dataValidation.data;
+  const shouldPreserveUrl = link.url
+    ? await isUrlSafeForServerSideFetch(link.url)
+    : false;
 
   const linkCollection = await setCollection({
     userId,
@@ -71,12 +75,17 @@ export default async function postLink(
     };
   }
 
-  const { title = "", headers = new Headers() } = link.url
-    ? await fetchTitleAndHeaders(link.url)
-    : {};
+  const { title = "", headers = new Headers() } =
+    link.url && shouldPreserveUrl ? await fetchTitleAndHeaders(link.url) : {};
 
   const name =
-    link.name && link.name !== "" ? link.name : link.url ? title : "";
+    link.name && link.name !== ""
+      ? link.name
+      : link.url
+        ? shouldPreserveUrl && title
+          ? title
+          : link.url
+        : "";
 
   const contentType = headers?.get("content-type");
   let linkType = "url";
@@ -126,6 +135,17 @@ export default async function postLink(
           },
         })),
       },
+      ...(!shouldPreserveUrl && link.url
+        ? {
+            lastPreserved: new Date().toISOString(),
+            readable: "unavailable",
+            image: "unavailable",
+            monolith: "unavailable",
+            pdf: "unavailable",
+            preview: "unavailable",
+            indexVersion: null,
+          }
+        : {}),
     },
     include: { tags: true, collection: true },
   });

@@ -4,7 +4,7 @@ import {
   Subscription,
   User,
 } from "@linkwarden/prisma/client";
-import { MobileAuth } from "@linkwarden/types";
+import { GetUserByIdResponse, MobileAuth } from "@linkwarden/types/global";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
@@ -40,18 +40,7 @@ const useUser = (auth?: MobileAuth) => {
 
       if (!response.ok) throw new Error("Failed to fetch user data.");
 
-      const data = (await response.json()).response as Omit<User, "password"> &
-        Partial<{ subscription: Subscription }> & {
-          parentSubscription: {
-            active: boolean | undefined;
-            user: {
-              email: string | null | undefined;
-            };
-          };
-        } & {
-          whitelistedUsers: string[];
-          dashboardSections: DashboardSection[];
-        };
+      const data = (await response.json()).response as GetUserByIdResponse;
 
       if (!auth)
         document.querySelector("html")?.setAttribute("data-theme", data.theme);
@@ -61,18 +50,7 @@ const useUser = (auth?: MobileAuth) => {
     enabled: !auth
       ? !!userId && status === "authenticated"
       : status === "authenticated",
-    placeholderData: {} as Omit<User, "password"> &
-      Partial<{ subscription: Subscription }> & {
-        parentSubscription: {
-          active: boolean | undefined;
-          user: {
-            email: string | null | undefined;
-          };
-        };
-      } & {
-        whitelistedUsers: string[];
-        dashboardSections: DashboardSection[];
-      },
+    placeholderData: {} as GetUserByIdResponse,
   });
 };
 
@@ -132,8 +110,6 @@ const useUpdateUserPreference = () => {
               email: string | null | undefined;
             };
           };
-        } & {
-          whitelistedUsers: string[];
         };
     },
     onSuccess: (data) => {

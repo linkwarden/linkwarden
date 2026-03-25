@@ -29,7 +29,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import toast from "react-hot-toast";
 
 interface DashboardSectionOption {
@@ -274,7 +274,7 @@ export default function DashboardLayoutDropdown() {
       >
         <div className="flex flex-col gap-1">
           <div className="flex flex-col gap-1 mx-2">
-            <p className="text-sm text-neutral mb-1">
+            <p className="text-xs font-bold text-neutral mb-1">
               {t("display_on_dashboard")}
             </p>
 

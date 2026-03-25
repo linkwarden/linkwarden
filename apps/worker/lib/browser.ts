@@ -34,7 +34,9 @@ export function getBrowserOptions(): LaunchOptions {
 export function getDefaultContextOptions(): BrowserContextOptions {
   const base: BrowserContextOptions = {
     ...devices["Desktop Chrome"],
-    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+    ignoreHTTPSErrors:
+      process.env.ALLOW_INSECURE_TLS === "true" ||
+      process.env.IGNORE_HTTPS_ERRORS === "true",
   };
 
   if (process.env.PLAYWRIGHT_WS_URL) {

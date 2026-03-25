@@ -1,80 +1,38 @@
 import SettingsSidebar from "@/components/SettingsSidebar";
-import React, { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
+import Navbar from "@/components/Navbar";
+import React, { ReactNode } from "react";
 import Link from "next/link";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "next-i18next";
 
 interface Props {
   children: ReactNode;
 }
 
 export default function SettingsLayout({ children }: Props) {
-  const router = useRouter();
-
-  const [sidebar, setSidebar] = useState(false);
-
-  const { width } = useWindowDimensions();
-
-  useEffect(() => {
-    setSidebar(false);
-  }, [width]);
-
-  useEffect(() => {
-    setSidebar(false);
-  }, [router]);
-
-  const toggleSidebar = () => {
-    setSidebar(!sidebar);
-  };
+  const { t } = useTranslation();
 
   return (
-    <>
-      <div className="flex max-w-screen-md mx-auto">
-        <div className="hidden lg:block fixed h-screen">
-          <SettingsSidebar />
-        </div>
+    <div className="flex" data-testid="settings-wrapper">
+      <div className="hidden lg:block">
+        <SettingsSidebar />
+      </div>
 
-        <div className="w-full min-h-screen p-5 lg:ml-64">
-          <div className="gap-2 inline-flex mr-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-neutral lg:hidden"
-              onClick={toggleSidebar}
-            >
-              <i className="bi-list text-xl leading-none" />
-            </Button>
-
-            <Button
-              asChild
-              variant="ghost"
-              size="icon"
-              className="text-neutral"
-            >
+      <div className="lg:w-[calc(100%-320px)] w-full sm:pb-0 pb-20 flex flex-col h-screen overflow-y-auto">
+        <Navbar settings />
+        <div className="p-3 mx-auto w-full max-w-3xl min-[2000px]:max-w-6xl">
+          <div className="gap-2 mb-3">
+            <Button asChild variant="ghost" size="sm" className="text-neutral">
               <Link href="/dashboard">
-                <i className="bi-chevron-left text-xl" />
+                <i className="bi-chevron-left text-md" />
+                <p>{t("back_to_dashboard")}</p>
               </Link>
             </Button>
           </div>
 
           {children}
-
-          {sidebar && (
-            <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-30">
-              <ClickAwayHandler
-                className="h-full"
-                onClickOutside={toggleSidebar}
-              >
-                <div className="slide-right h-full shadow-lg">
-                  <SettingsSidebar />
-                </div>
-              </ClickAwayHandler>
-            </div>
-          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

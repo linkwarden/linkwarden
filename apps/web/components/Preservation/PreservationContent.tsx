@@ -8,11 +8,8 @@ import { PreservationSkeleton } from "../Skeletons";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@linkwarden/types";
-import {
-  atLeastOneFormatAvailable,
-  formatAvailable,
-} from "@linkwarden/lib/formatStats";
+} from "@linkwarden/types/global";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 type Props = {
@@ -27,7 +24,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const prevFormatRef = useRef<ArchivedFormat | undefined>();
+  const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
 
   const [currentFormat, setCurrentFormat] = useState<ArchivedFormat>(
     format ?? ArchivedFormat.readability

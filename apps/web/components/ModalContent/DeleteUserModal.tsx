@@ -37,7 +37,7 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
 
   const { data: config } = useConfig();
 
-  const isAdmin = data?.user?.id === config?.ADMIN;
+  const isAdmin = data?.user?.id === (config?.ADMIN || 1);
 
   return (
     <Modal toggleModal={onClose}>

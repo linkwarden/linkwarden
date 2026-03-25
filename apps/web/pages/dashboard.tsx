@@ -9,7 +9,6 @@ import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { useTags } from "@linkwarden/router/tags";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
@@ -21,37 +20,31 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks } from "@/components/DashboardLinks";
-import {
-  LinkIncludingShortenedCollectionAndTags,
-  ViewMode,
-} from "@linkwarden/types";
+import { ViewMode } from "@linkwarden/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
-import { DragEndEvent } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
-import { useUpdateLink } from "@linkwarden/router/links";
-import usePinLink from "@/lib/client/pinLink";
-import { useQueryClient } from "@tanstack/react-query";
-import DragNDrop from "@/components/DragNDrop";
 import { NextPageWithLayout } from "./_app";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const {
-    data: { links = [], numberOfPinnedLinks, collectionLinks = {} } = {
+    data: {
+      links = [],
+      numberOfPinnedLinks,
+      numberOfTags = 0,
+      collectionLinks = {},
+    } = {
       links: [],
     },
     ...dashboardData
   } = useDashboardData();
 
-  const { data: tags = [] } = useTags();
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
-  const [activeLink, setActiveLink] =
-    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -104,7 +97,6 @@ const Page: NextPageWithLayout = () => {
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
   const updateUser = useUpdateUser();
-  const updateLink = useUpdateLink();
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -140,7 +132,7 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="p-5 flex flex-col gap-4">
+      <div className="p-3 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <i className="bi-house-fill text-primary" />
@@ -170,7 +162,7 @@ const Page: NextPageWithLayout = () => {
                   : []
               }
               links={links}
-              tags={tags}
+              numberOfTags={numberOfTags}
               numberOfLinks={numberOfLinks}
               collectionsLength={collections.length}
               numberOfPinnedLinks={numberOfPinnedLinks}
@@ -201,12 +193,18 @@ const Page: NextPageWithLayout = () => {
           }}
         />
       )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+      {newLinkModal && (
+        <NewLinkModal
+          onClose={() => {
+            setNewLinkModal(false);
+          }}
+        />
+      )}
     </>
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 
@@ -220,7 +218,7 @@ type SectionProps = {
   collection: any;
   collectionsLength: number;
   links: any[];
-  tags: any[];
+  numberOfTags: number;
   numberOfLinks: number;
   numberOfPinnedLinks: number;
   dashboardData: any;
@@ -233,7 +231,7 @@ const Section = ({
   t,
   collection,
   links,
-  tags,
+  numberOfTags,
   numberOfLinks,
   collectionsLength,
   numberOfPinnedLinks,
@@ -244,7 +242,7 @@ const Section = ({
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
           <DashboardItem
             name={numberOfLinks === 1 ? t("link") : t("links")}
             value={numberOfLinks}
@@ -258,8 +256,8 @@ const Section = ({
           />
 
           <DashboardItem
-            name={tags.length === 1 ? t("tag") : t("tags")}
-            value={tags.length}
+            name={numberOfTags === 1 ? t("tag") : t("tags")}
+            value={numberOfTags}
             icon={"bi-hash"}
           />
 

@@ -17,6 +17,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { TagSort } from "@linkwarden/types/global";
+import { useInView } from "react-intersection-observer";
 
 export default function Sidebar({
   className,
@@ -28,6 +30,7 @@ export default function Sidebar({
   sidebarIsCollapsed?: boolean;
 }) {
   const { t } = useTranslation();
+  const { ref, inView } = useInView();
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
     const storedValue = localStorage.getItem("tagDisclosure");
     return storedValue ? storedValue === "true" : true;
@@ -42,7 +45,15 @@ export default function Sidebar({
 
   const { data: collections } = useCollections();
 
-  const { data: tags = [], isLoading } = useTags();
+  const {
+    data: tags = [],
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useTags(undefined, {
+    sort: TagSort.NameAZ,
+  });
   const [active, setActive] = useState("");
 
   const router = useRouter();
@@ -64,6 +75,14 @@ export default function Sidebar({
     setActive(router.asPath);
   }, [router, collections]);
 
+  useEffect(() => {
+    if (!inView) return;
+    if (!hasNextPage) return;
+    if (isFetchingNextPage) return;
+
+    fetchNextPage();
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
     <div
       id="sidebar"
@@ -81,7 +100,7 @@ export default function Sidebar({
             : "gap-1"
         )}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           {sidebarIsCollapsed ? (
             <Image
               src={"/icon.png"}
@@ -206,7 +225,7 @@ export default function Sidebar({
               onClick={() => {
                 setCollectionDisclosure(!collectionDisclosure);
               }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
             >
               <p className="text-sm">{t("collections")}</p>
               <i
@@ -233,7 +252,7 @@ export default function Sidebar({
               onClick={() => {
                 setTagDisclosure(!tagDisclosure);
               }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
             >
               <p className="text-sm">{t("tags")}</p>
               <i
@@ -258,7 +277,17 @@ export default function Sidebar({
                     <div className="skeleton h-4 w-full"></div>
                   </div>
                 ) : (
-                  <TagListing tags={tags} active={active} />
+                  <>
+                    <TagListing tags={tags} active={active} />
+                    {hasNextPage && <div ref={ref} className="h-1 w-full" />}
+                    {isFetchingNextPage && (
+                      <div className="flex flex-col gap-4 mt-3">
+                        <div className="skeleton h-4 w-full"></div>
+                        <div className="skeleton h-4 w-full"></div>
+                        <div className="skeleton h-4 w-full"></div>
+                      </div>
+                    )}
+                  </>
                 )}
               </Disclosure.Panel>
             </Transition>

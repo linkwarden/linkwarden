@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount, TagSort } from "@linkwarden/types/global";
 import { useTags } from "@linkwarden/router/tags";
 
 export default function TagsScreen() {
@@ -21,7 +21,9 @@ export default function TagsScreen() {
   const { auth } = useAuthStore();
   const { search } = useLocalSearchParams<{ search?: string }>();
 
-  const tags = useTags(auth);
+  const tags = useTags(auth, {
+    sort: TagSort.NameAZ,
+  });
 
   const [filteredTags, setFilteredTags] = useState<TagIncludingLinkCount[]>([]);
 
@@ -65,10 +67,21 @@ export default function TagsScreen() {
           initialNumToRender={4}
           keyExtractor={(item) => item.id?.toString() || ""}
           renderItem={({ item }) => <TagListing tag={item} />}
+          onEndReached={() => {
+            if (!tags.hasNextPage || tags.isFetchingNextPage) return;
+            tags.fetchNextPage();
+          }}
           onEndReachedThreshold={0.5}
           ItemSeparatorComponent={() => (
             <View className="bg-neutral-content h-px" />
           )}
+          ListFooterComponent={
+            tags.isFetchingNextPage ? (
+              <View className="py-4 items-center">
+                <ActivityIndicator size="small" />
+              </View>
+            ) : null
+          }
           ListEmptyComponent={
             <View className="flex justify-center py-10 items-center">
               <Text className="text-center text-xl text-neutral">

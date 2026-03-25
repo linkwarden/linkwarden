@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types/global";
 import DeleteTagModal from "./ModalContent/DeleteTagModal";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";

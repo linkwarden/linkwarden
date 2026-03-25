@@ -1,7 +1,7 @@
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Sort } from "@linkwarden/types";
+import { Sort } from "@linkwarden/types/global";
 import { TFunction } from "i18next";
 import useLocalSettingsStore from "@/store/localSettings";
 import { resetInfiniteQueryPagination } from "@linkwarden/router/links";

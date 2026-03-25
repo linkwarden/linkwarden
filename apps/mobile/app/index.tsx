@@ -19,7 +19,7 @@ export default function HomeScreen() {
 
   return (
     <Animated.View
-      entering={SlideInDown.springify().damping(100).stiffness(300)}
+      entering={SlideInDown.springify(500).damping(100).stiffness(300)}
       className="flex-col justify-end h-full"
     >
       <View className="h-full bg-primary relative">
