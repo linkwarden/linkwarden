@@ -23,7 +23,7 @@ export default function PreservedFormatRow({
 }: Props) {
   const router = useRouter();
 
-  const isPublic = router.pathname.startsWith("/public") ? true : undefined;
+  const isPublic = router.pathname.startsWith("/public");
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
