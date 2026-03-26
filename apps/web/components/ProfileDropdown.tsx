@@ -1,4 +1,3 @@
-import useLocalSettingsStore from "@/store/localSettings";
 import ProfilePhoto from "./ProfilePhoto";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -18,7 +17,6 @@ const themeOrder: Theme[] = ["light", "dark", "auto"];
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
-  const { settings } = useLocalSettingsStore();
   const updateUserPreference = useUpdateUserPreference();
   const { data: user } = useUser();
 
@@ -63,7 +61,7 @@ export default function ProfileDropdown() {
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-40">
         <DropdownMenuItem asChild>
           <Link href="/settings/account" className="whitespace-nowrap">
             <i className="bi-gear"></i>
@@ -86,7 +84,7 @@ export default function ProfileDropdown() {
         {isAdmin && (
           <DropdownMenuItem asChild>
             <Link
-              href="/admin"
+              href="/admin/user-administration"
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
               className="whitespace-nowrap"
             >

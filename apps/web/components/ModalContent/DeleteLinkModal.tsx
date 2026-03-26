@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
-  const deleteLink = useDeleteLink();
+  const deleteLink = useDeleteLink({ toast, t });
   const router = useRouter();
 
   useEffect(() => {
@@ -26,26 +26,15 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   }, []);
 
   const submit = async () => {
-    const load = toast.loading(t("deleting"));
+    deleteLink.mutateAsync(link.id as number);
 
-    await deleteLink.mutateAsync(link.id as number, {
-      onSettled: (data, error) => {
-        toast.dismiss(load);
-
-        if (error) {
-          toast.error(error.message);
-        } else {
-          if (
-            router.pathname.startsWith("/links/[id]") ||
-            router.pathname.startsWith("/preserved/[id]")
-          ) {
-            router.push("/dashboard");
-          }
-          toast.success(t("deleted"));
-          onClose();
-        }
-      },
-    });
+    if (
+      router.pathname.startsWith("/links/[id]") ||
+      router.pathname.startsWith("/preserved/[id]")
+    ) {
+      router.push("/dashboard");
+    }
+    onClose();
   };
 
   return (

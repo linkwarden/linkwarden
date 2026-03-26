@@ -1,9 +1,9 @@
 import { prisma } from "@linkwarden/prisma";
 import bcrypt from "bcrypt";
 import { removeFolder, removeFile } from "@linkwarden/filesystem";
-import { DeleteUserBody } from "@linkwarden/types";
+import { DeleteUserBody } from "@linkwarden/types/global";
 import updateSeats from "@/lib/api/stripe/updateSeats";
-import { meiliClient } from "@linkwarden/lib";
+import { meiliClient } from "@linkwarden/lib/meilisearchClient";
 import stripeSDK from "@/lib/api/stripe/stripeSDK";
 import transporter from "@linkwarden/lib/transporter";
 

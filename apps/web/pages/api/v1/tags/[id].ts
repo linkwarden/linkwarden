@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import updateTagById from "@/lib/api/controllers/tags/tagId/updateTagById";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteTagById from "@/lib/api/controllers/tags/tagId/deleteTagById";
+import getTagById from "@/lib/api/controllers/tags/tagId/getTagById";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -14,7 +15,10 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
       response: "Please choose a valid name for the tag.",
     });
 
-  if (req.method === "PUT") {
+  if (req.method === "GET") {
+    const tag = await getTagById(user.id, tagId);
+    return res.status(tag.status).json({ response: tag.response });
+  } else if (req.method === "PUT") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:

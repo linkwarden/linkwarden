@@ -1,6 +1,6 @@
 import getTags from "@/lib/api/controllers/tags/getTags";
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery } from "@linkwarden/types";
+import { LinkRequestQuery } from "@linkwarden/types/global";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function collections(
@@ -37,6 +37,8 @@ export default async function collections(
       collectionId: collection.id,
     });
 
-    return res.status(tags?.status || 500).json({ response: tags?.response });
+    const { statusCode, ...data } = tags;
+
+    return res.status(statusCode).json(data);
   }
 }

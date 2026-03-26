@@ -2,7 +2,7 @@ import { formatAvailable } from "@linkwarden/lib/formatStats";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";

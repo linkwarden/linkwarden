@@ -2,12 +2,11 @@
   "expo": {
     "name": "Linkwarden",
     "slug": "linkwarden",
-    "version": "1.0.1",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "linkwarden",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.linkwarden",
@@ -23,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/maskable_logo.jpeg",
+        "foregroundImage": "./assets/images/maskable_logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "app.linkwarden"
@@ -53,7 +52,9 @@
       [
         "expo-share-intent",
         {
-          "iosAppGroupIdentifier": "group.app.linkwarden"
+          "iosAppGroupIdentifier": "group.app.linkwarden",
+          "iosActivationRules": "SUBQUERY (extensionItems, $extensionItem, SUBQUERY ($extensionItem.attachments, $attachment, (ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.url\" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.text\" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.plain-text\")).@count > 0).@count > 0",
+          "androidIntentFilters": ["text/*"]
         }
       ],
       [
@@ -63,9 +64,9 @@
             "enableProguardInReleaseBuilds": true,
             "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
             "allowBackup": false,
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0",
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0",
             "usesCleartextTraffic": true
           }
         }
@@ -79,7 +80,23 @@
           }
         }
       ],
-      "./plugins/with-daynight-transparent-nav"
+      "./plugins/with-daynight-transparent-nav",
+      "expo-font",
+      "expo-web-browser",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "linkwarden"
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "barStyle": "dark-content"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -88,10 +105,6 @@
       "backgroundColor": "#ffffff",
       "barStyle": "dark-content",
       "translucent": false
-    },
-    "androidNavigationBar": {
-      "backgroundColor": "#ffffff",
-      "barStyle": "dark-content"
     },
     "extra": {
       "router": {

@@ -26,6 +26,9 @@ export default function LinksScreen() {
 
   const navigation = useNavigation();
 
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
+
   useEffect(() => {
     const activeCollection = collections.data?.filter(
       (e) => e.id === Number(id)
@@ -36,6 +39,10 @@ export default function LinksScreen() {
         headerTitle: activeCollection?.name,
         headerSearchBarOptions: {
           placeholder: `Search ${activeCollection.name}`,
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+            placement: "integratedButton",
+          }),
         },
       });
   }, [navigation]);

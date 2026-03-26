@@ -25,7 +25,7 @@ function getZIndex(element: HTMLElement): number {
 }
 
 function useOutsideAlerter(
-  ref: RefObject<HTMLElement>,
+  ref: RefObject<HTMLElement | null>,
   onClickOutside: Function
 ) {
   useEffect(() => {

@@ -6,7 +6,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@linkwarden/router/user";
 import { useGetLink } from "@linkwarden/router/links";
 import useTmpStore from "@/store/tmp";
-import { ArchivedFormat } from "@linkwarden/types";
+import { ArchivedFormat } from "@linkwarden/types/global";
 import ReadableFormat from "@/components/Formats/ReadableFormat";
 import ImageFormat from "@/components/Formats/ImageFormat";
 import PdfFormat from "@/components/Formats/PdfFormat";
@@ -89,6 +89,9 @@ export default function LinkScreen() {
                 ? { Authorization: `Bearer ${auth.session}` }
                 : {},
           }}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustContentInsets
+          automaticallyAdjustsScrollIndicatorInsets
           onLoadEnd={() => setIsLoading(false)}
         />
       ) : (

@@ -2,7 +2,7 @@ import Icon from "@/components/Icon";
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { IconWeight } from "@phosphor-icons/react";
 import Link from "next/link";
 import React from "react";

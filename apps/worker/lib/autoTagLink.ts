@@ -16,7 +16,7 @@ import { azure } from "@ai-sdk/azure";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
-import { titleCase } from "@linkwarden/lib";
+import { titleCase } from "@linkwarden/lib/utils";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>
@@ -66,11 +66,7 @@ const getAIModel = (): LanguageModelV2 => {
   throw new Error("No AI provider configured");
 };
 
-export default async function autoTagLink(
-  user: User,
-  linkId: number,
-  metaDescription: string | undefined
-) {
+export default async function autoTagLink(user: User, linkId: number) {
   const link = await prisma.link.findUnique({
     where: { id: linkId },
   });
@@ -78,7 +74,7 @@ export default async function autoTagLink(
   if (!link) return console.log("Link not found for auto tagging.");
 
   const description =
-    metaDescription ||
+    (link.metaDescription ? link.metaDescription + "..." : undefined) ||
     (link.textContent ? link.textContent?.slice(0, 500) + "..." : undefined);
 
   if (!description) return;
@@ -132,7 +128,10 @@ export default async function autoTagLink(
   });
 
   try {
-    let tags: string[] = JSON.parse(text);
+    // If text has an array inside a "```json ```" block, extract that
+    let tags: string[] = JSON.parse(
+      text.match(/```json\s*([\s\S]*?)\s*```/i)?.[1] ?? text
+    );
 
     if (!tags || tags.length === 0) {
       return;

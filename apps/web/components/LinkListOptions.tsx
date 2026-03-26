@@ -10,7 +10,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   Sort,
   ViewMode,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";

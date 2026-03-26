@@ -11,7 +11,7 @@ import usePermissions from "@/hooks/usePermissions";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import {
   useGetLinkHighlights,

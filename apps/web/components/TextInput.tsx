@@ -1,4 +1,4 @@
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import React, { forwardRef } from "react";
 
 export type TextInputProps = React.ComponentPropsWithoutRef<"input">;

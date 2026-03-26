@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
-import { hasPassedLimit } from "@linkwarden/lib";
+import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 
 type OmnivoreItem = {
   id: string;

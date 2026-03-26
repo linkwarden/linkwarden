@@ -2,7 +2,7 @@ import NoLinksFound from "@/components/NoLinksFound";
 import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import React, { ReactElement, useEffect, useState } from "react";
-import { Sort, ViewMode } from "@linkwarden/types";
+import { Sort, ViewMode } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
@@ -34,7 +34,7 @@ const Page: NextPageWithLayout = () => {
   }, [router]);
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <LinkListOptions
         t={t}
         viewMode={viewMode}
@@ -67,7 +67,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

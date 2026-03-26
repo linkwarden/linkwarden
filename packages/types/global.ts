@@ -1,4 +1,11 @@
-import { Collection, Link, Tag, User } from "@linkwarden/prisma/client";
+import {
+  Collection,
+  Link,
+  Tag,
+  User,
+  DashboardSection,
+  Subscription,
+} from "@linkwarden/prisma/client";
 import Stripe from "stripe";
 
 type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
@@ -32,7 +39,7 @@ export interface Member {
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "email" | "username" | "name" | "id">;
+  user: OptionalExcluding<User, "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
@@ -52,7 +59,6 @@ export interface TagIncludingLinkCount extends Tag {
 export interface AccountSettings extends User {
   newPassword?: string;
   oldPassword?: string;
-  whitelistedUsers: string[];
   subscription?: {
     active?: boolean;
   };
@@ -85,6 +91,15 @@ export enum Sort {
   NameZA = 3,
 }
 
+export enum TagSort {
+  DateNewestFirst = 0,
+  DateOldestFirst = 1,
+  NameAZ = 2,
+  NameZA = 3,
+  LinkCountHighLow = 4,
+  LinkCountLowHigh = 5,
+}
+
 export type Order = { [key: string]: "asc" | "desc" };
 
 export type LinkRequestQuery = {
@@ -94,6 +109,11 @@ export type LinkRequestQuery = {
   tagId?: number;
   pinnedOnly?: boolean;
   searchQueryString?: string;
+};
+
+export type TagRequestQuery = {
+  sort?: TagSort;
+  cursor?: number;
 };
 
 export type PublicLinkRequestQuery = {
@@ -187,4 +207,30 @@ export interface MobileData {
   };
   theme: "light" | "dark" | "system";
   preferredBrowser: "app" | "system";
+  preferredCollection: CollectionIncludingMembersAndLinkCount | null;
 }
+
+export interface WorkerStats {
+  link: {
+    pending: number;
+    done: number;
+    failed: number;
+  };
+  search: {
+    pending: number;
+    done: number;
+  };
+}
+
+export type GetUserByIdResponse = Omit<User, "password"> &
+  Partial<{ subscription: Pick<Subscription, "active" | "quantity"> }> & {
+    parentSubscription: {
+      active: boolean | undefined;
+      user: {
+        email: string | null | undefined;
+      };
+    };
+  } & {
+    dashboardSections: DashboardSection[];
+    hasUnIndexedLinks: boolean;
+  };

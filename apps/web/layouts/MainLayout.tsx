@@ -3,10 +3,8 @@ import Announcement from "@/components/Announcement";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
 import getLatestVersion from "@/lib/client/getLatestVersion";
-import { DndContext } from "@dnd-kit/core";
 import DragNDrop from "@/components/DragNDrop";
-import { useLinks } from "@linkwarden/router/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 
 interface Props {
   children: ReactNode;

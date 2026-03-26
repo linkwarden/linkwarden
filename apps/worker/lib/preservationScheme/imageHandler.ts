@@ -1,12 +1,11 @@
 import { Link } from "@linkwarden/prisma/client";
 import { prisma } from "@linkwarden/prisma";
 import { createFile } from "@linkwarden/filesystem";
-import { generatePreview } from "@linkwarden/lib";
+import { generatePreview } from "@linkwarden/lib/generatePreview";
+import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 const imageHandler = async ({ url, id }: Link, extension: string) => {
-  const image = await fetch(url as string).then((res) => res.blob());
-
-  const buffer = Buffer.from(await image.arrayBuffer());
+  const buffer = await safeFetch(url as string).then((res) => res.buffer());
 
   if (
     Buffer.byteLength(buffer) >

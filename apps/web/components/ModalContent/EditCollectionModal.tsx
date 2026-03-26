@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@linkwarden/router/collections";

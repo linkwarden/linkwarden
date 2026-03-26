@@ -1,19 +1,14 @@
 import { useRouter } from "next/router";
 import { FormEvent, ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import {
-  LinkIncludingShortenedCollectionAndTags,
-  Sort,
-  TagIncludingLinkCount,
-  ViewMode,
-} from "@linkwarden/types";
+import { Sort, ViewMode } from "@linkwarden/types/global";
 import { useLinks } from "@linkwarden/router/links";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
-import { useRemoveTag, useTags, useUpdateTag } from "@linkwarden/router/tags";
+import { useRemoveTag, useTag, useUpdateTag } from "@linkwarden/router/tags";
 import Links from "@/components/LinkViews/Links";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -29,8 +24,15 @@ import { NextPageWithLayout } from "../_app";
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const parsedTagId = Number(router.query.id);
+  const tagId =
+    Number.isFinite(parsedTagId) && parsedTagId > 0 ? parsedTagId : undefined;
 
-  const { data: tags = [] } = useTags();
+  const {
+    data: activeTag,
+    isLoading: isTagLoading,
+    isError: isTagError,
+  } = useTag(tagId);
   const updateTag = useUpdateTag();
   const removeTag = useRemoveTag();
 
@@ -41,13 +43,9 @@ const Page: NextPageWithLayout = () => {
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
 
-  const [activeTag, setActiveTag] = useState<TagIncludingLinkCount>();
-
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [activeLink, setActiveLink] =
-    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -55,19 +53,13 @@ const Page: NextPageWithLayout = () => {
 
   const { links, data } = useLinks({
     sort: sortBy,
-    tagId: Number(router.query.id),
+    tagId,
   });
 
   useEffect(() => {
-    const tag = tags.find((e: any) => e.id === Number(router.query.id));
-
-    if (tags.length > 0 && !tag?.id) {
-      router.push("/dashboard");
-      return;
-    }
-
-    setActiveTag(tag);
-  }, [router, tags, Number(router.query.id), setActiveTag]);
+    if (!router.isReady || isTagLoading) return;
+    if (isTagError) router.push("/dashboard");
+  }, [router, router.isReady, isTagLoading, isTagError]);
 
   useEffect(() => {
     setNewTagName(activeTag?.name);
@@ -145,7 +137,7 @@ const Page: NextPageWithLayout = () => {
   );
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <LinkListOptions
         t={t}
         viewMode={viewMode}
@@ -190,7 +182,7 @@ const Page: NextPageWithLayout = () => {
                     <DropdownMenuContent
                       sideOffset={4}
                       align={
-                        activeTag?.name.length && activeTag?.name.length > 8
+                        activeTag?.name && activeTag.name.length > 8
                           ? "end"
                           : "start"
                       }
@@ -244,7 +236,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

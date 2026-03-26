@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
-import { TokenExpiry } from "@linkwarden/types";
+import { TokenExpiry } from "@linkwarden/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { Button } from "@/components/ui/button";

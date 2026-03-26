@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   AccountSettings,
   CollectionIncludingMembersAndLinkCount,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";

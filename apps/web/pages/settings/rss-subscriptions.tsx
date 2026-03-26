@@ -29,9 +29,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("rss_subscriptions")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-rss text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("rss_subscriptions")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
@@ -101,7 +104,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

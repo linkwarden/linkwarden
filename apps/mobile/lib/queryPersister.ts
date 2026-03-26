@@ -1,7 +1,7 @@
-import { MMKV } from "react-native-mmkv";
+import { createMMKV } from "react-native-mmkv";
 import { Persister } from "@tanstack/react-query-persist-client";
 
-const storage = new MMKV({ id: "react-query" });
+const storage = createMMKV({ id: "react-query" });
 
 export const mmkvPersister: Persister = {
   persistClient: async (client) => {
@@ -23,7 +23,7 @@ export const mmkvPersister: Persister = {
   },
   removeClient: async () => {
     try {
-      storage.delete("REACT_QUERY_CACHE");
+      storage.remove("REACT_QUERY_CACHE");
     } catch (e) {
       console.error("Error removing client:", e);
     }

@@ -7,14 +7,17 @@ import { useRouter } from "next/router";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { useAddLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
-import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
+import {
+  PostLinkSchema,
+  PostLinkSchemaType,
+} from "@linkwarden/lib/schemaValidation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "../ui/separator";
+import { useAddLink } from "@linkwarden/router/links";
 
 type Props = {
-  onClose: Function;
+  onClose: () => void;
 };
 
 export default function NewLinkModal({ onClose }: Props) {
@@ -31,10 +34,13 @@ export default function NewLinkModal({ onClose }: Props) {
     },
   } as PostLinkSchemaType;
 
+  const addLink = useAddLink({
+    toast,
+    t,
+  });
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [link, setLink] = useState<PostLinkSchemaType>(initial);
-  const addLink = useAddLink();
-  const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
   const { data: collections = [] } = useCollections();
@@ -80,22 +86,17 @@ export default function NewLinkModal({ onClose }: Props) {
   }, []);
 
   const submit = async () => {
-    if (!submitLoader) {
-      setSubmitLoader(true);
-      const load = toast.loading(t("creating_link"));
-      await addLink.mutateAsync(link, {
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
-          if (error) {
-            toast.error(t(error.message));
-          } else {
-            onClose();
-            toast.success(t("link_created"));
-          }
-        },
-      });
-    }
+    const dataValidation = PostLinkSchema.safeParse(link);
+
+    if (!dataValidation.success)
+      return toast.error(
+        `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`
+      );
+
+    addLink.mutateAsync(link);
+    onClose();
   };
 
   return (

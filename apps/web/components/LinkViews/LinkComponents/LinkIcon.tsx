@@ -1,7 +1,7 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Icon from "@/components/Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -29,6 +29,10 @@ function LinkIcon({
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
   const [faviconLoaded, setFaviconLoaded] = useState(false);
+
+  useEffect(() => {
+    setFaviconLoaded(false);
+  }, [link.url]);
 
   return (
     <div onClick={() => onClick && onClick()}>

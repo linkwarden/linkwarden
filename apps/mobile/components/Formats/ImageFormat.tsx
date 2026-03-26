@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
-import { ArchivedFormat } from "@linkwarden/types";
+import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import WebView from "react-native-webview";
 import { Image, Platform, ScrollView } from "react-native";
@@ -75,7 +75,12 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
     return (
       content &&
       dimension && (
-        <ScrollView maximumZoomScale={10}>
+        <ScrollView
+          maximumZoomScale={10}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustContentInsets
+          automaticallyAdjustsScrollIndicatorInsets
+        >
           <Image
             source={{ uri: content }}
             onLoadEnd={() => setIsLoading(false)}
@@ -123,12 +128,12 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
           `,
           }}
           scalesPageToFit
-          originWhitelist={["*"]}
-          mixedContentMode="always"
-          javaScriptEnabled={true}
+          originWhitelist={[
+            ...(auth.instance ? [auth.instance] : []),
+            "file://",
+          ]}
+          javaScriptEnabled={false}
           allowFileAccess={true}
-          allowFileAccessFromFileURLs={true}
-          allowUniversalAccessFromFileURLs={true}
           onLoadEnd={() => setIsLoading(false)}
         />
       )

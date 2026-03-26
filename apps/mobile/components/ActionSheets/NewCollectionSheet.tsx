@@ -26,7 +26,7 @@ export default function NewCollectionSheet() {
       ref={actionSheetRef}
       gestureEnabled
       indicatorStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+        display: "none",
       }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
@@ -34,6 +34,10 @@ export default function NewCollectionSheet() {
       safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
+        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+          New Collection
+        </Text>
+
         <Input
           placeholder="Name"
           className="mb-4 bg-base-100"

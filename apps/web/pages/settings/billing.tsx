@@ -76,9 +76,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("billing_settings")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-credit-card text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("billing_settings")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
@@ -165,6 +168,7 @@ const Page: NextPageWithLayout = () => {
                 <th>{t("status")}</th>
               )}
               <th>{t("date_added")}</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -172,7 +176,7 @@ const Page: NextPageWithLayout = () => {
               <tr
                 key={index}
                 className={clsx(
-                  "group border-b-neutral-content duration-100 w-full relative flex flex-col sm:table-row",
+                  "group border-b-neutral-content last:border-b-0 duration-100 w-full relative flex flex-col sm:table-row",
                   user.id !== account?.id &&
                     "hover:bg-neutral-content hover:bg-opacity-30"
                 )}
@@ -213,8 +217,8 @@ const Page: NextPageWithLayout = () => {
                     })}
                   </p>
                 </td>
-                {user.id !== account?.id && (
-                  <td className="relative">
+                <td className="relative">
+                  {user.id !== account?.id && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -222,6 +226,7 @@ const Page: NextPageWithLayout = () => {
                           size="icon"
                           onMouseDown={(e) => e.preventDefault()}
                           title={t("more")}
+                          className="ml-auto block"
                         >
                           <i
                             className={"bi bi-three-dots text-lg text-neutral"}
@@ -268,8 +273,8 @@ const Page: NextPageWithLayout = () => {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </td>
-                )}
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -294,7 +299,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

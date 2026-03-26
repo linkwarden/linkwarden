@@ -19,6 +19,8 @@ const Page: NextPageWithLayout = () => {
   const updateUser = useUpdateUser();
 
   const submit = async () => {
+    if (!account?.id) return;
+
     if (newPassword === "" || oldPassword === "") {
       return toast.error(t("fill_all_fields"));
     }
@@ -30,7 +32,9 @@ const Page: NextPageWithLayout = () => {
 
     await updateUser.mutateAsync(
       {
-        ...account,
+        id: account.id,
+        username: account.username,
+        email: account.email,
         newPassword,
         oldPassword,
       },
@@ -54,14 +58,17 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("change_password")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-lock text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("change_password")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
       <p className="mb-3">{t("password_change_instructions")}</p>
-      <div className="w-full flex flex-col gap-2 justify-between">
+      <div className="w-full flex flex-col gap-2 justify-between max-w-screen-sm">
         <p>{t("old_password")}</p>
 
         <TextInput
@@ -84,7 +91,7 @@ const Page: NextPageWithLayout = () => {
 
         <Button
           onClick={submit}
-          disabled={submitLoader}
+          disabled={submitLoader || !oldPassword || !newPassword}
           variant="accent"
           className="mt-3 w-full sm:w-fit"
         >
@@ -95,7 +102,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

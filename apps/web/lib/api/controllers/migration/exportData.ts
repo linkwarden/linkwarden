@@ -23,7 +23,6 @@ export default async function exportData(userId: number) {
         },
       },
       pinnedLinks: true,
-      whitelistedUsers: true,
     },
   });
 

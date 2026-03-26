@@ -1,47 +1,14 @@
-import fetch from "node-fetch";
-import https from "https";
-import http from "http";
-import { HttpsProxyAgent } from "https-proxy-agent";
-import { SocksProxyAgent } from "socks-proxy-agent";
+import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 export default async function fetchTitleAndHeaders(
   url: string,
   content?: string
 ) {
-  if (!url?.startsWith("http://") && !url?.startsWith("https://"))
+  if (!content && !url?.startsWith("http://") && !url?.startsWith("https://"))
     return { title: "", headers: null };
 
   try {
-    const httpsAgent = url?.startsWith("http://")
-      ? new http.Agent({})
-      : new https.Agent({
-          rejectUnauthorized:
-            process.env.IGNORE_UNAUTHORIZED_CA === "true" ? false : true,
-        });
-
-    // fetchOpts allows a proxy to be defined
-    let fetchOpts = {
-      agent: httpsAgent,
-    };
-
-    if (process.env.PROXY) {
-      // parse proxy url
-      let proxy = new URL(process.env.PROXY);
-      // if authentication set, apply to proxy URL
-      if (process.env.PROXY_USERNAME) {
-        proxy.username = process.env.PROXY_USERNAME;
-        proxy.password = process.env.PROXY_PASSWORD || "";
-      }
-
-      const proxyAgent = proxy.protocol.includes("http")
-        ? HttpsProxyAgent
-        : SocksProxyAgent;
-
-      // add socks5/http/https proxy to fetchOpts
-      fetchOpts = { agent: new proxyAgent(proxy.toString()) };
-    }
-
-    const responsePromise = fetch(url, fetchOpts);
+    const responsePromise = content ? Promise.resolve(null) : safeFetch(url);
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
         reject(new Error("Fetch title timeout"));
@@ -50,7 +17,7 @@ export default async function fetchTitleAndHeaders(
 
     const response = await Promise.race([responsePromise, timeoutPromise]);
 
-    if ((response as any)?.status) {
+    if ((response as any)?.status || content) {
       let text: string;
 
       if (content) {
@@ -59,7 +26,7 @@ export default async function fetchTitleAndHeaders(
         text = await (response as any).text();
       }
 
-      const headers = (response as Response)?.headers || null;
+      const headers = (response as Response | null)?.headers || null;
 
       // regular expression to find the <title> tag
       let match = text.match(/<title.*>([^<]*)<\/title>/);

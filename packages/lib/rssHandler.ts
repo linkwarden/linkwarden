@@ -1,17 +1,20 @@
 import { RssSubscription } from "@linkwarden/prisma/client";
 import { hasPassedLimit } from "./verifyCapacity";
-import Parser from "rss-parser";
 import { prisma } from "@linkwarden/prisma";
+import Parser from "rss-parser";
+import { assertUrlIsSafeForServerSideFetch } from "./ssrf";
 
 export const rssHandler = async (
   rssSubscription: RssSubscription,
-  parser: Parser
+  feed: Parser.Output<any>
 ) => {
   try {
-    const feed = await parser.parseURL(rssSubscription.url);
-
+    const feedLastBuildDate = (feed as any).lastBuildDate as
+      | string
+      | Date
+      | undefined;
     const feedLastPubDate =
-      feed.lastBuildDate ??
+      feedLastBuildDate ??
       feed.items.reduce((acc, item) => {
         const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;
         return itemPubDate && itemPubDate > acc ? itemPubDate : acc;
@@ -53,6 +56,14 @@ export const rssHandler = async (
       // Create all links concurrently
       await Promise.all(
         newItems.map(async (item) => {
+          if (!item.link) return null;
+
+          try {
+            await assertUrlIsSafeForServerSideFetch(item.link);
+          } catch {
+            return null;
+          }
+
           return prisma.link.create({
             data: {
               name: item.title,

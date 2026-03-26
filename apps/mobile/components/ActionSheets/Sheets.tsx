@@ -7,7 +7,7 @@ import SupportSheet from "./SupportSheet";
 import AddLinkSheet from "./AddLinkSheet";
 import EditLinkSheet from "./EditLinkSheet";
 import NewCollectionSheet from "./NewCollectionSheet";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 
 registerSheet("support-sheet", SupportSheet);
 registerSheet("add-link-sheet", AddLinkSheet);
@@ -27,6 +27,9 @@ declare module "react-native-actions-sheet" {
           link: LinkIncludingShortenedCollectionAndTags;
         }>;
         collections: RouteDefinition<{
+          link: LinkIncludingShortenedCollectionAndTags;
+        }>;
+        tags: RouteDefinition<{
           link: LinkIncludingShortenedCollectionAndTags;
         }>;
       };

@@ -3,7 +3,7 @@ import { ReactElement, useMemo, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import SortDropdown from "@/components/SortDropdown";
-import { Sort } from "@linkwarden/types";
+import { Sort } from "@linkwarden/types/global";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
@@ -54,7 +54,7 @@ const Page: NextPageWithLayout = () => {
   const [newCollectionModal, setNewCollectionModal] = useState(false);
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
           <PageHeader
@@ -107,7 +107,7 @@ const Page: NextPageWithLayout = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
           {sortedCollections
             .filter((e) => e.ownerId === data?.user.id && e.parentId === null)
             .map((e) => (
@@ -150,7 +150,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

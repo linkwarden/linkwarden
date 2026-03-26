@@ -60,9 +60,9 @@ export default async function handleSubscription({
 
     if (!user) {
       if (action === "customer.subscription.deleted") {
-        return "User not found or deleted";
+        return "User not found or deleted.";
       } else {
-        throw new Error("User not found");
+        throw new Error("User not found.");
       }
     }
 

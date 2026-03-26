@@ -12,6 +12,7 @@ const Index = () => {
   const { data } = useGetLink({
     id: Number(id) as number,
     isPublicRoute,
+    enabled: true,
   });
 
   return (

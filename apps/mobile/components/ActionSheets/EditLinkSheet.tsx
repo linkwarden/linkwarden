@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -15,13 +15,16 @@ import useAuthStore from "@/store/auth";
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+  TagIncludingLinkCount,
+  TagSort,
+} from "@linkwarden/types/global";
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { Folder, ChevronRight, Check } from "lucide-react-native";
+import { Folder, ChevronRight, ChevronLeft, Check } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTags } from "@linkwarden/router/tags";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -31,7 +34,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
   const [link, setLink] = useState<
     LinkIncludingShortenedCollectionAndTags | undefined
   >(props.payload?.link);
-  const editLink = useUpdateLink(auth);
+  const updateLink = useUpdateLink({ auth, Alert });
   const router = useSheetRouter("edit-link-sheet");
   const { colorScheme } = useColorScheme();
 
@@ -45,6 +48,10 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
   return (
     <View className="px-8 py-5">
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Edit Link
+      </Text>
+
       <Input
         placeholder="Name"
         className="mb-4 bg-base-100"
@@ -82,23 +89,29 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         />
       </Button>
 
-      {/* <Button variant="input" className="mb-4 h-auto">
+      <Button
+        variant="input"
+        className="mb-4 h-auto"
+        onPress={() => router?.navigate("tags", { link })}
+      >
         {link?.tags && link?.tags.length > 0 ? (
           <View className="flex-row flex-wrap items-center gap-2 w-[90%]">
             {link.tags.map((tag) => (
               <View
                 key={tag.id}
-                className="bg-gray-200 rounded-md h-7 px-2 py-1"
+                className="bg-neutral rounded-md h-7 px-2 py-1"
               >
-                <Text numberOfLines={1}>{tag.name}</Text>
+                <Text numberOfLines={1} className="text-base-100">
+                  {tag.name}
+                </Text>
               </View>
             ))}
           </View>
         ) : (
-          <Text className="text-gray-500">No tags</Text>
+          <Text className="text-neutral">No tags</Text>
         )}
         <ChevronRight size={16} color={"gray"} />
-      </Button> */}
+      </Button>
 
       <Input
         multiline
@@ -112,23 +125,15 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
       />
 
       <Button
-        onPress={() =>
-          editLink.mutate(link as LinkIncludingShortenedCollectionAndTags, {
-            onSuccess: () => {
-              if (link && tmp.link)
-                updateTmp({
-                  link,
-                });
-
-              SheetManager.hide("edit-link-sheet");
-            },
-            onError: (error) => {
-              Alert.alert("Error", "There was an error editing the link.");
-              console.error("Error editing link:", error);
-            },
-          })
-        }
-        isLoading={editLink.isPending}
+        onPress={() => {
+          updateLink.mutate(link as LinkIncludingShortenedCollectionAndTags);
+          if (link && tmp.link)
+            updateTmp({
+              link,
+            });
+          SheetManager.hide("edit-link-sheet");
+        }}
+        isLoading={updateLink.isPending}
         variant="accent"
         className="mb-2"
       >
@@ -150,7 +155,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
 const Collections = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const { link: currentLink } = useSheetRouteParams<
@@ -175,13 +180,11 @@ const Collections = () => {
       item: CollectionIncludingMembersAndLinkCount;
     }) => {
       const onSelect = () => {
-        // 1. Create a brand-new link object with the new collection
         const updatedLink = {
-          ...currentLink!,
+          ...currentLink,
           collection,
         };
 
-        // 2. Navigate back to "main", passing the updated link as payload
         router?.popToTop();
         router?.navigate("main", { link: updatedLink });
       };
@@ -216,16 +219,32 @@ const Collections = () => {
   );
 
   return (
-    <View className="px-8 py-5 max-h-[80vh]">
+    <View className="py-5 max-h-[80vh]">
+      <TouchableOpacity
+        className="flex-row items-center gap-1 top-6 left-8 absolute"
+        onPress={() => {
+          router?.popToTop();
+          router?.navigate("main", { link: currentLink });
+        }}
+      >
+        <ChevronLeft
+          size={18}
+          color={rawTheme[colorScheme as ThemeName]["primary"]}
+        />
+        <Text className="text-primary">Back</Text>
+      </TouchableOpacity>
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Collection
+      </Text>
       <Input
         placeholder="Search collections"
-        className="mb-4 bg-base-100"
+        className="mb-4 bg-base-100 mx-8"
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
 
       <FlatList
-        data={filteredCollections}
+        data={[...filteredCollections]}
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
@@ -236,7 +255,133 @@ const Collections = () => {
             No collections match “{searchQuery}”
           </Text>
         }
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerClassName="px-8"
+      />
+    </View>
+  );
+};
+
+const Tags = () => {
+  const { auth } = useAuthStore();
+  const addLink = useAddLink({ auth });
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useSheetRouter("edit-link-sheet");
+  const params = useSheetRouteParams("edit-link-sheet", "tags");
+  const tags = useTags(auth, {
+    sort: TagSort.NameAZ,
+  });
+  const { colorScheme } = useColorScheme();
+  const [updatedLink, setUpdatedLink] =
+    useState<LinkIncludingShortenedCollectionAndTags>(params.link);
+
+  const filteredTags = useMemo(() => {
+    const tagsById = new Map<number, TagIncludingLinkCount>();
+
+    for (const tag of updatedLink?.tags || []) {
+      tagsById.set(tag.id, tag as TagIncludingLinkCount);
+    }
+
+    for (const tag of tags.data || []) {
+      tagsById.set(tag.id, tag);
+    }
+
+    const availableTags = Array.from(tagsById.values());
+    const q = searchQuery.trim().toLowerCase();
+    if (q === "") return availableTags;
+    return availableTags.filter((tag) => tag.name.toLowerCase().includes(q));
+  }, [updatedLink?.tags, tags.data, searchQuery]);
+
+  const renderItem = useCallback(
+    ({ item: tag }: { item: TagIncludingLinkCount }) => {
+      const onSelect = () => {
+        const isSelected = (updatedLink?.tags || []).some(
+          (t) => t.id === tag.id
+        );
+        const nextTags = isSelected
+          ? (updatedLink?.tags || []).filter((t) => t.id !== tag.id)
+          : [...(updatedLink?.tags || []), tag];
+
+        setUpdatedLink({
+          ...updatedLink,
+          tags: nextTags,
+        });
+      };
+
+      return (
+        <Button variant="input" className="mb-2" onPress={onSelect}>
+          <View className="flex-row items-center gap-2 w-[75%]">
+            <Text numberOfLines={1} className="w-full text-base-content">
+              {tag.name}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-2">
+            {updatedLink?.tags.find((e) => e.id === tag.id) && (
+              <Check
+                size={16}
+                color={rawTheme[colorScheme as ThemeName].primary}
+              />
+            )}
+            <Text className="text-neutral">{tag._count?.links ?? 0}</Text>
+          </View>
+        </Button>
+      );
+    },
+    [addLink, params.link, router]
+  );
+
+  return (
+    <View className="py-5 max-h-[80vh]">
+      <TouchableOpacity
+        className="flex-row items-center gap-1 top-6 left-8 absolute"
+        onPress={() => {
+          router?.popToTop();
+          router?.navigate("main", { link: updatedLink });
+        }}
+      >
+        <ChevronLeft
+          size={18}
+          color={rawTheme[colorScheme as ThemeName]["primary"]}
+        />
+        <Text className="text-primary">Back</Text>
+      </TouchableOpacity>
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Tags
+      </Text>
+      <Input
+        placeholder="Search tags"
+        className="mb-4 bg-base-100 mx-8"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      <FlatList
+        data={filteredTags}
+        keyExtractor={(e, i) => i.toString()}
+        renderItem={renderItem}
+        onEndReached={() => {
+          if (!tags.hasNextPage || tags.isFetchingNextPage) return;
+          tags.fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          tags.isFetchingNextPage ? (
+            <Text
+              style={{ textAlign: "center", marginTop: 20 }}
+              className="text-neutral"
+            >
+              Loading...
+            </Text>
+          ) : null
+        }
+        ListEmptyComponent={
+          <Text
+            style={{ textAlign: "center", marginTop: 20 }}
+            className="text-neutral"
+          >
+            No tags match “{searchQuery}”
+          </Text>
+        }
+        contentContainerClassName="px-8"
       />
     </View>
   );
@@ -251,6 +396,10 @@ const routes: Route[] = [
     name: "collections",
     component: Collections,
   },
+  {
+    name: "tags",
+    component: Tags,
+  },
 ];
 
 export default function EditLinkSheet() {
@@ -262,9 +411,8 @@ export default function EditLinkSheet() {
     <ActionSheet
       gestureEnabled
       indicatorStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+        display: "none",
       }}
-      enableRouterBackNavigation={true}
       routes={routes}
       initialRoute="main"
       containerStyle={{
