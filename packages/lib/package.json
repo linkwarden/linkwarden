@@ -10,7 +10,7 @@
     "clsx": "^2.1.1",
     "jimp": "^0.22.10",
     "meilisearch": "^0.48.2",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^8.0.4",
     "rss-parser": "^3.13.0",
     "tailwind-merge": "^3.3.0"
   },
