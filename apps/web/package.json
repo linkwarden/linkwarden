@@ -63,7 +63,7 @@
     "next-auth": "^4.22.1",
     "next-i18next": "^15.3.0",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^8.0.4",
     "papaparse": "^5.5.3",
     "playwright": "1.57.0",
     "react": "19.1.0",
