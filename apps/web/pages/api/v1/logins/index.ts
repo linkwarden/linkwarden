@@ -419,6 +419,13 @@ export function getLogins() {
       name: process.env.AUTHELIA_CUSTOM_NAME ?? "Authelia",
     });
   }
+  // Pocket ID
+  if (process.env.NEXT_PUBLIC_POCKET_ID_ENABLED === "true") {
+    buttonAuths.push({
+      method: "pocket-id",
+      name: process.env.POCKET_ID_CUSTOM_NAME ?? "Pocket ID",
+    });
+  }
   return {
     credentialsEnabled:
       process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false"
