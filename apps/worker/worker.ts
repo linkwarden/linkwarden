@@ -1,3 +1,4 @@
+import { autoTagPreservedLinks } from "./workers/autoTagPreservedLinks";
 import { startIndexing } from "./workers/linkIndexing";
 import { linkProcessing } from "./workers/linkProcessing";
 import { migrationWorker } from "./workers/migrationWorker";
@@ -13,6 +14,7 @@ async function init() {
   console.log("\x1b[34m%s\x1b[0m", "Initializing the worker...");
   startRSSPolling();
   linkProcessing(workerIntervalInSeconds);
+  autoTagPreservedLinks(workerIntervalInSeconds);
   startIndexing(workerIntervalInSeconds);
   trialEndEmailWorker();
 }

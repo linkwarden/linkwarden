@@ -10,7 +10,6 @@ import handleArchivePreview from "./preservationScheme/handleArchivePreview";
 import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
-import autoTagLink from "./autoTagLink";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 import { ArchivalSettings } from "@linkwarden/types/global";
@@ -55,19 +54,6 @@ export default async function archiveHandler(
         monolith: "unavailable",
         pdf: "unavailable",
         preview: "unavailable",
-
-        // To prevent re-archiving the same link
-        aiTagged:
-          user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-          !link.aiTagged &&
-          (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
-            process.env.OPENAI_API_KEY ||
-            process.env.AZURE_API_KEY ||
-            process.env.ANTHROPIC_API_KEY ||
-            process.env.OPENROUTER_API_KEY ||
-            process.env.PERPLEXITY_API_KEY)
-            ? true
-            : undefined,
         indexVersion: null,
       },
     });
@@ -194,21 +180,6 @@ export default async function archiveHandler(
             await handleScreenshotAndPdf(link, page, archivalSettings);
           }
 
-          // Auto-tagging
-          if (
-            archivalSettings.aiTag &&
-            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-            !link.aiTagged &&
-            (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
-              process.env.OPENAI_API_KEY ||
-              process.env.AZURE_API_KEY ||
-              process.env.ANTHROPIC_API_KEY ||
-              process.env.OPENROUTER_API_KEY ||
-              process.env.PERPLEXITY_API_KEY)
-          ) {
-            await autoTagLink(user, link.id);
-          }
-
           // Monolith
           if (
             archivalSettings.archiveAsMonolith &&
@@ -248,11 +219,6 @@ export default async function archiveHandler(
           monolith: !finalLink.monolith ? "unavailable" : undefined,
           pdf: !finalLink.pdf ? "unavailable" : undefined,
           preview: !finalLink.preview ? "unavailable" : undefined,
-          aiTagged:
-            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-            !finalLink.aiTagged
-              ? true
-              : undefined,
           indexVersion: null,
         },
       });
