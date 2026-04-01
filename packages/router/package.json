@@ -7,7 +7,7 @@
     "@linkwarden/lib": "*",
     "@linkwarden/prisma": "*",
     "@linkwarden/types": "*",
-    "next": "15.3.9",
+    "next": "15.5.14",
     "next-i18next": "^15.3.0",
     "react-hot-toast": "^2.4.1"
   },
