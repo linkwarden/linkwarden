@@ -23,7 +23,11 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
 
     const { statusCode, ...data } = tags;
 
-    return res.status(statusCode).json(data);
+    return res.status(statusCode).json({
+      ...data,
+      // Keep legacy v1 response shape for existing clients while preserving pagination metadata.
+      response: data.data.tags,
+    });
   }
 
   if (req.method === "POST") {
