@@ -8,7 +8,7 @@ import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
 import TagListing from "./TagListing";
 import { Button } from "./ui/button";
-import { useUser } from "@linkwarden/router/user";
+import { useUser, useEffectiveTheme } from "@linkwarden/router/user";
 import Image from "next/image";
 import {
   Tooltip,
@@ -59,6 +59,8 @@ export default function Sidebar({
   const router = useRouter();
 
   const { data: user } = useUser();
+  // Get the resolved theme (auto -> light/dark) for logo switching
+  const effectiveTheme = useEffectiveTheme();
 
   useEffect(() => {
     localStorage.setItem("tagDisclosure", tagDisclosure ? "true" : "false");
@@ -111,7 +113,7 @@ export default function Sidebar({
               onClick={() => router.push("/dashboard")}
               priority
             />
-          ) : user?.theme === "light" ? (
+          ) : effectiveTheme === "light" ? (
             <Image
               src={"/linkwarden_light.png"}
               width={640}

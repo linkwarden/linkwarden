@@ -266,6 +266,13 @@ const Page: NextPageWithLayout = () => {
                 textColor: "text-black",
                 activeColor: "text-primary",
               },
+              {
+                theme: "auto",
+                icon: "bi-circle-half",
+                bgColor: "bg-gradient-to-r from-black from-1% via-gray-700 via-12% via-gray-400 via-25% to-white",
+                textColor: "text-white [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]",
+                activeColor: "text-primary",
+              },
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
@@ -276,7 +283,6 @@ const Page: NextPageWithLayout = () => {
                 }`}
                 onClick={() => {
                   updateUserPreference.mutate({ theme: theme as any });
-                  document.documentElement.setAttribute("data-theme", theme);
                 }}
               >
                 <i className={`${icon} text-3xl`}></i>
