@@ -542,5 +542,18 @@
   "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "note": "Note",
-  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed."
+  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed.",
+  "qr_code": "QR Code",
+  "generate_qr_code": "Generate QR Code",
+  "regenerate_qr_code": "Regenerate QR Code",
+  "delete_qr_code": "Delete QR Code",
+  "download_qr_code": "Download",
+  "qr_code_generated": "QR Code generated",
+  "generating_qr_code": "Generating QR Code...",
+  "qr_code_deleted": "QR Code deleted",
+  "deleting_qr_code": "Deleting QR Code...",
+  "no_qr_code_yet": "No QR Code generated yet. Click below to generate one.",
+  "confirm_delete_qr_code": "Are you sure you want to delete this QR Code?",
+  "failed_to_generate_qr_code": "Failed to generate QR Code",
+  "failed_to_delete_qr_code": "Failed to delete QR Code"
 }
