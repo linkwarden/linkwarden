@@ -5,6 +5,7 @@ import { readFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 import generateQR from "@/lib/api/controllers/links/linkId/qr/generateQR";
 import deleteQR from "@/lib/api/controllers/links/linkId/qr/deleteQR";
+import qrCodeFilename from "@linkwarden/lib/qrCodeFilename";
 
 export default async function index(
   req: NextApiRequest,
@@ -53,8 +54,10 @@ export default async function index(
         }
 
         const { file, contentType, status } = await readFile(link.qrCode);
+        const filename = qrCodeFilename(link.url || "");
         res
           .setHeader("Content-Type", contentType)
+          .setHeader("Content-Disposition", `inline; filename="${filename}"`)
           .setHeader(
             "Cache-Control",
             "private, max-age=31536000, immutable"

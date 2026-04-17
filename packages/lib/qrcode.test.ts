@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import QRCode from "qrcode";
+import qrCodeFilename from "./qrCodeFilename";
 
 describe("QR Code generation", () => {
   it("generates a PNG buffer from a URL", async () => {
@@ -46,5 +47,33 @@ describe("QR Code generation", () => {
 
   it("throws on empty string", async () => {
     await expect(QRCode.toBuffer("", { type: "png" })).rejects.toThrow();
+  });
+});
+
+describe("qrCodeFilename", () => {
+  it("uses hostname from URL", () => {
+    expect(qrCodeFilename("https://example.com")).toBe("qrcode-example.com.png");
+  });
+
+  it("strips www prefix", () => {
+    expect(qrCodeFilename("https://www.example.com")).toBe("qrcode-example.com.png");
+  });
+
+  it("includes path segments", () => {
+    expect(qrCodeFilename("https://example.com/some/page")).toBe("qrcode-example.com-some-page.png");
+  });
+
+  it("sanitizes special characters", () => {
+    expect(qrCodeFilename("https://example.com/path%20with%20spaces")).toBe("qrcode-example.com-path-with-spaces.png");
+  });
+
+  it("falls back for invalid URLs", () => {
+    expect(qrCodeFilename("not-a-url")).toBe("qrcode.png");
+  });
+
+  it("truncates long filenames", () => {
+    const url = "https://example.com/" + "a".repeat(200);
+    const result = qrCodeFilename(url);
+    expect(result.length).toBeLessThanOrEqual(80 + "qrcode-".length + ".png".length);
   });
 });

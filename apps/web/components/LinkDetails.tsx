@@ -14,6 +14,7 @@ import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
 import { useUpdateLink, useUpdateFile, useGenerateQRCode, useDeleteQRCode } from "@linkwarden/router/links";
+import qrCodeFilename from "@linkwarden/lib/qrCodeFilename";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -593,7 +594,7 @@ export default function LinkDetails({
                           <Link
                             href={`/api/v1/links/${link.id}/qr?updatedAt=${link.updatedAt}`}
                             target="_blank"
-                            download
+                            download={qrCodeFilename(link.url || "")}
                           >
                             <i className="bi-cloud-arrow-down text-xl text-neutral" />
                           </Link>

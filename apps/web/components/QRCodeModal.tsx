@@ -9,6 +9,7 @@ import {
   useGenerateQRCode,
   useDeleteQRCode,
 } from "@linkwarden/router/links";
+import qrCodeFilename from "@linkwarden/lib/qrCodeFilename";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -70,7 +71,7 @@ export default function QRCodeModal({ onClose, activeLink }: Props) {
     if (!qrCodeUrl) return;
     const anchor = document.createElement("a");
     anchor.href = qrCodeUrl;
-    anchor.download = `qrcode-${link.id}.png`;
+    anchor.download = qrCodeFilename(link.url || "");
     anchor.click();
   };
 
