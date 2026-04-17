@@ -66,7 +66,7 @@ export default Sentry.wrap(function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (!rootNavState?.key) return;
+    if (!rootNavState?.key || isLoading) return;
 
     if (hasShareIntent && shareIntent.webUrl) {
       updateData({
@@ -97,6 +97,7 @@ export default Sentry.wrap(function RootLayout() {
     pathname,
     shareIntent?.webUrl,
     data.shareIntent,
+    isLoading,
   ]);
 
   return (
