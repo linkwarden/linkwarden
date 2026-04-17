@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useConfig } from "@linkwarden/router/config";
+import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
@@ -33,6 +35,7 @@ type Props = {
 
 const PreservationNavbar = ({ link, format, className }: Props) => {
   const { data: collections = [] } = useCollections();
+  const { data: config, isLoading: isConfigLoading } = useConfig();
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
@@ -54,28 +57,52 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
 
   const { t } = useTranslation();
   const router = useRouter();
+  const isMonolithConfigPending =
+    format === ArchivedFormat.monolith && isConfigLoading && !config;
 
-  const handleDownload = () => {
-    const path = `/api/v1/archives/${link?.id}?format=${format}`;
-    fetch(path)
-      .then((response) => {
-        if (response.ok) {
-          const anchorElement = document.createElement("a");
-          anchorElement.href = path;
-          anchorElement.download =
-            format === ArchivedFormat.monolith
-              ? "Webpage"
-              : format === ArchivedFormat.pdf
-                ? "PDF"
-                : "Screenshot";
-          anchorElement.click();
-        } else {
-          console.error("Failed to download file");
+  const handleDownload = async () => {
+    if (
+      typeof link.id !== "number" ||
+      format === undefined ||
+      isMonolithConfigPending
+    ) {
+      return;
+    }
+
+    try {
+      const isCrossOriginMonolith =
+        format === ArchivedFormat.monolith && config?.USER_CONTENT_DOMAIN;
+      const path = isCrossOriginMonolith
+        ? await getPreservedFormatUrl({
+            tokenEndpoint: "/api/v1/preserved/token",
+            linkId: link.id,
+            format,
+            download: true,
+            requestInit: {
+              cache: "no-store",
+            },
+          })
+        : `/api/v1/archives/${link?.id}?format=${format}`;
+
+      if (!isCrossOriginMonolith) {
+        const response = await fetch(path);
+        if (!response.ok) {
+          throw new Error("Failed to download file");
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      }
+
+      const anchorElement = document.createElement("a");
+      anchorElement.href = path;
+      anchorElement.download =
+        format === ArchivedFormat.monolith
+          ? "Webpage"
+          : format === ArchivedFormat.pdf
+            ? "PDF"
+            : "Screenshot";
+      anchorElement.click();
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -95,7 +122,12 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
           {format === ArchivedFormat.readability ? (
             <TextStyleDropdown />
           ) : (
-            <Button variant="ghost" size="icon" onClick={handleDownload}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleDownload}
+              disabled={isMonolithConfigPending}
+            >
               <i className="bi-cloud-arrow-down text-xl text-neutral" />
             </Button>
           )}

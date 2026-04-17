@@ -3,6 +3,8 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
+import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
+import { useConfig } from "@linkwarden/router/config";
 import ReadableView from "@/components/Preservation/ReadableView";
 import { PreservationSkeleton } from "../Skeletons";
 import {
@@ -20,10 +22,17 @@ type Props = {
 export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const router = useRouter();
   const { t } = useTranslation();
+  const {
+    data: config,
+    isLoading: isConfigLoading,
+    error: configError,
+  } = useConfig();
 
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [monolithUrl, setMonolithUrl] = useState<string | null>(null);
+  const [monolithError, setMonolithError] = useState<string | null>(null);
   const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
 
   const [currentFormat, setCurrentFormat] = useState<ArchivedFormat>(
@@ -73,6 +82,80 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
     }
   }, [currentFormat, link?.id, link?.updatedAt]);
 
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (!link?.id || currentFormat !== ArchivedFormat.monolith) {
+      setMonolithUrl(null);
+      setMonolithError(null);
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    if (configError) {
+      setMonolithUrl(null);
+      setMonolithError("Failed to load archived format.");
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    if (isConfigLoading) {
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    if (!config?.USER_CONTENT_DOMAIN) {
+      setMonolithError(null);
+      setMonolithUrl(
+        `/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`
+      );
+      return () => {
+        isCancelled = true;
+      };
+    }
+
+    setMonolithLoaded(false);
+    setMonolithUrl(null);
+    setMonolithError(null);
+
+    getPreservedFormatUrl({
+      tokenEndpoint: "/api/v1/preserved/token",
+      linkId: link.id,
+      format: ArchivedFormat.monolith,
+      requestInit: {
+        cache: "no-store",
+      },
+    })
+      .then((url) => {
+        if (!isCancelled) {
+          setMonolithUrl(url);
+        }
+      })
+      .catch((error) => {
+        if (!isCancelled) {
+          setMonolithError(
+            error instanceof Error
+              ? error.message
+              : "Failed to load archived format."
+          );
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    config?.USER_CONTENT_DOMAIN,
+    configError,
+    currentFormat,
+    isConfigLoading,
+    link?.id,
+    link?.updatedAt,
+  ]);
+
   if (!link?.id) return null;
 
   const renderFormat = () => {
@@ -87,17 +170,28 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
       case ArchivedFormat.monolith:
         return (
           <>
-            {!monolithLoaded && (
+            {!monolithLoaded && !monolithError && (
               <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3.1rem)]" />
             )}
-            <iframe
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
-              className={clsx(
-                "w-full border-none h-[calc(100vh-3.1rem)]",
-                monolithLoaded ? "block" : "hidden"
-              )}
-              onLoad={() => setMonolithLoaded(true)}
-            />
+            {monolithError ? (
+              <div className="w-full h-[calc(100vh-3.1rem)] flex flex-col justify-center p-10">
+                <p className="text-center text-2xl font-bold">Error</p>
+                <p className="text-center text-lg">{monolithError}</p>
+              </div>
+            ) : (
+              monolithUrl && (
+                <iframe
+                  src={monolithUrl}
+                  sandbox=""
+                  referrerPolicy="no-referrer"
+                  className={clsx(
+                    "w-full border-none h-[calc(100vh-3.1rem)]",
+                    monolithLoaded ? "block" : "hidden"
+                  )}
+                  onLoad={() => setMonolithLoaded(true)}
+                />
+              )
+            )}
           </>
         );
 

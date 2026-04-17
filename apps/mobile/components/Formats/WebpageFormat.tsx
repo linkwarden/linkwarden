@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
 import NetInfo from "@react-native-community/netinfo";
+import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
+import { useConfig } from "@linkwarden/router/config";
 import useAuthStore from "@/store/auth";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
@@ -15,6 +17,7 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
   const FORMAT = ArchivedFormat.monolith;
 
   const { auth } = useAuthStore();
+  const { data: config, isLoading: isConfigLoading } = useConfig(auth);
   const [content, setContent] = useState<string>("");
 
   useEffect(() => {
@@ -36,14 +39,30 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
         setContent(filePath);
       }
 
+      if (isConfigLoading) {
+        return;
+      }
+
       const net = await NetInfo.fetch();
-
       if (net.isConnected) {
-        const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
-
         try {
+          const apiUrl = config?.USER_CONTENT_DOMAIN
+            ? await getPreservedFormatUrl({
+                tokenEndpoint: `${auth.instance}/api/v1/preserved/token`,
+                linkId: link.id,
+                format: FORMAT,
+                headers: {
+                  Authorization: `Bearer ${auth.session}`,
+                },
+              })
+            : `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
+
           const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-            headers: { Authorization: `Bearer ${auth.session}` },
+            ...(config?.USER_CONTENT_DOMAIN
+              ? {}
+              : {
+                  headers: { Authorization: `Bearer ${auth.session}` },
+                }),
           });
 
           setContent(result.uri);
@@ -54,7 +73,7 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
     }
 
     loadCacheOrFetch();
-  }, [link]);
+  }, [link, auth.instance, auth.session, config?.USER_CONTENT_DOMAIN, isConfigLoading]);
 
   return (
     content && (

@@ -7,6 +7,7 @@ export type Config = {
   RSS_POLLING_INTERVAL_MINUTES: number | null;
   EMAIL_PROVIDER: boolean | null;
   MAX_FILE_BUFFER: number | null;
+  USER_CONTENT_DOMAIN: string | null;
   AI_ENABLED: boolean | null;
   INSTANCE_VERSION: string | null;
 };

@@ -23,6 +23,7 @@ export const getEnvData = () => {
       Number(process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES) || null,
     EMAIL_PROVIDER: process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" || null,
     MAX_FILE_BUFFER: Number(process.env.NEXT_PUBLIC_MAX_FILE_BUFFER) || null,
+    USER_CONTENT_DOMAIN: process.env.NEXT_PUBLIC_USER_CONTENT_DOMAIN || null,
     AI_ENABLED: hasAiProvider || null,
     INSTANCE_VERSION: process.env.version,
   };
