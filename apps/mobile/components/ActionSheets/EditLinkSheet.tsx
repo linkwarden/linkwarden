@@ -25,6 +25,9 @@ import { Folder, ChevronRight, ChevronLeft, Check } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTags } from "@linkwarden/router/tags";
+import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
+
+const MIN_TAG_SEARCH_VERSION = "2.14.1";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -267,8 +270,14 @@ const Tags = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const params = useSheetRouteParams("edit-link-sheet", "tags");
+  const config = useConfig(auth);
+  const supportsTagSearch = isAtLeastInstanceVersion(
+    config.data?.INSTANCE_VERSION,
+    MIN_TAG_SEARCH_VERSION
+  );
   const tags = useTags(auth, {
     sort: TagSort.NameAZ,
+    search: supportsTagSearch ? searchQuery : undefined,
   });
   const { colorScheme } = useColorScheme();
   const [updatedLink, setUpdatedLink] =

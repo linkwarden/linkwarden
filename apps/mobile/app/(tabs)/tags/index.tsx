@@ -9,32 +9,48 @@ import {
 import useAuthStore from "@/store/auth";
 import TagListing from "@/components/TagListing";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { TagIncludingLinkCount, TagSort } from "@linkwarden/types/global";
+import { TagSort } from "@linkwarden/types/global";
 import { useTags } from "@linkwarden/router/tags";
+import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
+
+const MIN_TAG_SEARCH_VERSION = "2.14.1";
+
+const decodeSearchParam = (value?: string) => {
+  if (!value) return "";
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
 
 export default function TagsScreen() {
   const { colorScheme } = useColorScheme();
   const { auth } = useAuthStore();
   const { search } = useLocalSearchParams<{ search?: string }>();
+  const config = useConfig(auth);
+  const searchQuery = decodeSearchParam(search);
+  const supportsTagSearch = isAtLeastInstanceVersion(
+    config.data?.INSTANCE_VERSION,
+    MIN_TAG_SEARCH_VERSION
+  );
 
   const tags = useTags(auth, {
     sort: TagSort.NameAZ,
+    search: supportsTagSearch ? searchQuery : undefined,
   });
+  const filteredTags = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
 
-  const [filteredTags, setFilteredTags] = useState<TagIncludingLinkCount[]>([]);
+    if (q === "") return tags.data;
 
-  useEffect(() => {
-    const filter =
-      tags.data?.filter((e) =>
-        e.name.includes(decodeURIComponent(search || ""))
-      ) || [];
-
-    setFilteredTags(filter);
-  }, [search, tags.data]);
+    return tags.data.filter((tag) => tag.name.toLowerCase().includes(q));
+  }, [searchQuery, tags.data]);
 
   return (
     <View

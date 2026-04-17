@@ -27,6 +27,7 @@ type TagsPage = {
 
 type UseTagsOptions = {
   sort?: TagSort;
+  search?: string;
   enabled?: boolean;
 };
 
@@ -164,13 +165,15 @@ const removeTagFromQueryData = (
 const useTags = (auth?: MobileAuth, options: UseTagsOptions = {}) => {
   const status = getAuthStatus(auth);
   const config = useConfig(auth);
+  const normalizedSearch = options.search?.trim() || undefined;
 
   const params = useMemo(
     () =>
       buildQueryString({
         sort: options.sort,
+        search: normalizedSearch,
       }),
-    [options.sort]
+    [normalizedSearch, options.sort]
   );
 
   const shouldUsePaginatedSchema = supportsTagPagination(
@@ -193,7 +196,9 @@ const useTags = (auth?: MobileAuth, options: UseTagsOptions = {}) => {
                 ? "&" + (queryKey[1] as any).params
                 : ""
             }`
-          : "");
+          : (queryKey[1] as any).params
+            ? `?${(queryKey[1] as any).params}`
+            : "");
 
       const response = await fetch(
         url,
