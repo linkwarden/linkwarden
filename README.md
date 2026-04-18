@@ -114,6 +114,7 @@ Here are some community-maintained projects that are built around Linkwarden:
 - [LinkDroid](https://fossdroid.com/a/linkdroid-for-linkwarden.html) - Android App with share sheet integration, [source code](https://github.com/Dacid99/LinkDroid-for-Linkwarden).
 - [LinkGuardian](https://github.com/Elbullazul/LinkGuardian) - An Android client for Linkwarden. Built with Kotlin and Jetpack compose.
 - [StarWarden](https://github.com/rtuszik/starwarden) - A browser extension to save your starred GitHub repositories to Linkwarden.
+- [link-my-harmony](https://github.com/xiebaiyuan/link-my-harmony) - Unofficial HarmonyOS Next client for Linkwarden (鸿笺 / Folio), built with ArkTS and ArkUI.
 
 ## Development
 
