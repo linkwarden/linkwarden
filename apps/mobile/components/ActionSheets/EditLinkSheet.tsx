@@ -21,7 +21,13 @@ import {
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { Folder, ChevronRight, ChevronLeft, Check } from "lucide-react-native";
+import {
+  Folder,
+  ChevronRight,
+  ChevronLeft,
+  Check,
+  Plus,
+} from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTags } from "@linkwarden/router/tags";
@@ -282,8 +288,9 @@ const Tags = () => {
   const { colorScheme } = useColorScheme();
   const [updatedLink, setUpdatedLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(params.link);
+  const normalizedSearchQuery = searchQuery.trim();
 
-  const filteredTags = useMemo(() => {
+  const availableTags = useMemo(() => {
     const tagsById = new Map<number, TagIncludingLinkCount>();
 
     for (const tag of updatedLink?.tags || []) {
@@ -294,11 +301,42 @@ const Tags = () => {
       tagsById.set(tag.id, tag);
     }
 
-    const availableTags = Array.from(tagsById.values());
-    const q = searchQuery.trim().toLowerCase();
+    return Array.from(tagsById.values());
+  }, [updatedLink?.tags, tags.data]);
+
+  const filteredTags = useMemo(() => {
+    const q = normalizedSearchQuery.toLowerCase();
     if (q === "") return availableTags;
     return availableTags.filter((tag) => tag.name.toLowerCase().includes(q));
-  }, [updatedLink?.tags, tags.data, searchQuery]);
+  }, [availableTags, normalizedSearchQuery]);
+
+  const canAddTag =
+    !tags.isFetching &&
+    normalizedSearchQuery !== "" &&
+    !availableTags.some(
+      (tag) => tag.name.toLowerCase() === normalizedSearchQuery.toLowerCase()
+    );
+
+  const handleAddTag = useCallback(() => {
+    if (!canAddTag) return;
+
+    const now = new Date();
+    const newTag = {
+      id: -now.getTime(),
+      name: normalizedSearchQuery,
+      ownerId: updatedLink.collection.ownerId ?? 0,
+      createdAt: now,
+      updatedAt: now,
+      _count: {
+        links: 0,
+      },
+    } as TagIncludingLinkCount;
+
+    setUpdatedLink((currentLink) => ({
+      ...currentLink,
+      tags: [...(currentLink.tags || []), newTag],
+    }));
+  }, [canAddTag, normalizedSearchQuery, updatedLink.collection.ownerId]);
 
   const renderItem = useCallback(
     ({ item: tag }: { item: TagIncludingLinkCount }) => {
@@ -367,6 +405,21 @@ const Tags = () => {
         data={filteredTags}
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
+        ListHeaderComponent={
+          canAddTag ? (
+            <Button variant="input" className="mb-2" onPress={handleAddTag}>
+              <View className="flex-row items-center gap-2 w-full">
+                <Plus
+                  size={16}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
+                <Text className="text-base-content">
+                  Add tag "{normalizedSearchQuery}"
+                </Text>
+              </View>
+            </Button>
+          ) : null
+        }
         onEndReached={() => {
           if (!tags.hasNextPage || tags.isFetchingNextPage) return;
           tags.fetchNextPage();
@@ -383,12 +436,16 @@ const Tags = () => {
           ) : null
         }
         ListEmptyComponent={
-          <Text
-            style={{ textAlign: "center", marginTop: 20 }}
-            className="text-neutral"
-          >
-            No tags match “{searchQuery}”
-          </Text>
+          tags.isFetching ? null : (
+            <Text
+              style={{ textAlign: "center", marginTop: 20 }}
+              className="text-neutral"
+            >
+              {normalizedSearchQuery
+                ? `No tags match "${normalizedSearchQuery}"`
+                : "No tags found"}
+            </Text>
+          )
         }
         contentContainerClassName="px-8"
       />

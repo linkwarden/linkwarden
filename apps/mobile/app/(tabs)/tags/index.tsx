@@ -99,11 +99,13 @@ export default function TagsScreen() {
             ) : null
           }
           ListEmptyComponent={
-            <View className="flex justify-center py-10 items-center">
-              <Text className="text-center text-xl text-neutral">
-                Nothing found...
-              </Text>
-            </View>
+            tags.isFetching ? null : (
+              <View className="flex justify-center py-10 items-center">
+                <Text className="text-center text-xl text-neutral">
+                  Nothing found...
+                </Text>
+              </View>
+            )
           }
         />
       )}
