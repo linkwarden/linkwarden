@@ -108,9 +108,9 @@ Make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/p
 
 ## Community Projects
 
-Here are some community-maintained projects that are built around Linkwarden:
+Here are some awesome community-maintained projects that are built around Linkwarden, be sure to star all of them!
 
-- [My Links](https://apps.apple.com/ca/app/my-links-for-linkwarden/id6504573402) - iOS and MacOS Apps, maintained by [JGeek00](https://github.com/JGeek00).
+- [My Links](https://apps.apple.com/ca/app/my-links-for-linkwarden/id6504573402) - Native iOS and MacOS App, [source code](https://github.com/JGeek00/my-links).
 - [LinkDroid](https://fossdroid.com/a/linkdroid-for-linkwarden.html) - Android App with share sheet integration, [source code](https://github.com/Dacid99/LinkDroid-for-Linkwarden).
 - [LinkGuardian](https://github.com/Elbullazul/LinkGuardian) - An Android client for Linkwarden. Built with Kotlin and Jetpack compose.
 - [StarWarden](https://github.com/rtuszik/starwarden) - A browser extension to save your starred GitHub repositories to Linkwarden.
