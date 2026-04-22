@@ -114,6 +114,7 @@ export type LinkRequestQuery = {
 export type TagRequestQuery = {
   sort?: TagSort;
   cursor?: number;
+  search?: string;
 };
 
 export type PublicLinkRequestQuery = {

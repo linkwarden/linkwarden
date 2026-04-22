@@ -28,7 +28,8 @@ export default function LinksScreen() {
   const tag = useTag(tagId, auth);
 
   const navigation = useNavigation();
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   useEffect(() => {
     if (tag.data?.name)

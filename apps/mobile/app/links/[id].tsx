@@ -57,28 +57,19 @@ export default function LinkScreen() {
       style={{ paddingBottom: Platform.OS === "android" ? insets.bottom : 0 }}
     >
       {link?.id && Number(format) === ArchivedFormat.readability ? (
-        <ReadableFormat
-          link={link as any}
-          setIsLoading={(state) => setIsLoading(state)}
-        />
+        <ReadableFormat link={link as any} setIsLoading={setIsLoading} />
       ) : link?.id &&
         (Number(format) === ArchivedFormat.jpeg ||
           Number(format) === ArchivedFormat.png) ? (
         <ImageFormat
           link={link as any}
-          setIsLoading={(state) => setIsLoading(state)}
+          setIsLoading={setIsLoading}
           format={Number(format)}
         />
       ) : link?.id && Number(format) === ArchivedFormat.pdf ? (
-        <PdfFormat
-          link={link as any}
-          setIsLoading={(state) => setIsLoading(state)}
-        />
+        <PdfFormat link={link as any} setIsLoading={setIsLoading} />
       ) : link?.id && Number(format) === ArchivedFormat.monolith ? (
-        <WebpageFormat
-          link={link as any}
-          setIsLoading={(state) => setIsLoading(state)}
-        />
+        <WebpageFormat link={link as any} setIsLoading={setIsLoading} />
       ) : url ? (
         <WebView
           className={isLoading ? "opacity-0" : "flex-1"}

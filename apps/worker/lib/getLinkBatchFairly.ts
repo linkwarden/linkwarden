@@ -3,6 +3,7 @@ import { Prisma } from "@linkwarden/prisma/client";
 
 type PickLinksOptions = {
   maxBatchLinks: number;
+  mode: "links" | "tags";
 };
 
 const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
@@ -10,24 +11,36 @@ const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export default async function getLinkBatchFairly({
   maxBatchLinks,
+  mode,
 }: PickLinksOptions) {
   if (maxBatchLinks <= 0) return [];
 
-  const baseLinkWhere: Prisma.LinkWhereInput = {
-    url: { not: null },
-    OR: [
-      { lastPreserved: null },
-      {
-        createdBy: {
-          is: {
-            aiTagExistingLinks: true,
-            NOT: { aiTaggingMethod: "DISABLED" },
+  const baseLinkWhere: Prisma.LinkWhereInput =
+    mode === "tags"
+      ? {
+          url: { not: null },
+          type: "url",
+          lastPreserved: { not: null },
+          aiTagged: false,
+          collection: {
+            is: {
+              owner: {
+                is: {
+                  aiTaggingMethod: { not: "DISABLED" },
+                },
+              },
+            },
           },
-        },
-        aiTagged: false,
-      },
-    ],
-  };
+        }
+      : {
+          url: { not: null },
+          lastPreserved: null,
+        };
+
+  const userLinksOrderBy: Prisma.LinkOrderByWithRelationInput[] =
+    mode === "tags"
+      ? [{ lastPreserved: "desc" }, { id: "desc" }]
+      : [{ createdAt: "desc" }];
 
   const users = await prisma.user.findMany({
     where: {
@@ -74,7 +87,7 @@ export default async function getLinkBatchFairly({
   for (const user of users) {
     const userLinks = await prisma.link.findMany({
       where: { createdBy: { id: user.id }, ...baseLinkWhere },
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: userLinksOrderBy,
       take: maxBatchLinks,
       select: { id: true },
     });
@@ -108,7 +121,7 @@ export default async function getLinkBatchFairly({
 
       const userLinks = await prisma.link.findMany({
         where: { ...baseLinkWhere, createdBy: { id: userId } },
-        orderBy: [{ createdAt: "desc" }],
+        orderBy: userLinksOrderBy,
         skip,
         take: toTake,
         select: { id: true },
@@ -155,7 +168,7 @@ export default async function getLinkBatchFairly({
 
   console.log(
     "\x1b[34m%s\x1b[0m",
-    `Processing ${batch.length} ${
+    `${mode === "tags" ? "Auto-tagging" : "Processing"} ${batch.length} ${
       batch.length > 1 ? "links" : "link"
     } for the following ${
       uniqueUsersWithLinks.length > 1 ? "userIds" : "userId"

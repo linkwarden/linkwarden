@@ -7,7 +7,8 @@ export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   return (
     <Stack
@@ -31,11 +32,8 @@ export default function Layout() {
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
         headerShadowVisible: false,
-        headerBlurEffect: isIOS26Plus
-          ? "none"
-          : colorScheme === "dark"
-            ? "systemMaterialDark"
-            : "systemMaterial",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerLargeStyle: {
           backgroundColor: isIOS26Plus
             ? "transparent"

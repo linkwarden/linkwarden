@@ -56,7 +56,7 @@ const Page: NextPageWithLayout = () => {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="p-3 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full flex-1">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <PageHeader icon={"bi-hash"} title={t("tags")} />
@@ -205,7 +205,7 @@ const Page: NextPageWithLayout = () => {
         </div>
       )}
 
-      <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-5">
+      <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3">
         {tags.map((tag: any) => (
           <TagCard
             key={tag.id}

@@ -10,7 +10,28 @@ export default async function getTags({
   collectionId?: number;
   query?: TagRequestQuery;
 }) {
+  const normalizeSearch = (value?: string) => {
+    if (!value) return undefined;
+
+    try {
+      return decodeURIComponent(value).trim() || undefined;
+    } catch {
+      return value.trim() || undefined;
+    }
+  };
+
   const paginationTakeCount = Number(process.env.PAGINATION_TAKE_COUNT) || 50;
+  const POSTGRES_IS_ENABLED =
+    process.env.DATABASE_URL?.startsWith("postgresql");
+  const search = normalizeSearch(query.search);
+  const searchCondition = search
+    ? {
+        name: {
+          contains: search,
+          mode: POSTGRES_IS_ENABLED ? ("insensitive" as const) : undefined,
+        },
+      }
+    : undefined;
 
   let orderBy: any[] = [{ id: "desc" }];
 
@@ -43,21 +64,26 @@ export default async function getTags({
       skip: query.cursor ? 1 : undefined,
       cursor: query.cursor ? { id: query.cursor } : undefined,
       where: {
-        OR: [
-          { ownerId: userId }, // Tags owned by the user
-          ...(memberCollectionIds.length > 0
-            ? [
-                {
-                  links: {
-                    some: {
-                      collectionId: {
-                        in: memberCollectionIds,
+        AND: [
+          ...(searchCondition ? [searchCondition] : []),
+          {
+            OR: [
+              { ownerId: userId }, // Tags owned by the user
+              ...(memberCollectionIds.length > 0
+                ? [
+                    {
+                      links: {
+                        some: {
+                          collectionId: {
+                            in: memberCollectionIds,
+                          },
+                        },
                       },
                     },
-                  },
-                },
-              ]
-            : []),
+                  ]
+                : []),
+            ],
+          },
         ],
       },
       include: {
@@ -81,11 +107,16 @@ export default async function getTags({
   } else if (collectionId) {
     const tags = await prisma.tag.findMany({
       where: {
-        links: {
-          some: {
-            collectionId,
+        AND: [
+          ...(searchCondition ? [searchCondition] : []),
+          {
+            links: {
+              some: {
+                collectionId,
+              },
+            },
           },
-        },
+        ],
       },
       include: {
         _count: {

@@ -2,6 +2,7 @@ export * from "./moveFile";
 export * from "./removeFile";
 export * from "./s3Client";
 export * from "./readFile";
+export * from "./fileExists";
 export * from "./createFile";
 export * from "./createFolder";
 export * from "./manageFiles";

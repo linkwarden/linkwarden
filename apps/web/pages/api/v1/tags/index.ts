@@ -14,6 +14,8 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
     const convertedData: TagRequestQuery = {
       sort: req.query.sort ? Number(req.query.sort as string) : undefined,
       cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
+      search:
+        typeof req.query.search === "string" ? req.query.search : undefined,
     };
 
     const tags = await getTags({

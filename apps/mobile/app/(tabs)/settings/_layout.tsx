@@ -6,7 +6,8 @@ import { Platform, View } from "react-native";
 export default function Layout() {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   const themeBackgroundColor = rawTheme[colorScheme as ThemeName]["base-100"];
 
@@ -18,11 +19,8 @@ export default function Layout() {
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerShadowVisible: false,
         headerBackTitle: "Back",
-        headerBlurEffect: isIOS26Plus
-          ? "none"
-          : colorScheme === "dark"
-            ? "systemMaterialDark"
-            : "systemMaterial",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerLargeStyle: {
           backgroundColor: isIOS26Plus
             ? "transparent"
@@ -50,11 +48,20 @@ export default function Layout() {
           headerTitle: "Preferred Collection",
           headerLargeTitle: false,
           headerTransparent: Platform.OS === "ios",
-          headerBlurEffect: isIOS26Plus
-            ? "none"
-            : colorScheme === "dark"
-              ? "systemMaterialDark"
-              : "systemMaterial",
+          headerBlurEffect:
+            colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+          ...(isIOS26Plus
+            ? {
+                headerBackground: () => (
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor: themeBackgroundColor,
+                    }}
+                  />
+                ),
+              }
+            : {}),
           headerSearchBarOptions: {
             placeholder: "Search Collections",
             autoCapitalize: "none",

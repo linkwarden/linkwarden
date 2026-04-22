@@ -16,7 +16,8 @@ export default function LinksScreen() {
 
   const navigation = useNavigation();
   const collections = useCollections(auth);
-  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   const title = useMemo(() => {
     if (section === "pinned-links") return "Pinned Links";

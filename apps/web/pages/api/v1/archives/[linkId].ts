@@ -6,6 +6,7 @@ import { generatePreview } from "@linkwarden/lib/generatePreview";
 import verifyToken from "@/lib/api/verifyToken";
 import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";
+import resolveAccessibleArchive from "@/lib/api/archives/resolveAccessibleArchive";
 import { prisma } from "@linkwarden/prisma";
 import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
@@ -77,27 +78,6 @@ function validateFile(
   return fileBuffer;
 }
 
-// Retrieve collection if accessible (for both GET and file uploads/updates)
-async function getAccessibleCollection(
-  linkId: number,
-  userId: number | undefined
-) {
-  return prisma.collection.findFirst({
-    where: {
-      links: {
-        some: {
-          id: linkId,
-        },
-      },
-      OR: [
-        { ownerId: userId || -1 },
-        { members: { some: { userId: userId || -1 } } },
-        { isPublic: true },
-      ],
-    },
-  });
-}
-
 /** ------------------ */
 /** Route Handlers     */
 /** ------------------ */
@@ -106,29 +86,39 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const linkId = Number(req.query.linkId);
   const format = Number(req.query.format);
   const isPreview = Boolean(req.query.preview);
+  const hasBearerAuthorization =
+    typeof req.headers.authorization === "string" &&
+    req.headers.authorization.trim().toLowerCase().startsWith("bearer ");
 
-  const suffix = getSuffixFromFormat(format);
-  if (!linkId || !suffix) {
-    return res.status(401).json({ response: "Invalid parameters." });
+  if (
+    format === ArchivedFormat.monolith &&
+    process.env.NEXT_PUBLIC_USER_CONTENT_DOMAIN &&
+    !hasBearerAuthorization
+  ) {
+    return res.status(403).json({
+      response:
+        "Monolith archive access must use the user content domain when it is configured.",
+    });
   }
 
   // Verify token => If present, get user ID
   const token = await verifyToken({ req });
   const userId = typeof token === "string" ? undefined : token?.id;
 
-  // Check if user can access the collection
-  const collection = await getAccessibleCollection(linkId, userId);
-  if (!collection) {
+  const resolvedArchive = await resolveAccessibleArchive({
+    linkId,
+    format,
+    isPreview,
+    userId,
+  });
+
+  if (resolvedArchive.status !== 200) {
     return res
-      .status(401)
-      .json({ response: "You don't have access to this collection." });
+      .status(resolvedArchive.status)
+      .json({ response: resolvedArchive.response });
   }
 
-  // Decide the file path
-  const filePath = isPreview
-    ? `archives/preview/${collection.id}/${linkId}.jpeg`
-    : `archives/${collection.id}/${linkId + suffix}`;
-
+  const { filePath } = resolvedArchive.response;
   const { file, contentType, status } = await readFile(filePath);
   res
     .setHeader("Content-Type", contentType)
