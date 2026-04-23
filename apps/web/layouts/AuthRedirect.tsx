@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
-import { useUser } from "@linkwarden/router/user";
+import { useUser, useSystemThemeListener } from "@linkwarden/router/user";
 
 interface Props {
   children: ReactNode;
@@ -19,6 +19,7 @@ export default function AuthRedirect({ children }: Props) {
   const { data: user } = useUser();
 
   useInitialData();
+  useSystemThemeListener();
 
   useEffect(() => {
     const isLoggedIn = status === "authenticated";
