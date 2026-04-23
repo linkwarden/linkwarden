@@ -104,6 +104,10 @@ export async function safeFetch(
     const validatedUrl = await assertUrlIsSafeForServerSideFetch(currentUrl);
     const response = await fetch(validatedUrl.toString(), {
       ...fetchOptions,
+      headers: {
+        "User-Agent": "Linkwarden (Server-Side Fetch)",
+        ...fetchOptions.headers,
+      },
       agent: createAgent(validatedUrl),
       redirect: "manual",
     });
