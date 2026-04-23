@@ -1,4 +1,7 @@
 # dependencies
+_bmad
+_bmad-output
+.claude
 node_modules
 /.pnp
 .pnp.js

@@ -3,7 +3,7 @@ import { Link } from "@linkwarden/prisma/client";
 
 export function formatAvailable(
   link: Link | LinkIncludingShortenedCollectionAndTags,
-  format: "image" | "pdf" | "readable" | "monolith" | "preview"
+  format: "image" | "pdf" | "readable" | "monolith" | "preview" | "qrCode"
 ) {
   return Boolean(link && link[format] && link[format] !== "unavailable");
 }

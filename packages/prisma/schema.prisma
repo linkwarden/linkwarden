@@ -185,6 +185,7 @@ model Link {
   pdf             String?
   readable        String?
   monolith        String?
+  qrCode          String?
   clientSide      Boolean     @default(false)
   aiTagged        Boolean     @default(false)
   metaDescription String?

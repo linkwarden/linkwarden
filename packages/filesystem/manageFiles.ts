@@ -28,6 +28,10 @@ const removeFiles = async (linkId: number, collectionId: number) => {
   await removeFile({
     filePath: `archives/${collectionId}/${linkId}_readability.json`,
   });
+  // QR Code
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}-qrcode.png`,
+  });
 };
 
 const moveFiles = async (linkId: number, from: number, to: number) => {
@@ -64,6 +68,12 @@ const moveFiles = async (linkId: number, from: number, to: number) => {
   await moveFile(
     `archives/${from}/${linkId}_readability.json`,
     `archives/${to}/${linkId}_readability.json`
+  );
+
+  // QR Code
+  await moveFile(
+    `archives/${from}/${linkId}-qrcode.png`,
+    `archives/${to}/${linkId}-qrcode.png`
   );
 };
 

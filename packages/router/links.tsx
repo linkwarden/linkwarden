@@ -1137,6 +1137,54 @@ const resetInfiniteQueryPagination = async (
   await queryClient.invalidateQueries(queryKey);
 };
 
+const useGenerateQRCode = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (linkId: number) => {
+      const response = await fetch(`/api/v1/links/${linkId}/qr`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response as LinkIncludingShortenedCollectionAndTags;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+    },
+  });
+};
+
+const useDeleteQRCode = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (linkId: number) => {
+      const response = await fetch(`/api/v1/links/${linkId}/qr`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response as LinkIncludingShortenedCollectionAndTags;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+    },
+  });
+};
+
 export {
   useLinks,
   useAddLink,
@@ -1149,4 +1197,6 @@ export {
   useArchiveAction,
   resetInfiniteQueryPagination,
   useUpdateFile,
+  useGenerateQRCode,
+  useDeleteQRCode,
 };

@@ -13,7 +13,8 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
-import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
+import { useUpdateLink, useUpdateFile, useGenerateQRCode, useDeleteQRCode } from "@linkwarden/router/links";
+import qrCodeFilename from "@linkwarden/lib/qrCodeFilename";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -145,6 +146,29 @@ export default function LinkDetails({
   };
 
   const [iconPopover, setIconPopover] = useState(false);
+
+  const generateQR = useGenerateQRCode();
+  const deleteQR = useDeleteQRCode();
+
+  const handleGenerateQR = () => {
+    const load = toast.loading(t("generating_qr_code"));
+    generateQR.mutateAsync(link.id as number).then((updated) => {
+      setLink(updated);
+      toast.success(t("qr_code_generated"), { id: load });
+    }).catch((error: any) => {
+      toast.error(error.message || t("failed_to_generate_qr_code"), { id: load });
+    });
+  };
+
+  const handleDeleteQR = () => {
+    const load = toast.loading(t("deleting_qr_code"));
+    deleteQR.mutateAsync(link.id as number).then((updated) => {
+      setLink(updated);
+      toast.success(t("qr_code_deleted"), { id: load });
+    }).catch((error: any) => {
+      toast.error(error.message || t("failed_to_delete_qr_code"), { id: load });
+    });
+  };
 
   return (
     <div className={clsx(className)} data-vaul-no-drag>
@@ -553,6 +577,112 @@ export default function LinkDetails({
                       format={ArchivedFormat.readability}
                       link={link}
                     />
+                    <Separator className="my-3" />
+                  </>
+                ) : undefined}
+
+                {formatAvailable(link, "qrCode") ? (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <div className="flex gap-2 items-center">
+                        <i className="bi-qr-code text-xl text-primary" />
+                        <p>{t("qr_code")}</p>
+                      </div>
+
+                      <div className="flex gap-1">
+                        <Button asChild variant="ghost" size="icon">
+                          <Link
+                            href={`/api/v1/links/${link.id}/qr?updatedAt=${link.updatedAt}`}
+                            target="_blank"
+                            download={qrCodeFilename(link.url || "")}
+                          >
+                            <i className="bi-cloud-arrow-down text-xl text-neutral" />
+                          </Link>
+                        </Button>
+
+                        {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-neutral"
+                                  onClick={handleGenerateQR}
+                                  disabled={generateQR.isPending}
+                                >
+                                  {generateQR.isPending ? (
+                                    <BeatLoader color="oklch(var(--p))" size={12} />
+                                  ) : (
+                                    <i className="bi-arrow-clockwise text-sm" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom">
+                                <p>{t("regenerate_qr_code")}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+
+                        {(permissions === true || permissions?.canDelete) && !isPublicRoute && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-red-500"
+                                  onClick={handleDeleteQR}
+                                  disabled={deleteQR.isPending}
+                                >
+                                  {deleteQR.isPending ? (
+                                    <BeatLoader color="oklch(var(--p))" size={12} />
+                                  ) : (
+                                    <i className="bi-trash text-sm" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom">
+                                <p>{t("delete_qr_code")}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+
+                        <Button asChild variant="ghost" size="icon">
+                          <Link
+                            href={`/api/v1/links/${link.id}/qr?updatedAt=${link.updatedAt}`}
+                            target="_blank"
+                          >
+                            <i className="bi-box-arrow-up-right text-lg text-neutral" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                    <Separator className="my-3" />
+                  </>
+                ) : !isPublicRoute && (permissions === true || permissions?.canUpdate) && link.url ? (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <div className="flex gap-2 items-center">
+                        <i className="bi-qr-code text-xl text-neutral" />
+                        <p className="text-neutral">{t("qr_code")}</p>
+                      </div>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleGenerateQR}
+                        disabled={generateQR.isPending}
+                      >
+                        {generateQR.isPending ? (
+                          <BeatLoader color="oklch(var(--p))" size={14} />
+                        ) : (
+                          t("generate_qr_code")
+                        )}
+                      </Button>
+                    </div>
                     <Separator className="my-3" />
                   </>
                 ) : undefined}
