@@ -214,114 +214,14 @@
   cursor: pointer;
 }
 
-/* Reader view custom stylings */
-.reader-view {
-  /* line-height: 2.8rem; */
+/* Reader view theme variables (base styles are in @linkwarden/lib/readerViewStyles) */
+[data-theme="dark"] {
+  --rv-code-bg: rgb(49, 49, 49);
+  --rv-mark-bg: oklch(var(--p) / 0.5);
+  --rv-mark-color: oklch(var(--bc));
 }
-.reader-view * {
-  text-align: inherit;
-}
-.reader-view mark {
-  background-color: oklch(var(--p) / 0.5);
-  color: oklch(var(--bc));
-  border-radius: 5px;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-}
-.reader-view p {
-  font-size: 18px;
-  line-height: 1.8;
-  margin-bottom: 16px;
-  margin-top: 16px;
-}
-.reader-view h1 {
-  font-size: 35px;
-  line-height: 1.4;
-}
-.reader-view h2 {
-  font-size: 30px;
-  line-height: 1.4;
-}
-.reader-view h3 {
-  font-size: 26px;
-  line-height: 1.4;
-}
-.reader-view h4 {
-  font-size: 21px;
-  line-height: 1.4;
-}
-.reader-view h5 {
-  font-size: 18px;
-  line-height: 1.4;
-}
-.reader-view li {
-  list-style: inside;
-  margin-left: 2rem;
-}
-.reader-view a {
-  text-decoration: underline;
-}
-.reader-view b {
-  font-weight: bolder;
-}
-.reader-view pre,
-.reader-view code {
-  font-family: "Courier New", Courier, monospace;
-}
-.reader-view blockquote {
-  opacity: 50%;
-  padding-left: 1.5rem;
-  border-left: solid 3px;
-}
-.reader-view img {
-  margin: auto;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  border-radius: 10px;
-}
-.reader-view pre {
-  padding: 1rem;
-  line-height: normal;
-}
-.reader-view code {
-  padding: 0.15rem 0.4rem 0.15rem 0.4rem;
-}
-[data-theme="dark"] .reader-view code,
-[data-theme="dark"] .reader-view pre {
-  background-color: rgb(49, 49, 49);
-  border-radius: 8px;
-}
-[data-theme="light"] .reader-view code,
-[data-theme="light"] .reader-view pre {
-  background-color: rgb(230, 230, 230);
-  border-radius: 8px;
-}
-
-.reader-view ul[data-type="taskList"] {
-  list-style: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-.reader-view ul[data-type="taskList"] li {
-  align-items: center;
-  display: flex;
-}
-
-.reader-view ul[data-type="taskList"] li > label {
-  flex: 0 0 auto;
-  margin-right: 0.5rem;
-  user-select: none;
-}
-
-.reader-view ul[data-type="taskList"] li > div {
-  flex: 1 1 auto;
-}
-
-.reader-view ul[data-type="taskList"] input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.read-only ul[data-type="taskList"] {
-  pointer-events: none;
+[data-theme="light"] {
+  --rv-code-bg: rgb(230, 230, 230);
+  --rv-mark-bg: oklch(var(--p) / 0.5);
+  --rv-mark-color: oklch(var(--bc));
 }

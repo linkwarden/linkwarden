@@ -12,6 +12,10 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
 } from "@linkwarden/types/global";
+import {
+  readerViewCSS,
+  READER_VIEW_DEFAULTS,
+} from "@linkwarden/lib/readerViewStyles";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import {
   useGetLinkHighlights,
@@ -287,7 +291,8 @@ export default function ReadableView({ link }: Props) {
 
   useEffect(() => {
     if (!user) return;
-    const readerViews = document.getElementsByClassName("reader-view");
+    const container = containerRef.current;
+    if (!container) return;
 
     const getFont = () => {
       if (user.readableFontFamily === "caveat") {
@@ -297,51 +302,22 @@ export default function ReadableView({ link }: Props) {
       } else return user.readableFontFamily;
     };
 
-    for (const view of Array.from(readerViews)) {
-      const paragraphs = view.getElementsByTagName("p");
-      for (const paragraph of Array.from(paragraphs)) {
-        paragraph.style.fontSize = user.readableFontSize || "18px";
-        paragraph.style.lineHeight = user.readableLineHeight || "1.8";
-      }
+    const pFontSize = user.readableFontSize || `${READER_VIEW_DEFAULTS.fontSize}px`;
+    const ratio = parseInt(pFontSize) / READER_VIEW_DEFAULTS.fontSize;
 
-      const paragraphToUserReadableFontSizeRatio =
-        parseInt(user.readableFontSize || "18") / 18;
-
-      const headers1 = view.getElementsByTagName("h1");
-      for (const header of Array.from(headers1)) {
-        header.style.fontSize =
-          35 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers2 = view.getElementsByTagName("h2");
-      for (const header of Array.from(headers2)) {
-        header.style.fontSize =
-          30 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers3 = view.getElementsByTagName("h3");
-      for (const header of Array.from(headers3)) {
-        header.style.fontSize =
-          26 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers4 = view.getElementsByTagName("h4");
-      for (const header of Array.from(headers4)) {
-        header.style.fontSize =
-          21 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers5 = view.getElementsByTagName("h5");
-      for (const header of Array.from(headers5)) {
-        header.style.fontSize =
-          18 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-
-      (view as HTMLElement).style.fontFamily = `${getFont()}`;
-    }
+    container.style.setProperty("--rv-p-font-size", pFontSize);
+    container.style.setProperty("--rv-p-line-height", user.readableLineHeight || String(READER_VIEW_DEFAULTS.lineHeight));
+    container.style.setProperty("--rv-h1-font-size", READER_VIEW_DEFAULTS.h1Size * ratio + "px");
+    container.style.setProperty("--rv-h2-font-size", READER_VIEW_DEFAULTS.h2Size * ratio + "px");
+    container.style.setProperty("--rv-h3-font-size", READER_VIEW_DEFAULTS.h3Size * ratio + "px");
+    container.style.setProperty("--rv-h4-font-size", READER_VIEW_DEFAULTS.h4Size * ratio + "px");
+    container.style.setProperty("--rv-h5-font-size", READER_VIEW_DEFAULTS.h5Size * ratio + "px");
+    container.style.fontFamily = `${getFont()}`;
   }, [
     user?.theme,
     user?.readableFontFamily,
     user?.readableFontSize,
     user?.readableLineHeight,
-    highlightedHtml,
-    linkContent,
   ]);
 
   const handleHighlightSelection = async (
@@ -419,9 +395,11 @@ export default function ReadableView({ link }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div
-      ref={containerRef}
-      className={clsx(
+    <>
+      <style dangerouslySetInnerHTML={{ __html: readerViewCSS }} />
+      <div
+        ref={containerRef}
+        className={clsx(
         "flex flex-col gap-3 items-start p-3 mx-auto bg-base-200 mt-5 relative",
         user?.readableLineWidth === "narrower"
           ? "max-w-screen-sm"
@@ -470,6 +448,7 @@ export default function ReadableView({ link }: Props) {
               <div
                 id="readable-view"
                 className="line-break px-1 reader-view read-only"
+                style={{ contentVisibility: "auto" }}
                 dangerouslySetInnerHTML={{ __html: highlightedHtml }}
               />
 
@@ -617,5 +596,6 @@ export default function ReadableView({ link }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }
