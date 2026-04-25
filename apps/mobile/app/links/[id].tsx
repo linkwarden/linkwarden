@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, ActivityIndicator, Text, Platform } from "react-native";
 import { WebView } from "react-native-webview";
+import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/auth";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useUser } from "@linkwarden/router/user";
 import { useGetLink } from "@linkwarden/router/links";
 import useTmpStore from "@/store/tmp";
@@ -16,11 +17,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function LinkScreen() {
   const { auth } = useAuthStore();
   const { id, format } = useLocalSearchParams();
+  const queryClient = useQueryClient();
   const { data: user } = useUser(auth);
+  const linkId = Number(id);
   const [url, setUrl] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const { data: link } = useGetLink({ id: Number(id), auth, enabled: true });
+  const { data: link, refetch: refetchLink } = useGetLink({
+    id: linkId,
+    auth,
+    enabled: true,
+  });
 
   const { updateTmp } = useTmpStore();
 
@@ -48,6 +55,20 @@ export default function LinkScreen() {
       }
     }
   }, [user, link]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!linkId) return;
+
+      void Promise.all([
+        refetchLink(),
+        queryClient.invalidateQueries({
+          queryKey: ["highlights", linkId],
+          exact: true,
+        }),
+      ]);
+    }, [linkId, queryClient, refetchLink])
+  );
 
   const insets = useSafeAreaInsets();
 

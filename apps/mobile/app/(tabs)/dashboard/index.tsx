@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
 import useAuthStore from "@/store/auth";
@@ -23,6 +24,7 @@ const DASHBOARD_TAG_COUNT_VERSION = "2.14.0";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
+  const queryClient = useQueryClient();
   const {
     data: {
       links = [],
@@ -89,6 +91,10 @@ export default function DashboardScreen() {
         dashboardData.refetch(),
         userData.refetch(),
         collectionsData.refetch(),
+        queryClient.refetchQueries({
+          queryKey: ["highlights"],
+          type: "all",
+        }),
         ...(shouldUseLegacyTagsCount ? [legacyTags.refetch()] : []),
       ]);
     } finally {
