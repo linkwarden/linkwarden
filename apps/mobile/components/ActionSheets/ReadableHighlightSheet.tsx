@@ -4,15 +4,17 @@ import ActionSheet, {
   SheetManager,
   SheetProps,
 } from "react-native-actions-sheet";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { Highlight } from "@linkwarden/prisma/client";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useAuthStore from "@/store/auth";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import {
+  usePostHighlight,
+  useRemoveHighlight,
+} from "@linkwarden/router/highlights";
 
 export const HIGHLIGHT_COLORS = [
   {
@@ -59,7 +61,6 @@ export default function ReadableHighlightSheet(
   props: SheetProps<"readable-highlight-sheet">
 ) {
   const { auth } = useAuthStore();
-  const queryClient = useQueryClient();
   const [draft, setDraft] = useState<ReadableHighlightDraft | null>(null);
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
@@ -73,84 +74,8 @@ export default function ReadableHighlightSheet(
     void SheetManager.hide("readable-highlight-sheet");
   };
 
-  const saveHighlight = useMutation({
-    mutationFn: async (highlight: ReadableHighlightDraft) => {
-      const response = await fetch(`${auth.instance}/api/v1/highlights`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.session}`,
-        },
-        body: JSON.stringify({
-          color: highlight.color,
-          comment: highlight.comment,
-          startOffset: highlight.startOffset,
-          endOffset: highlight.endOffset,
-          text: highlight.text,
-          linkId: highlight.linkId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.response);
-
-      return data.response as Highlight;
-    },
-    onSuccess: (highlight) => {
-      queryClient.setQueryData(
-        ["highlights", highlight.linkId],
-        (existing: Highlight[] = []) => {
-          const index = existing.findIndex((item) => item.id === highlight.id);
-
-          if (index === -1) return [...existing, highlight];
-
-          const next = [...existing];
-          next[index] = highlight;
-          return next;
-        }
-      );
-
-      closeSheet();
-    },
-    onError: (error) => {
-      Alert.alert("Error", "There was an error saving the highlight.");
-      console.error("Failed to save highlight", error);
-    },
-  });
-
-  const deleteHighlight = useMutation({
-    mutationFn: async (payload: { highlightId: number; linkId: number }) => {
-      const response = await fetch(
-        `${auth.instance}/api/v1/highlights/${payload.highlightId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${auth.session}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.response);
-
-      return payload;
-    },
-    onSuccess: ({ highlightId, linkId }) => {
-      queryClient.setQueryData(
-        ["highlights", linkId],
-        (existing: Highlight[] = []) =>
-          existing.filter((highlight) => highlight.id !== highlightId)
-      );
-
-      closeSheet();
-    },
-    onError: (error) => {
-      Alert.alert("Error", "There was an error removing the highlight.");
-      console.error("Failed to delete highlight", error);
-    },
-  });
+  const saveHighlight = usePostHighlight(draft?.linkId || 0, auth);
+  const deleteHighlight = useRemoveHighlight(draft?.linkId || 0, auth);
 
   const handleSave = () => {
     if (!draft) return;
@@ -168,15 +93,38 @@ export default function ReadableHighlightSheet(
       return;
     }
 
-    saveHighlight.mutate(draft);
+    saveHighlight.mutate(
+      {
+        color: draft.color,
+        comment: draft.comment,
+        startOffset: draft.startOffset,
+        endOffset: draft.endOffset,
+        text: draft.text,
+        linkId: draft.linkId,
+      },
+      {
+        onSuccess: () => {
+          closeSheet();
+        },
+        onError: (error) => {
+          Alert.alert("Error", "There was an error saving the highlight.");
+          console.error("Failed to save highlight", error);
+        },
+      }
+    );
   };
 
   const handleDelete = () => {
     if (!draft?.highlightId) return;
 
-    deleteHighlight.mutate({
-      highlightId: draft.highlightId,
-      linkId: draft.linkId,
+    deleteHighlight.mutate(draft.highlightId, {
+      onSuccess: () => {
+        closeSheet();
+      },
+      onError: (error) => {
+        Alert.alert("Error", "There was an error removing the highlight.");
+        console.error("Failed to delete highlight", error);
+      },
     });
   };
 

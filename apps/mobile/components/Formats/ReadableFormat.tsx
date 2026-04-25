@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import { Alert, Linking, View } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
 import NetInfo from "@react-native-community/netinfo";
@@ -28,6 +27,7 @@ import {
   MAX_HIGHLIGHT_TEXT_LENGTH,
   ReadableHighlightDraft,
 } from "@/components/ActionSheets/ReadableHighlightSheet";
+import { useGetLinkHighlights } from "@linkwarden/router/highlights";
 
 type Props = {
   link: LinkType;
@@ -40,9 +40,22 @@ type SelectionInfo = {
   startOffset: number;
   endOffset: number;
 };
+
+type SelectionContext = {
+  disableHighlightMenu: boolean;
+};
+
 const HIGHLIGHT_MENU_KEY = "highlight";
 const COPY_MENU_KEY = "copy";
 const SEARCH_WEB_MENU_KEY = "search-web";
+const DEFAULT_MENU_ITEMS = [
+  { label: "Highlight", key: HIGHLIGHT_MENU_KEY },
+  { label: "Copy", key: COPY_MENU_KEY },
+  { label: "Search Web", key: SEARCH_WEB_MENU_KEY },
+];
+const NON_HIGHLIGHT_MENU_ITEMS = DEFAULT_MENU_ITEMS.filter(
+  (item) => item.key !== HIGHLIGHT_MENU_KEY
+);
 
 function normalizeHighlightColor(color?: string | null): HighlightColor {
   if (color === "red" || color === "blue" || color === "green") return color;
@@ -78,6 +91,14 @@ function isSelectionInfo(value: unknown): value is SelectionInfo {
     typeof candidate.startOffset === "number" &&
     typeof candidate.endOffset === "number"
   );
+}
+
+function isSelectionContext(value: unknown): value is SelectionContext {
+  if (!value || typeof value !== "object") return false;
+
+  const candidate = value as SelectionContext;
+
+  return typeof candidate.disableHighlightMenu === "boolean";
 }
 
 function isHighlight(value: unknown): value is Highlight {
@@ -150,6 +171,7 @@ export default function ReadableFormat({
 
   const { auth } = useAuthStore();
   const [content, setContent] = useState<string>("");
+  const [disableHighlightMenu, setDisableHighlightMenu] = useState(false);
   const { colorScheme } = useColorScheme();
   const webViewRef = useRef<any>(null);
   const latestSelectionRef = useRef<SelectionInfo | null>(null);
@@ -212,32 +234,7 @@ export default function ReadableFormat({
     day: "numeric",
   });
 
-  const { data: linkHighlights = [] } = useQuery({
-    queryKey: ["highlights", link.id],
-    queryFn: async () => {
-      const response = await fetch(
-        `${auth.instance}/api/v1/links/${link.id}/highlights`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.session}`,
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch highlights.");
-
-      const data = await response.json();
-
-      return data.response as Highlight[];
-    },
-    enabled: Boolean(
-      link.id &&
-        auth.instance &&
-        auth.session &&
-        auth.status === "authenticated"
-    ),
-    initialData: [] as Highlight[],
-  });
+  const { data: linkHighlights = [] } = useGetLinkHighlights(link.id, auth);
 
   const clearWebSelection = useCallback(() => {
     pendingSelectionTextRef.current = null;
@@ -358,6 +355,7 @@ export default function ReadableFormat({
   useEffect(() => {
     latestSelectionRef.current = null;
     pendingSelectionTextRef.current = null;
+    setDisableHighlightMenu(false);
     clearWebSelection();
     void SheetManager.hide("readable-highlight-sheet");
   }, [clearWebSelection, link.id]);
@@ -468,6 +466,12 @@ export default function ReadableFormat({
             );
           }
 
+          function postSelectionContext(disableHighlightMenu) {
+            postMessage("selection-context", {
+              disableHighlightMenu: disableHighlightMenu,
+            });
+          }
+
           function getContainer() {
             return document.getElementById("readable-view");
           }
@@ -502,7 +506,10 @@ export default function ReadableFormat({
               selection.rangeCount === 0
             ) {
               state.currentSelection = null;
-              if (shouldNotify) postMessage("selection", null);
+              if (shouldNotify) {
+                postSelectionContext(false);
+                postMessage("selection", null);
+              }
               return null;
             }
 
@@ -510,7 +517,11 @@ export default function ReadableFormat({
 
             if (!container.contains(range.commonAncestorContainer)) {
               state.currentSelection = null;
-              if (shouldNotify) postMessage("selection", null);
+              state.lastValidSelection = null;
+              if (shouldNotify) {
+                postSelectionContext(true);
+                postMessage("selection", null);
+              }
               return null;
             }
 
@@ -541,7 +552,11 @@ export default function ReadableFormat({
 
             if (startOffset === -1 || endOffset === -1) {
               state.currentSelection = null;
-              if (shouldNotify) postMessage("selection", null);
+              state.lastValidSelection = null;
+              if (shouldNotify) {
+                postSelectionContext(true);
+                postMessage("selection", null);
+              }
               return null;
             }
 
@@ -554,7 +569,10 @@ export default function ReadableFormat({
 
             if (!info.text.trim()) {
               state.currentSelection = null;
-              if (shouldNotify) postMessage("selection", null);
+              if (shouldNotify) {
+                postSelectionContext(false);
+                postMessage("selection", null);
+              }
               return null;
             }
 
@@ -562,6 +580,7 @@ export default function ReadableFormat({
             state.lastValidSelection = info;
 
             if (shouldNotify) {
+              postSelectionContext(false);
               postMessage("selection", info);
             }
 
@@ -803,6 +822,14 @@ export default function ReadableFormat({
       return;
     }
 
+    if (
+      message?.type === "selection-context" &&
+      isSelectionContext(message.payload)
+    ) {
+      setDisableHighlightMenu(message.payload.disableHighlightMenu);
+      return;
+    }
+
     if (message?.type === "selection") {
       if (!isSelectionInfo(message.payload)) {
         latestSelectionRef.current = null;
@@ -850,11 +877,9 @@ export default function ReadableFormat({
         return false;
       }}
       javaScriptEnabled
-      menuItems={[
-        { label: "Highlight", key: HIGHLIGHT_MENU_KEY },
-        { label: "Copy", key: COPY_MENU_KEY },
-        { label: "Search Web", key: SEARCH_WEB_MENU_KEY },
-      ]}
+      menuItems={
+        disableHighlightMenu ? NON_HIGHLIGHT_MENU_ITEMS : DEFAULT_MENU_ITEMS
+      }
       originWhitelist={["*"]}
     />
   );

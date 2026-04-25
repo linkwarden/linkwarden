@@ -7,47 +7,72 @@ import {
 import { useSession } from "next-auth/react";
 import { Highlight } from "@linkwarden/prisma/client";
 import { PostHighlightSchemaType } from "@linkwarden/lib/schemaValidation";
+import { MobileAuth } from "@linkwarden/types/global";
 
 const useGetLinkHighlights = (
-  linkId: number
+  linkId: number,
+  auth?: MobileAuth
 ): UseQueryResult<Highlight[], Error> => {
-  const { status } = useSession();
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth.status;
+  }
 
   return useQuery({
     queryKey: ["highlights", linkId],
     queryFn: async () => {
-      const response = await fetch(`/api/v1/links/${linkId}/highlights`);
+      const response = await fetch(
+        (auth?.instance ? auth.instance : "") +
+          `/api/v1/links/${linkId}/highlights`,
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
       if (!response.ok) throw new Error("Failed to fetch highlights.");
 
       const data = await response.json();
-      return data.response;
+      return data.response as Highlight[];
     },
-    enabled: status === "authenticated",
+    enabled: status === "authenticated" && !!linkId,
   });
 };
 
-const usePostHighlight = (linkId: number) => {
+const usePostHighlight = (linkId: number, auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (highlight: PostHighlightSchemaType) => {
-      const response = await fetch("/api/v1/highlights", {
-        body: JSON.stringify({ ...highlight }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
+      const response = await fetch(
+        (auth?.instance ? auth.instance : "") + "/api/v1/highlights",
+        {
+          body: JSON.stringify({ ...highlight }),
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+          method: "POST",
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);
 
-      return data.response;
+      return data.response as Highlight;
     },
     onSuccess: (data: Highlight) => {
       queryClient.setQueryData(
-        ["highlights", linkId],
-        (oldData: Highlight[]) => {
+        ["highlights", data.linkId || linkId],
+        (oldData: Highlight[] = []) => {
           const index = oldData.findIndex((h) => h?.id === data?.id);
           if (index !== -1) {
             const newData = [...oldData];
@@ -62,23 +87,34 @@ const usePostHighlight = (linkId: number) => {
   });
 };
 
-const useRemoveHighlight = (linkId: number) => {
+const useRemoveHighlight = (linkId: number, auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (highlightId: number) => {
-      const response = await fetch(`/api/v1/highlights/${highlightId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        (auth?.instance ? auth.instance : "") +
+          `/api/v1/highlights/${highlightId}`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);
 
-      return data.response;
+      return { highlightId: data.response as number, linkId };
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["highlights", linkId], (oldData: any) =>
-        oldData.filter((highlight: Highlight) => highlight.id !== data)
+    onSuccess: ({ highlightId, linkId }) => {
+      queryClient.setQueryData(
+        ["highlights", linkId],
+        (oldData: Highlight[] = []) =>
+          oldData.filter((highlight) => highlight.id !== highlightId)
       );
     },
   });
