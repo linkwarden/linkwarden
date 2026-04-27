@@ -1,19 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   View,
   ActivityIndicator,
   Text,
+  Linking,
   Platform,
+  Share,
   TouchableOpacity,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/auth";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Stack,
+  useFocusEffect,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink } from "@linkwarden/router/links";
+import { useDeleteLink, useGetLink, useUpdateLink } from "@linkwarden/router/links";
 import useTmpStore from "@/store/tmp";
-import { ArchivedFormat } from "@linkwarden/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@linkwarden/types/global";
 import ReadableFormat, {
   ReadableFormatRef,
 } from "@/components/Formats/ReadableFormat";
@@ -22,13 +33,19 @@ import PdfFormat from "@/components/Formats/PdfFormat";
 import WebpageFormat from "@/components/Formats/WebpageFormat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SheetManager } from "react-native-actions-sheet";
-import { Highlighter, List } from "lucide-react-native";
+import { Compass, Ellipsis, Highlighter } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { Chromium } from "@/components/ui/Icons";
+import * as DropdownMenu from "zeego/dropdown-menu";
+import { deleteLinkCache } from "@/lib/cache";
+import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
+import { cn } from "@linkwarden/lib/utils";
 
 export default function LinkScreen() {
   const { auth } = useAuthStore();
   const { id, format } = useLocalSearchParams();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data: user } = useUser(auth);
   const linkId = Number(id);
@@ -39,6 +56,10 @@ export default function LinkScreen() {
   const readableFormatRef = useRef<ReadableFormatRef>(null);
   const { colorScheme } = useColorScheme();
   const theme = rawTheme[colorScheme as ThemeName];
+  const updateLink = useUpdateLink({ auth, Alert });
+  const deleteLink = useDeleteLink({ auth, Alert });
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
   const { data: link, refetch: refetchLink } = useGetLink({
     id: linkId,
@@ -46,7 +67,7 @@ export default function LinkScreen() {
     enabled: true,
   });
 
-  const { updateTmp } = useTmpStore();
+  const { tmp, updateTmp } = useTmpStore();
 
   useEffect(() => {
     if (link?.id && user?.id)
@@ -103,11 +124,161 @@ export default function LinkScreen() {
     }
   }, [isReadableFormat, link?.id]);
 
+  const renderHeaderRight = useCallback(
+    () => (
+      <View className={cn("flex-row gap-5", isIOS26Plus && "px-2")}>
+        <TouchableOpacity
+          onPress={() => {
+            if (tmp.link) {
+              if (tmp.link.url) {
+                return Linking.openURL(tmp.link.url);
+              } else {
+                const originalFormat = getOriginalFormat(tmp.link);
+
+                return Linking.openURL(
+                  originalFormat !== null
+                    ? auth.instance +
+                        `/preserved/${tmp.link.id}?format=${originalFormat}`
+                    : tmp.link.url || ""
+                );
+              }
+            }
+          }}
+        >
+          {Platform.OS === "ios" ? (
+            <Compass size={21} color={theme["base-content"]} />
+          ) : (
+            <Chromium stroke={theme["base-content"]} />
+          )}
+        </TouchableOpacity>
+        {isReadableFormat ? (
+          <TouchableOpacity
+            onPress={() => {
+              void handleOpenHighlights();
+            }}
+          >
+            <Highlighter size={21} color={theme["base-content"]} />
+          </TouchableOpacity>
+        ) : null}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>
+            <TouchableOpacity>
+              <Ellipsis size={21} color={theme["base-content"]} />
+            </TouchableOpacity>
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Content>
+            {tmp.link?.url && (
+              <DropdownMenu.Item
+                key="share"
+                onSelect={async () => {
+                  await Share.share({
+                    ...(Platform.OS === "android"
+                      ? { message: tmp.link?.url as string }
+                      : { url: tmp.link?.url as string }),
+                  });
+                }}
+              >
+                <DropdownMenu.ItemTitle>Share</DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+
+            {tmp.link && tmp.user && (
+              <DropdownMenu.Item
+                key="pin-link"
+                onSelect={() => {
+                  const isAlreadyPinned =
+                    tmp.link?.pinnedBy && tmp.link.pinnedBy[0] ? true : false;
+                  updateLink.mutateAsync({
+                    ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
+                    pinnedBy: (isAlreadyPinned
+                      ? [{ id: undefined }]
+                      : [{ id: tmp.user?.id }]) as any,
+                  });
+                }}
+              >
+                <DropdownMenu.ItemTitle>
+                  {tmp.link.pinnedBy && tmp.link.pinnedBy[0]
+                    ? "Unpin Link"
+                    : "Pin Link"}
+                </DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+
+            {tmp.link && (
+              <DropdownMenu.Item
+                key="edit-link"
+                onSelect={() => {
+                  void SheetManager.show("edit-link-sheet", {
+                    payload: {
+                      link: tmp.link as LinkIncludingShortenedCollectionAndTags,
+                    },
+                  });
+                }}
+              >
+                <DropdownMenu.ItemTitle>Edit Link</DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+
+            {tmp.link && (
+              <DropdownMenu.Item
+                key="delete-link"
+                onSelect={() => {
+                  return Alert.alert(
+                    "Delete Link",
+                    "Are you sure you want to delete this link? This action cannot be undone.",
+                    [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                      },
+                      {
+                        text: "Delete",
+                        style: "destructive",
+                        onPress: async () => {
+                          deleteLink.mutate(tmp.link?.id as number);
+
+                          await deleteLinkCache(tmp.link?.id as number);
+
+                          router.back();
+                        },
+                      },
+                    ]
+                  );
+                }}
+              >
+                <DropdownMenu.ItemTitle>Delete</DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </View>
+    ),
+    [
+      auth.instance,
+      deleteLink,
+      handleOpenHighlights,
+      isIOS26Plus,
+      isReadableFormat,
+      router,
+      theme,
+      tmp.link,
+      tmp.user,
+      updateLink,
+    ]
+  );
+
   return (
     <View
       className="flex-1"
       style={{ paddingBottom: Platform.OS === "android" ? insets.bottom : 0 }}
     >
+      <Stack.Screen
+        options={{
+          headerRight: renderHeaderRight,
+        }}
+      />
+
       {link?.id && isReadableFormat ? (
         <ReadableFormat
           ref={readableFormatRef}
@@ -149,33 +320,6 @@ export default function LinkScreen() {
           </Text>
         </View>
       )}
-
-      {link?.id && isReadableFormat ? (
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={() => {
-            void handleOpenHighlights();
-          }}
-          style={{
-            position: "absolute",
-            right: 20,
-            bottom: insets.bottom + 20,
-            width: 56,
-            height: 56,
-            borderRadius: 28,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: theme.primary,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.18,
-            shadowRadius: 8,
-            elevation: 5,
-          }}
-        >
-          <Highlighter size={22} color={theme["base-100"]} />
-        </TouchableOpacity>
-      ) : null}
 
       {isLoading && (
         <View className="absolute inset-0 flex-1 justify-center items-center bg-base-100 p-5">
