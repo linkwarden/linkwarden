@@ -1,6 +1,8 @@
 import React, {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -32,6 +34,10 @@ import { useGetLinkHighlights } from "@linkwarden/router/highlights";
 type Props = {
   link: LinkType;
   setIsLoading: (state: boolean) => void;
+};
+
+export type ReadableFormatRef = {
+  scrollToHighlight: (highlightId: number) => void;
 };
 
 type SelectionInfo = {
@@ -163,10 +169,13 @@ function ReadableSkeleton({ theme }: { theme: (typeof rawTheme)["light"] }) {
   );
 }
 
-export default function ReadableFormat({
-  link,
-  setIsLoading,
-}: Props) {
+const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFormat(
+  {
+    link,
+    setIsLoading,
+  }: Props,
+  ref
+) {
   const FORMAT = ArchivedFormat.readability;
 
   const { auth } = useAuthStore();
@@ -176,6 +185,7 @@ export default function ReadableFormat({
   const webViewRef = useRef<any>(null);
   const latestSelectionRef = useRef<SelectionInfo | null>(null);
   const pendingSelectionTextRef = useRef<string | null>(null);
+  const pendingHighlightScrollIdRef = useRef<number | null>(null);
   const isWebViewReadyRef = useRef(false);
 
   useEffect(() => {
@@ -344,6 +354,40 @@ export default function ReadableFormat({
     `);
   }, []);
 
+  const scrollToHighlightInWebView = useCallback((highlightId: number) => {
+    if (!isWebViewReadyRef.current) return;
+
+    webViewRef.current?.injectJavaScript(`
+      if (window.__READABLE_VIEW__?.scrollToHighlight) {
+        window.__READABLE_VIEW__.scrollToHighlight(${highlightId});
+      }
+      true;
+    `);
+  }, []);
+
+  const flushPendingHighlightScroll = useCallback(() => {
+    if (
+      !isWebViewReadyRef.current ||
+      pendingHighlightScrollIdRef.current === null
+    ) {
+      return;
+    }
+
+    scrollToHighlightInWebView(pendingHighlightScrollIdRef.current);
+    pendingHighlightScrollIdRef.current = null;
+  }, [scrollToHighlightInWebView]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      scrollToHighlight: (highlightId: number) => {
+        pendingHighlightScrollIdRef.current = highlightId;
+        flushPendingHighlightScroll();
+      },
+    }),
+    [flushPendingHighlightScroll]
+  );
+
   useEffect(() => {
     syncHighlightsToWebView(linkHighlights);
   }, [linkHighlights, syncHighlightsToWebView]);
@@ -355,6 +399,7 @@ export default function ReadableFormat({
   useEffect(() => {
     latestSelectionRef.current = null;
     pendingSelectionTextRef.current = null;
+    pendingHighlightScrollIdRef.current = null;
     setDisableHighlightMenu(false);
     clearWebSelection();
     void SheetManager.hide("readable-highlight-sheet");
@@ -434,6 +479,9 @@ export default function ReadableFormat({
         .rv-highlight--green {
           background-color: ${HIGHLIGHT_COLORS[3].backgroundColor};
           border-bottom-color: ${HIGHLIGHT_COLORS[3].borderColor};
+        }
+        .rv-highlight--focused {
+          box-shadow: 0 0 0 2px ${theme.primary};
         }
         ${readerViewCSS}
       </style>
@@ -696,6 +744,55 @@ export default function ReadableFormat({
             });
           }
 
+          function scrollToHighlight(highlightId, attempt) {
+            const container = getContainer();
+            if (!container) return false;
+
+            const highlightNodes = Array.from(
+              container.querySelectorAll(
+                'span[data-highlight-id="' + String(highlightId) + '"]'
+              )
+            );
+
+            if (highlightNodes.length === 0) {
+              if ((attempt || 0) < 8) {
+                window.setTimeout(function () {
+                  scrollToHighlight(highlightId, (attempt || 0) + 1);
+                }, 60);
+              }
+
+              return false;
+            }
+
+            container
+              .querySelectorAll("span.rv-highlight--focused")
+              .forEach((node) => {
+                node.classList.remove("rv-highlight--focused");
+              });
+
+            highlightNodes.forEach((node) => {
+              node.classList.add("rv-highlight--focused");
+            });
+
+            window.setTimeout(function () {
+              highlightNodes.forEach((node) => {
+                node.classList.remove("rv-highlight--focused");
+              });
+            }, 1800);
+
+            const firstNode = highlightNodes[0];
+
+            if (firstNode instanceof HTMLElement) {
+              firstNode.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "nearest",
+              });
+            }
+
+            return true;
+          }
+
           document.addEventListener("selectionchange", function () {
             serializeSelection(true);
           });
@@ -739,6 +836,7 @@ export default function ReadableFormat({
             clearSelection: clearSelection,
             getSelectionInfo: getSelectionInfo,
             renderHighlights: renderHighlights,
+            scrollToHighlight: scrollToHighlight,
           };
 
           setContent();
@@ -819,6 +917,7 @@ export default function ReadableFormat({
     if (message?.type === "ready") {
       isWebViewReadyRef.current = true;
       syncHighlightsToWebView(linkHighlights);
+      flushPendingHighlightScroll();
       return;
     }
 
@@ -883,4 +982,6 @@ export default function ReadableFormat({
       originWhitelist={["*"]}
     />
   );
-}
+});
+
+export default ReadableFormat;

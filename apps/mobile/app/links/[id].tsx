@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, ActivityIndicator, Text, Platform } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  View,
+  ActivityIndicator,
+  Text,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import { WebView } from "react-native-webview";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/auth";
@@ -8,11 +14,17 @@ import { useUser } from "@linkwarden/router/user";
 import { useGetLink } from "@linkwarden/router/links";
 import useTmpStore from "@/store/tmp";
 import { ArchivedFormat } from "@linkwarden/types/global";
-import ReadableFormat from "@/components/Formats/ReadableFormat";
+import ReadableFormat, {
+  ReadableFormatRef,
+} from "@/components/Formats/ReadableFormat";
 import ImageFormat from "@/components/Formats/ImageFormat";
 import PdfFormat from "@/components/Formats/PdfFormat";
 import WebpageFormat from "@/components/Formats/WebpageFormat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SheetManager } from "react-native-actions-sheet";
+import { Highlighter, List } from "lucide-react-native";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 export default function LinkScreen() {
   const { auth } = useAuthStore();
@@ -20,8 +32,13 @@ export default function LinkScreen() {
   const queryClient = useQueryClient();
   const { data: user } = useUser(auth);
   const linkId = Number(id);
+  const archivedFormat = Number(format);
+  const isReadableFormat = archivedFormat === ArchivedFormat.readability;
   const [url, setUrl] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
+  const readableFormatRef = useRef<ReadableFormatRef>(null);
+  const { colorScheme } = useColorScheme();
+  const theme = rawTheme[colorScheme as ThemeName];
 
   const { data: link, refetch: refetchLink } = useGetLink({
     id: linkId,
@@ -72,24 +89,42 @@ export default function LinkScreen() {
 
   const insets = useSafeAreaInsets();
 
+  const handleOpenHighlights = useCallback(async () => {
+    if (!link?.id || !isReadableFormat) return;
+
+    const highlightId = await SheetManager.show("readable-highlights-sheet", {
+      payload: {
+        linkId: link.id,
+      },
+    });
+
+    if (typeof highlightId === "number") {
+      readableFormatRef.current?.scrollToHighlight(highlightId);
+    }
+  }, [isReadableFormat, link?.id]);
+
   return (
     <View
       className="flex-1"
       style={{ paddingBottom: Platform.OS === "android" ? insets.bottom : 0 }}
     >
-      {link?.id && Number(format) === ArchivedFormat.readability ? (
-        <ReadableFormat link={link as any} setIsLoading={setIsLoading} />
+      {link?.id && isReadableFormat ? (
+        <ReadableFormat
+          ref={readableFormatRef}
+          link={link as any}
+          setIsLoading={setIsLoading}
+        />
       ) : link?.id &&
-        (Number(format) === ArchivedFormat.jpeg ||
-          Number(format) === ArchivedFormat.png) ? (
+        (archivedFormat === ArchivedFormat.jpeg ||
+          archivedFormat === ArchivedFormat.png) ? (
         <ImageFormat
           link={link as any}
           setIsLoading={setIsLoading}
-          format={Number(format)}
+          format={archivedFormat}
         />
-      ) : link?.id && Number(format) === ArchivedFormat.pdf ? (
+      ) : link?.id && archivedFormat === ArchivedFormat.pdf ? (
         <PdfFormat link={link as any} setIsLoading={setIsLoading} />
-      ) : link?.id && Number(format) === ArchivedFormat.monolith ? (
+      ) : link?.id && archivedFormat === ArchivedFormat.monolith ? (
         <WebpageFormat link={link as any} setIsLoading={setIsLoading} />
       ) : url ? (
         <WebView
@@ -114,6 +149,33 @@ export default function LinkScreen() {
           </Text>
         </View>
       )}
+
+      {link?.id && isReadableFormat ? (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => {
+            void handleOpenHighlights();
+          }}
+          style={{
+            position: "absolute",
+            right: 20,
+            bottom: insets.bottom + 20,
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: theme.primary,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.18,
+            shadowRadius: 8,
+            elevation: 5,
+          }}
+        >
+          <Highlighter size={22} color={theme["base-100"]} />
+        </TouchableOpacity>
+      ) : null}
 
       {isLoading && (
         <View className="absolute inset-0 flex-1 justify-center items-center bg-base-100 p-5">

@@ -10,6 +10,7 @@ import NewCollectionSheet from "./NewCollectionSheet";
 import ReadableHighlightSheet, {
   ReadableHighlightDraft,
 } from "./ReadableHighlightSheet";
+import ReadableHighlightsSheet from "./ReadableHighlightsSheet";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 
 registerSheet("support-sheet", SupportSheet);
@@ -17,6 +18,7 @@ registerSheet("add-link-sheet", AddLinkSheet);
 registerSheet("edit-link-sheet", EditLinkSheet);
 registerSheet("new-collection-sheet", NewCollectionSheet);
 registerSheet("readable-highlight-sheet", ReadableHighlightSheet);
+registerSheet("readable-highlights-sheet", ReadableHighlightsSheet);
 
 declare module "react-native-actions-sheet" {
   interface Sheets {
@@ -43,6 +45,12 @@ declare module "react-native-actions-sheet" {
       payload: {
         draft: ReadableHighlightDraft;
       };
+    }>;
+    "readable-highlights-sheet": SheetDefinition<{
+      payload: {
+        linkId: number;
+      };
+      returnValue: number | null;
     }>;
   }
 }
