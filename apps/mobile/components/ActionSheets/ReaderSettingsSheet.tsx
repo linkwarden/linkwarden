@@ -17,6 +17,7 @@ import useReaderStore, {
   READER_FONT_SIZES,
   READER_LINE_HEIGHTS,
 } from "@/store/reader";
+import SheetHeader from "./SheetHeader";
 
 const FONT_LABELS = {
   "sans-serif": "Sans Serif",
@@ -143,11 +144,7 @@ export default function ReaderSettingsSheet(
       }}
       safeAreaInsets={insets}
     >
-      <View className="px-6 pt-5 pb-3">
-        <Text className="font-semibold text-lg text-center text-base-content">
-          Display Settings
-        </Text>
-      </View>
+      <SheetHeader title="Display Settings" onClose={closeSheet} />
 
       <ScrollView
         style={{
@@ -267,13 +264,9 @@ export default function ReaderSettingsSheet(
             void resetReader();
           }}
           variant="outline"
-          className="mb-2"
           disabled={JSON.stringify(reader) === JSON.stringify(READER_DEFAULTS)}
         >
           <Text className="text-base-content">Reset to Defaults</Text>
-        </Button>
-        <Button onPress={closeSheet} variant="outline">
-          <Text className="text-base-content">Close</Text>
         </Button>
       </View>
     </ActionSheet>

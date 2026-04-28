@@ -8,6 +8,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useCreateCollection } from "@linkwarden/router/collections";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SheetHeader from "./SheetHeader";
 
 export default function NewCollectionSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
@@ -21,6 +22,14 @@ export default function NewCollectionSheet() {
 
   const insets = useSafeAreaInsets();
 
+  const closeSheet = () => {
+    actionSheetRef.current?.hide();
+    setCollection({
+      name: "",
+      description: "",
+    });
+  };
+
   return (
     <ActionSheet
       ref={actionSheetRef}
@@ -32,12 +41,16 @@ export default function NewCollectionSheet() {
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
       safeAreaInsets={insets}
+      onClose={() => {
+        setCollection({
+          name: "",
+          description: "",
+        });
+      }}
     >
-      <View className="px-8 py-5">
-        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-          New Collection
-        </Text>
+      <SheetHeader title="New Collection" onClose={closeSheet} />
 
+      <View className="px-8 pb-5">
         <Input
           placeholder="Name"
           className="mb-4 bg-base-100"
@@ -75,20 +88,8 @@ export default function NewCollectionSheet() {
           }
           isLoading={createCollection.isPending}
           variant="accent"
-          className="mb-2"
         >
           <Text className="text-white">Save Collection</Text>
-        </Button>
-
-        <Button
-          onPress={() => {
-            actionSheetRef.current?.hide();
-            setCollection({ name: "", description: "" });
-          }}
-          variant="outline"
-          className="mb-2"
-        >
-          <Text className="text-base-content">Cancel</Text>
         </Button>
       </View>
     </ActionSheet>

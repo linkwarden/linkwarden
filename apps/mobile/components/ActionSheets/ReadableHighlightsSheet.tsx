@@ -21,8 +21,8 @@ import {
 } from "@linkwarden/router/highlights";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
-import { Button } from "@/components/ui/Button";
 import { HIGHLIGHT_COLORS } from "./ReadableHighlightSheet";
+import SheetHeader from "./SheetHeader";
 
 const highlightColorMap = Object.fromEntries(
   HIGHLIGHT_COLORS.map((colorOption) => [colorOption.name, colorOption])
@@ -102,11 +102,7 @@ export default function ReadableHighlightsSheet(
       }}
       safeAreaInsets={insets}
     >
-      <View className="px-6 pt-5 pb-3">
-        <Text className="font-semibold text-lg text-center text-base-content">
-          Notes & Highlights
-        </Text>
-      </View>
+      <SheetHeader title="Notes & Highlights" onClose={closeSheet} />
 
       {isLoading ? (
         <View className="px-6 py-10 items-center">
@@ -195,12 +191,6 @@ export default function ReadableHighlightsSheet(
           }}
         />
       )}
-
-      <View className="px-6 pb-4">
-        <Button onPress={closeSheet} variant="outline">
-          <Text className="text-base-content">Close</Text>
-        </Button>
-      </View>
     </ActionSheet>
   );
 }

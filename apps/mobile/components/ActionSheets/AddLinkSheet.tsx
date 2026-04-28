@@ -8,6 +8,7 @@ import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SheetHeader from "./SheetHeader";
 
 export default function AddLinkSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
@@ -17,6 +18,11 @@ export default function AddLinkSheet() {
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
+
+  const closeSheet = () => {
+    actionSheetRef.current?.hide();
+    setLink("");
+  };
 
   return (
     <ActionSheet
@@ -29,12 +35,13 @@ export default function AddLinkSheet() {
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
       safeAreaInsets={insets}
+      onClose={() => {
+        setLink("");
+      }}
     >
-      <View className="px-8 py-5">
-        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-          New Link
-        </Text>
+      <SheetHeader title="New Link" onClose={closeSheet} />
 
+      <View className="px-8 pb-5">
         <Input
           placeholder="e.g. https://example.com"
           className="mb-4 bg-base-100"
@@ -51,20 +58,8 @@ export default function AddLinkSheet() {
           }}
           isLoading={addLink.isPending}
           variant="accent"
-          className="mb-2"
         >
           <Text className="text-white">Save to Linkwarden</Text>
-        </Button>
-
-        <Button
-          onPress={() => {
-            actionSheetRef.current?.hide();
-            setLink("");
-          }}
-          variant="outline"
-          className="mb-2"
-        >
-          <Text className="text-base-content">Cancel</Text>
         </Button>
       </View>
     </ActionSheet>

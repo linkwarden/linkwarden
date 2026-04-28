@@ -10,7 +10,7 @@ import ActionSheet, {
 } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useAddLink, useUpdateLink } from "@linkwarden/router/links";
+import { useUpdateLink } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import {
   CollectionIncludingMembersAndLinkCount,
@@ -32,6 +32,7 @@ import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTags } from "@linkwarden/router/tags";
 import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
+import SheetHeader from "./SheetHeader";
 
 const MIN_TAG_SEARCH_VERSION = "2.14.1";
 
@@ -56,115 +57,108 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { tmp, updateTmp } = useTmpStore();
 
   return (
-    <View className="px-8 py-5">
-      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-        Edit Link
-      </Text>
-
-      <Input
-        placeholder="Name"
-        className="mb-4 bg-base-100"
-        value={link?.name || ""}
-        onChangeText={(text) => link?.id && setLink({ ...link, name: text })}
+    <>
+      <SheetHeader
+        title="Edit Link"
+        onClose={() => {
+          void SheetManager.hide("edit-link-sheet");
+        }}
       />
 
-      {props.payload?.link?.url && (
+      <View className="px-8 pb-5">
         <Input
-          placeholder="URL"
+          placeholder="Name"
           className="mb-4 bg-base-100"
-          value={link?.url || ""}
-          onChangeText={(text) => link?.id && setLink({ ...link, url: text })}
+          value={link?.name || ""}
+          onChangeText={(text) => link?.id && setLink({ ...link, name: text })}
         />
-      )}
 
-      <Button
-        variant="input"
-        className="mb-4"
-        onPress={() => router?.navigate("collections", { link })}
-      >
-        <View className="flex-row items-center gap-2 w-[90%]">
-          <Folder
-            size={20}
-            fill={link?.collection.color || "gray"}
-            color={link?.collection.color || "gray"}
+        {props.payload?.link?.url && (
+          <Input
+            placeholder="URL"
+            className="mb-4 bg-base-100"
+            value={link?.url || ""}
+            onChangeText={(text) => link?.id && setLink({ ...link, url: text })}
           />
-          <Text numberOfLines={1} className="w-[90%] text-base-content">
-            {link?.collection.name}
-          </Text>
-        </View>
-        <ChevronRight
-          size={16}
-          color={rawTheme[colorScheme as ThemeName]["neutral"]}
-        />
-      </Button>
-
-      <Button
-        variant="input"
-        className="mb-4 h-auto"
-        onPress={() => router?.navigate("tags", { link })}
-      >
-        {link?.tags && link?.tags.length > 0 ? (
-          <View className="flex-row flex-wrap items-center gap-2 w-[90%]">
-            {link.tags.map((tag) => (
-              <View
-                key={tag.id}
-                className="bg-neutral rounded-md h-7 px-2 py-1"
-              >
-                <Text numberOfLines={1} className="text-base-100">
-                  {tag.name}
-                </Text>
-              </View>
-            ))}
-          </View>
-        ) : (
-          <Text className="text-neutral">No tags</Text>
         )}
-        <ChevronRight size={16} color={"gray"} />
-      </Button>
 
-      <Input
-        multiline
-        textAlignVertical="top"
-        placeholder="Description"
-        className="mb-4 h-28 bg-base-100"
-        value={link?.description || ""}
-        onChangeText={(text) =>
-          link?.id && setLink({ ...link, description: text })
-        }
-      />
+        <Button
+          variant="input"
+          className="mb-4"
+          onPress={() => router?.navigate("collections", { link })}
+        >
+          <View className="flex-row items-center gap-2 w-[90%]">
+            <Folder
+              size={20}
+              fill={link?.collection.color || "gray"}
+              color={link?.collection.color || "gray"}
+            />
+            <Text numberOfLines={1} className="w-[90%] text-base-content">
+              {link?.collection.name}
+            </Text>
+          </View>
+          <ChevronRight
+            size={16}
+            color={rawTheme[colorScheme as ThemeName]["neutral"]}
+          />
+        </Button>
 
-      <Button
-        onPress={() => {
-          updateLink.mutate(link as LinkIncludingShortenedCollectionAndTags);
-          if (link && tmp.link)
-            updateTmp({
-              link,
-            });
-          SheetManager.hide("edit-link-sheet");
-        }}
-        isLoading={updateLink.isPending}
-        variant="accent"
-        className="mb-2"
-      >
-        <Text className="text-white">Save</Text>
-      </Button>
+        <Button
+          variant="input"
+          className="mb-4 h-auto"
+          onPress={() => router?.navigate("tags", { link })}
+        >
+          {link?.tags && link?.tags.length > 0 ? (
+            <View className="flex-row flex-wrap items-center gap-2 w-[90%]">
+              {link.tags.map((tag) => (
+                <View
+                  key={tag.id}
+                  className="bg-neutral rounded-md h-7 px-2 py-1"
+                >
+                  <Text numberOfLines={1} className="text-base-100">
+                    {tag.name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text className="text-neutral">No tags</Text>
+          )}
+          <ChevronRight size={16} color={"gray"} />
+        </Button>
 
-      <Button
-        onPress={() => {
-          SheetManager.hide("edit-link-sheet");
-        }}
-        variant="outline"
-        className="mb-2"
-      >
-        <Text className="text-base-content">Cancel</Text>
-      </Button>
-    </View>
+        <Input
+          multiline
+          textAlignVertical="top"
+          placeholder="Description"
+          className="mb-4 h-28 bg-base-100"
+          value={link?.description || ""}
+          onChangeText={(text) =>
+            link?.id && setLink({ ...link, description: text })
+          }
+        />
+
+        <Button
+          onPress={() => {
+            updateLink.mutate(link as LinkIncludingShortenedCollectionAndTags);
+            if (link && tmp.link)
+              updateTmp({
+                link,
+              });
+            SheetManager.hide("edit-link-sheet");
+          }}
+          isLoading={updateLink.isPending}
+          variant="accent"
+        >
+          <Text className="text-white">Save</Text>
+        </Button>
+      </View>
+    </>
   );
 };
 
 const Collections = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const { link: currentLink } = useSheetRouteParams<
@@ -224,27 +218,32 @@ const Collections = () => {
         </Button>
       );
     },
-    [addLink, params.link, router]
+    [colorScheme, currentLink, params.link, router]
   );
 
   return (
-    <View className="py-5 max-h-[80vh]">
-      <TouchableOpacity
-        className="flex-row items-center gap-1 top-6 left-8 absolute"
-        onPress={() => {
-          router?.popToTop();
-          router?.navigate("main", { link: currentLink });
+    <View className="max-h-[80vh]">
+      <SheetHeader
+        title="Collection"
+        onClose={() => {
+          void SheetManager.hide("edit-link-sheet");
         }}
-      >
-        <ChevronLeft
-          size={18}
-          color={rawTheme[colorScheme as ThemeName]["primary"]}
-        />
-        <Text className="text-primary">Back</Text>
-      </TouchableOpacity>
-      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-        Collection
-      </Text>
+        leftSlot={
+          <TouchableOpacity
+            className="flex-row items-center gap-1"
+            onPress={() => {
+              router?.popToTop();
+              router?.navigate("main", { link: currentLink });
+            }}
+          >
+            <ChevronLeft
+              size={18}
+              color={rawTheme[colorScheme as ThemeName]["primary"]}
+            />
+            <Text className="text-primary">Back</Text>
+          </TouchableOpacity>
+        }
+      />
       <Input
         placeholder="Search collections"
         className="mb-4 bg-base-100 mx-8"
@@ -272,7 +271,6 @@ const Collections = () => {
 
 const Tags = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const params = useSheetRouteParams("edit-link-sheet", "tags");
@@ -373,27 +371,32 @@ const Tags = () => {
         </Button>
       );
     },
-    [addLink, params.link, router]
+    [colorScheme, updatedLink]
   );
 
   return (
-    <View className="py-5 max-h-[80vh]">
-      <TouchableOpacity
-        className="flex-row items-center gap-1 top-6 left-8 absolute"
-        onPress={() => {
-          router?.popToTop();
-          router?.navigate("main", { link: updatedLink });
+    <View className="max-h-[80vh]">
+      <SheetHeader
+        title="Tags"
+        onClose={() => {
+          void SheetManager.hide("edit-link-sheet");
         }}
-      >
-        <ChevronLeft
-          size={18}
-          color={rawTheme[colorScheme as ThemeName]["primary"]}
-        />
-        <Text className="text-primary">Back</Text>
-      </TouchableOpacity>
-      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-        Tags
-      </Text>
+        leftSlot={
+          <TouchableOpacity
+            className="flex-row items-center gap-1"
+            onPress={() => {
+              router?.popToTop();
+              router?.navigate("main", { link: updatedLink });
+            }}
+          >
+            <ChevronLeft
+              size={18}
+              color={rawTheme[colorScheme as ThemeName]["primary"]}
+            />
+            <Text className="text-primary">Back</Text>
+          </TouchableOpacity>
+        }
+      />
       <Input
         placeholder="Search tags"
         className="mb-4 bg-base-100 mx-8"
@@ -414,7 +417,7 @@ const Tags = () => {
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
                 <Text className="text-base-content">
-                  Add tag "{normalizedSearchQuery}"
+                  {`Add tag "${normalizedSearchQuery}"`}
                 </Text>
               </View>
             </Button>

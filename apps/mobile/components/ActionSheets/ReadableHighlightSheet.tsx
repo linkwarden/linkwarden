@@ -15,6 +15,7 @@ import {
   usePostHighlight,
   useRemoveHighlight,
 } from "@linkwarden/router/highlights";
+import SheetHeader from "./SheetHeader";
 
 export const HIGHLIGHT_COLORS = [
   {
@@ -142,11 +143,9 @@ export default function ReadableHighlightSheet(
         setDraft(null);
       }}
     >
-      <View className="px-8 py-5">
-        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
-          Highlight
-        </Text>
+      <SheetHeader title="Highlight" onClose={closeSheet} />
 
+      <View className="px-8 pb-5">
         <View className="flex-row items-center justify-center gap-4 mb-4">
           {HIGHLIGHT_COLORS.map((colorOption) => {
             const isSelected = draft?.color === colorOption.name;
@@ -233,15 +232,11 @@ export default function ReadableHighlightSheet(
                   color: theme["error"],
                 }}
               >
-                Remove Highlight
+                Clear
               </Text>
             </View>
           </Button>
         ) : null}
-
-        <Button onPress={closeSheet} variant="outline" className="mb-2">
-          <Text className="text-base-content">Cancel</Text>
-        </Button>
       </View>
     </ActionSheet>
   );
