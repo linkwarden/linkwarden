@@ -20,8 +20,8 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Highlight, Link as LinkType } from "@linkwarden/prisma/client";
 import {
+  READER_VIEW_DEFAULTS,
   readerViewCSS,
-  readerViewThemeVars,
 } from "@linkwarden/lib/readerViewStyles";
 import {
   HIGHLIGHT_COLORS,
@@ -30,6 +30,10 @@ import {
   ReadableHighlightDraft,
 } from "@/components/ActionSheets/ReadableHighlightSheet";
 import { useGetLinkHighlights } from "@linkwarden/router/highlights";
+import useReaderStore, {
+  getReadableFontFamily,
+  resolveReaderTheme,
+} from "@/store/reader";
 
 type Props = {
   link: LinkType;
@@ -49,6 +53,25 @@ type SelectionInfo = {
 
 type SelectionContext = {
   disableHighlightMenu: boolean;
+};
+
+type ReaderStyleConfig = {
+  bodyBackground: string;
+  bodyColor: string;
+  codeBackground: string;
+  fontFamily: string;
+  h1FontSize: string;
+  h2FontSize: string;
+  h3FontSize: string;
+  h4FontSize: string;
+  h5FontSize: string;
+  lineHeight: string;
+  linkColor: string;
+  markBackground: string;
+  markColor: string;
+  neutralColor: string;
+  neutralBorderColor: string;
+  paragraphFontSize: string;
 };
 
 const HIGHLIGHT_MENU_KEY = "highlight";
@@ -169,6 +192,41 @@ function ReadableSkeleton({ theme }: { theme: (typeof rawTheme)["light"] }) {
   );
 }
 
+function getReaderStyleConfig({
+  fontFamily,
+  fontSize,
+  lineHeight,
+  theme,
+  isDark,
+}: {
+  fontFamily: string;
+  fontSize: string;
+  lineHeight: string;
+  theme: (typeof rawTheme)["light"];
+  isDark: boolean;
+}): ReaderStyleConfig {
+  const ratio = parseInt(fontSize, 10) / READER_VIEW_DEFAULTS.fontSize;
+
+  return {
+    bodyBackground: theme["base-100"],
+    bodyColor: theme["base-content"],
+    codeBackground: isDark ? "rgb(49, 49, 49)" : "rgb(230, 230, 230)",
+    fontFamily,
+    h1FontSize: `${READER_VIEW_DEFAULTS.h1Size * ratio}px`,
+    h2FontSize: `${READER_VIEW_DEFAULTS.h2Size * ratio}px`,
+    h3FontSize: `${READER_VIEW_DEFAULTS.h3Size * ratio}px`,
+    h4FontSize: `${READER_VIEW_DEFAULTS.h4Size * ratio}px`,
+    h5FontSize: `${READER_VIEW_DEFAULTS.h5Size * ratio}px`,
+    lineHeight,
+    linkColor: theme.primary,
+    markBackground: `${theme.primary}80`,
+    markColor: theme["base-content"],
+    neutralColor: theme.neutral,
+    neutralBorderColor: theme["neutral-content"],
+    paragraphFontSize: fontSize,
+  };
+}
+
 const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFormat(
   {
     link,
@@ -179,11 +237,14 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
   const FORMAT = ArchivedFormat.readability;
 
   const { auth } = useAuthStore();
+  const { reader } = useReaderStore();
   const [content, setContent] = useState<string>("");
   const [disableHighlightMenu, setDisableHighlightMenu] = useState(false);
+  const [webViewHtml, setWebViewHtml] = useState("");
   const { colorScheme } = useColorScheme();
   const webViewRef = useRef<any>(null);
   const latestSelectionRef = useRef<SelectionInfo | null>(null);
+  const latestReaderStyleConfigRef = useRef<ReaderStyleConfig | null>(null);
   const pendingSelectionTextRef = useRef<string | null>(null);
   const pendingHighlightScrollIdRef = useRef<number | null>(null);
   const isWebViewReadyRef = useRef(false);
@@ -232,8 +293,11 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
     loadCacheOrFetch();
   }, [FORMAT, auth.instance, auth.session, link.id]);
 
-  const theme = rawTheme[colorScheme as ThemeName];
-  const isDark = colorScheme === "dark";
+  const systemTheme: ThemeName = colorScheme === "dark" ? "dark" : "light";
+  const { theme, isDark } = resolveReaderTheme(
+    reader.readableBackgroundColor,
+    systemTheme as ThemeName
+  );
 
   const title = decode(link.name || link.description || link.url || "");
   const dateStr = new Date(
@@ -365,6 +429,44 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
     `);
   }, []);
 
+  const readerStyleConfig = useMemo(
+    () =>
+      getReaderStyleConfig({
+        fontFamily: getReadableFontFamily(reader.readableFontFamily),
+        fontSize: reader.readableFontSize,
+        lineHeight: reader.readableLineHeight,
+        theme,
+        isDark,
+      }),
+    [
+      isDark,
+      reader.readableFontFamily,
+      reader.readableFontSize,
+      reader.readableLineHeight,
+      theme,
+    ]
+  );
+
+  const syncReaderStylesToWebView = useCallback(
+    (styles: ReaderStyleConfig) => {
+      if (!isWebViewReadyRef.current) return;
+
+      webViewRef.current?.injectJavaScript(`
+        if (window.__READABLE_VIEW__?.applyReaderStyles) {
+          window.__READABLE_VIEW__.applyReaderStyles(
+            ${escapeForInjectedScript(styles)}
+          );
+        }
+        true;
+      `);
+    },
+    []
+  );
+
+  useEffect(() => {
+    latestReaderStyleConfigRef.current = readerStyleConfig;
+  }, [readerStyleConfig]);
+
   const flushPendingHighlightScroll = useCallback(() => {
     if (
       !isWebViewReadyRef.current ||
@@ -393,37 +495,55 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
   }, [linkHighlights, syncHighlightsToWebView]);
 
   useEffect(() => {
-    isWebViewReadyRef.current = false;
-  }, [content, colorScheme]);
+    syncReaderStylesToWebView(readerStyleConfig);
+  }, [readerStyleConfig, syncReaderStylesToWebView]);
 
   useEffect(() => {
-    latestSelectionRef.current = null;
-    pendingSelectionTextRef.current = null;
-    pendingHighlightScrollIdRef.current = null;
-    setDisableHighlightMenu(false);
-    clearWebSelection();
-    void SheetManager.hide("readable-highlight-sheet");
-  }, [clearWebSelection, link.id]);
+    const currentReaderStyleConfig =
+      latestReaderStyleConfigRef.current ?? readerStyleConfig;
+    const initialStyles = escapeForInlineScript(
+      JSON.stringify(currentReaderStyleConfig)
+    );
 
-  const htmlDocument = useMemo(
-    () => `
+    setWebViewHtml(`
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
       <style>
-        :root { ${readerViewThemeVars(theme, isDark)} }
+        :root {
+          --rv-body-bg: ${currentReaderStyleConfig.bodyBackground};
+          --rv-body-color: ${currentReaderStyleConfig.bodyColor};
+          --rv-code-bg: ${currentReaderStyleConfig.codeBackground};
+          --rv-font-family: ${currentReaderStyleConfig.fontFamily};
+          --rv-h1-font-size: ${currentReaderStyleConfig.h1FontSize};
+          --rv-h2-font-size: ${currentReaderStyleConfig.h2FontSize};
+          --rv-h3-font-size: ${currentReaderStyleConfig.h3FontSize};
+          --rv-h4-font-size: ${currentReaderStyleConfig.h4FontSize};
+          --rv-h5-font-size: ${currentReaderStyleConfig.h5FontSize};
+          --rv-link-color: ${currentReaderStyleConfig.linkColor};
+          --rv-mark-bg: ${currentReaderStyleConfig.markBackground};
+          --rv-mark-color: ${currentReaderStyleConfig.markColor};
+          --rv-neutral-border-color: ${currentReaderStyleConfig.neutralBorderColor};
+          --rv-neutral-color: ${currentReaderStyleConfig.neutralColor};
+          --rv-p-font-size: ${currentReaderStyleConfig.paragraphFontSize};
+          --rv-p-line-height: ${currentReaderStyleConfig.lineHeight};
+        }
         * { box-sizing: border-box; }
         body {
           margin: 0;
           padding: 16px;
-          background-color: ${theme["base-100"]};
-          color: ${theme["base-content"]};
-          font-family: -apple-system, system-ui, sans-serif;
+          background-color: var(--rv-body-bg);
+          color: var(--rv-body-color);
+          font-family: var(--rv-font-family, -apple-system, system-ui, sans-serif);
           -webkit-text-size-adjust: 100%;
         }
-        a { color: ${theme.primary}; }
+        a { color: var(--rv-link-color); }
         img { max-width: 100%; height: auto; }
+        #readable-shell {
+          width: 100%;
+          margin: 0 auto;
+        }
         .rv-header-title {
           font-size: 24px;
           font-weight: bold;
@@ -435,7 +555,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
         }
         .rv-header-meta {
           font-size: 16px;
-          color: ${theme.neutral};
+          color: var(--rv-neutral-color);
           margin-bottom: 10px;
           display: flex;
           align-items: center;
@@ -443,7 +563,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
           min-width: 0;
         }
         .rv-header-meta a {
-          color: ${theme.neutral};
+          color: var(--rv-neutral-color);
           text-decoration: none;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -452,7 +572,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
         }
         .rv-header-separator {
           border: none;
-          border-top: 1px solid ${theme["neutral-content"]};
+          border-top: 1px solid var(--rv-neutral-border-color);
           margin: 10px 0 20px 0;
         }
         .rv-highlight {
@@ -480,27 +600,27 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
           background-color: ${HIGHLIGHT_COLORS[3].backgroundColor};
           border-bottom-color: ${HIGHLIGHT_COLORS[3].borderColor};
         }
-        .rv-highlight--focused {
-          box-shadow: 0 0 0 2px ${theme.primary};
-        }
         ${readerViewCSS}
       </style>
     </head>
     <body>
-      <div class="rv-header-title">${title
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")}</div>
-      <div class="rv-header-meta">
-        <a href="${(link.url || "").replace(/"/g, "&quot;")}">${
-          link.url || ""
-        }</a>
+      <div id="readable-shell">
+        <div class="rv-header-title">${title
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")}</div>
+        <div class="rv-header-meta">
+          <a href="${(link.url || "").replace(/"/g, "&quot;")}">${
+            link.url || ""
+          }</a>
+        </div>
+        <div class="rv-header-meta">${dateStr}</div>
+        <hr class="rv-header-separator" />
+        <div id="readable-view" class="reader-view read-only"></div>
       </div>
-      <div class="rv-header-meta">${dateStr}</div>
-      <hr class="rv-header-separator" />
-      <div id="readable-view" class="reader-view read-only"></div>
       <script>
         (function () {
           const initialContent = ${escapeForInlineScript(content)};
+          const initialReaderStyles = JSON.parse(${initialStyles});
 
           const state = {
             currentSelection: null,
@@ -522,6 +642,37 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
 
           function getContainer() {
             return document.getElementById("readable-view");
+          }
+
+          function applyReaderStyles(styleConfig) {
+            const root = document.documentElement;
+            if (!root || !styleConfig) return;
+
+            root.style.setProperty("--rv-body-bg", styleConfig.bodyBackground);
+            root.style.setProperty("--rv-body-color", styleConfig.bodyColor);
+            root.style.setProperty("--rv-code-bg", styleConfig.codeBackground);
+            root.style.setProperty("--rv-font-family", styleConfig.fontFamily);
+            root.style.setProperty("--rv-h1-font-size", styleConfig.h1FontSize);
+            root.style.setProperty("--rv-h2-font-size", styleConfig.h2FontSize);
+            root.style.setProperty("--rv-h3-font-size", styleConfig.h3FontSize);
+            root.style.setProperty("--rv-h4-font-size", styleConfig.h4FontSize);
+            root.style.setProperty("--rv-h5-font-size", styleConfig.h5FontSize);
+            root.style.setProperty("--rv-link-color", styleConfig.linkColor);
+            root.style.setProperty("--rv-mark-bg", styleConfig.markBackground);
+            root.style.setProperty("--rv-mark-color", styleConfig.markColor);
+            root.style.setProperty(
+              "--rv-neutral-border-color",
+              styleConfig.neutralBorderColor
+            );
+            root.style.setProperty(
+              "--rv-neutral-color",
+              styleConfig.neutralColor
+            );
+            root.style.setProperty(
+              "--rv-p-font-size",
+              styleConfig.paragraphFontSize
+            );
+            root.style.setProperty("--rv-p-line-height", styleConfig.lineHeight);
           }
 
           function setContent() {
@@ -764,22 +915,6 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
               return false;
             }
 
-            container
-              .querySelectorAll("span.rv-highlight--focused")
-              .forEach((node) => {
-                node.classList.remove("rv-highlight--focused");
-              });
-
-            highlightNodes.forEach((node) => {
-              node.classList.add("rv-highlight--focused");
-            });
-
-            window.setTimeout(function () {
-              highlightNodes.forEach((node) => {
-                node.classList.remove("rv-highlight--focused");
-              });
-            }, 1800);
-
             const firstNode = highlightNodes[0];
 
             if (firstNode instanceof HTMLElement) {
@@ -833,23 +968,40 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
           });
 
           window.__READABLE_VIEW__ = {
+            applyReaderStyles: applyReaderStyles,
             clearSelection: clearSelection,
             getSelectionInfo: getSelectionInfo,
             renderHighlights: renderHighlights,
             scrollToHighlight: scrollToHighlight,
           };
 
+          applyReaderStyles(initialReaderStyles);
           setContent();
           postMessage("ready", null);
         })();
       </script>
     </body>
     </html>
-  `,
-    [content, dateStr, isDark, link.id, link.url, theme, title]
-  );
+  `);
+    isWebViewReadyRef.current = false;
+  }, [
+    content,
+    dateStr,
+    link.id,
+    link.url,
+    title,
+  ]);
 
-  if (!content) {
+  useEffect(() => {
+    latestSelectionRef.current = null;
+    pendingSelectionTextRef.current = null;
+    pendingHighlightScrollIdRef.current = null;
+    setDisableHighlightMenu(false);
+    clearWebSelection();
+    void SheetManager.hide("readable-highlight-sheet");
+  }, [clearWebSelection, link.id]);
+
+  if (!content || !webViewHtml) {
     return <ReadableSkeleton theme={theme} />;
   }
 
@@ -916,6 +1068,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
 
     if (message?.type === "ready") {
       isWebViewReadyRef.current = true;
+      syncReaderStylesToWebView(readerStyleConfig);
       syncHighlightsToWebView(linkHighlights);
       flushPendingHighlightScroll();
       return;
@@ -960,7 +1113,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
   return (
     <WebView
       ref={webViewRef}
-      source={{ html: htmlDocument }}
+      source={{ html: webViewHtml }}
       style={{
         flex: 1,
         backgroundColor: "transparent",

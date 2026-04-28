@@ -17,6 +17,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
 import useDataStore from "@/store/data";
 import useAuthStore from "@/store/auth";
+import useReaderStore from "@/store/reader";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
@@ -32,6 +33,7 @@ export default Sentry.wrap(function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
   const { updateData, setData, data } = useDataStore();
+  const { setReader } = useReaderStore();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -42,6 +44,7 @@ export default Sentry.wrap(function RootLayout() {
   useEffect(() => {
     setAuth();
     setData();
+    setReader();
   }, []);
 
   useEffect(() => {

@@ -106,9 +106,6 @@ export default function ReadableHighlightsSheet(
         <Text className="font-semibold text-lg text-center text-base-content">
           Notes & Highlights
         </Text>
-        <Text className="text-sm text-center text-neutral mt-1">
-          Tap a highlight to jump to it in the article.
-        </Text>
       </View>
 
       {isLoading ? (

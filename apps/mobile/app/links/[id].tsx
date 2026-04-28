@@ -205,6 +205,17 @@ export default function LinkScreen() {
               </DropdownMenu.Item>
             )}
 
+            {tmp.link && isReadableFormat && (
+              <DropdownMenu.Item
+                key="display-settings"
+                onSelect={() => {
+                  void SheetManager.show("reader-settings-sheet");
+                }}
+              >
+                <DropdownMenu.ItemTitle>Display Settings</DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+
             {tmp.link && (
               <DropdownMenu.Item
                 key="edit-link"
