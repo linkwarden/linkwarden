@@ -22,6 +22,8 @@ export const deleteLinkCache = async (linkId: number) => {
     FileSystem.documentDirectory + `archivedData/png/link_${linkId}.png`;
   const pdfPath =
     FileSystem.documentDirectory + `archivedData/pdf/link_${linkId}.pdf`;
+  const previewPath =
+    FileSystem.documentDirectory + `archivedData/previews/link_${linkId}.jpg`;
 
   await Promise.all([
     FileSystem.deleteAsync(readablePath, { idempotent: true }),
@@ -29,5 +31,6 @@ export const deleteLinkCache = async (linkId: number) => {
     FileSystem.deleteAsync(jpegPath, { idempotent: true }),
     FileSystem.deleteAsync(pngPath, { idempotent: true }),
     FileSystem.deleteAsync(pdfPath, { idempotent: true }),
+    FileSystem.deleteAsync(previewPath, { idempotent: true }),
   ]);
 };

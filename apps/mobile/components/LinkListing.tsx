@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   Linking,
 } from "react-native";
+import * as FileSystem from "expo-file-system/legacy";
+import NetInfo from "@react-native-community/netinfo";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import { ArchivedFormat } from "@linkwarden/types/global";
@@ -48,6 +50,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const deleteLink = useDeleteLink({ auth, Alert });
 
   const [url, setUrl] = useState("");
+  const [preview, setPreview] = useState("");
 
   useEffect(() => {
     try {
@@ -58,6 +61,47 @@ const LinkListing = ({ link, dashboard }: Props) => {
       console.log(error);
     }
   }, [link.url]);
+
+  useEffect(() => {
+    async function loadCacheOrFetch() {
+      setPreview("");
+
+      const filePath =
+        FileSystem.documentDirectory +
+        `archivedData/previews/link_${link.id}.jpg`;
+
+      await FileSystem.makeDirectoryAsync(
+        filePath.substring(0, filePath.lastIndexOf("/")),
+        {
+          intermediates: true,
+        }
+      ).catch(() => {});
+
+      const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
+
+      if (info.exists) {
+        setPreview(filePath);
+      }
+
+      const net = await NetInfo.fetch();
+
+      if (net.isConnected && formatAvailable(link, "preview")) {
+        const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`;
+
+        try {
+          const result = await FileSystem.downloadAsync(apiUrl, filePath, {
+            headers: { Authorization: `Bearer ${auth.session}` },
+          });
+
+          setPreview(result.uri);
+        } catch (e) {
+          console.error("Failed to fetch preview", e);
+        }
+      }
+    }
+
+    loadCacheOrFetch();
+  }, [auth.instance, auth.session, link.id, link.preview, link.updatedAt]);
 
   return (
     <ContextMenu.Root>
@@ -137,15 +181,16 @@ const LinkListing = ({ link, dashboard }: Props) => {
             <View className="flex-col items-end">
               <View className="rounded-lg overflow-hidden relative">
                 {formatAvailable(link, "preview") ? (
-                  <Image
-                    source={{
-                      uri: `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`,
-                      headers: {
-                        Authorization: `Bearer ${auth.session}`,
-                      },
-                    }}
-                    className="rounded-md h-[60px] w-[90px] object-cover scale-105"
-                  />
+                  preview ? (
+                    <Image
+                      source={{
+                        uri: preview,
+                      }}
+                      className="rounded-md h-[60px] w-[90px] object-cover scale-105"
+                    />
+                  ) : (
+                    <View className="h-[60px] w-[90px]" />
+                  )
                 ) : !link.preview ? (
                   <ActivityIndicator
                     size="small"
