@@ -10,7 +10,6 @@ import React, {
 import { Alert, Linking, View } from "react-native";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Clipboard from "expo-clipboard";
-import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import WebView from "react-native-webview";
 import { SheetManager } from "react-native-actions-sheet";
@@ -34,6 +33,7 @@ import useReaderStore, {
   getReadableFontFamily,
   resolveReaderTheme,
 } from "@/store/reader";
+import { loadCacheOrFetch } from "@/lib/cache";
 
 type Props = {
   link: LinkType;
@@ -250,47 +250,27 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(function ReadableFor
   const isWebViewReadyRef = useRef(false);
 
   useEffect(() => {
-    async function loadCacheOrFetch() {
-      const filePath =
-        FileSystem.documentDirectory +
-        `archivedData/readable/link_${link.id}.html`;
-
-      await FileSystem.makeDirectoryAsync(
-        filePath.substring(0, filePath.lastIndexOf("/")),
-        {
-          intermediates: true,
-        }
-      ).catch(() => {});
-
-      const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
-
-      if (info.exists) {
-        const rawContent = await FileSystem.readAsStringAsync(filePath);
-        setContent(rawContent);
-      }
-
-      const net = await NetInfo.fetch();
-
-      if (net.isConnected) {
+    loadCacheOrFetch({
+      filePath:
+        FileSystem.documentDirectory + `archivedData/readable/link_${link.id}.html`,
+      setContent,
+      getCachedContent: (filePath) => FileSystem.readAsStringAsync(filePath),
+      fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
-        try {
-          const response = await fetch(apiUrl, {
-            headers: { Authorization: `Bearer ${auth.session}` },
-          });
+        const response = await fetch(apiUrl, {
+          headers: { Authorization: `Bearer ${auth.session}` },
+        });
 
-          const data = (await response.json()).content;
-          setContent(data);
-          await FileSystem.writeAsStringAsync(filePath, data, {
-            encoding: FileSystem.EncodingType.UTF8,
-          });
-        } catch (e) {
-          console.error("Failed to fetch content", e);
-        }
-      }
-    }
+        const data = (await response.json()).content;
 
-    loadCacheOrFetch();
+        await FileSystem.writeAsStringAsync(filePath, data, {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+
+        return data;
+      },
+    });
   }, [FORMAT, auth.instance, auth.session, link.id]);
 
   const systemTheme: ThemeName = colorScheme === "dark" ? "dark" : "light";

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
-import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import Pdf from "react-native-pdf";
+import { loadCacheOrFetch } from "@/lib/cache";
 
 type Props = {
   link: LinkType;
@@ -18,42 +18,21 @@ export default function PdfFormat({ link, setIsLoading }: Props) {
   const [content, setContent] = useState<string>("");
 
   useEffect(() => {
-    async function loadCacheOrFetch() {
-      const filePath =
-        FileSystem.documentDirectory + `archivedData/pdf/link_${link.id}.pdf`;
-
-      await FileSystem.makeDirectoryAsync(
-        filePath.substring(0, filePath.lastIndexOf("/")),
-        {
-          intermediates: true,
-        }
-      ).catch(() => {});
-
-      const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
-
-      if (info.exists) {
-        setContent(filePath);
-      }
-
-      const net = await NetInfo.fetch();
-
-      if (net.isConnected) {
+    loadCacheOrFetch({
+      filePath:
+        FileSystem.documentDirectory + `archivedData/pdf/link_${link.id}.pdf`,
+      setContent,
+      fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
-        try {
-          const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-            headers: { Authorization: `Bearer ${auth.session}` },
-          });
+        const result = await FileSystem.downloadAsync(apiUrl, filePath, {
+          headers: { Authorization: `Bearer ${auth.session}` },
+        });
 
-          setContent(result.uri);
-        } catch (e) {
-          console.error("Failed to fetch content", e);
-        }
-      }
-    }
-
-    loadCacheOrFetch();
-  }, [link]);
+        return result.uri;
+      },
+    });
+  }, [FORMAT, auth.instance, auth.session, link.id]);
 
   return (
     content && (

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
-import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import WebView from "react-native-webview";
 import { Image, Platform, ScrollView } from "react-native";
+import { loadCacheOrFetch } from "@/lib/cache";
 
 type Props = {
   link: LinkType;
@@ -33,43 +33,22 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
   }, [content]);
 
   useEffect(() => {
-    async function loadCacheOrFetch() {
-      const filePath =
+    loadCacheOrFetch({
+      filePath:
         FileSystem.documentDirectory +
-        `archivedData/${extension}/link_${link.id}.${extension}`;
-
-      await FileSystem.makeDirectoryAsync(
-        filePath.substring(0, filePath.lastIndexOf("/")),
-        {
-          intermediates: true,
-        }
-      ).catch(() => {});
-
-      const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
-
-      if (info.exists) {
-        setContent(filePath);
-      }
-
-      const net = await NetInfo.fetch();
-
-      if (net.isConnected) {
+        `archivedData/${extension}/link_${link.id}.${extension}`,
+      setContent,
+      fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
-        try {
-          const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-            headers: { Authorization: `Bearer ${auth.session}` },
-          });
+        const result = await FileSystem.downloadAsync(apiUrl, filePath, {
+          headers: { Authorization: `Bearer ${auth.session}` },
+        });
 
-          setContent(result.uri);
-        } catch (e) {
-          console.error("Failed to fetch content", e);
-        }
-      }
-    }
-
-    loadCacheOrFetch();
-  }, [link]);
+        return result.uri;
+      },
+    });
+  }, [FORMAT, auth.instance, auth.session, extension, link.id]);
 
   if (Platform.OS === "ios")
     return (

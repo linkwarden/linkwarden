@@ -9,7 +9,6 @@ import {
   Linking,
 } from "react-native";
 import * as FileSystem from "expo-file-system/legacy";
-import NetInfo from "@react-native-community/netinfo";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import { ArchivedFormat } from "@linkwarden/types/global";
@@ -32,7 +31,7 @@ import { useColorScheme } from "nativewind";
 import { CalendarDays, Folder } from "lucide-react-native";
 import useDataStore from "@/store/data";
 import { useEffect, useState } from "react";
-import { deleteLinkCache } from "@/lib/cache";
+import { deleteLinkCache, loadCacheOrFetch } from "@/lib/cache";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -63,44 +62,23 @@ const LinkListing = ({ link, dashboard }: Props) => {
   }, [link.url]);
 
   useEffect(() => {
-    async function loadCacheOrFetch() {
-      setPreview("");
-
-      const filePath =
-        FileSystem.documentDirectory +
-        `archivedData/previews/link_${link.id}.jpg`;
-
-      await FileSystem.makeDirectoryAsync(
-        filePath.substring(0, filePath.lastIndexOf("/")),
-        {
-          intermediates: true,
-        }
-      ).catch(() => {});
-
-      const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
-
-      if (info.exists) {
-        setPreview(filePath);
-      }
-
-      const net = await NetInfo.fetch();
-
-      if (net.isConnected && formatAvailable(link, "preview")) {
+    loadCacheOrFetch({
+      filePath:
+        FileSystem.documentDirectory + `archivedData/previews/link_${link.id}.jpg`,
+      setContent: setPreview,
+      shouldFetch: formatAvailable(link, "preview"),
+      onStart: () => setPreview(""),
+      errorMessage: "Failed to fetch preview",
+      fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`;
 
-        try {
-          const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-            headers: { Authorization: `Bearer ${auth.session}` },
-          });
+        const result = await FileSystem.downloadAsync(apiUrl, filePath, {
+          headers: { Authorization: `Bearer ${auth.session}` },
+        });
 
-          setPreview(result.uri);
-        } catch (e) {
-          console.error("Failed to fetch preview", e);
-        }
-      }
-    }
-
-    loadCacheOrFetch();
+        return result.uri;
+      },
+    });
   }, [auth.instance, auth.session, link.id, link.preview, link.updatedAt]);
 
   return (
@@ -116,6 +94,14 @@ const LinkListing = ({ link, dashboard }: Props) => {
           onLongPress={() => {}}
           onPress={() => {
             if (user) {
+              if (user.linksRouteTo === "DETAILS") {
+                void SheetManager.show("link-details-sheet", {
+                  payload: { link },
+                });
+
+                return;
+              }
+
               const format = getFormatBasedOnPreference({
                 link,
                 preference: user.linksRouteTo,

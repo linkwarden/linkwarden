@@ -301,7 +301,6 @@ export default function LinkDetailsSheet(
                     numberOfLines={1}
                   >
                     {link.url}
-                    {link.url}
                   </Text>
                 </TouchableOpacity>
               </View>
