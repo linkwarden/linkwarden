@@ -139,10 +139,10 @@ export default function ReadableHighlightsSheet(
                   borderColor: theme["neutral-content"],
                   borderLeftColor: colorOption.borderColor,
                   borderLeftWidth: 3,
-                  borderRadius: 14,
                   borderWidth: 1,
                   padding: 14,
                 }}
+                className="rounded-lg"
               >
                 <View className="flex-row items-start">
                   <TouchableOpacity

@@ -233,6 +233,17 @@ const LinkListing = ({ link, dashboard }: Props) => {
         </ContextMenu.Item>
 
         <ContextMenu.Item
+          key="link-details"
+          onSelect={() => {
+            SheetManager.show("link-details-sheet", {
+              payload: { link },
+            });
+          }}
+        >
+          <ContextMenu.ItemTitle>Link Details</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+
+        <ContextMenu.Item
           key="edit-link"
           onSelect={() => {
             SheetManager.show("edit-link-sheet", {

@@ -51,7 +51,7 @@ function DropdownRow({
       <DropdownMenu.Trigger asChild>
         <TouchableOpacity
           activeOpacity={0.8}
-          className="bg-base-100 rounded-xl px-4 py-3 flex-row items-center justify-between"
+          className="bg-base-100 rounded-lg px-4 py-3 flex-row items-center justify-between"
         >
           <Text className="text-base-content text-base">{label}</Text>
           <View className="flex-row items-center gap-1">
@@ -81,7 +81,7 @@ function StepperRow({
   onIncrease: () => void;
 }) {
   return (
-    <View className="bg-base-100 rounded-xl px-4 py-3 flex-row items-center justify-between">
+    <View className="bg-base-100 rounded-lg px-4 py-3 flex-row items-center justify-between">
       <Text className="text-base-content text-base">{label}</Text>
       <View className="flex-row items-center gap-2">
         <TouchableOpacity
