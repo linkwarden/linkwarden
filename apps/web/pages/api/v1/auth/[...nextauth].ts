@@ -1310,6 +1310,40 @@ if (process.env.NEXT_PUBLIC_ZOOM_ENABLED_ENABLED === "true") {
   };
 }
 
+// Generic OIDC
+if (process.env.NEXT_PUBLIC_OIDC_ENABLED === "true") {
+  providers.push({
+    id: "oidc",
+    name: process.env.OIDC_CUSTOM_NAME ?? "OIDC",
+    type: "oauth",
+    clientId: process.env.OIDC_CLIENT_ID!,
+    clientSecret: process.env.OIDC_CLIENT_SECRET!,
+    wellKnown: process.env.OIDC_WELLKNOWN_URL!,
+    authorization: {
+      params: { scope: process.env.OIDC_SCOPES ?? "openid email profile" },
+    },
+    idToken: true,
+    checks: ["pkce", "state"],
+    httpOptions: {
+      timeout: 10000,
+    },
+    profile(profile) {
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        username: profile.preferred_username,
+      };
+    },
+  });
+
+  const _linkAccount = adapter.linkAccount;
+  adapter.linkAccount = (account) => {
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    return _linkAccount ? _linkAccount(data) : undefined;
+  };
+}
+
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   return await NextAuth(req, res, {
     adapter: adapter as Adapter,
