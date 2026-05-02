@@ -352,6 +352,38 @@ if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
   };
 }
 
+// Pocket ID
+if (process.env.NEXT_PUBLIC_POCKET_ID_ENABLED === "true") {
+  providers.push({
+    id: "pocket-id",
+    name: "Pocket ID",
+    type: "oauth",
+    clientId: process.env.POCKET_ID_CLIENT_ID!,
+    clientSecret: process.env.POCKET_ID_CLIENT_SECRET!,
+    wellKnown: process.env.POCKET_ID_WELLKNOWN_URL!,
+    authorization: { params: { scope: "openid email profile" } },
+    idToken: true,
+    checks: ["pkce", "state"],
+    httpOptions: {
+      timeout: 10000,
+    },
+    profile(profile) {
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        username: profile.preferred_username,
+      };
+    },
+  });
+
+  const _linkAccount = adapter.linkAccount;
+  adapter.linkAccount = (account) => {
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    return _linkAccount ? _linkAccount(data) : undefined;
+  };
+}
+
 // Authentik
 if (process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true") {
   providers.push(
