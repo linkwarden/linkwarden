@@ -206,7 +206,7 @@ export default function PublicCollections() {
                 </Tooltip>
               </TooltipProvider>
 
-              <ToggleDarkMode align="left" />
+              <ToggleDarkMode />
 
               <TooltipProvider>
                 <Tooltip>

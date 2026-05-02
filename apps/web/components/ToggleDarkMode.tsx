@@ -1,62 +1,66 @@
-import { ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
 import { Button } from "./ui/button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
+import { Theme } from "@linkwarden/prisma/client";
 
 type Props = {
   hideInMobile?: boolean;
-  align?: "left" | "right" | "top" | "bottom";
 };
 
-export default function ToggleDarkMode({ hideInMobile, align }: Props) {
+const themes: { value: Theme; icon: string }[] = [
+  { value: "light", icon: "bi-sun-fill" },
+  { value: "dark", icon: "bi-moon-fill" },
+  { value: "auto", icon: "bi-circle-half" },
+];
+
+export default function ToggleDarkMode({ hideInMobile }: Props) {
   const { t } = useTranslation();
   const { data } = useUser();
   const updateUserPreference = useUpdateUserPreference();
 
-  const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    updateUserPreference.mutateAsync({
-      theme: e.target.checked ? "dark" : "light",
-    });
+  const getIcon = () => {
+    switch (data?.theme) {
+      case "light":
+        return "bi-sun-fill";
+      case "dark":
+        return "bi-moon-fill";
+      case "auto":
+        return "bi-circle-half";
+      default:
+        return "bi-moon-fill";
+    }
   };
 
   if (!data?.theme) return <></>;
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className={hideInMobile ? "hidden sm:inline-grid" : ""}>
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className={"inline-grid swap swap-rotate text-neutral"}
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        asChild
+        className={hideInMobile ? "hidden sm:inline-grid" : ""}
+      >
+        <Button variant="ghost" size="icon" className="text-neutral">
+          <i className={`${getIcon()} text-xl`}></i>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {themes.map(({ value, icon }) => (
+          <DropdownMenuItem
+            key={value}
+            onClick={() => updateUserPreference.mutateAsync({ theme: value })}
+            className="gap-2"
           >
-            <label>
-              <input
-                type="checkbox"
-                onChange={handleToggle}
-                className="theme-controller"
-                checked={data?.theme === "dark"}
-              />
-              <i className="bi-sun-fill text-xl swap-on"></i>
-              <i className="bi-moon-fill text-xl swap-off"></i>
-            </label>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side={align || "bottom"}>
-          <p>
-            {t("switch_to", {
-              theme: data?.theme === "light" ? "Dark" : "Light",
-            })}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+            <i className={`${icon} text-lg`}></i>
+            <span>{t(value)}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
