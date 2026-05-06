@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
-  Image,
   Linking,
   Text,
   TouchableOpacity,
@@ -14,14 +13,12 @@ import ActionSheet, {
   SheetProps,
 } from "react-native-actions-sheet";
 import { decode } from "html-entities";
-import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   CalendarDays,
   ChevronRight,
-  Copy,
   ExternalLink,
   File,
   FileCode,
@@ -360,7 +357,10 @@ export default function LinkDetailsSheet(
 
             <View className="rounded-lg bg-base-100 px-4 py-3">
               {link.description ? (
-                <Text className="text-base leading-6 text-base-content">
+                <Text
+                  className="text-base leading-6 text-base-content"
+                  selectable
+                >
                   {decode(link.description)}
                 </Text>
               ) : (

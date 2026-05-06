@@ -49,8 +49,12 @@ const isAtLeastInstanceVersion = (
 };
 
 const useConfig = (auth?: MobileAuth) => {
+  const isMobile = auth !== undefined;
+
   return useQuery({
     queryKey: ["config", auth?.instance ?? "web"],
+    enabled:
+      !isMobile || (auth.status === "authenticated" && Boolean(auth.instance)),
     queryFn: async () => {
       const response = await fetch(
         (auth?.instance ? auth.instance : "") + "/api/v1/config",

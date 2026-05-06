@@ -1121,22 +1121,6 @@ const useArchiveAction = () => {
   });
 };
 
-const resetInfiniteQueryPagination = async (
-  queryClient: any,
-  queryKey: any
-) => {
-  queryClient.setQueriesData({ queryKey }, (oldData: any) => {
-    if (!oldData) return undefined;
-
-    return {
-      pages: oldData.pages.slice(0, 1),
-      pageParams: oldData.pageParams.slice(0, 1),
-    };
-  });
-
-  await queryClient.invalidateQueries(queryKey);
-};
-
 export {
   useLinks,
   useAddLink,
@@ -1147,6 +1131,5 @@ export {
   useGetLink,
   useBulkEditLinks,
   useArchiveAction,
-  resetInfiniteQueryPagination,
   useUpdateFile,
 };

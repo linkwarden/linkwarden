@@ -22,6 +22,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
 import * as Sentry from "@sentry/react-native";
+import OfflineSyncProvider from "@/components/OfflineSyncProvider";
 
 Sentry.init({
   dsn: "https://00d7eed9e810cbbf91a7ed3547e37100@o4510998442475520.ingest.us.sentry.io/4511033679609856",
@@ -90,7 +91,7 @@ export default Sentry.wrap(function RootLayout() {
         maxAge: Infinity,
         dehydrateOptions: {
           shouldDehydrateMutation: () => true,
-          shouldDehydrateQuery: () => true,
+          shouldDehydrateQuery: (query) => query.state.status === "success",
         },
       }}
       onSuccess={() => {
@@ -112,6 +113,7 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
         style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
       >
         <SheetProvider>
+          <OfflineSyncProvider />
           <StatusBar
             style={colorScheme === "dark" ? "light" : "dark"}
             backgroundColor={rawTheme[colorScheme as ThemeName]["base-100"]}

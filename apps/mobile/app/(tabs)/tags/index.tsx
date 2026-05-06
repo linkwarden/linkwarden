@@ -16,6 +16,8 @@ import { useColorScheme } from "nativewind";
 import { TagSort } from "@linkwarden/types/global";
 import { useTags } from "@linkwarden/router/tags";
 import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
+import { useQueryClient } from "@tanstack/react-query";
+import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
 
 const MIN_TAG_SEARCH_VERSION = "2.14.1";
 
@@ -34,6 +36,7 @@ export default function TagsScreen() {
   const { auth } = useAuthStore();
   const { search } = useLocalSearchParams<{ search?: string }>();
   const config = useConfig(auth);
+  const queryClient = useQueryClient();
   const searchQuery = decodeSearchParam(search);
   const supportsTagSearch = isAtLeastInstanceVersion(
     config.data?.INSTANCE_VERSION,
@@ -72,7 +75,9 @@ export default function TagsScreen() {
           refreshControl={
             <Spinner
               refreshing={tags.isRefetching}
-              onRefresh={() => tags.refetch()}
+              onRefresh={() =>
+                resetInfiniteQueryPagination(queryClient, ["tags"])
+              }
               progressBackgroundColor={
                 rawTheme[colorScheme as ThemeName]["base-200"]
               }

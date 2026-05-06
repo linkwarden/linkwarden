@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Sort } from "@linkwarden/types/global";
 import { TFunction } from "i18next";
 import useLocalSettingsStore from "@/store/localSettings";
-import { resetInfiniteQueryPagination } from "@linkwarden/router/links";
+import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   DropdownMenu,

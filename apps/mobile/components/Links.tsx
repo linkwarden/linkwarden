@@ -11,6 +11,8 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/globa
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import { useQueryClient } from "@tanstack/react-query";
+import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -25,6 +27,7 @@ type Props = {
 
 export default function Links({ links, data }: Props) {
   const { colorScheme } = useColorScheme();
+  const queryClient = useQueryClient();
   const [promptedRefetch, setPromptedRefetch] = useState(false);
 
   return data.isLoading ? (
@@ -42,7 +45,7 @@ export default function Links({ links, data }: Props) {
           refreshing={data.isRefetching && promptedRefetch}
           onRefresh={async () => {
             setPromptedRefetch(true);
-            await data.refetch();
+            await resetInfiniteQueryPagination(queryClient, ["links"]);
             setPromptedRefetch(false);
           }}
           progressBackgroundColor={

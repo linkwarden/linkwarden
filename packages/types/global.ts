@@ -209,6 +209,7 @@ export interface MobileData {
   theme: "light" | "dark" | "system";
   preferredBrowser: "app" | "system";
   preferredCollection: CollectionIncludingMembersAndLinkCount | null;
+  offlineEnabled: boolean;
 }
 
 export interface WorkerStats {

@@ -6,6 +6,8 @@ import { Alert } from "react-native";
 import { queryClient } from "@/lib/queryClient";
 import { mmkvPersister } from "@/lib/queryPersister";
 import { clearCache } from "@/lib/cache";
+import useDataStore from "@/store/data";
+import { useOfflineSyncStore } from "@/lib/offlineSync";
 
 type AuthStore = {
   auth: MobileAuth;
@@ -141,6 +143,9 @@ const useAuthStore = create<AuthStore>((set) => ({
     mmkvPersister.removeClient?.();
 
     await clearCache();
+
+    useDataStore.getState().updateData({ offlineEnabled: false });
+    useOfflineSyncStore.getState().reset();
 
     set({
       auth: {
