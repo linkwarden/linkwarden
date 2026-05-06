@@ -3,6 +3,7 @@ import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import updateSeats from "@/lib/api/stripe/updateSeats";
 import verifySubscription from "@/lib/api/stripe/verifySubscription";
+import { getAppleClientId, getAppleClientSecret } from "@/lib/api/apple";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
@@ -245,8 +246,10 @@ if (process.env.NEXT_PUBLIC_FORTYTWO_ENABLED === "true") {
 if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
   providers.push(
     AppleProvider({
-      clientId: process.env.APPLE_CLIENT_ID!,
-      clientSecret: process.env.APPLE_CLIENT_SECRET!,
+      clientId: getAppleClientId(),
+      get clientSecret() {
+        return getAppleClientSecret();
+      },
       httpOptions: {
         timeout: 10000,
       },
