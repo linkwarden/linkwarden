@@ -261,7 +261,6 @@ if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
           name: profile.name,
           email: profile.email,
           image: null,
-          username: profile.sub,
         };
       },
     })
