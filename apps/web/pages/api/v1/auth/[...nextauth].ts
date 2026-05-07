@@ -81,6 +81,8 @@ const adapter = PrismaAdapter(prisma);
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 const providers: Provider[] = [];
+const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith("https://");
+const cookiePrefix = useSecureCookies ? "__Secure-" : "";
 
 if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
   // undefined is for backwards compatibility
@@ -1324,6 +1326,18 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     pages: {
       signIn: "/login",
       verifyRequest: "/confirmation",
+    },
+    cookies: {
+      pkceCodeVerifier: {
+        name: `${cookiePrefix}next-auth.pkce.code_verifier`,
+        options: {
+          httpOnly: true,
+          sameSite: useSecureCookies ? "none" : "lax",
+          path: "/",
+          secure: useSecureCookies,
+          maxAge: 60 * 15,
+        },
+      },
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
