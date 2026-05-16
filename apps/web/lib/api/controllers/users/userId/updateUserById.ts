@@ -99,7 +99,19 @@ export default async function updateUserById(
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
+    include: {
+      accounts: {
+        select: {
+          type: true,
+        },
+      },
+    },
   });
+
+  const hasOAuthAccount =
+    user?.accounts.some((account) =>
+      ["oauth", "oidc"].includes(account.type)
+    ) || false;
 
   if (user && user.email && data.email && data.email !== user.email) {
     if (!data.password) {
@@ -113,7 +125,7 @@ export default async function updateUserById(
     if (!user.password) {
       return {
         response:
-          "User has no password. Please reset your password from the forgot password page.",
+          "User has no password. Please create one from the password settings page.",
         status: 400,
       };
     }
@@ -137,28 +149,30 @@ export default async function updateUserById(
   // Password Settings
 
   if (data.newPassword || data.oldPassword) {
-    if (!data.oldPassword || !data.newPassword)
+    const isCreatingPassword = !user?.password && hasOAuthAccount;
+
+    if (!data.newPassword || (!isCreatingPassword && !data.oldPassword))
       return {
         response: "Please fill out all the fields.",
         status: 400,
       };
-    else if (!user?.password)
+    else if (!user?.password && !isCreatingPassword)
       return {
         response:
-          "User has no password. Please reset your password from the forgot password page.",
+          "User has no password. Please create one from the password settings page.",
         status: 400,
       };
-    else if (!bcrypt.compareSync(data.oldPassword, user.password))
+    else if (
+      !isCreatingPassword &&
+      user?.password &&
+      data.oldPassword &&
+      !bcrypt.compareSync(data.oldPassword, user.password)
+    )
       return {
         response: "Old password is incorrect.",
         status: 400,
       };
-    else if (data.newPassword?.length < 8)
-      return {
-        response: "Password must be at least 8 characters.",
-        status: 400,
-      };
-    else if (data.newPassword === data.oldPassword)
+    else if (!isCreatingPassword && data.newPassword === data.oldPassword)
       return {
         response: "New password must be different from the old password.",
         status: 400,
@@ -248,6 +262,8 @@ export default async function updateUserById(
         email: parentSubscription?.user.email,
       },
     },
+    hasPassword: !!password,
+    hasOAuthAccount,
     dashboardSections: dashboardSections,
   };
 

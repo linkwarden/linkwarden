@@ -76,8 +76,13 @@ const useUpdateUser = () => {
     },
     onMutate: async (user) => {
       await queryClient.cancelQueries({ queryKey: ["user"] });
+      const safeUser = { ...user };
+      delete safeUser.password;
+      delete safeUser.oldPassword;
+      delete safeUser.newPassword;
+
       queryClient.setQueryData(["user"], (oldData: any) => {
-        return { ...oldData, ...user };
+        return { ...oldData, ...safeUser };
       });
     },
   });

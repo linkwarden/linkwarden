@@ -3,6 +3,7 @@ import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import updateSeats from "@/lib/api/stripe/updateSeats";
 import verifySubscription from "@/lib/api/stripe/verifySubscription";
+import { getAppleClientId, getAppleClientSecret } from "@/lib/api/apple";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
@@ -80,6 +81,8 @@ const adapter = PrismaAdapter(prisma);
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 const providers: Provider[] = [];
+const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith("https://");
+const cookiePrefix = useSecureCookies ? "__Secure-" : "";
 
 if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
   // undefined is for backwards compatibility
@@ -245,8 +248,10 @@ if (process.env.NEXT_PUBLIC_FORTYTWO_ENABLED === "true") {
 if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
   providers.push(
     AppleProvider({
-      clientId: process.env.APPLE_CLIENT_ID!,
-      clientSecret: process.env.APPLE_CLIENT_SECRET!,
+      clientId: getAppleClientId(),
+      get clientSecret() {
+        return getAppleClientSecret();
+      },
       httpOptions: {
         timeout: 10000,
       },
@@ -256,7 +261,6 @@ if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
           name: profile.name,
           email: profile.email,
           image: null,
-          username: profile.sub,
         };
       },
     })
@@ -1321,6 +1325,18 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     pages: {
       signIn: "/login",
       verifyRequest: "/confirmation",
+    },
+    cookies: {
+      pkceCodeVerifier: {
+        name: `${cookiePrefix}next-auth.pkce.code_verifier`,
+        options: {
+          httpOnly: true,
+          sameSite: useSecureCookies ? "none" : "lax",
+          path: "/",
+          secure: useSecureCookies,
+          maxAge: 60 * 15,
+        },
+      },
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {

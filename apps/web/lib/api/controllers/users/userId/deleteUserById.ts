@@ -53,7 +53,7 @@ export default async function deleteUserById(
       } else {
         return {
           response:
-            "User has no password. Please reset your password from the forgot password page.",
+            "User has no password. Please create one from the password settings page.",
           status: 401,
         };
       }

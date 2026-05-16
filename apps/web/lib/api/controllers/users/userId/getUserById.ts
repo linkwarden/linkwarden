@@ -3,7 +3,7 @@ import { prisma } from "@linkwarden/prisma";
 import { GetUserByIdResponse } from "@linkwarden/types/global";
 
 export default async function getUserById(userId: number) {
-  const [user, firstUnIndexedLinks] = await Promise.all([
+  const [user, firstUnIndexedLinks, oauthAccountCount] = await Promise.all([
     prisma.user.findUnique({
       where: {
         id: userId,
@@ -29,6 +29,17 @@ export default async function getUserById(userId: number) {
         ],
       },
     }),
+    prisma.account.count({
+      where: {
+        userId,
+        type: {
+          in: ["oauth", "oidc"],
+        },
+      },
+      select: {
+        provider: true,
+      },
+    }),
   ]);
 
   if (!user) return { response: "User not found.", status: 404 };
@@ -48,6 +59,8 @@ export default async function getUserById(userId: number) {
         email: parentSubscription?.user.email,
       },
     },
+    hasPassword: !!password,
+    hasOAuthAccount: oauthAccountCount.provider > 0,
     hasUnIndexedLinks: !!firstUnIndexedLinks,
   };
 

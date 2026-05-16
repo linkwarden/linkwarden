@@ -17,11 +17,12 @@ const Page: NextPageWithLayout = () => {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
+  const canCreatePassword = !!account?.hasOAuthAccount && !account?.hasPassword;
 
   const submit = async () => {
     if (!account?.id) return;
 
-    if (newPassword === "" || oldPassword === "") {
+    if (newPassword === "" || (!canCreatePassword && oldPassword === "")) {
       return toast.error(t("fill_all_fields"));
     }
     if (newPassword.length < 8) return toast.error(t("password_length_error"));
@@ -36,7 +37,7 @@ const Page: NextPageWithLayout = () => {
         username: account.username,
         email: account.email,
         newPassword,
-        oldPassword,
+        oldPassword: canCreatePassword ? undefined : oldPassword,
       },
       {
         onSettled: (data, error) => {
@@ -61,25 +62,33 @@ const Page: NextPageWithLayout = () => {
       <div className="flex items-center gap-2">
         <i className="bi-lock text-primary text-2xl"></i>
         <p className="capitalize text-3xl font-thin inline">
-          {t("change_password")}
+          {canCreatePassword ? t("create_password") : t("change_password")}
         </p>
       </div>
 
       <Separator className="my-3" />
 
-      <p className="mb-3">{t("password_change_instructions")}</p>
+      <p className="mb-3">
+        {canCreatePassword
+          ? t("password_create_instructions")
+          : t("password_change_instructions")}
+      </p>
       <div className="w-full flex flex-col gap-2 justify-between max-w-screen-sm">
-        <p>{t("old_password")}</p>
+        {!canCreatePassword && (
+          <>
+            <p>{t("old_password")}</p>
 
-        <TextInput
-          value={oldPassword}
-          className="bg-base-200"
-          onChange={(e) => setOldPassword(e.target.value)}
-          placeholder="••••••••••••••"
-          type="password"
-        />
+            <TextInput
+              value={oldPassword}
+              className="bg-base-200"
+              onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="••••••••••••••"
+              type="password"
+            />
+          </>
+        )}
 
-        <p className="mt-3">{t("new_password")}</p>
+        <p className={canCreatePassword ? "" : "mt-3"}>{t("new_password")}</p>
 
         <TextInput
           value={newPassword}
@@ -91,7 +100,9 @@ const Page: NextPageWithLayout = () => {
 
         <Button
           onClick={submit}
-          disabled={submitLoader || !oldPassword || !newPassword}
+          disabled={
+            submitLoader || !newPassword || (!canCreatePassword && !oldPassword)
+          }
           variant="accent"
           className="mt-3 w-full sm:w-fit"
         >
