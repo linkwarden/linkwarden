@@ -419,6 +419,13 @@ export function getLogins() {
       name: process.env.AUTHELIA_CUSTOM_NAME ?? "Authelia",
     });
   }
+  // Generic OIDC
+  if (process.env.NEXT_PUBLIC_OIDC_ENABLED === "true") {
+    buttonAuths.push({
+      method: "oidc",
+      name: process.env.OIDC_CUSTOM_NAME ?? "OIDC",
+    });
+  }
   return {
     credentialsEnabled:
       process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false"
