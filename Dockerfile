@@ -16,6 +16,8 @@ ENV YARN_HTTP_TIMEOUT=10000000
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
+ENV COREPACK_HOME=/usr/local/share/corepack
+
 ENV PRISMA_HIDE_UPDATE_MESSAGE=1
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -51,7 +53,7 @@ COPY --from=monolith-builder /usr/local/cargo/bin/monolith /usr/local/bin/monoli
 
 RUN set -eux && \
     apt-get clean && \
-    yarn cache clean
+    yarn cache clean --mirror
 
 COPY . .
 
