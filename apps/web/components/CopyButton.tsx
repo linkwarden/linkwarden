@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
+import { copyTextToClipboard } from "@/lib/client/copyTextToClipboard";
 
 type Props = {
   text: string;
@@ -10,7 +11,12 @@ const CopyButton: React.FC<Props> = ({ text }) => {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      const copiedText = await copyTextToClipboard(text);
+
+      if (!copiedText) {
+        throw new Error("Unable to copy text to clipboard.");
+      }
+
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
