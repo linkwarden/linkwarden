@@ -25,7 +25,8 @@ export async function removeFile({ filePath }: { filePath: string }) {
     );
 
     fs.unlink(creationPath, (err) => {
-      if (err) console.log(err);
+      // Missing sibling formats like .jpg vs .jpeg are expected during cleanup.
+      if (err && err.code !== "ENOENT") console.log(err);
     });
   }
 }
