@@ -126,7 +126,14 @@ export default async function archiveHandler(
           await pdfHandler(link);
           return;
         } else if (link.url) {
-          await page.goto(link.url, { waitUntil: "domcontentloaded" });
+          await page.goto(link.url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+          // Give JS-rendered / SPA pages a chance to populate before we snapshot
+          // the DOM for readability. Bounded + best-effort so hostile/slow sites
+          // never block the pipeline.
+          await page
+            .waitForLoadState("networkidle", { timeout: 8_000 })
+            .catch(() => {});
+          await page.waitForTimeout(700);
 
           // Handle Monolith being sent in beforehand while making sure other values line up
           if (link.monolith?.endsWith(".html")) {
