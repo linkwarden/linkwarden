@@ -547,5 +547,10 @@
   "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "note": "Note",
-  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed."
+  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed.",
+  "reimagine_how_you_save_links": "Reimagine how you save links",
+  "sign_in_to_linkwarden": "Welcome back!",
+  "or": "Or",
+  "continue_with_apple": "Continue with Apple",
+  "continue_with_google": "Continue with Google"
 }
