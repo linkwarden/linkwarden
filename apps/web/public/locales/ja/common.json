@@ -547,5 +547,10 @@
   "regenerate_broken_preserved_content_desc": "<0>少なくとも1つの保存形式が欠落している壊れたリンクを削除し、再度保存します。</0><0>このアクションは、{{count}}リンクの既存の保存された形式を直ちに削除します。</0><0>影響を受けるリンクは、保存された形式を再構築するようにスケジュールされます。</0>",
   "delete_all_preserved_content_and_regenerate_desc": "<0>この操作により、保存されている既存のすべての形式が直ちに削除されます。</0><0>影響を受けるリンクは、保存された形式を再構築するようにスケジュールされます。</0>",
   "note": "メモ",
-  "search_unindexed_links_in_bg_info": "一部のリンクはまだ処理中のため、検索結果の精度が低下する可能性があります。"
+  "search_unindexed_links_in_bg_info": "一部のリンクはまだ処理中のため、検索結果の精度が低下する可能性があります。",
+  "reimagine_how_you_save_links": "Reimagine how you save links",
+  "sign_in_to_linkwarden": "Welcome back!",
+  "or": "Or",
+  "continue_with_apple": "Continue with Apple",
+  "continue_with_google": "Continue with Google"
 }
