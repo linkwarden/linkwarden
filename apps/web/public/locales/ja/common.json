@@ -133,7 +133,7 @@
   "fill_required_fields": "必須項目を入力してください",
   "deleting_message": "すべてを削除中、お待ちください...",
   "delete_warning": "これにより、所有しているすべてのリンク、コレクション、タグ、およびアーカイブデータが完全に削除され、ログアウトされます。この操作は取り消せません！",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "任意",
   "feedback_help": "(しかし、これは私たちの改善に非常に役立ちます！)",
