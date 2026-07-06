@@ -133,7 +133,7 @@
   "fill_required_fields": "Por favor, rellena los campos obligatorios.",
   "deleting_message": "Eliminando todo, por favor espera...",
   "delete_warning": "Esto eliminará permanentemente todos los enlaces, colecciones, etiquetas y datos archivados en tu cuenta. También cerrará la sesión. ¡Esta acción es irreversible!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Opcional",
   "feedback_help": "(¡pero realmente nos ayuda a mejorar!)",
