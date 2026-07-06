@@ -133,7 +133,7 @@
   "fill_required_fields": "Vă rugăm completați câmpurile necesare.",
   "deleting_message": "Se șterge tot, vă rugăm așteptați...",
   "delete_warning": "Această acțiune va șterge permanent toate linkurile, colecțiile, etichetele și datele arhivate pe care le dețineți. De asemenea, vei fi deconectat. Această acțiune este ireversibilă!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Opțional",
   "feedback_help": "(dar chiar ne ajută să îmbunătățim aplicația!)",
