@@ -133,7 +133,7 @@
   "fill_required_fields": "Lütfen gerekli alanları doldurun.",
   "deleting_message": "Her şey siliniyor, lütfen bekleyin...",
   "delete_warning": "Bu işlem, SAHİP OLDUĞUNUZ tüm Bağlantılar, Koleksiyonlar, Etiketler ve arşivlenmiş verileri KALICI OLARAK silecektir. Bu işlem ayrıca çıkış yapmanıza neden olacaktır. Bu işlem geri alınamaz!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "İsteğe bağlı",
   "feedback_help": "(ama bu gerçekten gelişmemize yardımcı olur!)",
