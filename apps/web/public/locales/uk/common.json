@@ -133,7 +133,7 @@
   "fill_required_fields": "Будь ласка, заповніть необхідні поля.",
   "deleting_message": "Видалення всього, зачекайте...",
   "delete_warning": "Це назавжди видалить усі посилання, колекції, мітки та архівні дані, якими ви володієте. Це також призведе до виходу з системи. Ця дія незворотна!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Необов'язково",
   "feedback_help": "(але це дійсно допомагає нам покращуватися!)",
