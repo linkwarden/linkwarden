@@ -133,7 +133,7 @@
   "fill_required_fields": "Please fill the required fields.",
   "deleting_message": "Deleting everything, please wait...",
   "delete_warning": "This will permanently delete all the Links, Collections, Tags, and archived data you own. It will also log you out. This action is irreversible!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Optional",
   "feedback_help": "(but it really helps us improve!)",
