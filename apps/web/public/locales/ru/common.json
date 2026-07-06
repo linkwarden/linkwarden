@@ -133,7 +133,7 @@
   "fill_required_fields": "Заполните обязательные поля.",
   "deleting_message": "Удаление всех данных, подождите...",
   "delete_warning": "Это полностью удалит все принадлежащие Вам ссылки, коллекции, метки и архивы. Также это приведёт к выходу из аккаунт. Данное действие необратимо!",
-  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link.",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
   "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Необязательно",
   "feedback_help": "(но, правда, помогает нам становиться лучше!)",
