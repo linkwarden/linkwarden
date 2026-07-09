@@ -92,6 +92,7 @@ const config: ExpoConfig = {
       },
     ],
     "./plugins/with-daynight-transparent-nav",
+    "./plugins/with-android-network-security-config",
     "expo-font",
     "expo-web-browser",
     "expo-apple-authentication",
