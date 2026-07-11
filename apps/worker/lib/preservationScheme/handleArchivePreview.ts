@@ -48,7 +48,9 @@ const handleArchivePreview = async (
         );
       }
 
-      await page.goBack();
+      // Use page.goto instead of page.goBack to avoid timeouts on
+      // sites with redirect chains (e.g. tracking redirects).
+      await page.goto(link.url);
     } catch (error) {
       if (!(error instanceof UnsafeUrlError)) {
         throw error;
