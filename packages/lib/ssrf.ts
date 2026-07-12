@@ -256,6 +256,24 @@ export const defaultHostnameLookup: HostnameLookup = async (hostname) => {
     }));
 };
 
+// Successful resolutions through the default lookup are cached for a short
+// TTL, and concurrent lookups for the same hostname share one in-flight
+// promise. Archiving a single page can trigger dozens of lookups for the
+// same few hostnames (one per request plus one per new socket); without a
+// cache this bursts the local resolver, and rate-limiting resolvers (e.g.
+// AdGuard Home with its default ratelimit of 20 qps) start dropping
+// queries, stalling page loads on multi-second OS retry timeouts until
+// page.goto exceeds its navigation timeout. Serving a pinned,
+// already-validated result during the TTL also cannot be affected by DNS
+// rebinding, since no re-resolution happens while it is served.
+const RESOLVE_CACHE_TTL_MS = 30_000;
+const RESOLVE_CACHE_MAX_ENTRIES = 512;
+
+const resolveCache = new Map<
+  string,
+  { expires: number; promise: Promise<ReadonlyArray<ResolvedAddress>> }
+>();
+
 export async function resolveHostnameForServerSideFetch(
   hostname: string,
   lookup: HostnameLookup = defaultHostnameLookup
@@ -276,6 +294,38 @@ export async function resolveHostnameForServerSideFetch(
     return [{ address: normalized, family: ipFamily }] as const;
   }
 
+  // Custom lookups (used by tests) bypass the cache.
+  if (lookup !== defaultHostnameLookup) {
+    return resolveAndValidateHostname(normalized, lookup);
+  }
+
+  const cached = resolveCache.get(normalized);
+
+  if (cached && cached.expires > Date.now()) {
+    return cached.promise;
+  }
+
+  const promise = resolveAndValidateHostname(normalized, lookup);
+
+  resolveCache.set(normalized, {
+    expires: Date.now() + RESOLVE_CACHE_TTL_MS,
+    promise,
+  });
+
+  promise.catch(() => resolveCache.delete(normalized));
+
+  if (resolveCache.size > RESOLVE_CACHE_MAX_ENTRIES) {
+    const oldest = resolveCache.keys().next().value;
+    if (oldest !== undefined) resolveCache.delete(oldest);
+  }
+
+  return promise;
+}
+
+async function resolveAndValidateHostname(
+  normalized: string,
+  lookup: HostnameLookup
+) {
   let addresses: ReadonlyArray<ResolvedAddress>;
 
   try {
