@@ -7,7 +7,7 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --experimental-https",
+    "dev": "next dev",
     "start": "next start",
     "build": "next build",
     "lint": "next lint",
