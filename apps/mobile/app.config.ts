@@ -3,7 +3,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Linkwarden",
   slug: "linkwarden",
-  version: "1.3.2",
+  version: "1.3.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "linkwarden",
