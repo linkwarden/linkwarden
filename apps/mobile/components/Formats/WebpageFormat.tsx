@@ -3,6 +3,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
 import { useConfig } from "@linkwarden/router/config";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import WebView from "react-native-webview";
@@ -42,7 +43,10 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
           ...(config?.USER_CONTENT_DOMAIN
             ? {}
             : {
-                headers: { Authorization: `Bearer ${auth.session}` },
+                headers: {
+                  ...customHeadersFor(apiUrl),
+                  Authorization: `Bearer ${auth.session}`,
+                },
               }),
         });
 

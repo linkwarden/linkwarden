@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import WebView from "react-native-webview";
@@ -42,7 +43,10 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
         const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-          headers: { Authorization: `Bearer ${auth.session}` },
+          headers: {
+            ...customHeadersFor(apiUrl),
+            Authorization: `Bearer ${auth.session}`,
+          },
         });
 
         return result.uri;

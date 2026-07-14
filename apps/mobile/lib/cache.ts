@@ -2,6 +2,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import NetInfo from "@react-native-community/netinfo";
 import { ArchivedFormat, MobileAuth } from "@linkwarden/types/global";
 import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
+import { customHeadersFor } from "@/lib/customHeaders";
 
 type LoadCacheOrFetchOptions<T> = {
   filePath: string;
@@ -174,7 +175,7 @@ export const fetchFormatToCache = async ({
       });
     } else {
       const result = await FileSystem.downloadAsync(apiUrl, tmpPath, {
-        headers,
+        headers: { ...customHeadersFor(apiUrl), ...headers },
       });
       if (result.status < 200 || result.status >= 300) {
         throw new Error(`HTTP ${result.status}`);

@@ -23,6 +23,9 @@ import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
 import * as Sentry from "@sentry/react-native";
 import OfflineSyncProvider from "@/components/OfflineSyncProvider";
+import { installCustomHeaders } from "@/lib/customHeaders";
+
+installCustomHeaders();
 
 Sentry.init({
   dsn: "https://00d7eed9e810cbbf91a7ed3547e37100@o4510998442475520.ingest.us.sentry.io/4511033679609856",

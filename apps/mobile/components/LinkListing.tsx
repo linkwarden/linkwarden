@@ -19,6 +19,7 @@ import {
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
 import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
@@ -74,7 +75,10 @@ const LinkListing = ({ link, dashboard }: Props) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`;
 
         const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-          headers: { Authorization: `Bearer ${auth.session}` },
+          headers: {
+            ...customHeadersFor(apiUrl),
+            Authorization: `Bearer ${auth.session}`,
+          },
         });
 
         return result.uri;

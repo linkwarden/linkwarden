@@ -18,6 +18,7 @@ import { markWhatsNewSeen } from "@/lib/whatsNew";
 import { useOfflineSyncStore } from "@/lib/offlineSync";
 import { hasInactiveSubscription } from "@/lib/subscription";
 import { ensureCloudIsReachable } from "@/lib/ensureCloudIsReachable";
+import { loadCustomHeaders, setCustomHeaders } from "@/lib/customHeaders";
 
 const cloudInstance = "https://cloud.linkwarden.app";
 const cloudConfig: Config = {
@@ -197,6 +198,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     error: "",
   },
   setAuth: async () => {
+    await loadCustomHeaders();
     const session = await SecureStore.getItemAsync("TOKEN");
     const instance = await SecureStore.getItemAsync("INSTANCE");
     const nextInstance = cleanInstance(instance);
@@ -224,6 +226,8 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   requestVerificationEmail,
   setInstance: async (instance, config) => {
     const nextInstance = cleanInstance(instance);
+
+    if (nextInstance === cloudInstance) await setCustomHeaders(nextInstance, []);
 
     await SecureStore.setItemAsync("INSTANCE", nextInstance);
     set((state) => ({

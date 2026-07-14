@@ -1,13 +1,13 @@
 {
   "name": "@linkwarden/web",
-  "version": "v2.15.0",
+  "version": "v2.15.2",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "start": "next start",
     "build": "next build",
     "lint": "next lint",
