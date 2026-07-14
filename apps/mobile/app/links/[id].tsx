@@ -12,6 +12,7 @@ import {
 import { WebView } from "react-native-webview";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import {
   Stack,
   useFocusEffect,
@@ -319,10 +320,12 @@ export default function LinkScreen() {
           className={isLoading ? "opacity-0" : "flex-1"}
           source={{
             uri: url,
-            headers:
-              format || link?.type !== "url"
+            headers: {
+              ...customHeadersFor(url),
+              ...(format || link?.type !== "url"
                 ? { Authorization: `Bearer ${auth.session}` }
-                : {},
+                : {}),
+            },
           }}
           contentInsetAdjustmentBehavior="automatic"
           automaticallyAdjustContentInsets
