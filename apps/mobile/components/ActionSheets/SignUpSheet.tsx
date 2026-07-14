@@ -57,7 +57,6 @@ export default function SignUpSheet() {
     username: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
     instance: auth.instance || cloudInstance,
   });
 
@@ -101,15 +100,8 @@ export default function SignUpSheet() {
         "Sign up through the web",
         "This instance needs to be updated to support mobile sign-up. You can sign up through the web, then come back here to log in."
       );
-    else if (
-      !name ||
-      !form.password ||
-      !form.passwordConfirmation ||
-      (emailSignUp ? !email : !username)
-    )
+    else if (!name || !form.password || (emailSignUp ? !email : !username))
       return Alert.alert("Error", "Please fill all fields");
-    else if (form.password !== form.passwordConfirmation)
-      return Alert.alert("Error", "Passwords don't match");
     else if (form.password.length < 8)
       return Alert.alert("Error", "Password must be at least 8 characters");
 
@@ -234,17 +226,6 @@ export default function SignUpSheet() {
               autoCapitalize="none"
               value={form.password}
               onChangeText={(text) => setForm({ ...form, password: text })}
-            />
-            <Input
-              className="w-full text-xl p-3 leading-tight h-12"
-              textAlignVertical="center"
-              placeholder="Confirm Password"
-              secureTextEntry
-              autoCapitalize="none"
-              value={form.passwordConfirmation}
-              onChangeText={(text) =>
-                setForm({ ...form, passwordConfirmation: text })
-              }
             />
             {instance === cloudInstance && (
               <TouchableOpacity
