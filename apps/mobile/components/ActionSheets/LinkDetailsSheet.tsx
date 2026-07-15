@@ -444,7 +444,7 @@ export default function LinkDetailsSheet(
                     There are more formats on the way
                   </Text>
                   <Text className="text-sm text-neutral mt-1">
-                    Check back later
+                    Please check back later to see the result
                   </Text>
                 </View>
               ) : null}
