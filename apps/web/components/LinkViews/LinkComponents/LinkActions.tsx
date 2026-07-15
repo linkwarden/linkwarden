@@ -130,7 +130,6 @@ export default function LinkActions({
                   className="text-error"
                   onClick={async (e) => {
                     if (e.shiftKey) {
-                      const load = toast.loading(t("deleting"));
                       await deleteLink.mutateAsync(link.id as number);
                     } else {
                       setDeleteLinkModal(true);
