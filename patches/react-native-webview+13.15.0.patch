@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native-webview/apple/RNCWebViewImpl.m b/node_modules/react-native-webview/apple/RNCWebViewImpl.m
+index 7f5c24d6e..e04946c33 100644
+--- a/node_modules/react-native-webview/apple/RNCWebViewImpl.m
++++ b/node_modules/react-native-webview/apple/RNCWebViewImpl.m
+@@ -97,6 +97,36 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
+     if (@available(iOS 16.0, *)) {
+       if(self.menuItems){
+         [builder removeMenuForIdentifier:UIMenuLookup];
++        // On iOS 26.2+ the web view's own edit menu is presented instead of the
++        // UIEditMenuInteraction menu from RNCWebViewImpl, and speech items skip
++        // -canPerformAction:withSender:, leaving a menu that only shows "Speak".
++        // Rebuild the web view's edit menu with the custom items instead. The
++        // UICommand selectors resolve through the responder chain up to
++        // RNCWebViewImpl, which forwards them to -tappedMenuItem:.
++        if (@available(iOS 26.2, *)) {
++          [builder removeMenuForIdentifier:UIMenuSpeech];
++
++          NSMutableArray<UICommand *> *customMenuItems =
++              [NSMutableArray arrayWithCapacity:self.menuItems.count];
++          for (NSDictionary *menuItem in self.menuItems) {
++            NSString *menuItemLabel = [RCTConvert NSString:menuItem[@"label"]];
++            NSString *menuItemKey = [RCTConvert NSString:menuItem[@"key"]];
++            NSString *sel = [NSString stringWithFormat:@"%@%@", CUSTOM_SELECTOR, menuItemKey];
++            [customMenuItems addObject:[UICommand commandWithTitle:menuItemLabel
++                                                             image:nil
++                                                            action:NSSelectorFromString(sel)
++                                                      propertyList:nil]];
++          }
++
++          if (customMenuItems.count > 0) {
++            UIMenu *customMenu = [UIMenu menuWithTitle:@""
++                                                 image:nil
++                                            identifier:@"RNCWebViewCustomMenuItems"
++                                               options:UIMenuOptionsDisplayInline
++                                              children:customMenuItems];
++            [builder insertChildMenu:customMenu atStartOfMenuForIdentifier:UIMenuRoot];
++          }
++        }
+       }
+     }
+     [super buildMenuWithBuilder:builder];

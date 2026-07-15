@@ -42,8 +42,6 @@ export const setCustomHeaders = async (
   await SecureStore.setItemAsync(STORE_KEY, JSON.stringify(stored));
 };
 
-// Only requests to the exact instance the headers were configured for ever
-// receive them — never the cloud instance or any other host.
 export const customHeadersFor = (url: string): Record<string, string> => {
   if (!stored?.headers.length) return {};
   if (url !== stored.instance && !url.startsWith(stored.instance + "/"))
@@ -54,10 +52,6 @@ export const customHeadersFor = (url: string): Record<string, string> => {
 
 let originalFetch: typeof fetch | undefined;
 
-// Covers every fetch in the app, including @linkwarden/router. Headers set by
-// the app itself (e.g. Authorization) always take precedence.
-// FileSystem.downloadAsync doesn't go through fetch — those callsites merge
-// customHeadersFor() into their headers directly.
 export const installCustomHeaders = () => {
   if (originalFetch) return;
   originalFetch = global.fetch;
@@ -65,8 +59,7 @@ export const installCustomHeaders = () => {
   global.fetch = (async (input: any, init?: RequestInit) => {
     await ready;
 
-    const url =
-      typeof input === "string" ? input : (input?.url ?? String(input));
+    const url = typeof input === "string" ? input : input?.url ?? String(input);
     const custom = customHeadersFor(url);
 
     if (Object.keys(custom).length) {

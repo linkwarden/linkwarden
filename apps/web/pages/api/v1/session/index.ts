@@ -19,16 +19,23 @@ export default async function session(
 
   const { username, password, sessionName } = dataValidation.data;
 
-  const user = await verifyByCredentials({ username, password });
+  const result = await verifyByCredentials({ username, password });
 
-  if (!user)
+  if (result.status === "email_not_verified")
+    return res.status(401).json({
+      response: "Please verify your email address before logging in.",
+      code: "EMAIL_NOT_VERIFIED",
+      email: result.user.email,
+    });
+
+  if (result.status !== "success")
     return res.status(400).json({
       response:
         "Invalid credentials. You might need to reset your password if you're sure you already signed up with the current username/email.",
     });
 
   if (req.method === "POST") {
-    const token = await createSession(user.id, sessionName);
+    const token = await createSession(result.user.id, sessionName);
     return res.status(token.status).json({ response: token.response });
   }
 }

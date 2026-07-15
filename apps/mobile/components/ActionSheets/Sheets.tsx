@@ -16,6 +16,7 @@ import ReadableHighlightsSheet from "./ReadableHighlightsSheet";
 import ReaderSettingsSheet from "./ReaderSettingsSheet";
 import LoginSheet from "./LoginSheet";
 import SignUpSheet from "./SignUpSheet";
+import VerifyEmailSheet from "./VerifyEmailSheet";
 import SelfHostedServerSheet from "./SelfHostedServerSheet";
 import DeleteAccountSheet from "./DeleteAccountSheet";
 import WhatsNewSheet from "./WhatsNewSheet";
@@ -24,6 +25,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/globa
 registerSheet("support-sheet", SupportSheet);
 registerSheet("login-sheet", LoginSheet);
 registerSheet("sign-up-sheet", SignUpSheet);
+registerSheet("verify-email-sheet", VerifyEmailSheet);
 registerSheet("self-hosted-server-sheet", SelfHostedServerSheet);
 registerSheet("add-link-sheet", AddLinkSheet);
 registerSheet("link-details-sheet", LinkDetailsSheet);
@@ -41,6 +43,12 @@ declare module "react-native-actions-sheet" {
     "support-sheet": SheetDefinition;
     "login-sheet": SheetDefinition;
     "sign-up-sheet": SheetDefinition;
+    "verify-email-sheet": SheetDefinition<{
+      payload: {
+        email: string;
+        instance: string;
+      };
+    }>;
     "self-hosted-server-sheet": SheetDefinition;
     "add-link-sheet": SheetDefinition<{
       payload: {
