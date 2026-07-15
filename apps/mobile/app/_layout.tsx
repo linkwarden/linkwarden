@@ -150,6 +150,7 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
               <Stack.Screen name="index" />
               <Stack.Screen name="subscribe" />
               <Stack.Screen name="incoming" />
+              <Stack.Screen name="verify-email" />
               <Stack.Screen name="+not-found" />
             </Stack>
           )}

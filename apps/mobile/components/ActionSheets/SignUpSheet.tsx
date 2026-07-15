@@ -80,6 +80,10 @@ export default function SignUpSheet() {
     await SheetManager.hide("sign-up-sheet");
   };
 
+  useEffect(() => {
+    if (auth.status === "authenticated") closeSheet();
+  }, [auth.status]);
+
   const register = async () => {
     const email = form.email.toLowerCase().trim();
     const username = form.username.toLowerCase().trim();

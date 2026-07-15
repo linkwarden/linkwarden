@@ -66,6 +66,10 @@ export default function LoginSheet() {
     SheetManager.hide("login-sheet");
   };
 
+  useEffect(() => {
+    if (auth.status === "authenticated") closeSheet();
+  }, [auth.status]);
+
   const handleLogin = async () => {
     if (!instance || (!form.token && (!form.user || !form.password))) return;
 

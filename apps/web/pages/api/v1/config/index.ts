@@ -33,5 +33,7 @@ export const getEnvData = () => {
     TRIAL_PERIOD_DAYS:
       Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || null,
     REQUIRE_CC: process.env.NEXT_PUBLIC_REQUIRE_CC === "true" || null,
+    MOBILE_APP_REDIRECT_ENABLED:
+      process.env.NEXT_PUBLIC_MOBILE_APP_REDIRECT_ENABLED === "true" || null,
   };
 };

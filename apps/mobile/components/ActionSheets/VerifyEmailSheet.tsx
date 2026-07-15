@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, Text } from "react-native";
 import ActionSheet, {
   SheetManager,
@@ -14,7 +14,7 @@ import SheetHeader from "./SheetHeader";
 export default function VerifyEmailSheet({
   payload,
 }: SheetProps<"verify-email-sheet">) {
-  const { requestVerificationEmail } = useAuthStore();
+  const { auth, requestVerificationEmail } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const theme = rawTheme[colorScheme as ThemeName];
@@ -26,6 +26,10 @@ export default function VerifyEmailSheet({
   const closeSheet = () => {
     SheetManager.hide("verify-email-sheet");
   };
+
+  useEffect(() => {
+    if (auth.status === "authenticated") closeSheet();
+  }, [auth.status]);
 
   return (
     <ActionSheet
@@ -56,9 +60,9 @@ export default function VerifyEmailSheet({
         <Text className="text-base-content text-xl" numberOfLines={1}>
           {email}
         </Text>
-        <Text className="text-base-content text-center text-base px-2">
-          Please verify your email address to continue. Check your inbox for the
-          verification link, then come back and log in.
+        <Text className="text-base-content text-base">
+          Please verify your email address to continue. Open the link we sent to
+          your inbox to verify and log in automatically.
         </Text>
         <Button
           variant="accent"

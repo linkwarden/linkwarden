@@ -32,6 +32,7 @@ export default function CenteredForm({
           height={150}
           alt="Linkwarden"
           className="h-16 w-auto mx-auto"
+          priority
         />
         {header && (
           <p className="text-2xl text-black dark:text-white text-center font-semibold">
