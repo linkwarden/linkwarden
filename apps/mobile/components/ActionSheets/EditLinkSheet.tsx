@@ -235,14 +235,16 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
                     name: newBanner.fileName || "banner.jpg",
                     type: "image/jpeg",
                   },
+                  isPreview: true,
                 })
                 .catch(() => null);
 
               if (uploaded) {
-                await Promise.all([
-                  seedFormatCache(link.id, "preview", newBanner.uri),
-                  seedFormatCache(link.id, "jpeg", newBanner.uri),
-                ]).catch(() => {});
+                await seedFormatCache(
+                  link.id,
+                  "preview",
+                  newBanner.uri
+                ).catch(() => {});
               }
             }
 

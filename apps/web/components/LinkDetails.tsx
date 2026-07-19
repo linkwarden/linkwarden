@@ -206,6 +206,7 @@ export default function LinkDetails({
                           {
                             linkId: link.id as number,
                             file,
+                            isPreview: true,
                           },
                           {
                             onSettled: (data, error) => {
