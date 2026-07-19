@@ -1006,7 +1006,17 @@ const useUploadFile = () => {
   });
 };
 
-const useUpdateFile = () => {
+const useUpdateFile = ({
+  auth,
+  Alert,
+  toast,
+  t,
+}: {
+  auth?: MobileAuth;
+  Alert?: any;
+  toast?: typeof toaster;
+  t?: TFunction;
+} = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -1016,7 +1026,7 @@ const useUpdateFile = () => {
       isPreview,
     }: {
       linkId: number;
-      file: File;
+      file: File | { uri: string; name: string; type: string };
       isPreview?: boolean;
     }) => {
       const formBody = new FormData();
@@ -1028,21 +1038,34 @@ const useUpdateFile = () => {
       if (!linkId || !file)
         throw new Error("Error generating preview: Invalid parameters");
 
-      formBody.append("file", file);
+      formBody.append("file", file as any);
 
       const res = await fetch(
-        `/api/v1/archives/${linkId}?format=` +
+        (auth?.instance ? auth?.instance : "") +
+          `/api/v1/archives/${linkId}?format=` +
           format +
           (isPreview ? "&preview=true" : ""),
         {
           body: formBody,
           method: "POST",
+          headers: {
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
         }
       );
 
-      const data = res.json();
+      const data = await res.json();
 
-      return data;
+      if (!res.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    onError: (error) => {
+      if (toast && t) toast.error(t(error.message));
+      else if (Alert)
+        Alert.alert("Error", "There was an error uploading the file.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] });

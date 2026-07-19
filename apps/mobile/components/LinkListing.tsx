@@ -69,6 +69,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
         `archivedData/previews/link_${link.id}.jpg`,
       setContent: setPreview,
       shouldFetch: formatAvailable(link, "preview"),
+      updatedAt: link.updatedAt,
       onStart: () => setPreview(""),
       errorMessage: "Failed to fetch preview",
       fetchContent: async (filePath) => {
@@ -175,7 +176,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                   preview ? (
                     <Image
                       source={{
-                        uri: preview,
+                        uri: `${preview}?updatedAt=${link.updatedAt}`,
                       }}
                       className="rounded-md h-[60px] w-[90px] object-cover scale-105"
                     />

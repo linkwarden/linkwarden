@@ -27,6 +27,7 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
         FileSystem.documentDirectory + `archivedData/webpage/link_${link.id}.html`,
       setContent,
       shouldFetch: !isConfigLoading,
+      updatedAt: link.updatedAt,
       fetchContent: async (filePath) => {
         const apiUrl = config?.USER_CONTENT_DOMAIN
           ? await getPreservedFormatUrl({

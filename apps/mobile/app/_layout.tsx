@@ -42,7 +42,7 @@ export default Sentry.wrap(function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { auth, setAuth } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const rootNavState = useRootNavigationState();
 
   useEffect(() => {

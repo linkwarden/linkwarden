@@ -5283,6 +5283,7 @@ __metadata:
     expo-font: "npm:~14.0.11"
     expo-haptics: "npm:~15.0.8"
     expo-iap: "npm:~4.3.6"
+    expo-image-picker: "npm:~17.0.11"
     expo-linking: "npm:~8.0.11"
     expo-navigation-bar: "npm:~5.0.10"
     expo-router: "npm:~6.0.23"
@@ -12982,6 +12983,26 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/b967e963ac33ce35439dbe1a4c90f2a21670c62084edce1634e40d1f1384f07f4ca35c4bf290ab09f689b53e096be685aecc29510b883946641e90ab75a095d7
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~6.0.0":
+  version: 6.0.0
+  resolution: "expo-image-loader@npm:6.0.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/36f1e80d2b3d2a1cce440c7d938cd3cf3138f2b1fa706a1954e415bfae87b5b8eeaec65be0ab17880eb7585dd28c9225d056ebdb98ac81e0ffbfe880d952b0eb
+  languageName: node
+  linkType: hard
+
+"expo-image-picker@npm:~17.0.11":
+  version: 17.0.11
+  resolution: "expo-image-picker@npm:17.0.11"
+  dependencies:
+    expo-image-loader: "npm:~6.0.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/4708eca0f93258b9214d4a107edeed52562ade4bc1b53c5fa6dcb1218ccdf56ba46e5993110cda81b19e6d5a52e61572e057ccbcb7efdd6a48d99f5633b178ec
   languageName: node
   linkType: hard
 

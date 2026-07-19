@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,

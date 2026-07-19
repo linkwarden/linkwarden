@@ -60,6 +60,15 @@ const config: ExpoConfig = {
     ],
     "expo-secure-store",
     [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "Allow $(PRODUCT_NAME) to access your photos to upload custom link banners.",
+        cameraPermission: false,
+        microphonePermission: false,
+      },
+    ],
+    [
       "expo-share-intent",
       {
         iosAppGroupIdentifier: "group.app.linkwarden",

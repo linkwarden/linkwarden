@@ -10,9 +10,12 @@ type LoadCacheOrFetchOptions<T> = {
   getCachedContent?: (filePath: string) => Promise<T>;
   fetchContent?: (filePath: string) => Promise<T>;
   shouldFetch?: boolean;
+  updatedAt?: string | Date | null;
   onStart?: () => void;
   errorMessage?: string;
 };
+
+const staleFileGraceMs = 5000;
 
 export const loadCacheOrFetch = async <T = string>({
   filePath,
@@ -20,6 +23,7 @@ export const loadCacheOrFetch = async <T = string>({
   getCachedContent = async (filePath) => filePath as T,
   fetchContent,
   shouldFetch = true,
+  updatedAt,
   onStart,
   errorMessage = "Failed to fetch content",
 }: LoadCacheOrFetchOptions<T>) => {
@@ -34,18 +38,31 @@ export const loadCacheOrFetch = async <T = string>({
 
   const [info] = await Promise.all([FileSystem.getInfoAsync(filePath)]);
 
-  if (info.exists) {
-    const cachedContent = await getCachedContent(filePath);
-    setContent(cachedContent);
+  const isStale =
+    info.exists &&
+    updatedAt != null &&
+    ((info as any).modificationTime ?? 0) * 1000 + staleFileGraceMs <
+      new Date(updatedAt).getTime();
+
+  const showCached = async () => {
+    if (info.exists) setContent(await getCachedContent(filePath));
+  };
+
+  if (!isStale) {
+    await showCached();
+
+    if (updatedAt != null && info.exists) return;
   }
 
   if (!shouldFetch || !fetchContent) {
+    if (isStale) await showCached();
     return;
   }
 
   const net = await NetInfo.fetch();
 
   if (!net.isConnected) {
+    if (isStale) await showCached();
     return;
   }
 
@@ -54,6 +71,7 @@ export const loadCacheOrFetch = async <T = string>({
 
     setContent(freshContent);
   } catch (e) {
+    if (isStale) await showCached();
     console.error(errorMessage, e);
   }
 };
@@ -99,6 +117,23 @@ export const getCachePathForFormat = (
         `archivedData/previews/link_${linkId}.jpg`
       );
   }
+};
+
+export const seedFormatCache = async (
+  linkId: number,
+  format: CacheFormat,
+  sourceUri: string
+) => {
+  const filePath = getCachePathForFormat(linkId, format);
+
+  await FileSystem.makeDirectoryAsync(
+    filePath.substring(0, filePath.lastIndexOf("/")),
+    { intermediates: true }
+  ).catch(() => {});
+
+  await FileSystem.deleteAsync(filePath, { idempotent: true }).catch(() => {});
+
+  await FileSystem.copyAsync({ from: sourceUri, to: filePath });
 };
 
 type FetchFormatToCacheOptions = {

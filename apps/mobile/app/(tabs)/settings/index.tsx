@@ -34,6 +34,7 @@ import {
   UserX,
 } from "lucide-react-native";
 import { SheetManager } from "react-native-actions-sheet";
+import WebViewModal from "@/components/WebViewModal";
 import { clearCache } from "@/lib/cache";
 import {
   formatBytes,
@@ -52,6 +53,7 @@ export default function SettingsScreen() {
   const [override, setOverride] = useState<"light" | "dark" | "system">(
     data.theme || "system"
   );
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
 
   useEffect(() => {
     setColorScheme(override);
@@ -96,6 +98,19 @@ export default function SettingsScreen() {
           <Text className="text-neutral mt-2 mb-3">
             {user?.email || "@" + user?.username}
           </Text>
+          <View className="h-px bg-neutral-content -mr-4" />
+          <TouchableOpacity
+            className="flex-row items-center mt-3 mb-3"
+            onPress={() => setShowAccountSettings(true)}
+          >
+            <Text className="flex-1 text-base text-base-content">
+              More Account Settings
+            </Text>
+            <ChevronRight
+              size={18}
+              color={rawTheme[colorScheme as ThemeName].neutral}
+            />
+          </TouchableOpacity>
           <View className="h-px bg-neutral-content -mr-4" />
           <TouchableOpacity
             className="flex-row items-center mt-3"
@@ -406,6 +421,14 @@ export default function SettingsScreen() {
           {nativeApplicationVersion}
         </Text>
       </ScrollView>
+
+      <WebViewModal
+        visible={showAccountSettings}
+        onClose={() => setShowAccountSettings(false)}
+        title="Linkwarden Web"
+        uri={`${auth.instance}/settings/account`}
+        sessionToken={auth.session}
+      />
     </View>
   );
 }

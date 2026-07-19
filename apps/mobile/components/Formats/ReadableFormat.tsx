@@ -250,6 +250,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
           FileSystem.documentDirectory +
           `archivedData/readable/link_${link.id}.html`,
         setContent,
+        updatedAt: link.updatedAt,
         getCachedContent: (filePath) => FileSystem.readAsStringAsync(filePath),
         fetchContent: async (filePath) => {
           const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
@@ -267,7 +268,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
           return data;
         },
       });
-    }, [FORMAT, auth.instance, auth.session, link.id]);
+    }, [FORMAT, auth.instance, auth.session, link.id, link.updatedAt]);
 
     const systemTheme: ThemeName = colorScheme === "dark" ? "dark" : "light";
     const { theme, isDark } = resolveReaderTheme(

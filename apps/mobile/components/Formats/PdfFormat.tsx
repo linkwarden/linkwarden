@@ -23,6 +23,7 @@ export default function PdfFormat({ link, setIsLoading }: Props) {
       filePath:
         FileSystem.documentDirectory + `archivedData/pdf/link_${link.id}.pdf`,
       setContent,
+      updatedAt: link.updatedAt,
       fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
@@ -36,7 +37,7 @@ export default function PdfFormat({ link, setIsLoading }: Props) {
         return result.uri;
       },
     });
-  }, [FORMAT, auth.instance, auth.session, link.id]);
+  }, [FORMAT, auth.instance, auth.session, link.id, link.updatedAt]);
 
   return (
     content && (

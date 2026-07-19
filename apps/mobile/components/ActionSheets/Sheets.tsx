@@ -20,6 +20,7 @@ import VerifyEmailSheet from "./VerifyEmailSheet";
 import SelfHostedServerSheet from "./SelfHostedServerSheet";
 import DeleteAccountSheet from "./DeleteAccountSheet";
 import WhatsNewSheet from "./WhatsNewSheet";
+import RefreshPreservedFormatsSheet from "./RefreshPreservedFormatsSheet";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 
 registerSheet("support-sheet", SupportSheet);
@@ -37,6 +38,7 @@ registerSheet("readable-highlights-sheet", ReadableHighlightsSheet);
 registerSheet("reader-settings-sheet", ReaderSettingsSheet);
 registerSheet("delete-account-sheet", DeleteAccountSheet);
 registerSheet("whats-new-sheet", WhatsNewSheet);
+registerSheet("refresh-preserved-formats-sheet", RefreshPreservedFormatsSheet);
 
 declare module "react-native-actions-sheet" {
   interface Sheets {
@@ -93,6 +95,11 @@ declare module "react-native-actions-sheet" {
     "reader-settings-sheet": SheetDefinition;
     "delete-account-sheet": SheetDefinition;
     "whats-new-sheet": SheetDefinition;
+    "refresh-preserved-formats-sheet": SheetDefinition<{
+      payload: {
+        linkId: number;
+      };
+    }>;
   }
 }
 
