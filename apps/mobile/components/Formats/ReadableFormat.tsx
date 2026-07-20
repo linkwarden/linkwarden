@@ -516,6 +516,7 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
           color: var(--rv-body-color);
           font-family: var(--rv-font-family, -apple-system, system-ui, sans-serif);
           -webkit-text-size-adjust: 100%;
+          overflow-x: hidden;
         }
         a { color: var(--rv-link-color); }
         img { max-width: 100%; height: auto; }
