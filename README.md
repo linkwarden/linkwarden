@@ -69,6 +69,16 @@ Linkwarden is also designed with collaboration in mind, enabling you to share li
 
 <img src="./assets/mobile_apps.png" alt="Different screens (iPad, Pixel, and iPhone)" width="400" />
 
+> [!IMPORTANT]
+> To use the app you’ll first need a Linkwarden account.
+
+To create an account, you can choose between:
+
+- [**Linkwarden Cloud**](https://linkwarden.app/#pricing) – instant setup, and your subscription directly supports ongoing development.
+- [**Self-hosted Linkwarden**](https://docs.linkwarden.app/self-hosting/installation) – free, but you’ll need to deploy and maintain a Linkwarden instance on a server.
+
+After creating an account, download the app from your preferred store:
+
 [![Download on the App Store](./assets/app_store.png)](https://apps.apple.com/app/linkwarden/id6752550960)
 [![Get it on Google Play](./assets/google_play.png)](https://play.google.com/store/apps/details?id=app.linkwarden)
 
