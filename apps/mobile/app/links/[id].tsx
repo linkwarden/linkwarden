@@ -275,7 +275,7 @@ export default function LinkScreen() {
                 }}
               >
                 <DropdownMenu.ItemTitle>
-                  Refresh Preserved Formats
+                  Refresh All Formats
                 </DropdownMenu.ItemTitle>
               </DropdownMenu.Item>
             )}
