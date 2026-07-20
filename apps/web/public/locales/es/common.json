@@ -133,6 +133,8 @@
   "fill_required_fields": "Por favor, rellena los campos obligatorios.",
   "deleting_message": "Eliminando todo, por favor espera...",
   "delete_warning": "Esto eliminará permanentemente todos los enlaces, colecciones, etiquetas y datos archivados en tu cuenta. También cerrará la sesión. ¡Esta acción es irreversible!",
+  "delete_account_apple_subscription_notice": "Note: Deleting your account will not cancel your App Store subscription. To avoid future charges, cancel the subscription in your Apple ID settings or use the following link:",
+  "delete_account_google_subscription_notice": "Your Google Play subscription's auto-renewal will be cancelled automatically when your account is deleted.",
   "optional": "Opcional",
   "feedback_help": "(¡pero realmente nos ayuda a mejorar!)",
   "reason_for_cancellation": "Motivos de la cancelación",
@@ -204,6 +206,10 @@
   "leave_collection": "Salir de la colección",
   "email_verified_signing_out": "Correo electrónico verificado. Cerrando sesión...",
   "invalid_token": "Token inválido.",
+  "verify_your_email": "Verify your Email",
+  "open_in_the_app": "Open in the App",
+  "continue_in_browser": "Continue in Browser",
+  "redirecting": "Redirecting...",
   "sending_password_recovery_link": "Enviando enlace de recuperación de contraseña",
   "please_fill_all_fields": "Por favor, rellena todos los campos.",
   "password_updated": "¡Contraseña actualizada!",
@@ -547,5 +553,10 @@
   "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
   "note": "Note",
-  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed."
+  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed.",
+  "reimagine_how_you_save_links": "Reimagine how you save links",
+  "sign_in_to_linkwarden": "Welcome back!",
+  "or": "Or",
+  "continue_with_apple": "Continue with Apple",
+  "continue_with_google": "Continue with Google"
 }
