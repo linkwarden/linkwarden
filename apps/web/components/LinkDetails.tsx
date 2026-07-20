@@ -195,7 +195,7 @@ export default function LinkDetails({
                     {t("upload_banner")}
                     <input
                       type="file"
-                      accept="image/jpg, image/jpeg"
+                      accept="image/jpg, image/jpeg, image/png"
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;

@@ -233,7 +233,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         [ArchivedFormat.monolith]: ["text/html"],
       };
 
-      const allowedMIMETypes = allowedMIMETypesByFormat[format] ?? [];
+      const allowedMIMETypes = isPreview
+        ? ["image/png", "image/jpg", "image/jpeg"]
+        : allowedMIMETypesByFormat[format] ?? [];
 
       const fileBuffer = validateFile(
         files.file[0],
