@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Alert, Text, View } from "react-native";
 import ActionSheet, {
   ActionSheetRef,
@@ -7,7 +7,7 @@ import ActionSheet, {
 } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateArchive } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { deleteLinkCache } from "@/lib/cache";
@@ -23,9 +23,11 @@ export default function RefreshPreservedFormatsSheet(
   const insets = useSafeAreaInsets();
 
   const { auth } = useAuthStore();
-  const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(false);
+  const updateArchive = useUpdateArchive({
+    auth,
+    onAfterSuccess: (id) => deleteLinkCache(id),
+  });
 
   const linkId = props.payload?.linkId;
 
@@ -34,39 +36,16 @@ export default function RefreshPreservedFormatsSheet(
   };
 
   const handleRefresh = async () => {
-    if (!linkId || loading) return;
-
-    setLoading(true);
+    if (!linkId || updateArchive.isPending) return;
 
     try {
-      const response = await fetch(
-        `${auth.instance}/api/v1/links/${linkId}/archive`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${auth.session}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(
-          data?.response || "Could not refresh the preserved formats."
-        );
-      }
-
-      await deleteLinkCache(linkId);
-      queryClient.invalidateQueries({ queryKey: ["link", linkId] });
-
+      await updateArchive.mutateAsync(linkId);
       await SheetManager.hide(props.sheetId);
     } catch (error: any) {
       Alert.alert(
         "Error",
         error?.message || "Could not refresh the preserved formats."
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -92,7 +71,7 @@ export default function RefreshPreservedFormatsSheet(
 
         <Button
           onPress={handleRefresh}
-          isLoading={loading}
+          isLoading={updateArchive.isPending}
           variant="destructive"
           className="mt-5"
         >

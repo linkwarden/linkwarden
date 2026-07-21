@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import {
   ActivityIndicator,
   Linking,
@@ -31,10 +31,11 @@ import { Button } from "@/components/ui/Button";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import useDataStore from "@/store/data";
-import { useUser } from "@linkwarden/router/user";
+import { useGetLink } from "@linkwarden/router/links";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
+  isPreservationPending,
 } from "@linkwarden/lib/formatStats";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import {
@@ -42,26 +43,6 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types/global";
 import SheetHeader from "./SheetHeader";
-
-type CollectionOwner = {
-  id: number | null;
-  name: string;
-  username: string;
-  image: string;
-  archiveAsScreenshot?: boolean;
-  archiveAsMonolith?: boolean;
-  archiveAsPDF?: boolean;
-};
-
-const initialCollectionOwner: CollectionOwner = {
-  id: null,
-  name: "",
-  username: "",
-  image: "",
-  archiveAsScreenshot: undefined,
-  archiveAsMonolith: undefined,
-  archiveAsPDF: undefined,
-};
 
 function SectionLabel({ children }: { children: string }) {
   return <Text className="mb-2 text-sm text-neutral">{children}</Text>;
@@ -92,79 +73,19 @@ export default function LinkDetailsSheet(
 ) {
   const { auth } = useAuthStore();
   const { data } = useDataStore();
-  const { data: user } = useUser(auth);
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const router = useRouter();
   const theme = rawTheme[colorScheme as ThemeName];
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags | null>(
-      props.payload?.link ?? null
-    );
-  const [collectionOwner, setCollectionOwner] = useState<CollectionOwner>(
-    initialCollectionOwner
-  );
-
-  useEffect(() => {
-    setLink(props.payload?.link ?? null);
-  }, [props.payload?.link]);
-
-  useEffect(() => {
-    if (!link?.collection.ownerId || !auth.instance) {
-      setCollectionOwner(initialCollectionOwner);
-      return;
-    }
-
-    let cancelled = false;
-
-    const fetchOwner = async () => {
-      if (link.collection.ownerId === user?.id) {
-        if (!cancelled) {
-          setCollectionOwner({
-            id: user.id,
-            name: user.name || "",
-            username: user.username || "",
-            image: user.image || "",
-            archiveAsScreenshot: user.archiveAsScreenshot,
-            archiveAsMonolith: user.archiveAsMonolith,
-            archiveAsPDF: user.archiveAsPDF,
-          });
-        }
-
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${auth.instance}/api/v1/public/users/${link.collection.ownerId}`,
-          auth.session
-            ? {
-                headers: {
-                  Authorization: `Bearer ${auth.session}`,
-                },
-              }
-            : undefined
-        );
-
-        const payload = await response.json();
-
-        if (!response.ok || cancelled) {
-          return;
-        }
-
-        setCollectionOwner(payload.response as CollectionOwner);
-      } catch (error) {
-        console.error("Failed to load collection owner", error);
-      }
-    };
-
-    fetchOwner();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [auth.instance, auth.session, link?.collection.ownerId, user]);
+  const payloadLink = props.payload?.link ?? null;
+  const { data: fetchedLink } = useGetLink({
+    id: payloadLink?.id as number,
+    auth,
+    enabled: payloadLink?.id != null,
+  });
+  const link: LinkIncludingShortenedCollectionAndTags | null =
+    fetchedLink?.id != null ? fetchedLink : payloadLink;
 
   const closeSheet = () => {
     SheetManager.hide("link-details-sheet");
@@ -223,16 +144,7 @@ export default function LinkDetailsSheet(
     );
   };
 
-  const isReady = () => {
-    if (!link) return false;
-
-    return (
-      (collectionOwner.archiveAsScreenshot === true ? link.image : true) &&
-      (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
-      (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
-      link.readable
-    );
-  };
+  const isReady = () => Boolean(link?.id) && !isPreservationPending(link);
 
   const formattedSavedDate = link?.createdAt
     ? new Date(link.createdAt).toLocaleDateString("en-US", {
@@ -259,10 +171,6 @@ export default function LinkDetailsSheet(
         backgroundColor: theme["base-200"],
       }}
       safeAreaInsets={insets}
-      onClose={() => {
-        setLink(null);
-        setCollectionOwner(initialCollectionOwner);
-      }}
     >
       <SheetHeader title="Link Details" onClose={closeSheet} />
 

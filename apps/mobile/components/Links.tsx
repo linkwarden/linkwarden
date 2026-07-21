@@ -1,4 +1,4 @@
-import { View, FlatList, Text, ActivityIndicator, ViewToken } from "react-native";
+import { View, FlatList, Text, ActivityIndicator } from "react-native";
 import LinkListing from "@/components/LinkListing";
 import EmptyState from "@/components/EmptyState";
 import React, { useState } from "react";
@@ -8,7 +8,6 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useQueryClient } from "@tanstack/react-query";
 import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
-import { hasOptimisticLink } from "@/lib/utils";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -70,23 +69,6 @@ export default function Links({ links, data }: Props) {
           </View>
         ) : null
       }
-      onViewableItemsChanged={({
-        viewableItems,
-      }: {
-        viewableItems: ViewToken[];
-      }) => {
-        const links = viewableItems.map(
-          (e) => e.item
-        ) as LinkIncludingShortenedCollectionAndTags[];
-
-        if (
-          !data.isRefetching &&
-          !hasOptimisticLink(links) &&
-          links.some((e) => typeof e.id === "number" && e.id > 0 && !e.preview)
-        )
-          data.refetch();
-      }}
-      viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
     />
   );
 }

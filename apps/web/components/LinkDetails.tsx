@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
+  isPreservationPending,
 } from "@linkwarden/lib/formatStats";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -103,15 +104,7 @@ export default function LinkDetails({
     fetchOwner();
   }, [link.collection.ownerId]);
 
-  const isReady = () => {
-    return (
-      link &&
-      (collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
-      (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
-      (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
-      link.readable
-    );
-  };
+  const isReady = () => Boolean(link?.id) && !isPreservationPending(link);
 
   const updateLink = useUpdateLink({ toast, t });
   const updateFile = useUpdateFile();

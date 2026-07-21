@@ -1,10 +1,4 @@
-import {
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewToken,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import clsx from "clsx";
 import DashboardItem from "@/components/DashboardItem";
@@ -21,7 +15,6 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/globa
 import LinkListing from "@/components/LinkListing";
 import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
-import { hasOptimisticLink } from "@/lib/utils";
 
 // Don't use prisma client's DashboardSectionType, it'll crash in production (React Native)
 type DashboardSectionType =
@@ -140,26 +133,6 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
-              onViewableItemsChanged={({
-                viewableItems,
-              }: {
-                viewableItems: ViewToken[];
-              }) => {
-                const links = viewableItems.map(
-                  (e) => e.item
-                ) as LinkIncludingShortenedCollectionAndTags[];
-
-                if (
-                  !dashboardData.isRefetching &&
-                  !hasOptimisticLink(links) &&
-                  links.some(
-                    (e) => typeof e.id === "number" && e.id > 0 && !e.preview
-                  )
-                ) {
-                  dashboardData.refetch();
-                }
-              }}
-              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
@@ -226,26 +199,6 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
-              onViewableItemsChanged={({
-                viewableItems,
-              }: {
-                viewableItems: ViewToken[];
-              }) => {
-                const links = viewableItems.map(
-                  (e) => e.item
-                ) as LinkIncludingShortenedCollectionAndTags[];
-
-                if (
-                  !dashboardData.isRefetching &&
-                  !hasOptimisticLink(links) &&
-                  links.some(
-                    (e) => typeof e.id === "number" && e.id > 0 && !e.preview
-                  )
-                ) {
-                  dashboardData.refetch();
-                }
-              }}
-              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
@@ -311,26 +264,6 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
-              onViewableItemsChanged={({
-                viewableItems,
-              }: {
-                viewableItems: ViewToken[];
-              }) => {
-                const links = viewableItems.map(
-                  (e) => e.item
-                ) as LinkIncludingShortenedCollectionAndTags[];
-
-                if (
-                  !dashboardData.isRefetching &&
-                  !hasOptimisticLink(links) &&
-                  links.some(
-                    (e) => typeof e.id === "number" && e.id > 0 && !e.preview
-                  )
-                ) {
-                  dashboardData.refetch();
-                }
-              }}
-              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">

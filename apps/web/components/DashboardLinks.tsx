@@ -4,7 +4,7 @@ import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
 } from "@linkwarden/types/global";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -14,10 +14,8 @@ import {
   atLeastOneFormatAvailable,
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
-import useOnScreen from "@/hooks/useOnScreen";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import openLink from "@/lib/client/openLink";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
@@ -85,8 +83,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(
@@ -102,32 +98,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
     );
   }, [collections, link]);
 
-  const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useOnScreen(ref);
-
   const [linkModal, setLinkModal] = useState(false);
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-
-    if (
-      isVisible &&
-      !link.preview?.startsWith("archives") &&
-      link.preview !== "unavailable"
-    ) {
-      interval = setInterval(async () => {
-        refetch().catch((error) => {
-          console.error("Error refetching link:", error);
-        });
-      }, 5000);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isVisible, link.preview]);
 
   return (
     <div
@@ -138,7 +109,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
       )}
     >
       <div
-        ref={ref}
         className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group h-full`}
       >
         <div

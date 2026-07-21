@@ -1,5 +1,10 @@
 import { UpdateDashboardLayoutSchemaType } from "@linkwarden/lib/schemaValidation";
-import { MobileAuth } from "@linkwarden/types/global";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  MobileAuth,
+} from "@linkwarden/types/global";
+import { anyPreservationPending } from "@linkwarden/lib/formatStats";
+import { PRESERVATION_POLL_INTERVAL } from "./links";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
@@ -34,6 +39,23 @@ const useDashboardData = (auth?: MobileAuth) => {
       return data.data;
     },
     enabled: status === "authenticated",
+    refetchInterval: (query) => {
+      const data = query.state.data as
+        | {
+            links?: LinkIncludingShortenedCollectionAndTags[];
+            collectionLinks?: Record<
+              number,
+              LinkIncludingShortenedCollectionAndTags[]
+            >;
+          }
+        | undefined;
+      if (!data) return false;
+      const links = [
+        ...(data.links ?? []),
+        ...Object.values(data.collectionLinks ?? {}).flat(),
+      ];
+      return anyPreservationPending(links) ? PRESERVATION_POLL_INTERVAL : false;
+    },
   });
 };
 

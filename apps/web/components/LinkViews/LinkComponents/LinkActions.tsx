@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import { useDeleteLink, useGetLink } from "@linkwarden/router/links";
+import { useDeleteLink, useUpdateArchive } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
@@ -42,10 +42,7 @@ export default function LinkActions({
 
   const isPublicRoute = router.pathname.startsWith("/public");
 
-  const { refetch } = useGetLink({
-    id: link.id as number,
-    isPublicRoute,
-  });
+  const updateArchiveMutation = useUpdateArchive();
 
   const pinLink = usePinLink();
 
@@ -59,20 +56,14 @@ export default function LinkActions({
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
 
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-    toast.dismiss(load);
-
-    if (response.ok) {
-      refetch().catch((error) => {
-        console.error("Error fetching link:", error);
-      });
-
+    try {
+      await updateArchiveMutation.mutateAsync(link.id as number);
       toast.success(t("link_being_archived"));
-    } else toast.error(data.response);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      toast.dismiss(load);
+    }
   };
 
   return (

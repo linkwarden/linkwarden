@@ -402,28 +402,6 @@ export default function Links({
     }
   }, [editMode]);
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-
-    if (
-      links?.some(
-        (e) => !e.preview?.startsWith("archives") && e.preview !== "unavailable"
-      )
-    ) {
-      interval = setInterval(async () => {
-        useData.refetch().catch((error: any) => {
-          console.error("Error refetching link:", error);
-        });
-      }, 5000);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [links]);
-
   const disableDraggable = useMediaQuery("(max-width: 1023px)");
 
   const { data: user } = useUser();

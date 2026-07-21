@@ -86,18 +86,8 @@ export default function LinkScreen() {
     !formatAvailable(link, linkType);
 
   useEffect(() => {
-    if (!formatPending) return;
-
-    setIsLoading(true);
-
-    const interval = setInterval(() => {
-      refetchLink().catch((error) => {
-        console.error("Error refetching link:", error);
-      });
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [formatPending, refetchLink]);
+    if (formatPending) setIsLoading(true);
+  }, [formatPending]);
 
   useEffect(() => {
     if (link?.id && user?.id)

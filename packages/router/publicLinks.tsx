@@ -4,6 +4,8 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
 } from "@linkwarden/types/global";
+import { anyPreservationPending } from "@linkwarden/lib/formatStats";
+import { PRESERVATION_POLL_INTERVAL } from "./links";
 import { useRouter } from "next/router";
 
 const usePublicLinks = (params: LinkRequestQuery = {}) => {
@@ -64,6 +66,11 @@ const useFetchLinks = (params: string) => {
         return undefined;
       }
       return lastPage.nextCursor;
+    },
+    refetchInterval: (query) => {
+      const links =
+        query.state.data?.pages?.flatMap((p) => p?.links ?? []) ?? [];
+      return anyPreservationPending(links) ? PRESERVATION_POLL_INTERVAL : false;
     },
   });
 };
