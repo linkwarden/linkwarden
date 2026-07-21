@@ -14,6 +14,9 @@ type LinksAndCollectionAndOwner = Link & {
   };
 };
 
+const SCREENSHOT_TIMEOUT_MS =
+  Number(process.env.SCREENSHOT_TIMEOUT_MS) || 30_000;
+
 const handleArchivePreview = async (
   link: LinksAndCollectionAndOwner,
   page: Page
@@ -58,7 +61,11 @@ const handleArchivePreview = async (
 
   if (!previewGenerated && !link.preview?.startsWith("archive")) {
     await page
-      .screenshot({ type: "jpeg", quality: 20 })
+      .screenshot({
+        type: "jpeg",
+        quality: 20,
+        timeout: SCREENSHOT_TIMEOUT_MS,
+      })
       .then(async (screenshot) => {
         if (
           Buffer.byteLength(screenshot) >
