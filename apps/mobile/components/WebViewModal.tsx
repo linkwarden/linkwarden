@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Modal, Platform, View } from "react-native";
+import { ActivityIndicator, Modal, Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 import SheetHeader from "./ActionSheets/SheetHeader";
 
 type WebViewModalProps = {
@@ -39,6 +41,7 @@ export default function WebViewModal({
   sessionToken,
 }: WebViewModalProps) {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
   const webViewRef = useRef<WebView>(null);
   const recoveredFromLogin = useRef(false);
 
@@ -71,6 +74,16 @@ export default function WebViewModal({
             ref={webViewRef}
             source={{ uri }}
             className="flex-1"
+            incognito={true}
+            startInLoadingState
+            renderLoading={() => (
+              <View className="absolute inset-0 items-center justify-center bg-base-100">
+                <ActivityIndicator
+                  size="large"
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+              </View>
+            )}
             injectedJavaScriptBeforeContentLoaded={sessionCookieScript}
             onNavigationStateChange={
               sessionCookieScript

@@ -33,7 +33,7 @@ export default function Links({ links, data }: Props) {
         await resetInfiniteQueryPagination(queryClient, ["links"]);
         setPromptedRefetch(false);
       }}
-      progressBackgroundColor={rawTheme[colorScheme as ThemeName]["base-200"]}
+      progressBackgroundColor={rawTheme[colorScheme as ThemeName].neutral}
       colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
     />
   );

@@ -34,7 +34,7 @@ export default function CollectionsScreen() {
     <Spinner
       refreshing={collections.isRefetching}
       onRefresh={() => collections.refetch()}
-      progressBackgroundColor={rawTheme[colorScheme as ThemeName]["base-200"]}
+      progressBackgroundColor={rawTheme[colorScheme as ThemeName].neutral}
       colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
     />
   );
