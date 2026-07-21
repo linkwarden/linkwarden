@@ -15,7 +15,7 @@ import useAuthStore from "@/store/auth";
 import { useConfig } from "@linkwarden/router/config";
 import { useUser } from "@linkwarden/router/user";
 import { Plan } from "@linkwarden/types/global";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Archive,
@@ -35,10 +35,11 @@ import {
   useIAP,
   type Purchase,
 } from "expo-iap";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  AppState,
   Image,
   Linking,
   Platform,
@@ -203,6 +204,24 @@ export default function SubscribeScreen() {
     if (auth.status === "authenticated" && !isChecking && !showSubscribe)
       router.replace("/(tabs)/dashboard");
   }, [auth.status, isChecking, showSubscribe]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (auth.status === "authenticated") refetchUser();
+    }, [auth.status, refetchUser])
+  );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (
+        state === "active" &&
+        useAuthStore.getState().auth.status === "authenticated"
+      )
+        refetchUser();
+    });
+
+    return () => subscription.remove();
+  }, [refetchUser]);
 
   useEffect(() => {
     if (!connected) return;
@@ -380,6 +399,16 @@ export default function SubscribeScreen() {
     try {
       const serverReachable = await ensureCloudIsReachable(auth.instance);
       if (!serverReachable) {
+        setPurchaseLoading(false);
+        return;
+      }
+
+      const { data: freshUser } = await refetchUser();
+      if (
+        freshUser?.subscription?.active ||
+        freshUser?.parentSubscription?.active
+      ) {
+        router.replace("/(tabs)/dashboard");
         setPurchaseLoading(false);
         return;
       }
