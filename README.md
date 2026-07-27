@@ -19,7 +19,7 @@
 
 [« LAUNCH DEMO »](https://demo.linkwarden.app)
 
-[Cloud](https://cloud.linkwarden.app) · [Website](https://linkwarden.app) · [Features](https://github.com/linkwarden/linkwarden#features) · [Docs](https://docs.linkwarden.app)
+[Cloud](https://cloud.linkwarden.app) · [Website](https://linkwarden.app) · [Self-Host](https://docs.linkwarden.app/self-hosting/installation) · [Docs](https://docs.linkwarden.app)
 
 <img src="./assets/home.png" />
 
