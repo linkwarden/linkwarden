@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
-import { getToken } from "next-auth/jwt";
 import { prisma } from "@linkwarden/prisma";
+import getTokenFromRequest from "./getTokenFromRequest";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default async function isAuthenticatedRequest({ req }: Props) {
-  const token = await getToken({ req });
+  const token = await getTokenFromRequest(req);
   const userId = token?.id;
 
   if (!userId) {

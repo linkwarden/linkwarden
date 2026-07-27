@@ -43,10 +43,11 @@ export default function ProfileDropdown({
 
   const isAdmin = user?.id === (config?.ADMIN || 1);
 
-  const handleToggle = () => {
-    const newTheme = user?.theme === "dark" ? "light" : "dark";
-    updateUserPreference.mutate({ theme: newTheme });
-  };
+  const themeOptions = [
+    { value: "auto", label: t("system"), icon: "bi-circle-half" },
+    { value: "dark", label: t("dark"), icon: "bi-moon-fill" },
+    { value: "light", label: t("light"), icon: "bi-sun-fill" },
+  ] as const;
 
   const trigger = (
     <DropdownMenuTrigger>
@@ -129,18 +130,35 @@ export default function ProfileDropdown({
           </DropdownMenuItem>
         )}
 
-        <DropdownMenuItem asChild>
-          <div onClick={() => handleToggle()} className="whitespace-nowrap">
-            {user?.theme === "light" ? (
-              <i className="bi-moon-fill"></i>
-            ) : (
-              <i className="bi-sun-fill"></i>
-            )}
-            {t("switch_to", {
-              theme: user?.theme === "light" ? t("dark") : t("light"),
-            })}
-          </div>
-        </DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <i
+              className={
+                themeOptions.find((option) => option.value === user?.theme)
+                  ?.icon || "bi-circle-half"
+              }
+            ></i>
+            {t("theme")}
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              {themeOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onSelect={() =>
+                    updateUserPreference.mutate({ theme: option.value })
+                  }
+                >
+                  <i className={option.icon}></i>
+                  {option.label}
+                  {user?.theme === option.value && (
+                    <i className="bi-check2 ml-auto"></i>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
 
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>

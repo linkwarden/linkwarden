@@ -17,3 +17,11 @@ export function delay(sec: number) {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function resolveTheme(theme?: string | null) {
+  if (theme !== "auto") return theme || undefined;
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}

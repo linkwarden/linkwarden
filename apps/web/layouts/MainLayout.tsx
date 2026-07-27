@@ -14,7 +14,7 @@ export default function MainLayout({ children }: Props) {
   const showAnnouncementBar = localStorage.getItem("showAnnouncementBar");
 
   const [showAnnouncement, setShowAnnouncement] = useState(
-    showAnnouncementBar ? showAnnouncementBar === "true" : true
+    showAnnouncementBar === "true"
   );
   const { sidebarIsCollapsed, toggleSidebar } = useSidebarCollapse();
 
