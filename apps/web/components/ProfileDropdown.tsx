@@ -177,6 +177,17 @@ export default function ProfileDropdown({
                   {t("documentation")}
                 </Link>
               </DropdownMenuItem>
+              {config?.STRIPE_ENABLED && (
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="mailto:support@linkwarden.app"
+                    className="whitespace-nowrap"
+                  >
+                    <i className="bi-envelope"></i>
+                    {t("contact_support")}
+                  </Link>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>
