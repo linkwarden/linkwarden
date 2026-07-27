@@ -43,8 +43,8 @@ export default function Modal({
         dismissible={dismissible}
       >
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="flex flex-col rounded-t-xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
+          <Drawer.Content className="flex flex-col rounded-t-xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-50">
             <div
               className="p-4 bg-base-100 rounded-t-xl flex-1 border-neutral-content border-t overflow-y-auto"
               data-testid="mobile-modal-container"
