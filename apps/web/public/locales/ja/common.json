@@ -165,6 +165,7 @@
   "select_theme": "テーマを選択",
   "dark": "ダーク",
   "light": "ライト",
+  "system": "System",
   "archive_settings": "アーカイブ設定",
   "formats_to_archive": "ウェブページをアーカイブ/保存する形式:",
   "screenshot": "スクリーンショット",
