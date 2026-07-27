@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "Рекомендация (друг, член семьи и т.д.)",
   "open_all_links": "Открыть все ссылки",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "Настройка ИИ",
   "generate_tags_for_existing_links": "Сгенерировать теги для существующих ссылок",
   "ai_tagging_method": "Метод автокатегоризации:",
