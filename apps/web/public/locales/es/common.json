@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "Recomendación (Amigo, Familia, etc.)",
   "open_all_links": "Abrir todos los enlaces",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "Preferencias de IA",
   "generate_tags_for_existing_links": "Generar etiquetas para los enlaces existentes",
   "ai_tagging_method": "Método de Etiquetado AI:",
