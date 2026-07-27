@@ -21,7 +21,7 @@
 
 [Cloud](https://cloud.linkwarden.app) · [Website](https://linkwarden.app) · [Self-Host](https://docs.linkwarden.app/self-hosting/installation) · [Docs](https://docs.linkwarden.app)
 
-<img src="./assets/home.png" />
+<img src="./assets/linkwarden-hero.png" />
 
 </div>
 
