@@ -30,8 +30,8 @@ export default function NotFoundScreen() {
           Page Not Found
         </Text>
         <Text className="text-neutral text-base text-center">
-          The page you followed isn't available in this version of the app.
-          Updating to the latest version might do the trick.
+          The page you followed either doesn't exist or isn't available in this
+          version of the app. Updating to the latest version might do the trick.
         </Text>
         {pathname ? (
           <Text
