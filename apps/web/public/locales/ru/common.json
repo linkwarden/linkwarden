@@ -165,6 +165,7 @@
   "select_theme": "Выберите тему",
   "dark": "Тёмная",
   "light": "Светлая",
+  "system": "System",
   "archive_settings": "Настройки архивации страниц",
   "formats_to_archive": "Форматы сохранения страниц:",
   "screenshot": "Снимок экрана",
