@@ -6,6 +6,9 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "build:ios": "eas build -p ios",
+    "build:android": "eas build -p android",
+    "build:apk": "eas build -p android -e preview",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
