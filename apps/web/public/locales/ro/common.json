@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "O recomandare (familie, etc.)",
   "open_all_links": "Deschide toate linkurile",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "Setări AI",
   "generate_tags_for_existing_links": "Generează etichete pentru toate linkurile existente",
   "ai_tagging_method": "Metoda etichetării de către AI:",
