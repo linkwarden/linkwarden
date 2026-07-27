@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "推荐（朋友、家人等）",
   "open_all_links": "打开所有链接",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "AI 设置",
   "generate_tags_for_existing_links": "为已有链接生成标签",
   "ai_tagging_method": "标签生成方式：",
