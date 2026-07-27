@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "知人や家族から",
   "open_all_links": "すべてのリンクを開く",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "AI設定",
   "generate_tags_for_existing_links": "既存のリンクのタグを生成する",
   "ai_tagging_method": "AIによるタグ付け:",
