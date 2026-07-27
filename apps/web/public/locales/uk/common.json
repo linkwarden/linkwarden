@@ -446,6 +446,7 @@
   "lemmy": "Lemmy",
   "people_recommendation": "Рекомендація (друг, родина тощо)",
   "open_all_links": "Відкрити всі посилання",
+  "popups_blocked_open_all_links": "Your browser blocked some of your links from being opened. Allow pop-ups for this site to open them all together.",
   "ai_settings": "Налаштування ШІ",
   "generate_tags_for_existing_links": "Створити мітки для наявних посилань",
   "ai_tagging_method": "Мітки ШІ:",
