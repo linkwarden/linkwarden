@@ -165,6 +165,7 @@
   "select_theme": "選擇主題",
   "dark": "深色",
   "light": "淺色",
+  "system": "System",
   "archive_settings": "封存設定",
   "formats_to_archive": "要封存/保存網頁的格式：",
   "screenshot": "螢幕截圖",
