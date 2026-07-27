@@ -628,7 +628,7 @@ export default function LinkDetails({
               <br />
               <div className="flex justify-end items-center">
                 <Button
-                  variant="accent"
+                  variant="primary"
                   disabled={JSON.stringify(activeLink) === JSON.stringify(link)}
                   onClick={submit}
                 >

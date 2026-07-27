@@ -91,14 +91,15 @@ export default function DragNDrop({
     }
 
     const { over, active } = event;
+
+    setActiveLink(null);
+
     if (!over || !activeLink) return;
 
     const overData = over.data.current;
     const targetId = String(over.id);
 
     const isFromRecentSection = active.data.current?.dashboardType === "recent";
-
-    setActiveLink(null);
 
     const mutateWithToast = async (
       updatedLink: LinkIncludingShortenedCollectionAndTags,
@@ -242,6 +243,7 @@ export default function DragNDrop({
       {!!activeLink && (
         // when drag end, immediately hide the overlay
         <DragOverlay
+          dropAnimation={null}
           style={{
             zIndex: 100,
             pointerEvents: "none",

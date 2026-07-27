@@ -438,7 +438,7 @@ const Page: NextPageWithLayout = () => {
               onClick={saveAiSection}
               disabled={aiSubmitLoader || !hasAiChanges}
               className="mt-2 w-full sm:w-fit"
-              variant="accent"
+              variant="primary"
             >
               {t("save_changes")}
             </Button>
@@ -556,7 +556,7 @@ const Page: NextPageWithLayout = () => {
             onClick={saveArchiveSection}
             disabled={archiveSubmitLoader || !hasArchiveChanges}
             className="mt-2 w-full sm:w-fit"
-            variant="accent"
+            variant="primary"
           >
             {t("save_changes")}
           </Button>
@@ -687,7 +687,7 @@ const Page: NextPageWithLayout = () => {
             onClick={saveLinkSection}
             disabled={linkSubmitLoader || !hasLinkChanges}
             className="mt-2 w-full sm:w-fit"
-            variant="accent"
+            variant="primary"
           >
             {t("save_changes")}
           </Button>

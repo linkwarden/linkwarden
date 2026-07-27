@@ -109,7 +109,7 @@ export default function EditCollectionModal({
           </div>
         </div>
 
-        <Button variant="accent" className="ml-auto" onClick={submit}>
+        <Button variant="primary" className="ml-auto" onClick={submit}>
           {t("save_changes")}
         </Button>
       </div>

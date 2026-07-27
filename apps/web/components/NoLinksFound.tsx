@@ -32,7 +32,7 @@ export default function NoLinksFound({ text }: Props) {
           onClick={() => {
             setNewLinkModal(true);
           }}
-          variant="accent"
+          variant="primary"
         >
           <i className="bi-plus-lg text-xl duration-100"></i>
           <span className="group-hover:opacity-0 w-full duration-100">

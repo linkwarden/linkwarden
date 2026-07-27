@@ -240,11 +240,9 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
                 .catch(() => null);
 
               if (uploaded) {
-                await seedFormatCache(
-                  link.id,
-                  "preview",
-                  newBanner.uri
-                ).catch(() => {});
+                await seedFormatCache(link.id, "preview", newBanner.uri).catch(
+                  () => {}
+                );
               }
             }
 
@@ -256,9 +254,9 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
             SheetManager.hide("edit-link-sheet");
           }}
           isLoading={updateLink.isPending || updateFile.isPending}
-          variant="accent"
+          variant="primary"
         >
-          <Text className="text-white">Save</Text>
+          <Text className="text-base-100">Save</Text>
         </Button>
       </View>
     </>

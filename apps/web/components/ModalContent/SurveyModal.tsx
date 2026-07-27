@@ -57,7 +57,7 @@ export default function SurveyModal({ onClose, submit }: Props) {
 
         <Button
           className="ml-auto mt-3"
-          variant="accent"
+          variant="primary"
           onClick={() => submit(referer, other)}
         >
           {t("submit")}

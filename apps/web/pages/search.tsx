@@ -28,8 +28,6 @@ const Page: NextPageWithLayout = () => {
   );
 
   const [editMode, setEditMode] = useState(false);
-  const [activeLink, setActiveLink] =
-    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -52,7 +50,13 @@ const Page: NextPageWithLayout = () => {
         setEditMode={setEditMode}
         links={links}
       >
-        <PageHeader icon={"bi-search"} title={t("search_results")} />
+        <PageHeader
+          icon={"bi-search"}
+          title={t("search_results")}
+          description={`${t("results_for")} "${decodeURIComponent(
+            router.query.q as string
+          )}"`}
+        />
       </LinkListOptions>
 
       {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}

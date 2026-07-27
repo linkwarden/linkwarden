@@ -87,9 +87,9 @@ export default function NewCollectionSheet() {
             )
           }
           isLoading={createCollection.isPending}
-          variant="accent"
+          variant="primary"
         >
-          <Text className="text-white">Save Collection</Text>
+          <Text className="text-base-100">Save Collection</Text>
         </Button>
       </View>
     </ActionSheet>

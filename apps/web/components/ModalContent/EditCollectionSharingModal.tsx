@@ -187,7 +187,7 @@ export default function EditCollectionSharingModal({
               />
 
               <Button
-                variant="accent"
+                variant="primary"
                 size="icon"
                 className="h-10 w-10"
                 onClick={() =>
@@ -394,7 +394,7 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && !isPublicRoute && (
           <Button
-            variant="accent"
+            variant="primary"
             className="w-fit ml-auto mt-3"
             onClick={submit}
           >

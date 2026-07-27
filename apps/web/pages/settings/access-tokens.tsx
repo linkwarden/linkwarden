@@ -45,7 +45,7 @@ const Page: NextPageWithLayout = () => {
 
         <Button
           className="ml-auto"
-          variant="accent"
+          variant="primary"
           onClick={() => {
             setNewTokenModal(true);
           }}

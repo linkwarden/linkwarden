@@ -179,7 +179,7 @@ export default function UploadFileModal({ onClose }: Props) {
           <p>{optionsExpanded ? t("hide_options") : t("more_options")}</p>
           <i className={`bi-chevron-${optionsExpanded ? "up" : "down"}`} />
         </Button>
-        <Button variant="accent" onClick={submit}>
+        <Button variant="primary" onClick={submit}>
           {t("upload_file")}
         </Button>
       </div>

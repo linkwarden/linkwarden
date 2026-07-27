@@ -16,13 +16,9 @@ export default function TagListing({ tags, active }: TagListingProps) {
 
   if (!tags[0]) {
     return (
-      <div
-        className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-      >
-        <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
-          {t("you_have_no_tags")}
-        </p>
-      </div>
+      <p className="text-neutral text-xs font-semibold truncate w-full px-2">
+        {t("you_have_no_tags")}
+      </p>
     );
   }
 
@@ -46,11 +42,11 @@ export default function TagListing({ tags, active }: TagListingProps) {
                       : droppableActive
                         ? "select-none"
                         : "hover:bg-neutral/20",
-                    "duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8"
+                    "duration-100 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md"
                   )}
                 >
-                  <i className="bi-hash text-xl text-primary drop-shadow"></i>
-                  <p className="truncate w-full pr-7">{e.name}</p>
+                  <i className="bi-hash text-lg text-primary drop-shadow"></i>
+                  <p className="truncate w-full pr-7 text-sm">{e.name}</p>
                   <div className="drop-shadow text-neutral text-xs">
                     {e._count?.links}
                   </div>

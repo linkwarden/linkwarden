@@ -163,7 +163,7 @@ const Page: NextPageWithLayout = () => {
 
             <div className="flex gap-3">
               <Button
-                variant="accent"
+                variant="primary"
                 onClick={() => setInviteModal(true)}
                 className="flex items-center px-2 h-[2.15rem] relative"
               >

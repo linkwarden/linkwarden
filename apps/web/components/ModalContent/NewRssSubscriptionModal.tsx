@@ -107,7 +107,7 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
         </div>
 
         <div className="flex justify-end items-center mt-5">
-          <Button variant="accent" onClick={submit}>
+          <Button variant="primary" onClick={submit}>
             {t("create_rss_subscription")}
           </Button>
         </div>

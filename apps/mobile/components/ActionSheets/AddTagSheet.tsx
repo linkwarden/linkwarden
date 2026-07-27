@@ -65,9 +65,9 @@ export default function AddTagSheet() {
           }
           disabled={name.trim().length === 0}
           isLoading={upsertTags.isPending}
-          variant="accent"
+          variant="primary"
         >
-          <Text className="text-white">Save Tag</Text>
+          <Text className="text-base-100">Save Tag</Text>
         </Button>
       </View>
     </ActionSheet>

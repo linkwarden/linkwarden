@@ -10,6 +10,7 @@ type Props = {
   children: ReactNode;
   className?: string;
   dismissible?: boolean;
+  hideCloseButton?: boolean;
 };
 
 export default function Modal({
@@ -17,6 +18,7 @@ export default function Modal({
   className,
   children,
   dismissible = true,
+  hideCloseButton,
 }: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
   const { width } = useWindowDimensions();
@@ -74,7 +76,7 @@ export default function Modal({
             className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-xl sm:rounded-xl border-t sm:border shadow-xl p-5 bg-base-100 overflow-y-auto sm:overflow-y-visible"
             data-testid="modal-container"
           >
-            {dismissible && (
+            {dismissible && !hideCloseButton && (
               <Button
                 variant="ghost"
                 size="icon"

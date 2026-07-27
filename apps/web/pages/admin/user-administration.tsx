@@ -93,7 +93,7 @@ const Page: NextPageWithLayout = () => {
 
           <Button
             onClick={() => setNewUserModal(true)}
-            variant="accent"
+            variant="primary"
             size="icon"
             className="flex items-center px-2 aspect-square relative"
           >

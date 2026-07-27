@@ -271,7 +271,7 @@ const CollectionListing = () => {
     );
   } else if (!tree) {
     return (
-      <p className="text-neutral text-xs font-semibold truncate w-full px-2 mt-5 mb-8">
+      <p className="text-neutral text-xs font-semibold truncate w-full px-2">
         {t("you_have_no_collections")}
       </p>
     );
@@ -322,7 +322,7 @@ const renderItem = (
               : droppableActive
                 ? "select-none"
                 : "hover:bg-neutral/20",
-            "duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md"
+            "relative duration-100 flex items-center pr-2 rounded-md"
           )}
         >
           {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
@@ -333,24 +333,24 @@ const renderItem = (
             {...provided.dragHandleProps}
           >
             <div
-              className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+              className={`cursor-pointer flex items-center gap-2 w-full pl-5 rounded-md`}
             >
               {collection.icon ? (
                 <Icon
                   icon={collection.icon}
-                  size={30}
+                  size={28}
                   weight={(collection.iconWeight || "regular") as IconWeight}
                   color={collection.color}
                   className="-mr-[0.15rem]"
                 />
               ) : (
                 <i
-                  className="bi-folder-fill text-xl"
+                  className="bi-folder-fill text-lg"
                   style={{ color: collection.color }}
                 ></i>
               )}
 
-              <p className="truncate w-full">{collection.name}</p>
+              <p className="truncate w-full text-xs">{collection.name}</p>
 
               {collection.isPublic && (
                 <i
@@ -374,19 +374,25 @@ const Dropdown = (
   onExpand: (id: ItemId) => void,
   onCollapse: (id: ItemId) => void
 ) => {
-  if (item.children && item.children.length > 0) {
-    return item.isExpanded ? (
-      <button onClick={() => onCollapse(item.id)}>
-        <div className="bi-caret-down-fill opacity-50 hover:opacity-100 duration-200"></div>
-      </button>
-    ) : (
-      <button onClick={() => onExpand(item.id)}>
-        <div className="bi-caret-right-fill opacity-40 hover:opacity-100 duration-200"></div>
-      </button>
-    );
+  if (!item.children || item.children.length === 0) {
+    return null;
   }
-  // return <span>&bull;</span>;
-  return <div></div>;
+
+  return item.isExpanded ? (
+    <button
+      onClick={() => onCollapse(item.id)}
+      className="absolute left-0.5 top-1/2 -translate-y-1/2 flex items-center justify-center"
+    >
+      <div className="bi-caret-down-fill opacity-50 hover:opacity-100 duration-200"></div>
+    </button>
+  ) : (
+    <button
+      onClick={() => onExpand(item.id)}
+      className="absolute left-0.5 top-1/2 -translate-y-1/2 flex items-center justify-center"
+    >
+      <div className="bi-caret-right-fill opacity-40 hover:opacity-100 duration-200"></div>
+    </button>
+  );
 };
 
 const buildTreeFromCollections = (

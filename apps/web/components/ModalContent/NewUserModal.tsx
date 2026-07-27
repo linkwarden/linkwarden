@@ -135,7 +135,7 @@ export default function NewUserModal({ onClose }: Props) {
         </div>
 
         <div className="flex justify-between items-center mt-5">
-          <Button variant="accent" className="ml-auto" type="submit">
+          <Button variant="primary" className="ml-auto" type="submit">
             {t("create_user")}
           </Button>
         </div>

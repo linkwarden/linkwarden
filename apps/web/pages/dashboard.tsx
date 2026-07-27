@@ -132,9 +132,9 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="p-3 flex flex-col gap-3">
+      <div className="p-3 flex flex-col gap-3 grow">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-2xl drop-shadow">
             <i className="bi-house-fill text-primary" />
             <p className="font-thin">{t("dashboard")}</p>
           </div>
@@ -273,7 +273,11 @@ const Section = ({
         <>
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
-              <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
+              <PageHeader
+                icon={"bi-clock-history"}
+                title={t("recent_links")}
+                sm
+              />
             </div>
             <Link
               href="/links"
@@ -292,7 +296,7 @@ const Section = ({
               isLoading={dashboardData.isLoading}
             />
           ) : (
-            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+            <div className="grow flex flex-col gap-2 justify-center border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <p className="text-center text-xl">
                 {t("view_added_links_here")}
               </p>
@@ -305,7 +309,7 @@ const Section = ({
                   onClick={() => {
                     setNewLinkModal(true);
                   }}
-                  variant="accent"
+                  variant="primary"
                 >
                   <i className="bi-plus-lg text-xl"></i>
                   {t("add_link")}
@@ -317,12 +321,16 @@ const Section = ({
           )}
         </>
       );
-    case DashboardSectionType.PINNED_LINKS:
+    case DashboardSectionType.PINNED_LINKS: {
+      const hasPinnedLinks = links?.some(
+        (e: any) => e.pinnedBy && e.pinnedBy[0]
+      );
+
       return (
         <>
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
-              <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
+              <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} sm />
             </div>
             <Link
               href="/links/pinned"
@@ -337,15 +345,19 @@ const Section = ({
             data={{
               name: "pinned-links",
             }}
+            className={clsx(
+              !dashboardData.isLoading &&
+                !hasPinnedLinks &&
+                "grow flex flex-col"
+            )}
           >
-            {dashboardData.isLoading ||
-            links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+            {dashboardData.isLoading || hasPinnedLinks ? (
               <DashboardLinks
                 links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
                 isLoading={dashboardData.isLoading}
               />
             ) : (
-              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+              <div className="grow flex flex-col gap-2 justify-center border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
                 <i className="bi-pin mx-auto text-6xl text-primary"></i>
                 <p className="text-center text-xl">
                   {t("pin_favorite_links_here")}
@@ -358,18 +370,20 @@ const Section = ({
           </Droppable>
         </>
       );
-    case DashboardSectionType.COLLECTION:
+    }
+    case DashboardSectionType.COLLECTION: {
+      const hasCollectionLinks = collectionLinks?.length > 0;
+
       return (
         collection?.id && (
           <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
-                <div className={clsx("flex items-center gap-3")}>
+                <div className={clsx("flex items-center gap-2")}>
                   {collection.icon ? (
                     <Icon
                       icon={collection.icon}
                       color={collection.color || "#0ea5e9"}
-                      className="text-2xl"
                     />
                   ) : (
                     <i
@@ -378,9 +392,7 @@ const Section = ({
                     ></i>
                   )}
                   <div>
-                    <p className="text-2xl capitalize font-thin">
-                      {collection.name}
-                    </p>
+                    <p className="capitalize font-thin">{collection.name}</p>
                   </div>
                 </div>
               </div>
@@ -400,15 +412,20 @@ const Section = ({
                 ownerId: collection.ownerId,
                 type: "collection",
               }}
+              className={clsx(
+                !dashboardData.isLoading &&
+                  !hasCollectionLinks &&
+                  "grow flex flex-col"
+              )}
             >
-              {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+              {dashboardData.isLoading || hasCollectionLinks ? (
                 <DashboardLinks
                   type="collection"
                   links={collectionLinks}
                   isLoading={dashboardData.isLoading}
                 />
               ) : (
-                <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
+                <div className="grow flex flex-col gap-2 justify-center border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
                   <i className="bi-folder mx-auto text-6xl text-primary"></i>
                   <p className="text-center text-xl">
                     {t("no_link_in_collection")}
@@ -422,6 +439,7 @@ const Section = ({
           </>
         )
       );
+    }
     default:
       return null;
   }

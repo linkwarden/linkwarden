@@ -145,7 +145,7 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               </Text>
 
               {/* <View className="text-center w-full mt-4 flex-row flex-wrap gap-4 justify-center">
-                <Button onPress={() => setNewLinkModal(true)} variant="accent">
+                <Button onPress={() => setNewLinkModal(true)} variant="primary">
                   <Icon name="bi-plus-lg" className="text-xl" />
                   <Text>{t("add_link")}</Text>
                 </Button>

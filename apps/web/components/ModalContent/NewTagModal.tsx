@@ -68,7 +68,7 @@ export default function NewTagModal({ onClose }: Props) {
       </div>
 
       <div className="flex justify-end items-center mt-5">
-        <Button variant="accent" onClick={submit} disabled={!tag.label.trim()}>
+        <Button variant="primary" onClick={submit} disabled={!tag.label.trim()}>
           {t("create_new_tag")}
         </Button>
       </div>

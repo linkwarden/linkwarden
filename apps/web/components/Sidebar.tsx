@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Disclosure, Transition } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
@@ -8,17 +8,28 @@ import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
 import TagListing from "./TagListing";
 import { Button } from "./ui/button";
-import { useUser } from "@linkwarden/router/user";
-import Image from "next/image";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { TagSort } from "@linkwarden/types/global";
 import { useInView } from "react-intersection-observer";
+import SidebarShell, { ActionIcon } from "@/components/SidebarShell";
+import SidebarScrollArea from "@/components/SidebarScrollArea";
+import NewLinkModal from "./ModalContent/NewLinkModal";
+import NewCollectionModal from "./ModalContent/NewCollectionModal";
+import NewTagModal from "./ModalContent/NewTagModal";
+import UploadFileModal from "./ModalContent/UploadFileModal";
+import SearchModal, { isAppleDevice } from "./ModalContent/SearchModal";
 
 export default function Sidebar({
   className,
@@ -43,6 +54,12 @@ export default function Sidebar({
     }
   );
 
+  const [searchModal, setSearchModal] = useState(false);
+  const [newLinkModal, setNewLinkModal] = useState(false);
+  const [newCollectionModal, setNewCollectionModal] = useState(false);
+  const [newTagModal, setNewTagModal] = useState(false);
+  const [uploadFileModal, setUploadFileModal] = useState(false);
+
   const { data: collections } = useCollections();
 
   const {
@@ -57,8 +74,6 @@ export default function Sidebar({
   const [active, setActive] = useState("");
 
   const router = useRouter();
-
-  const { data: user } = useUser();
 
   useEffect(() => {
     localStorage.setItem("tagDisclosure", tagDisclosure ? "true" : "false");
@@ -76,6 +91,20 @@ export default function Sidebar({
   }, [router, collections]);
 
   useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (
+        e.key.toLowerCase() === "k" &&
+        (isAppleDevice ? e.metaKey : e.ctrlKey)
+      ) {
+        e.preventDefault();
+        setSearchModal((prev) => !prev);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  useEffect(() => {
     if (!inView) return;
     if (!hasNextPage) return;
     if (isFetchingNextPage) return;
@@ -84,216 +113,269 @@ export default function Sidebar({
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div
-      id="sidebar"
-      className={cn(
-        "bg-base-200 h-screen overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20",
-        className,
-        sidebarIsCollapsed ? "w-14" : "w-80"
-      )}
+    <SidebarShell
+      className={className}
+      toggleSidebar={toggleSidebar}
+      sidebarIsCollapsed={sidebarIsCollapsed}
     >
-      <div
-        className={cn(
-          "flex flex-col",
-          sidebarIsCollapsed
-            ? "my-auto h-full justify-between items-center gap-3"
-            : "gap-1"
-        )}
-      >
-        <div className="flex items-center justify-between mb-3">
-          {sidebarIsCollapsed ? (
-            <Image
-              src={"/icon.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden Icon"
-              className="h-8 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-              priority
-            />
-          ) : user?.theme === "light" ? (
-            <Image
-              src={"/linkwarden_light.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-              priority
-            />
-          ) : (
-            <Image
-              src={"/linkwarden_dark.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-              priority
-            />
-          )}
+      {({ collapsed, toggle, closeMobileSidebar }) => {
+        const openModal = (setModal: (value: boolean) => void) => {
+          setModal(true);
+          closeMobileSidebar();
+        };
 
-          {!sidebarIsCollapsed && (
-            <div className="hidden lg:block">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      onClick={toggleSidebar}
-                      size={"icon"}
+        const navLinks = (
+          <div className={cn("flex flex-col gap-2", collapsed && "gap-3")}>
+            <SidebarHighlightLink
+              title={t("dashboard")}
+              href={`/dashboard`}
+              icon={"bi-house"}
+              active={active === `/dashboard`}
+              sidebarIsCollapsed={collapsed}
+            />
+            <SidebarHighlightLink
+              title={t("links")}
+              href={`/links`}
+              icon={"bi-link-45deg"}
+              active={active === `/links`}
+              sidebarIsCollapsed={collapsed}
+            />
+            <SidebarHighlightLink
+              title={t("pinned")}
+              href={`/links/pinned`}
+              icon={"bi-pin-angle"}
+              active={active === `/links/pinned`}
+              sidebarIsCollapsed={collapsed}
+            />
+            <SidebarHighlightLink
+              title={t("collections")}
+              href={`/collections`}
+              icon={"bi-folder"}
+              active={active === `/collections`}
+              sidebarIsCollapsed={collapsed}
+              expanded={collectionDisclosure}
+              onToggleExpand={
+                collapsed
+                  ? undefined
+                  : () => setCollectionDisclosure(!collectionDisclosure)
+              }
+            />
+            {!collapsed && (
+              <Transition
+                show={collectionDisclosure}
+                enter="transition duration-100 ease-out"
+                enterFrom="transform opacity-0 -translate-y-3"
+                enterTo="transform opacity-100 translate-y-0"
+                leave="transition duration-100 ease-out"
+                leaveFrom="transform opacity-100 translate-y-0"
+                leaveTo="transform opacity-0 -translate-y-3"
+              >
+                <div className="pl-4">
+                  <CollectionListing />
+                </div>
+              </Transition>
+            )}
+            <SidebarHighlightLink
+              title={t("tags")}
+              href={`/tags`}
+              icon={"bi-hash"}
+              active={active === `/tags`}
+              sidebarIsCollapsed={collapsed}
+              expanded={tagDisclosure}
+              onToggleExpand={
+                collapsed ? undefined : () => setTagDisclosure(!tagDisclosure)
+              }
+            />
+            {!collapsed && (
+              <Transition
+                show={tagDisclosure}
+                enter="transition duration-100 ease-out"
+                enterFrom="transform opacity-0 -translate-y-3"
+                enterTo="transform opacity-100 translate-y-0"
+                leave="transition duration-100 ease-out"
+                leaveFrom="transform opacity-100 translate-y-0"
+                leaveTo="transform opacity-0 -translate-y-3"
+              >
+                <div className="pl-4 flex flex-col gap-1">
+                  {isLoading ? (
+                    <div className="flex flex-col gap-4">
+                      <div className="skeleton h-4 w-full"></div>
+                      <div className="skeleton h-4 w-full"></div>
+                      <div className="skeleton h-4 w-full"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <TagListing tags={tags} active={active} />
+                      {hasNextPage && <div ref={ref} className="h-1 w-full" />}
+                      {isFetchingNextPage && (
+                        <div className="flex flex-col gap-4 mt-3">
+                          <div className="skeleton h-4 w-full"></div>
+                          <div className="skeleton h-4 w-full"></div>
+                          <div className="skeleton h-4 w-full"></div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </Transition>
+            )}
+          </div>
+        );
+
+        return (
+          <>
+            {collapsed ? (
+              <div className="flex flex-col items-center gap-3 shrink-0">
+                <ActionIcon
+                  icon="bi-search"
+                  variant="default"
+                  label={t("search_for_links")}
+                  tooltipSide="right"
+                  onClick={() => openModal(setSearchModal)}
+                />
+                <DropdownMenu>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="primary"
+                            size="icon"
+                            className="h-9 w-9 shrink-0"
+                            aria-label={t("create_new")}
+                          >
+                            <i className="bi-plus-lg text-lg leading-none" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        {t("create_new")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <DropdownMenuContent side="right" align="start">
+                    <DropdownMenuItem
+                      onSelect={() => openModal(setNewLinkModal)}
                     >
-                      <i className={`bi-layout-sidebar`} />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {sidebarIsCollapsed
-                      ? t("expand_sidebar")
-                      : t("shrink_sidebar")}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          )}
-        </div>
-
-        <div
-          className={cn(
-            "flex flex-col",
-            sidebarIsCollapsed ? "my-auto justify-center gap-3" : "gap-1"
-          )}
-        >
-          <SidebarHighlightLink
-            title={t("dashboard")}
-            href={`/dashboard`}
-            icon={"bi-house"}
-            active={active === `/dashboard`}
-            sidebarIsCollapsed={sidebarIsCollapsed}
-          />
-          <SidebarHighlightLink
-            title={t("links")}
-            href={`/links`}
-            icon={"bi-link-45deg"}
-            active={active === `/links`}
-            sidebarIsCollapsed={sidebarIsCollapsed}
-          />
-          <SidebarHighlightLink
-            title={t("pinned")}
-            href={`/links/pinned`}
-            icon={"bi-pin-angle"}
-            active={active === `/links/pinned`}
-            sidebarIsCollapsed={sidebarIsCollapsed}
-          />
-          <SidebarHighlightLink
-            title={t("collections")}
-            href={`/collections`}
-            icon={"bi-folder"}
-            active={active === `/collections`}
-            sidebarIsCollapsed={sidebarIsCollapsed}
-          />
-          <SidebarHighlightLink
-            title={t("tags")}
-            href={`/tags`}
-            icon={"bi-hash"}
-            active={active === `/tags`}
-            sidebarIsCollapsed={sidebarIsCollapsed}
-          />
-        </div>
-
-        {sidebarIsCollapsed && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" onClick={toggleSidebar} size={"icon"}>
-                  <i className={`bi-layout-sidebar`} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                {sidebarIsCollapsed ? t("expand_sidebar") : t("shrink_sidebar")}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </div>
-
-      {sidebarIsCollapsed ? (
-        <></>
-      ) : (
-        <>
-          <Disclosure defaultOpen={collectionDisclosure}>
-            <Disclosure.Button
-              onClick={() => {
-                setCollectionDisclosure(!collectionDisclosure);
-              }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
-            >
-              <p className="text-sm">{t("collections")}</p>
-              <i
-                className={`bi-chevron-down ${
-                  collectionDisclosure ? "rotate-reverse" : "rotate"
-                }`}
-              ></i>
-            </Disclosure.Button>
-            <Transition
-              enter="transition duration-100 ease-out"
-              enterFrom="transform opacity-0 -translate-y-3"
-              enterTo="transform opacity-100 translate-y-0"
-              leave="transition duration-100 ease-out"
-              leaveFrom="transform opacity-100 translate-y-0"
-              leaveTo="transform opacity-0 -translate-y-3"
-            >
-              <Disclosure.Panel>
-                <CollectionListing />
-              </Disclosure.Panel>
-            </Transition>
-          </Disclosure>
-          <Disclosure defaultOpen={tagDisclosure}>
-            <Disclosure.Button
-              onClick={() => {
-                setTagDisclosure(!tagDisclosure);
-              }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
-            >
-              <p className="text-sm">{t("tags")}</p>
-              <i
-                className={`bi-chevron-down  ${
-                  tagDisclosure ? "rotate-reverse" : "rotate"
-                }`}
-              ></i>
-            </Disclosure.Button>
-            <Transition
-              enter="transition duration-100 ease-out"
-              enterFrom="transform opacity-0 -translate-y-3"
-              enterTo="transform opacity-100 translate-y-0"
-              leave="transition duration-100 ease-out"
-              leaveFrom="transform opacity-100 translate-y-0"
-              leaveTo="transform opacity-0 -translate-y-3"
-            >
-              <Disclosure.Panel className="flex flex-col gap-1">
-                {isLoading ? (
-                  <div className="flex flex-col gap-4">
-                    <div className="skeleton h-4 w-full"></div>
-                    <div className="skeleton h-4 w-full"></div>
-                    <div className="skeleton h-4 w-full"></div>
+                      <i className="bi-link-45deg" />
+                      {t("new_link")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => openModal(setNewCollectionModal)}
+                    >
+                      <i className="bi-folder-plus" />
+                      {t("new_collection")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => openModal(setNewTagModal)}
+                    >
+                      <i className="bi-tag" />
+                      {t("new_tag")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => openModal(setUploadFileModal)}
+                    >
+                      <i className="bi-file-earmark-arrow-up" />
+                      {t("upload_file")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 shrink-0 pt-1 px-1">
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="justify-between whitespace-nowrap h-8"
+                  onClick={() => openModal(setSearchModal)}
+                >
+                  <div className="flex gap-2 items-center">
+                    <i className="bi-search leading-none" />
+                    {t("search_for_links")}
                   </div>
-                ) : (
-                  <>
-                    <TagListing tags={tags} active={active} />
-                    {hasNextPage && <div ref={ref} className="h-1 w-full" />}
-                    {isFetchingNextPage && (
-                      <div className="flex flex-col gap-4 mt-3">
-                        <div className="skeleton h-4 w-full"></div>
-                        <div className="skeleton h-4 w-full"></div>
-                        <div className="skeleton h-4 w-full"></div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </Disclosure.Panel>
-            </Transition>
-          </Disclosure>
-        </>
-      )}
-    </div>
+                </Button>
+
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="primary"
+                    className="flex-1 min-w-0 h-9 justify-center whitespace-nowrap"
+                    onClick={() => openModal(setNewLinkModal)}
+                  >
+                    <i className="bi-plus-lg text-lg leading-none" />
+                    {t("new_link")}
+                  </Button>
+
+                  <ActionIcon
+                    icon="bi-folder-plus"
+                    variant="default"
+                    label={t("new_collection")}
+                    onClick={() => openModal(setNewCollectionModal)}
+                  />
+                  <ActionIcon
+                    icon="bi-tag"
+                    variant="default"
+                    label={t("new_tag")}
+                    onClick={() => openModal(setNewTagModal)}
+                  />
+
+                  <DropdownMenu>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="default"
+                              size="icon"
+                              className="h-9 w-9 shrink-0"
+                              aria-label={t("more")}
+                            >
+                              <i className="bi-three-dots text-lg leading-none" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>{t("more")}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onSelect={() => openModal(setUploadFileModal)}
+                      >
+                        <i className="bi-file-earmark-arrow-up" />
+                        {t("upload_file")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            )}
+
+            {collapsed ? (
+              <div className="flex-1 min-h-0 flex flex-col items-center justify-center">
+                {navLinks}
+              </div>
+            ) : (
+              <SidebarScrollArea>{navLinks}</SidebarScrollArea>
+            )}
+            {searchModal && (
+              <SearchModal onClose={() => setSearchModal(false)} />
+            )}
+            {newLinkModal && (
+              <NewLinkModal onClose={() => setNewLinkModal(false)} />
+            )}
+            {newCollectionModal && (
+              <NewCollectionModal
+                onClose={() => setNewCollectionModal(false)}
+              />
+            )}
+            {newTagModal && (
+              <NewTagModal onClose={() => setNewTagModal(false)} />
+            )}
+            {uploadFileModal && (
+              <UploadFileModal onClose={() => setUploadFileModal(false)} />
+            )}
+          </>
+        );
+      }}
+    </SidebarShell>
   );
 }

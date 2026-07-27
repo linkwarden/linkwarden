@@ -237,7 +237,7 @@ const Page: NextPageWithLayout = () => {
           </p>
           <Button
             className="mx-auto mt-5"
-            variant={"accent"}
+            variant="primary"
             onClick={() => setNewTagModal(true)}
           >
             <i className="bi-plus-lg text-xl mr-2" />

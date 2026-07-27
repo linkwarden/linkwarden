@@ -72,8 +72,8 @@ export default function WhatsNewSheet() {
         })}
 
         <View className="flex-col gap-3">
-          <Button variant="accent" size="lg" onPress={closeSheet}>
-            <Text className="text-white text-xl">Got it</Text>
+          <Button variant="primary" size="lg" onPress={closeSheet}>
+            <Text className="text-base-100 text-xl">Got it</Text>
           </Button>
 
           {WHATS_NEW_LEARN_MORE_URL && (
