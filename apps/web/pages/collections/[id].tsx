@@ -165,8 +165,24 @@ const Page: NextPageWithLayout = () => {
             >
               <DropdownMenuItem
                 onClick={() => {
+                  let blocked = false;
+
                   for (const link of links) {
-                    if (link.url) window.open(link.url, "_blank");
+                    if (!link.url) continue;
+
+                    const openedWindow = window.open(link.url, "_blank");
+
+                    if (openedWindow) {
+                      (openedWindow as { blur: () => void }).blur();
+                    } else {
+                      blocked = true;
+                    }
+                  }
+
+                  window.focus();
+
+                  if (blocked) {
+                    alert(t("popups_blocked_open_all_links"));
                   }
                 }}
               >
