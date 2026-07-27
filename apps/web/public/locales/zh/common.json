@@ -165,6 +165,7 @@
   "select_theme": "选择主题",
   "dark": "Dark",
   "light": "Light",
+  "system": "System",
   "archive_settings": "存档设置",
   "formats_to_archive": "存档/保存网页格式:",
   "screenshot": "截图",
