@@ -15,7 +15,7 @@ import useAuthStore from "@/store/auth";
 import { useConfig } from "@linkwarden/router/config";
 import { useUser } from "@linkwarden/router/user";
 import { Plan } from "@linkwarden/types/global";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import {
   Archive,
@@ -27,8 +27,6 @@ import {
   Search,
   Sparkles,
 } from "lucide-react-native";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { useFonts } from "expo-font";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import {
   ErrorCode,
@@ -37,10 +35,11 @@ import {
   useIAP,
   type Purchase,
 } from "expo-iap";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  AppState,
   Image,
   Linking,
   Platform,
@@ -70,18 +69,15 @@ const paymentButton = Platform.select({
     accessibilityLabel: "Subscribe with Apple Pay",
     icon: "apple-pay",
     iconSize: 40,
-    label: "Subscribe",
   },
   android: {
     accessibilityLabel: "Subscribe with Google Pay",
     icon: "google-pay",
     iconSize: 40,
-    label: "Subscribe",
   },
   default: {
     accessibilityLabel: "Complete Subscription",
     iconSize: 0,
-    label: "Complete Subscription",
   },
 });
 
@@ -91,8 +87,6 @@ export default function SubscribeScreen() {
   const theme = rawTheme[colorScheme as ThemeName];
   const accentColor = colorScheme === "dark" ? "#A78BFA" : theme.accent;
   const insets = useSafeAreaInsets();
-  const payButtonClass = colorScheme === "dark" ? "bg-white" : "bg-black";
-  const payContentColor = colorScheme === "dark" ? "#000000" : "#FFFFFF";
   const [plan, setPlan] = useState<Plan>(Plan.yearly);
   const {
     data: user,
@@ -104,7 +98,6 @@ export default function SubscribeScreen() {
   const [restoreLoading, setRestoreLoading] = useState(false);
   const [productsError, setProductsError] = useState(false);
   const [fetchAttempt, setFetchAttempt] = useState(0);
-  const [payIconReady] = useFonts(FontAwesome5.font);
 
   const [introOfferEligible, setIntroOfferEligible] = useState(
     Platform.OS !== "ios"
@@ -211,6 +204,24 @@ export default function SubscribeScreen() {
     if (auth.status === "authenticated" && !isChecking && !showSubscribe)
       router.replace("/(tabs)/dashboard");
   }, [auth.status, isChecking, showSubscribe]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (auth.status === "authenticated") refetchUser();
+    }, [auth.status, refetchUser])
+  );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (
+        state === "active" &&
+        useAuthStore.getState().auth.status === "authenticated"
+      )
+        refetchUser();
+    });
+
+    return () => subscription.remove();
+  }, [refetchUser]);
 
   useEffect(() => {
     if (!connected) return;
@@ -324,8 +335,8 @@ export default function SubscribeScreen() {
       option: option ?? null,
       footnote: total
         ? freeTrialPeriod
-          ? `Get ${freeTrialPeriod} free, then ${total} per ${period}. Cancel anytime from your device settings.`
-          : `${total} per ${period}. Cancel anytime from your device settings.`
+          ? `${freeTrialPeriod} free, then ${total}/${period}`
+          : `${total}/${period}`
         : null,
     };
   }, [plan, monthlyPlan, yearlyPlan, introOfferEligible]);
@@ -388,6 +399,16 @@ export default function SubscribeScreen() {
     try {
       const serverReachable = await ensureCloudIsReachable(auth.instance);
       if (!serverReachable) {
+        setPurchaseLoading(false);
+        return;
+      }
+
+      const { data: freshUser } = await refetchUser();
+      if (
+        freshUser?.subscription?.active ||
+        freshUser?.parentSubscription?.active
+      ) {
+        router.replace("/(tabs)/dashboard");
         setPurchaseLoading(false);
         return;
       }
@@ -574,36 +595,25 @@ export default function SubscribeScreen() {
         ) : null}
 
         <Button
-          variant="ghost"
+          variant="accent"
           size="lg"
           activeOpacity={0.85}
           accessibilityRole="button"
           accessibilityLabel={paymentButton.accessibilityLabel}
-          className={`w-full flex-row mt-4 px-4 ${payButtonClass}`}
+          className={`w-full h-16 mt-4 flex-col gap-0`}
           disabled={!selectedPlan.option || purchaseLoading || !user?.uuid}
           onPress={purchase}
           isLoading={purchaseLoading}
         >
-          {paymentButton.icon && payIconReady ? (
-            <FontAwesome5
-              brand
-              name={paymentButton.icon}
-              size={paymentButton.iconSize}
-              color={payContentColor}
-            />
-          ) : (
-            <Text
-              className="text-xl font-semibold"
-              style={{ color: payContentColor }}
-            >
-              {paymentButton.label}
-            </Text>
-          )}
+          <Text className="text-xl font-semibold text-white">
+            Start Free Trial
+          </Text>
+          <Text className="text-white">{selectedPlan.footnote}</Text>
         </Button>
 
         {selectedPlan.footnote ? (
           <Text className="text-neutral text-center text-xs mt-3">
-            {selectedPlan.footnote}
+            Cancel anytime from your device settings.
           </Text>
         ) : null}
 

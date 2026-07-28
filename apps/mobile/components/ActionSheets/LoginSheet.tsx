@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import WebViewModal from "@/components/WebViewModal";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import SheetHeader from "./SheetHeader";
@@ -20,12 +21,13 @@ const cloudInstance = "https://cloud.linkwarden.app";
 const cleanInstance = (instance: string) => instance.trim().replace(/\/+$/, "");
 
 export default function LoginSheet() {
-  const { auth, signIn } = useAuthStore();
+  const { auth, signIn, instanceInfo, fetchInstanceInfo } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const [method, setMethod] = useState<"password" | "token">("password");
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
   const [form, setForm] = useState({
     user: "",
     password: "",
@@ -34,8 +36,15 @@ export default function LoginSheet() {
   });
 
   const instance = cleanInstance(form.instance);
-  const instanceName =
-    instance === cloudInstance ? "cloud.linkwarden.app" : instance;
+
+  const emailEnabled =
+    instance === cloudInstance ||
+    (instanceInfo.instance === instance &&
+      instanceInfo.config?.EMAIL_PROVIDER === true);
+
+  useEffect(() => {
+    fetchInstanceInfo(instance);
+  }, [instance]);
 
   useEffect(() => {
     setForm((prev) => ({
@@ -56,6 +65,10 @@ export default function LoginSheet() {
   const closeSheet = () => {
     SheetManager.hide("login-sheet");
   };
+
+  useEffect(() => {
+    if (auth.status === "authenticated") closeSheet();
+  }, [auth.status]);
 
   const handleLogin = async () => {
     if (!instance || (!form.token && (!form.user || !form.password))) return;
@@ -130,18 +143,29 @@ export default function LoginSheet() {
           />
         )}
 
-        <TouchableOpacity
-          onPress={() =>
-            setMethod(method === "password" ? "token" : "password")
-          }
-          className="w-fit mx-auto"
-        >
-          <Text className="text-primary w-fit text-center">
-            {method === "password"
-              ? "Login with Access Token"
-              : "Login with Username/Password"}
-          </Text>
-        </TouchableOpacity>
+        <View className="flex flex-row">
+          <TouchableOpacity
+            onPress={() =>
+              setMethod(method === "password" ? "token" : "password")
+            }
+            className="w-fit"
+          >
+            <Text className="text-primary w-fit text-center">
+              {method === "password"
+                ? "Login with Access Token"
+                : "Login with Username/Password"}
+            </Text>
+          </TouchableOpacity>
+
+          {emailEnabled && method === "password" && (
+            <TouchableOpacity
+              onPress={() => setShowForgot(true)}
+              className="w-fit ml-auto"
+            >
+              <Text className="text-primary text-right">Forgot password?</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
         <Button
           variant="accent"
@@ -152,6 +176,13 @@ export default function LoginSheet() {
           <Text className="text-white text-xl">Login</Text>
         </Button>
       </ScrollView>
+
+      <WebViewModal
+        visible={showForgot}
+        onClose={() => setShowForgot(false)}
+        title="Forgot Password"
+        uri={`${instance}/forgot`}
+      />
     </ActionSheet>
   );
 }

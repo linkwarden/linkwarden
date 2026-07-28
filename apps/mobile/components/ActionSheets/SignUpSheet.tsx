@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
-  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -41,23 +40,17 @@ const cloudConfig: Config = {
 const cleanInstance = (instance: string) => instance.trim().replace(/\/+$/, "");
 
 export default function SignUpSheet() {
-  const { auth, instanceInfo, signUp, requestVerificationEmail } =
-    useAuthStore();
+  const { auth, instanceInfo, signUp } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const [isLoading, setIsLoading] = useState(false);
   const [acceptPromotionalEmails, setAcceptPromotionalEmails] = useState(false);
-  const [sentTo, setSentTo] = useState<{
-    email: string;
-    instance: string;
-  } | null>(null);
   const [form, setForm] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
-    passwordConfirmation: "",
     instance: auth.instance || cloudInstance,
   });
 
@@ -83,9 +76,13 @@ export default function SignUpSheet() {
     }));
   }, [auth.instance]);
 
-  const closeSheet = () => {
-    SheetManager.hide("sign-up-sheet");
+  const closeSheet = async () => {
+    await SheetManager.hide("sign-up-sheet");
   };
+
+  useEffect(() => {
+    if (auth.status === "authenticated") closeSheet();
+  }, [auth.status]);
 
   const register = async () => {
     const email = form.email.toLowerCase().trim();
@@ -101,15 +98,8 @@ export default function SignUpSheet() {
         "Sign up through the web",
         "This instance needs to be updated to support mobile sign-up. You can sign up through the web, then come back here to log in."
       );
-    else if (
-      !name ||
-      !form.password ||
-      !form.passwordConfirmation ||
-      (emailSignUp ? !email : !username)
-    )
+    else if (!name || !form.password || (emailSignUp ? !email : !username))
       return Alert.alert("Error", "Please fill all fields");
-    else if (form.password !== form.passwordConfirmation)
-      return Alert.alert("Error", "Passwords don't match");
     else if (form.password.length < 8)
       return Alert.alert("Error", "Password must be at least 8 characters");
 
@@ -126,8 +116,13 @@ export default function SignUpSheet() {
 
     if (!created) return;
 
-    if (emailSignUp) setSentTo({ email, instance });
-    else {
+    if (emailSignUp) {
+      await closeSheet();
+      SheetManager.show("verify-email-sheet", {
+        payload: { email, instance },
+        context: "global",
+      });
+    } else {
       Alert.alert("Account created", "You can log in now.");
       closeSheet();
     }
@@ -145,7 +140,7 @@ export default function SignUpSheet() {
       safeAreaInsets={insets}
     >
       <SheetHeader
-        title={sentTo ? "Check Email" : "Sign Up"}
+        title="Sign Up"
         onClose={closeSheet}
         titleClassName="text-2xl"
         align="left"
@@ -159,134 +154,95 @@ export default function SignUpSheet() {
         }}
         contentContainerClassName="px-8 pb-5 flex-col gap-3"
       >
-        {sentTo ? (
-          <>
-            <Text className="text-base-content text-xl" numberOfLines={1}>
-              {sentTo.email}
+        <>
+          {!!configError && (
+            <Text className="text-red-500 text-center">{configError}</Text>
+          )}
+          {currentConfig?.DISABLE_REGISTRATION && (
+            <Text className="text-neutral text-center">
+              Registration is disabled on this instance.
             </Text>
-            <Text className="text-base-content text-center text-base px-2">
-              We sent you a verification link. After verifying your email, come
-              back and log in.
+          )}
+          {currentConfig?.EMAIL_PROVIDER === true && !supportsMobileSignup && (
+            <Text className="text-neutral text-center">
+              This instance needs to be updated to support mobile sign-up. You
+              can sign up through the web, then come back here to log in.
             </Text>
-            <Button
-              variant="accent"
-              size="lg"
-              isLoading={isLoading}
-              onPress={async () => {
-                setIsLoading(true);
-                await requestVerificationEmail(sentTo.email, sentTo.instance);
-                setIsLoading(false);
-              }}
+          )}
+          <Input
+            className="w-full text-xl p-3 leading-tight h-12"
+            textAlignVertical="center"
+            placeholder="Display Name"
+            value={form.name}
+            onChangeText={(text) => setForm({ ...form, name: text })}
+          />
+          {emailSignUp ? (
+            <Input
+              className="w-full text-xl p-3 leading-tight h-12"
+              textAlignVertical="center"
+              placeholder="Email"
+              value={form.email}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              onChangeText={(text) => setForm({ ...form, email: text })}
+            />
+          ) : (
+            <Input
+              className="w-full text-xl p-3 leading-tight h-12"
+              textAlignVertical="center"
+              placeholder="Username"
+              value={form.username}
+              autoCapitalize="none"
+              onChangeText={(text) => setForm({ ...form, username: text })}
+            />
+          )}
+          <Input
+            className="w-full text-xl p-3 leading-tight h-12"
+            textAlignVertical="center"
+            placeholder="Password"
+            secureTextEntry
+            autoCapitalize="none"
+            value={form.password}
+            onChangeText={(text) => setForm({ ...form, password: text })}
+          />
+          {instance === cloudInstance && (
+            <TouchableOpacity
+              activeOpacity={0.75}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: acceptPromotionalEmails }}
+              className="flex-row items-center gap-3 py-1"
+              onPress={() => setAcceptPromotionalEmails((checked) => !checked)}
             >
-              <Text className="text-white text-xl">Resend Email</Text>
-            </Button>
-          </>
-        ) : (
-          <>
-            {!!configError && (
-              <Text className="text-red-500 text-center">{configError}</Text>
-            )}
-            {currentConfig?.DISABLE_REGISTRATION && (
-              <Text className="text-neutral text-center">
-                Registration is disabled on this instance.
-              </Text>
-            )}
-            {currentConfig?.EMAIL_PROVIDER === true &&
-              !supportsMobileSignup && (
-                <Text className="text-neutral text-center">
-                  This instance needs to be updated to support mobile sign-up.
-                  You can sign up through the web, then come back here to log
-                  in.
-                </Text>
-              )}
-            <Input
-              className="w-full text-xl p-3 leading-tight h-12"
-              textAlignVertical="center"
-              placeholder="Display Name"
-              value={form.name}
-              onChangeText={(text) => setForm({ ...form, name: text })}
-            />
-            {emailSignUp ? (
-              <Input
-                className="w-full text-xl p-3 leading-tight h-12"
-                textAlignVertical="center"
-                placeholder="Email"
-                value={form.email}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                onChangeText={(text) => setForm({ ...form, email: text })}
-              />
-            ) : (
-              <Input
-                className="w-full text-xl p-3 leading-tight h-12"
-                textAlignVertical="center"
-                placeholder="Username"
-                value={form.username}
-                autoCapitalize="none"
-                onChangeText={(text) => setForm({ ...form, username: text })}
-              />
-            )}
-            <Input
-              className="w-full text-xl p-3 leading-tight h-12"
-              textAlignVertical="center"
-              placeholder="Password"
-              secureTextEntry
-              autoCapitalize="none"
-              value={form.password}
-              onChangeText={(text) => setForm({ ...form, password: text })}
-            />
-            <Input
-              className="w-full text-xl p-3 leading-tight h-12"
-              textAlignVertical="center"
-              placeholder="Confirm Password"
-              secureTextEntry
-              autoCapitalize="none"
-              value={form.passwordConfirmation}
-              onChangeText={(text) =>
-                setForm({ ...form, passwordConfirmation: text })
-              }
-            />
-            {instance === cloudInstance && (
-              <TouchableOpacity
-                activeOpacity={0.75}
-                accessibilityRole="checkbox"
-                accessibilityState={{ checked: acceptPromotionalEmails }}
-                className="flex-row items-center gap-3 py-1"
-                onPress={() =>
-                  setAcceptPromotionalEmails((checked) => !checked)
-                }
+              <View
+                className="h-5 w-5 items-center justify-center rounded border"
+                style={{
+                  backgroundColor: acceptPromotionalEmails
+                    ? theme.accent
+                    : "transparent",
+                  borderColor: acceptPromotionalEmails
+                    ? theme.accent
+                    : theme.neutral,
+                }}
               >
-                <View
-                  className="h-5 w-5 items-center justify-center rounded border"
-                  style={{
-                    backgroundColor: acceptPromotionalEmails
-                      ? theme.accent
-                      : "transparent",
-                    borderColor: acceptPromotionalEmails
-                      ? theme.accent
-                      : theme.neutral,
-                  }}
-                >
-                  {acceptPromotionalEmails && (
-                    <Check size={14} color="#FFFFFF" strokeWidth={3} />
-                  )}
-                </View>
-                <Text className="text-neutral flex-1 text-sm">
-                  Get notified about new features and offers via email.
-                </Text>
-              </TouchableOpacity>
-            )}
-            <Button
-              variant="accent"
-              size="lg"
-              disabled={isConfigLoading}
-              isLoading={isLoading}
-              onPress={register}
-            >
-              <Text className="text-white text-xl">Sign Up</Text>
-            </Button>
-          </>
-        )}
+                {acceptPromotionalEmails && (
+                  <Check size={14} color="#FFFFFF" strokeWidth={3} />
+                )}
+              </View>
+              <Text className="text-neutral flex-1 text-sm">
+                Get notified about new features and offers via email.
+              </Text>
+            </TouchableOpacity>
+          )}
+          <Button
+            variant="accent"
+            size="lg"
+            disabled={isConfigLoading}
+            isLoading={isLoading}
+            onPress={register}
+          >
+            <Text className="text-white text-xl">Sign Up</Text>
+          </Button>
+        </>
       </ScrollView>
     </ActionSheet>
   );

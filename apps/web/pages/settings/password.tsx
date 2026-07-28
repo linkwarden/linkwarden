@@ -103,7 +103,7 @@ const Page: NextPageWithLayout = () => {
           disabled={
             submitLoader || !newPassword || (!canCreatePassword && !oldPassword)
           }
-          variant="accent"
+          variant="primary"
           className="mt-3 w-full sm:w-fit"
         >
           {t("save_changes")}

@@ -23,6 +23,9 @@ import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
 import * as Sentry from "@sentry/react-native";
 import OfflineSyncProvider from "@/components/OfflineSyncProvider";
+import { installCustomHeaders } from "@/lib/customHeaders";
+
+installCustomHeaders();
 
 Sentry.init({
   dsn: "https://00d7eed9e810cbbf91a7ed3547e37100@o4510998442475520.ingest.us.sentry.io/4511033679609856",
@@ -39,7 +42,7 @@ export default Sentry.wrap(function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { auth, setAuth } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const rootNavState = useRootNavigationState();
 
   useEffect(() => {
@@ -147,6 +150,7 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
               <Stack.Screen name="index" />
               <Stack.Screen name="subscribe" />
               <Stack.Screen name="incoming" />
+              <Stack.Screen name="verify-email" />
               <Stack.Screen name="+not-found" />
             </Stack>
           )}

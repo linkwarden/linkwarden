@@ -6,23 +6,47 @@ import { assertUrlIsSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 const pollingIntervalInSeconds =
-  (Number(process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES) || 60) * 60; // Default to one hour if not set
+  (Number(process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES) || 60) * 60;
 
-// Per-feed network timeout. safeFetch (node-fetch v2) has no default timeout,
-// so a single feed whose server accepts the connection but never responds keeps
-// its fetch pending forever. Because every feed is awaited together in one
-// Promise.all below, that one hung request makes the whole batch never settle,
-// which freezes the polling loop indefinitely (no further cycles ever run).
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
+
 const feedTimeoutInMs = 30_000;
 
 export async function startRSSPolling() {
   console.log("\x1b[34m%s\x1b[0m", "Starting RSS polling...");
   while (true) {
-    const rssSubscriptions = await prisma.rssSubscription.findMany({});
+    const rssSubscriptions = await prisma.rssSubscription.findMany({
+      where: {
+        collection: {
+          owner: {
+            ...(process.env.STRIPE_SECRET_KEY
+              ? {
+                  OR: [
+                    { subscriptions: { is: { active: true } } },
+                    { parentSubscription: { is: { active: true } } },
+                    ...(REQUIRE_CC
+                      ? []
+                      : [
+                          {
+                            createdAt: {
+                              gte: new Date(
+                                new Date().getTime() -
+                                  Number(TRIAL_PERIOD_DAYS) * 86400000
+                              ),
+                            },
+                          },
+                        ]),
+                  ],
+                }
+              : {}),
+          },
+        },
+      },
+    });
 
     const parser = new Parser();
 
-    // allSettled (not all) so one failed feed can never reject the whole batch.
     await Promise.allSettled(
       rssSubscriptions.map(async (rssSubscription) => {
         const controller = new AbortController();

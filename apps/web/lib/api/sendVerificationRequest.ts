@@ -26,6 +26,9 @@ export default async function sendVerificationRequest({
   const emailTemplate = Handlebars.compile(templateFile);
 
   const { host } = new URL(url);
+  const verifyUrl = `${
+    process.env.BASE_URL
+  }/auth/verify?token=${token}&email=${encodeURIComponent(identifier)}`;
   const result = await transporter.sendMail({
     to: identifier,
     from: {
@@ -33,11 +36,9 @@ export default async function sendVerificationRequest({
       address: from as string,
     },
     subject: `Please verify your email address`,
-    text: text({ url, host }),
+    text: text({ url: verifyUrl, host }),
     html: emailTemplate({
-      url: `${
-        process.env.NEXTAUTH_URL
-      }/callback/email?token=${token}&email=${encodeURIComponent(identifier)}`,
+      url: verifyUrl,
     }),
   });
   const failed = result.rejected.concat(result.pending).filter(Boolean);

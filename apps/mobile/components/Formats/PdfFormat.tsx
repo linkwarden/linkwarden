@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as FileSystem from "expo-file-system/legacy";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import Pdf from "react-native-pdf";
@@ -22,17 +23,21 @@ export default function PdfFormat({ link, setIsLoading }: Props) {
       filePath:
         FileSystem.documentDirectory + `archivedData/pdf/link_${link.id}.pdf`,
       setContent,
+      updatedAt: link.updatedAt,
       fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${FORMAT}`;
 
         const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-          headers: { Authorization: `Bearer ${auth.session}` },
+          headers: {
+            ...customHeadersFor(apiUrl),
+            Authorization: `Bearer ${auth.session}`,
+          },
         });
 
         return result.uri;
       },
     });
-  }, [FORMAT, auth.instance, auth.session, link.id]);
+  }, [FORMAT, auth.instance, auth.session, link.id, link.updatedAt]);
 
   return (
     content && (

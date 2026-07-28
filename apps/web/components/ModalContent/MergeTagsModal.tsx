@@ -65,7 +65,7 @@ export default function MergeTagsModal({
           placeholder={t("tag_name_placeholder")}
         />
 
-        <Button className="ml-auto" variant="accent" onClick={merge}>
+        <Button className="ml-auto" variant="primary" onClick={merge}>
           <i className="bi-intersect text-xl" />
           {t("merge_tags")}
         </Button>

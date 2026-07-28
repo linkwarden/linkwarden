@@ -263,7 +263,7 @@ export default function DashboardLayoutDropdown() {
     <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="h-8">
-          <i className="bi-sliders2-vertical text-neutral" />
+          <i className="bi-pencil text-neutral" />
           {t("edit_layout")}
         </Button>
       </DropdownMenuTrigger>

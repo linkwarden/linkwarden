@@ -131,7 +131,7 @@ export default function InviteModal({ onClose }: Props) {
         </div>
 
         <div className="flex justify-between items-center mt-5">
-          <Button variant="accent" className="ml-auto" type="submit">
+          <Button variant="primary" className="ml-auto" type="submit">
             {t("send_invitation")}
           </Button>
         </div>

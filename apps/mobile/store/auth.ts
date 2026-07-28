@@ -10,6 +10,7 @@ import { router } from "expo-router";
 import type { GetUserByIdResponse, MobileAuth } from "@linkwarden/types/global";
 import type { Config } from "@linkwarden/router/config";
 import { Alert } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 import { queryClient } from "@/lib/queryClient";
 import { mmkvPersister } from "@/lib/queryPersister";
 import { clearCache } from "@/lib/cache";
@@ -18,6 +19,7 @@ import { markWhatsNewSeen } from "@/lib/whatsNew";
 import { useOfflineSyncStore } from "@/lib/offlineSync";
 import { hasInactiveSubscription } from "@/lib/subscription";
 import { ensureCloudIsReachable } from "@/lib/ensureCloudIsReachable";
+import { loadCustomHeaders, setCustomHeaders } from "@/lib/customHeaders";
 
 const cloudInstance = "https://cloud.linkwarden.app";
 const cloudConfig: Config = {
@@ -197,6 +199,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     error: "",
   },
   setAuth: async () => {
+    await loadCustomHeaders();
     const session = await SecureStore.getItemAsync("TOKEN");
     const instance = await SecureStore.getItemAsync("INSTANCE");
     const nextInstance = cleanInstance(instance);
@@ -224,6 +227,9 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   requestVerificationEmail,
   setInstance: async (instance, config) => {
     const nextInstance = cleanInstance(instance);
+
+    if (nextInstance === cloudInstance)
+      await setCustomHeaders(nextInstance, []);
 
     await SecureStore.setItemAsync("INSTANCE", nextInstance);
     set((state) => ({
@@ -395,8 +401,9 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           ),
         ]);
 
+        const data = await res.json().catch(() => null);
+
         if (res.ok) {
-          const data = await res.json();
           const session = (data as any).response.token;
           const route = await getPostAuthRoute(instance, session);
 
@@ -406,6 +413,13 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           markWhatsNewSeenForNewUser();
           router.replace(route);
           return true;
+        } else if (data?.code === "EMAIL_NOT_VERIFIED") {
+          await SheetManager.hide("login-sheet");
+          SheetManager.show("verify-email-sheet", {
+            payload: { email: data?.email || username, instance },
+            context: "global",
+          });
+          return false;
         } else {
           Alert.alert("Error", "Invalid credentials");
           return false;

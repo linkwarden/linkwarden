@@ -1,4 +1,4 @@
-import { View, Text, Alert, TouchableOpacity } from "react-native";
+import { View, Text, Alert, TouchableOpacity, Image } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -8,11 +8,14 @@ import ActionSheet, {
   useSheetRouteParams,
   useSheetRouter,
 } from "react-native-actions-sheet";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system/legacy";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useUpdateLink } from "@linkwarden/router/links";
+import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import {
+  ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   TagIncludingLinkCount,
@@ -27,7 +30,15 @@ import {
   ChevronLeft,
   Check,
   Plus,
+  ImageUp,
 } from "lucide-react-native";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
+import {
+  getCachePathForFormat,
+  loadCacheOrFetch,
+  seedFormatCache,
+} from "@/lib/cache";
+import { customHeadersFor } from "@/lib/customHeaders";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTags } from "@linkwarden/router/tags";
@@ -45,14 +56,60 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
     LinkIncludingShortenedCollectionAndTags | undefined
   >(props.payload?.link);
   const updateLink = useUpdateLink({ auth, Alert });
+  const updateFile = useUpdateFile({ auth, Alert });
   const router = useSheetRouter("edit-link-sheet");
   const { colorScheme } = useColorScheme();
+
+  const [currentBanner, setCurrentBanner] = useState("");
+  const [newBanner, setNewBanner] =
+    useState<ImagePicker.ImagePickerAsset | null>(null);
 
   useEffect(() => {
     if (params?.link) {
       setLink(params.link);
     }
   }, [params?.link]);
+
+  useEffect(() => {
+    if (!link?.id) return;
+
+    loadCacheOrFetch({
+      filePath: getCachePathForFormat(link.id, "preview"),
+      setContent: setCurrentBanner,
+      shouldFetch: formatAvailable(link, "preview"),
+      updatedAt: link.updatedAt,
+      onStart: () => setCurrentBanner(""),
+      errorMessage: "Failed to fetch preview",
+      fetchContent: async (filePath) => {
+        const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`;
+
+        const result = await FileSystem.downloadAsync(apiUrl, filePath, {
+          headers: {
+            ...customHeadersFor(apiUrl),
+            Authorization: `Bearer ${auth.session}`,
+          },
+        });
+
+        return result.uri;
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.instance, auth.session, link?.id, link?.preview, link?.updatedAt]);
+
+  const pickBanner = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setNewBanner(result.assets[0]);
+    }
+  };
+
+  const bannerUri =
+    newBanner?.uri ||
+    (currentBanner ? `${currentBanner}?updatedAt=${link?.updatedAt}` : "");
 
   const { tmp, updateTmp } = useTmpStore();
 
@@ -139,8 +196,56 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
           }
         />
 
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={pickBanner}
+          className="mb-4 h-36 rounded-lg bg-base-100 overflow-hidden items-center justify-center"
+        >
+          {bannerUri ? (
+            <Image
+              source={{ uri: bannerUri }}
+              resizeMode="cover"
+              className="absolute top-0 bottom-0 left-0 right-0 h-full w-full"
+            />
+          ) : null}
+
+          <View className="flex-row items-center justify-center gap-2 bg-base-200/20 w-full h-full rounded-md">
+            <View className="flex-row items-center gap-2 bg-base-200/90 rounded-md px-3 py-1.5">
+              <ImageUp
+                size={16}
+                color={rawTheme[colorScheme as ThemeName].primary}
+              />
+              <Text className="text-base-content">
+                {bannerUri ? "Change Banner" : "Upload Banner"}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
         <Button
-          onPress={() => {
+          onPress={async () => {
+            if (!link) return;
+
+            if (newBanner && link.id) {
+              const uploaded = await updateFile
+                .mutateAsync({
+                  linkId: link.id,
+                  file: {
+                    uri: newBanner.uri,
+                    name: newBanner.fileName || "banner.jpg",
+                    type: "image/jpeg",
+                  },
+                  isPreview: true,
+                })
+                .catch(() => null);
+
+              if (uploaded) {
+                await seedFormatCache(link.id, "preview", newBanner.uri).catch(
+                  () => {}
+                );
+              }
+            }
+
             updateLink.mutate(link as LinkIncludingShortenedCollectionAndTags);
             if (link && tmp.link)
               updateTmp({
@@ -148,10 +253,10 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
               });
             SheetManager.hide("edit-link-sheet");
           }}
-          isLoading={updateLink.isPending}
-          variant="accent"
+          isLoading={updateLink.isPending || updateFile.isPending}
+          variant="primary"
         >
-          <Text className="text-white">Save</Text>
+          <Text className="text-base-100">Save</Text>
         </Button>
       </View>
     </>

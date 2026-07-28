@@ -172,7 +172,7 @@ export default function NewLinkModal({ onClose }: Props) {
           <p>{optionsExpanded ? t("hide_options") : t("more_options")}</p>
           <i className={`bi-chevron-${optionsExpanded ? "up" : "down"}`} />
         </Button>
-        <Button variant="accent" onClick={submit}>
+        <Button variant="primary" onClick={submit}>
           {t("create_link")}
         </Button>
       </div>

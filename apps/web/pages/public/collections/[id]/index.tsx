@@ -29,13 +29,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useUser } from "@linkwarden/router/user";
+import useTheme from "@/hooks/useTheme";
 import { Separator } from "@/components/ui/separator";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
 
-  const { data: user } = useUser();
+  const theme = useTheme();
 
   const router = useRouter();
 
@@ -104,8 +104,8 @@ export default function PublicCollections() {
         className="h-96"
         style={{
           backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-            user?.theme === "light" ? "#f3f4f6" : "#262626"
-          } 13rem, ${user?.theme === "light" ? "#ffffff" : "#171717"} 100%)`,
+            theme === "light" ? "#f3f4f6" : "#262626"
+          } 13rem, ${theme === "light" ? "#ffffff" : "#171717"} 100%)`,
         }}
       >
         {collection && (

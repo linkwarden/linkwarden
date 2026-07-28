@@ -285,7 +285,7 @@ const Page: NextPageWithLayout = () => {
         </div>
 
         <Button
-          variant="accent"
+          variant="primary"
           onClick={() => {
             if (account?.email !== user.email) {
               setEmailChangeVerificationModal(true);

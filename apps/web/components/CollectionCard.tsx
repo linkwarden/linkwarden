@@ -166,9 +166,9 @@ export default function CollectionCard({
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >
-        <div className="card-body flex flex-col justify-between min-h-[12rem]">
+        <div className="card-body flex flex-col justify-between min-h-[9rem]">
           <div className="flex justify-between">
-            <p className="card-title break-words line-clamp-2 w-full">
+            <p className="card-title font-normal text-lg break-words line-clamp-2 w-full">
               {collection.name}
             </p>
             <div className="w-8 h-8 ml-10"></div>

@@ -24,6 +24,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   id?: number;
   createdAt?: string;
   importDate?: string;
+  lastPreserved?: string | Date | null;
   collectionId?: number;
   tags: Tag[];
   pinnedBy?: {

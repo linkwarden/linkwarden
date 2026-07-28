@@ -105,9 +105,9 @@ export default function AddLinkSheet(props: SheetProps<"add-link-sheet">) {
             setLink("");
           }}
           isLoading={addLink.isPending}
-          variant="accent"
+          variant="primary"
         >
-          <Text className="text-white">Save to Linkwarden</Text>
+          <Text className="text-base-100">Save to Linkwarden</Text>
         </Button>
       </View>
     </ActionSheet>

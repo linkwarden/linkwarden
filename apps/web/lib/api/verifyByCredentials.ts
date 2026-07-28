@@ -7,14 +7,18 @@ type Props = {
   password: string;
 };
 
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+export type VerifyCredentialsResult =
+  | { status: "success"; user: User }
+  | { status: "invalid_credentials" }
+  | { status: "email_not_verified"; user: User };
+
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function verifyByCredentials({
   username,
   password,
-}: Props): Promise<User | null> {
+}: Props): Promise<VerifyCredentialsResult> {
   const user = await prisma.user.findFirst({
     where: emailEnabled
       ? {
@@ -36,25 +40,19 @@ export default async function verifyByCredentials({
     },
   });
 
-  if (!user) {
-    return null;
+  if (!user || !user.password) {
+    return { status: "invalid_credentials" };
+  }
+
+  const passwordMatches = bcrypt.compareSync(password, user.password);
+
+  if (!passwordMatches) {
+    return { status: "invalid_credentials" };
   }
 
   if (emailEnabled && !user.emailVerified) {
-    return null;
+    return { status: "email_not_verified", user };
   }
 
-  let passwordMatches: boolean = false;
-
-  if (user?.password) {
-    passwordMatches = bcrypt.compareSync(password, user.password);
-
-    if (!passwordMatches) {
-      return null;
-    } else {
-      return user;
-    }
-  } else {
-    return null;
-  }
+  return { status: "success", user };
 }

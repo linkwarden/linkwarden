@@ -99,7 +99,7 @@ const Page: NextPageWithLayout = () => {
           </p>
           <Button
             className="mx-auto mt-5"
-            variant={"accent"}
+            variant="primary"
             onClick={() => setNewCollectionModal(true)}
           >
             <i className="bi-plus-lg text-xl mr-2" />
@@ -113,16 +113,6 @@ const Page: NextPageWithLayout = () => {
             .map((e) => (
               <CollectionCard key={e.id} collection={e} />
             ))}
-
-          <div
-            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
-            onClick={() => setNewCollectionModal(true)}
-          >
-            <p className="group-hover:opacity-0 duration-100">
-              {t("new_collection")}
-            </p>
-            <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-10 text-primary drop-shadow duration-100"></i>
-          </div>
         </div>
       )}
 

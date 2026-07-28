@@ -16,7 +16,7 @@ async function init() {
   linkProcessing(workerIntervalInSeconds);
   autoTagPreservedLinks(workerIntervalInSeconds);
   startIndexing(workerIntervalInSeconds);
-  trialEndEmailWorker();
+  // trialEndEmailWorker();
 }
 
 init();

@@ -53,7 +53,7 @@ export default function TagsScreen() {
     <Spinner
       refreshing={tags.isRefetching}
       onRefresh={() => resetInfiniteQueryPagination(queryClient, ["tags"])}
-      progressBackgroundColor={rawTheme[colorScheme as ThemeName]["base-200"]}
+      progressBackgroundColor={rawTheme[colorScheme as ThemeName].neutral}
       colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
     />
   );

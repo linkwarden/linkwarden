@@ -6,6 +6,9 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "build:ios": "eas build -p ios",
+    "build:android": "eas build -p android",
+    "build:apk": "eas build -p android -e preview",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
@@ -42,6 +45,7 @@
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-iap": "~4.3.6",
+    "expo-image-picker": "~17.0.11",
     "expo-linking": "~8.0.11",
     "expo-navigation-bar": "~5.0.10",
     "expo-router": "~6.0.23",

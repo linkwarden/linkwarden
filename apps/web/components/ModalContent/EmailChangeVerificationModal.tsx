@@ -63,7 +63,7 @@ export default function EmailChangeVerificationModal({
         </div>
 
         <div className="flex justify-end items-center">
-          <Button variant="accent" onClick={() => onSubmit(password)}>
+          <Button variant="primary" onClick={() => onSubmit(password)}>
             {t("confirm")}
           </Button>
         </div>

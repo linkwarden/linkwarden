@@ -3,7 +3,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Linkwarden",
   slug: "linkwarden",
-  version: "1.3.1",
+  version: "1.4.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "linkwarden",
@@ -60,6 +60,15 @@ const config: ExpoConfig = {
     ],
     "expo-secure-store",
     [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "Allow $(PRODUCT_NAME) to access your photos to upload custom link banners.",
+        cameraPermission: false,
+        microphonePermission: false,
+      },
+    ],
+    [
       "expo-share-intent",
       {
         iosAppGroupIdentifier: "group.app.linkwarden",
@@ -92,6 +101,7 @@ const config: ExpoConfig = {
       },
     ],
     "./plugins/with-daynight-transparent-nav",
+    "./plugins/with-network-security-config",
     "expo-font",
     "expo-web-browser",
     "expo-apple-authentication",

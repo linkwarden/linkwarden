@@ -10,6 +10,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
+import useTheme from "@/hooks/useTheme";
 import NoLinksFound from "@/components/NoLinksFound";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
@@ -68,6 +69,7 @@ const Page: NextPageWithLayout = () => {
   }, [router, collections]);
 
   const { data: user } = useUser();
+  const theme = useTheme();
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -116,8 +118,8 @@ const Page: NextPageWithLayout = () => {
       className="p-5 flex gap-3 flex-col"
       style={{
         backgroundImage: `linear-gradient(${activeCollection?.color}20 0%, ${
-          user?.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          theme === "dark" ? "#262626" : "#f3f4f6"
+        } 13rem, ${theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       {activeCollection && (
@@ -165,8 +167,24 @@ const Page: NextPageWithLayout = () => {
             >
               <DropdownMenuItem
                 onClick={() => {
+                  let blocked = false;
+
                   for (const link of links) {
-                    if (link.url) window.open(link.url, "_blank");
+                    if (!link.url) continue;
+
+                    const openedWindow = window.open(link.url, "_blank");
+
+                    if (openedWindow) {
+                      (openedWindow as { blur: () => void }).blur();
+                    } else {
+                      blocked = true;
+                    }
+                  }
+
+                  window.focus();
+
+                  if (blocked) {
+                    alert(t("popups_blocked_open_all_links"));
                   }
                 }}
               >

@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
+  isPreservationPending,
 } from "@linkwarden/lib/formatStats";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -103,15 +104,7 @@ export default function LinkDetails({
     fetchOwner();
   }, [link.collection.ownerId]);
 
-  const isReady = () => {
-    return (
-      link &&
-      (collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
-      (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
-      (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
-      link.readable
-    );
-  };
+  const isReady = () => Boolean(link?.id) && !isPreservationPending(link);
 
   const updateLink = useUpdateLink({ toast, t });
   const updateFile = useUpdateFile();
@@ -195,7 +188,7 @@ export default function LinkDetails({
                     {t("upload_banner")}
                     <input
                       type="file"
-                      accept="image/jpg, image/jpeg"
+                      accept="image/jpg, image/jpeg, image/png"
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
@@ -206,6 +199,7 @@ export default function LinkDetails({
                           {
                             linkId: link.id as number,
                             file,
+                            isPreview: true,
                           },
                           {
                             onSettled: (data, error) => {
@@ -634,7 +628,7 @@ export default function LinkDetails({
               <br />
               <div className="flex justify-end items-center">
                 <Button
-                  variant="accent"
+                  variant="primary"
                   disabled={JSON.stringify(activeLink) === JSON.stringify(link)}
                   onClick={submit}
                 >

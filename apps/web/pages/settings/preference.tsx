@@ -17,6 +17,7 @@ import { useTags, useUpsertTags } from "@linkwarden/router/tags";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
+import { resolveTheme } from "@linkwarden/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -253,7 +254,16 @@ const Page: NextPageWithLayout = () => {
           <div className="flex gap-3 w-full">
             {[
               {
+                theme: "auto",
+                label: t("system"),
+                icon: "bi-circle-half",
+                bgColor: "bg-[linear-gradient(110deg,#000_50%,#fff_50%)]",
+                textColor: "text-white mix-blend-difference",
+                activeColor: "text-white mix-blend-difference",
+              },
+              {
                 theme: "dark",
+                label: t("dark"),
                 icon: "bi-moon-fill",
                 bgColor: "bg-black",
                 textColor: "text-white",
@@ -261,32 +271,40 @@ const Page: NextPageWithLayout = () => {
               },
               {
                 theme: "light",
+                label: t("light"),
                 icon: "bi-sun-fill",
                 bgColor: "bg-white",
                 textColor: "text-black",
                 activeColor: "text-primary",
               },
-            ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
+            ].map(({ theme, label, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
                 className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  account.theme === theme
-                    ? `outline-primary ${activeColor}`
-                    : textColor
+                  account.theme === theme ? "outline-primary" : ""
                 }`}
                 onClick={() => {
                   updateUserPreference.mutate({ theme: theme as any });
-                  document.documentElement.setAttribute("data-theme", theme);
+                  document.documentElement.setAttribute(
+                    "data-theme",
+                    resolveTheme(theme) || theme
+                  );
                 }}
               >
-                <i className={`${icon} text-3xl`}></i>
-                <p className="ml-2 text-xl">{t(theme)}</p>
+                <span
+                  className={`flex items-center ${
+                    account.theme === theme ? activeColor : textColor
+                  }`}
+                >
+                  <i className={`${icon} sm:text-3xl text-lg`}></i>
+                  <p className="ml-2 sm:text-xl text-lg">{label}</p>
+                </span>
               </div>
             ))}
           </div>
 
           <div className="mt-3">
-            <div className="flex gap-3 w-3/4 mx-auto">
+            <div className="flex gap-3 mx-auto">
               {[
                 "--default",
                 "--red",
@@ -298,7 +316,7 @@ const Page: NextPageWithLayout = () => {
               ].map((color) => (
                 <div
                   key={color}
-                  className="relative rounded-full w-full aspect-square cursor-pointer"
+                  className="relative rounded-xl h-10 w-20 cursor-pointer"
                   style={{ backgroundColor: `oklch(var(${color}))` }}
                   onClick={() => updateSettings({ color })}
                 >
@@ -438,7 +456,7 @@ const Page: NextPageWithLayout = () => {
               onClick={saveAiSection}
               disabled={aiSubmitLoader || !hasAiChanges}
               className="mt-2 w-full sm:w-fit"
-              variant="accent"
+              variant="primary"
             >
               {t("save_changes")}
             </Button>
@@ -556,7 +574,7 @@ const Page: NextPageWithLayout = () => {
             onClick={saveArchiveSection}
             disabled={archiveSubmitLoader || !hasArchiveChanges}
             className="mt-2 w-full sm:w-fit"
-            variant="accent"
+            variant="primary"
           >
             {t("save_changes")}
           </Button>
@@ -687,7 +705,7 @@ const Page: NextPageWithLayout = () => {
             onClick={saveLinkSection}
             disabled={linkSubmitLoader || !hasLinkChanges}
             className="mt-2 w-full sm:w-fit"
-            variant="accent"
+            variant="primary"
           >
             {t("save_changes")}
           </Button>

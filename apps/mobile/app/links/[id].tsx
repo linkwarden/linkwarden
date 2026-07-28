@@ -12,6 +12,7 @@ import {
 import { WebView } from "react-native-webview";
 import { useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import {
   Stack,
   useFocusEffect,
@@ -44,6 +45,8 @@ import { Chromium } from "@/components/ui/Icons";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { deleteLinkCache } from "@/lib/cache";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
+import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 import { cn } from "@linkwarden/lib/utils";
 
 export default function LinkScreen() {
@@ -72,6 +75,19 @@ export default function LinkScreen() {
   });
 
   const { tmp, updateTmp } = useTmpStore();
+
+  const linkType = format ? getLinkTypeFromFormat(archivedFormat) : null;
+  const formatUnavailable =
+    !!linkType && !!link?.id && link[linkType] === "unavailable";
+  const formatPending =
+    !!linkType &&
+    !!link?.id &&
+    !formatUnavailable &&
+    !formatAvailable(link, linkType);
+
+  useEffect(() => {
+    if (formatPending) setIsLoading(true);
+  }, [formatPending]);
 
   useEffect(() => {
     if (link?.id && user?.id)
@@ -237,6 +253,23 @@ export default function LinkScreen() {
               </DropdownMenu.Item>
             )}
 
+            {tmp.link?.url && (
+              <DropdownMenu.Item
+                key="refresh-preserved-formats"
+                onSelect={() => {
+                  SheetManager.show("refresh-preserved-formats-sheet", {
+                    payload: {
+                      linkId: tmp.link?.id as number,
+                    },
+                  });
+                }}
+              >
+                <DropdownMenu.ItemTitle>
+                  Refresh All Formats
+                </DropdownMenu.ItemTitle>
+              </DropdownMenu.Item>
+            )}
+
             {tmp.link && (
               <DropdownMenu.Item
                 key="delete-link"
@@ -296,7 +329,23 @@ export default function LinkScreen() {
         }}
       />
 
-      {link?.id && isReadableFormat ? (
+      {formatUnavailable ? (
+        <View className="flex-1 justify-center items-center bg-base-100 p-5">
+          <Text className="text-base text-neutral">
+            Format not available...
+          </Text>
+        </View>
+      ) : formatPending ? (
+        <View className="flex-1 justify-center items-center bg-base-100 p-5">
+          <ActivityIndicator size="large" />
+          <Text className="text-base mt-2.5 text-neutral text-center">
+            Link preservation is in the queue
+          </Text>
+          <Text className="text-base text-neutral text-center">
+            Please check back later to see the result
+          </Text>
+        </View>
+      ) : link?.id && isReadableFormat ? (
         <ReadableFormat
           ref={readableFormatRef}
           link={link as any}
@@ -319,10 +368,12 @@ export default function LinkScreen() {
           className={isLoading ? "opacity-0" : "flex-1"}
           source={{
             uri: url,
-            headers:
-              format || link?.type !== "url"
+            headers: {
+              ...customHeadersFor(url),
+              ...(format || link?.type !== "url"
                 ? { Authorization: `Bearer ${auth.session}` }
-                : {},
+                : {}),
+            },
           }}
           contentInsetAdjustmentBehavior="automatic"
           automaticallyAdjustContentInsets
@@ -338,7 +389,7 @@ export default function LinkScreen() {
         </View>
       )}
 
-      {isLoading && (
+      {isLoading && !formatPending && !formatUnavailable && (
         <View className="absolute inset-0 flex-1 justify-center items-center bg-base-100 p-5">
           <ActivityIndicator size="large" />
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>

@@ -1,6 +1,7 @@
 import { NextApiRequest } from "next";
-import { JWT, getToken } from "next-auth/jwt";
+import { JWT } from "next-auth/jwt";
 import { prisma } from "@linkwarden/prisma";
+import getTokenFromRequest from "./getTokenFromRequest";
 
 type Props = {
   req: NextApiRequest;
@@ -9,7 +10,7 @@ type Props = {
 export default async function verifyToken({
   req,
 }: Props): Promise<JWT | string> {
-  const token = await getToken({ req });
+  const token = await getTokenFromRequest(req);
   const userId = token?.id;
 
   if (!userId) {

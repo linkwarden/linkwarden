@@ -1,42 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useRouter } from "next/router";
-import { useGetLink, useLinks } from "@linkwarden/router/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { PreservationContent } from "./PreservationContent";
 import PreservationNavbar from "./PreservationNavbar";
 
 export default function PreservationPageContent() {
   const router = useRouter();
-  const { links } = useLinks();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
   let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
-  const { data: link, refetch } = useGetLink({
+  const { data: link } = useGetLink({
     id: Number(router.query.id),
     isPublicRoute,
     enabled: true,
   });
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    if (
-      link &&
-      (!link?.image || !link?.pdf || !link?.readable || !link?.monolith)
-    ) {
-      interval = setInterval(() => {
-        refetch().catch((error) => {
-          console.error("Error refetching link:", error);
-        });
-      }, 5000);
-    } else if (interval) {
-      clearInterval(interval);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [links]);
 
   return (
     <div>

@@ -1,4 +1,5 @@
 import { UpdateUserPreferenceSchemaType } from "@linkwarden/lib/schemaValidation";
+import { resolveTheme } from "@linkwarden/lib/utils";
 import {
   DashboardSection,
   Subscription,
@@ -43,7 +44,9 @@ const useUser = (auth?: MobileAuth) => {
       const data = (await response.json()).response as GetUserByIdResponse;
 
       if (!auth)
-        document.querySelector("html")?.setAttribute("data-theme", data.theme);
+        document
+          .querySelector("html")
+          ?.setAttribute("data-theme", resolveTheme(data.theme) || "dark");
 
       return data;
     },
@@ -119,7 +122,9 @@ const useUpdateUserPreference = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["user"], data);
-      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+      document
+        .querySelector("html")
+        ?.setAttribute("data-theme", resolveTheme(data.theme) || "dark");
     },
     onMutate: async (user) => {
       await queryClient.cancelQueries({ queryKey: ["user"] });

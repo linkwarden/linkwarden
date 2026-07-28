@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@linkwarden/router/user";
 
 type Props = {
   placeholder?: string;
+  fullWidth?: boolean;
 };
 
-const ADVANCED_SEARCH_OPERATORS = [
+export const ADVANCED_SEARCH_OPERATORS = [
   {
     operator: "url:",
     labelKey: "url",
@@ -38,15 +38,12 @@ const ADVANCED_SEARCH_OPERATORS = [
   },
 ] as const;
 
-export default function SearchBar({ placeholder }: Props) {
+export default function SearchBar({ placeholder, fullWidth }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data: user } = useUser();
-
-  const [dismissSearchNote, setDismissSearchNote] = useState(false);
 
   useEffect(() => {
     router.query.q
@@ -64,7 +61,11 @@ export default function SearchBar({ placeholder }: Props) {
   };
 
   return (
-    <div className="flex items-center relative group">
+    <div
+      className={`flex items-center relative group ${
+        fullWidth ? "w-full" : ""
+      }`}
+    >
       <label
         htmlFor="search-box"
         className="inline-flex items-center w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
@@ -110,7 +111,9 @@ export default function SearchBar({ placeholder }: Props) {
             }
           }
         }}
-        className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:w-80 md:max-w-full outline-none"
+        className={`border border-neutral-content bg-base-100 focus:border-primary py-1 rounded-md pl-9 pr-2 outline-none ${
+          fullWidth ? "w-full" : "w-full max-w-[15rem] md:w-80 md:max-w-full"
+        }`}
       />
 
       {showSuggestions && (

@@ -133,7 +133,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
           </div>
         </div>
 
-        <Button variant="accent" className="ml-auto" onClick={submit}>
+        <Button variant="primary" className="ml-auto" onClick={submit}>
           {t("create_collection_button")}
         </Button>
       </div>

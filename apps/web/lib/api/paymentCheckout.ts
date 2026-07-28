@@ -47,6 +47,18 @@ export default async function paymentCheckout(email: string, priceId: string) {
 
   const isExistingCustomer = listByEmail?.data[0]?.id || undefined;
 
+  let hasPriorSubscription = Boolean(user.subscriptions);
+
+  if (!hasPriorSubscription && isExistingCustomer) {
+    const priorSubscriptions = await stripe.subscriptions.list({
+      customer: isExistingCustomer,
+      status: "all",
+      limit: 1,
+    });
+
+    hasPriorSubscription = priorSubscriptions.data.length > 0;
+  }
+
   const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
     process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
 
@@ -63,13 +75,15 @@ export default async function paymentCheckout(email: string, priceId: string) {
     success_url: `${process.env.BASE_URL}/dashboard`,
     cancel_url: `${process.env.BASE_URL}/login`,
     ...(REQUIRE_CC
-      ? {
-          subscription_data: {
-            trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
-              ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
-              : 14,
-          },
-        }
+      ? hasPriorSubscription
+        ? {}
+        : {
+            subscription_data: {
+              trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
+                ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
+                : 14,
+            },
+          }
       : daysLeft > 0
         ? {
             subscription_data: {

@@ -211,10 +211,10 @@ export default function ReadableHighlightSheet(
           onPress={handleSave}
           isLoading={saveHighlight.isPending}
           disabled={!draft || deleteHighlight.isPending}
-          variant="accent"
+          variant="primary"
           className="mb-2"
         >
-          <Text className="text-white">Save</Text>
+          <Text className="text-base-100">Save</Text>
         </Button>
 
         {draft?.highlightId ? (

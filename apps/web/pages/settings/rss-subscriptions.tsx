@@ -46,7 +46,7 @@ const Page: NextPageWithLayout = () => {
         </p>
 
         <Button
-          variant="accent"
+          variant="primary"
           className="ml-auto"
           onClick={() => {
             setNewSubscriptionModal(true);

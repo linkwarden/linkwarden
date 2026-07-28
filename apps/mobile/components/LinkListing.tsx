@@ -19,6 +19,7 @@ import {
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
 import useAuthStore from "@/store/auth";
+import { customHeadersFor } from "@/lib/customHeaders";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
 import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
@@ -68,13 +69,17 @@ const LinkListing = ({ link, dashboard }: Props) => {
         `archivedData/previews/link_${link.id}.jpg`,
       setContent: setPreview,
       shouldFetch: formatAvailable(link, "preview"),
+      updatedAt: link.updatedAt,
       onStart: () => setPreview(""),
       errorMessage: "Failed to fetch preview",
       fetchContent: async (filePath) => {
         const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`;
 
         const result = await FileSystem.downloadAsync(apiUrl, filePath, {
-          headers: { Authorization: `Bearer ${auth.session}` },
+          headers: {
+            ...customHeadersFor(apiUrl),
+            Authorization: `Bearer ${auth.session}`,
+          },
         });
 
         return result.uri;
@@ -171,7 +176,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                   preview ? (
                     <Image
                       source={{
-                        uri: preview,
+                        uri: `${preview}?updatedAt=${link.updatedAt}`,
                       }}
                       className="rounded-md h-[60px] w-[90px] object-cover scale-105"
                     />
