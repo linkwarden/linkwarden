@@ -26,11 +26,11 @@
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
   "devDependencies": {
-    "dotenv-cli": "^8.0.0",
     "vitest": "^4.0.17"
   },
   "dependencies": {
     "concurrently": "^9.1.2",
+    "dotenv-cli": "^8.0.0",
     "patch-package": "^8.0.0"
   },
   "resolutions": {

@@ -67,10 +67,12 @@ RUN set -eux && \
 
 # Copy ONLY the clean production assets from Stage 2
 COPY --from=app-builder /data/node_modules ./node_modules
-COPY --from=app-builder /data/package.json ./package.json
+COPY --from=app-builder /data/package.json /data/yarn.lock /data/.yarnrc.yml ./
 COPY --from=app-builder /data/apps/web ./apps/web
 COPY --from=app-builder /data/apps/worker ./apps/worker
 COPY --from=app-builder /data/packages ./packages
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable && corepack install
 
 # Install only the Chromium headless shell (Playwright's smallest browser) plus
 # the shared libraries it needs at runtime. Full Chromium is not required.
