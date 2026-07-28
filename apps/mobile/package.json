@@ -85,7 +85,7 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
+    "@babel/core": "^7.29.6",
     "@types/jest": "^29.5.12",
     "@types/react": "^19.1.0",
     "@types/react-test-renderer": "^19.1.0",

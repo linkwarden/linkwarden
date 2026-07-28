@@ -26,7 +26,7 @@
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
   "devDependencies": {
-    "vitest": "^4.0.17"
+    "vitest": "^4.1.0"
   },
   "dependencies": {
     "concurrently": "^9.1.2",
