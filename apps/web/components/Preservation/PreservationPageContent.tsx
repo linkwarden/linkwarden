@@ -30,11 +30,11 @@ export default function PreservationPageContent() {
     Number(router.query.format) === ArchivedFormat.readability &&
     (user?.readingProgressEnabled ?? false);
 
-  const { data: savedProgress } = useGetReadingProgress(
-    link?.id,
-    undefined,
-    trackReadingProgress
-  );
+  const {
+    data: savedProgress,
+    isFetchedAfterMount: progressIsFresh,
+    isError: progressFetchFailed,
+  } = useGetReadingProgress(link?.id, undefined, trackReadingProgress);
   const updateReadingProgress = useUpdateReadingProgress(link?.id);
   const restoredRef = useRef(false);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -43,10 +43,13 @@ export default function PreservationPageContent() {
   // layout has settled (content height can grow while highlights and reader
   // styles are applied).
   useEffect(() => {
+    // Only trust this mount's fetch — another device may have moved the
+    // position since the query cache was written. Fall back to the cache
+    // when the fetch fails.
     if (
       !trackReadingProgress ||
       restoredRef.current ||
-      savedProgress === undefined
+      !(progressIsFresh || progressFetchFailed)
     )
       return;
 
@@ -79,7 +82,12 @@ export default function PreservationPageContent() {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [trackReadingProgress, savedProgress]);
+  }, [
+    trackReadingProgress,
+    savedProgress,
+    progressIsFresh,
+    progressFetchFailed,
+  ]);
 
   const handleScroll = () => {
     // Don't overwrite the saved progress before it was restored

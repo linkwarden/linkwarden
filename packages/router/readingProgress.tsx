@@ -40,6 +40,10 @@ const useGetReadingProgress = (
       const data = await response.json();
       return (data.response as number | null) ?? null;
     },
+    // The position can change from other devices at any time, so the cached
+    // value can't be trusted on mount.
+    staleTime: 0,
+    refetchOnMount: "always",
     enabled: status === "authenticated" && !!linkId && enabled,
   });
 };

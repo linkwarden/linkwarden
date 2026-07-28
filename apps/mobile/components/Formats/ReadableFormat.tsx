@@ -294,11 +294,11 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
 
     const { data: user } = useUser(auth);
     const readingProgressEnabled = user?.readingProgressEnabled ?? false;
-    const { data: savedReadingProgress } = useGetReadingProgress(
-      link.id,
-      auth,
-      readingProgressEnabled
-    );
+    const {
+      data: savedReadingProgress,
+      isFetchedAfterMount: progressIsFresh,
+      isError: progressFetchFailed,
+    } = useGetReadingProgress(link.id, auth, readingProgressEnabled);
     const updateReadingProgress = useUpdateReadingProgress(link.id, auth);
     const hasRestoredProgressRef = useRef(false);
     const latestProgressRef = useRef<number | null>(null);
@@ -449,15 +449,23 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
     }, [readingProgressEnabled, restoreReadingProgressInWebView]);
 
     useEffect(() => {
+      // Only trust this mount's fetch — another device may have moved the
+      // position since the query cache was written. Fall back to the cache
+      // when the fetch fails (e.g. offline).
       if (
-        savedReadingProgress !== undefined &&
+        (progressIsFresh || progressFetchFailed) &&
         latestProgressRef.current === null
       ) {
         latestProgressRef.current = savedReadingProgress ?? 0;
       }
       // Also retries when the user preference loads after the WebView is ready
       flushProgressRestore();
-    }, [savedReadingProgress, flushProgressRestore]);
+    }, [
+      savedReadingProgress,
+      progressIsFresh,
+      progressFetchFailed,
+      flushProgressRestore,
+    ]);
 
     const readerStyleConfig = useMemo(
       () =>
