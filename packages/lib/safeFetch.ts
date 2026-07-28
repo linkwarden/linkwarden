@@ -56,36 +56,62 @@ function createSafeLookup() {
   return lookup;
 }
 
+// Agents are cached at module level so connections are reused across
+// requests (keep-alive). Creating a new Agent per request forces a fresh
+// TCP+TLS handshake for every fetch, which on pages with dozens of
+// subresources adds 15-25s and pushes page.goto past its navigation
+// timeout. Connection reuse also cannot be affected by DNS rebinding,
+// since no re-resolution happens on a reused socket.
+let cachedProxyAgent: HttpsProxyAgent<string> | SocksProxyAgent | undefined;
+let cachedHttpAgent: http.Agent | undefined;
+let cachedHttpsAgent: https.Agent | undefined;
+
 function createAgent(target: URL) {
   if (process.env.PROXY) {
-    const proxy = new URL(process.env.PROXY);
+    if (!cachedProxyAgent) {
+      const proxy = new URL(process.env.PROXY);
 
-    if (process.env.PROXY_USERNAME) {
-      proxy.username = process.env.PROXY_USERNAME;
-      proxy.password = process.env.PROXY_PASSWORD || "";
+      if (process.env.PROXY_USERNAME) {
+        proxy.username = process.env.PROXY_USERNAME;
+        proxy.password = process.env.PROXY_PASSWORD || "";
+      }
+
+      const ProxyAgent = proxy.protocol.includes("http")
+        ? HttpsProxyAgent
+        : SocksProxyAgent;
+
+      cachedProxyAgent = new ProxyAgent(proxy.toString());
     }
 
-    const ProxyAgent = proxy.protocol.includes("http")
-      ? HttpsProxyAgent
-      : SocksProxyAgent;
-
-    return new ProxyAgent(proxy.toString());
+    return cachedProxyAgent;
   }
-
-  const lookup = createSafeLookup();
 
   if (target.protocol === "http:") {
-    return new http.Agent({ lookup });
+    if (!cachedHttpAgent) {
+      cachedHttpAgent = new http.Agent({
+        lookup: createSafeLookup(),
+        keepAlive: true,
+        maxSockets: 8,
+      });
+    }
+
+    return cachedHttpAgent;
   }
 
-  return new https.Agent({
-    lookup,
-    rejectUnauthorized:
-      process.env.ALLOW_INSECURE_TLS === "true" ||
-      process.env.IGNORE_UNAUTHORIZED_CA === "true"
-        ? false
-        : true,
-  });
+  if (!cachedHttpsAgent) {
+    cachedHttpsAgent = new https.Agent({
+      lookup: createSafeLookup(),
+      keepAlive: true,
+      maxSockets: 8,
+      rejectUnauthorized:
+        process.env.ALLOW_INSECURE_TLS === "true" ||
+        process.env.IGNORE_UNAUTHORIZED_CA === "true"
+          ? false
+          : true,
+    });
+  }
+
+  return cachedHttpsAgent;
 }
 
 function isRedirectStatus(status: number) {
