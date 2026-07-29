@@ -1,35 +1,40 @@
 import Announcement from "@/components/Announcement";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
-import getLatestVersion from "@/lib/client/getLatestVersion";
+import getLatestAnnouncement, {
+  LatestAnnouncement,
+} from "@/lib/client/getLatestAnnouncement";
 import DragNDrop from "@/components/DragNDrop";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import useSidebarCollapse from "@/hooks/useSidebarCollapse";
+import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
 
 interface Props {
   children: ReactNode;
 }
 
 export default function MainLayout({ children }: Props) {
-  const showAnnouncementBar = localStorage.getItem("showAnnouncementBar");
+  const { data: user } = useUser();
+  const updateUserPreference = useUpdateUserPreference();
 
-  const [showAnnouncement, setShowAnnouncement] = useState(
-    showAnnouncementBar === "true"
+  const [announcement, setAnnouncement] = useState<LatestAnnouncement | null>(
+    null
   );
   const { sidebarIsCollapsed, toggleSidebar } = useSidebarCollapse();
 
   useEffect(() => {
-    getLatestVersion(setShowAnnouncement);
+    getLatestAnnouncement().then(setAnnouncement);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "showAnnouncementBar",
-      showAnnouncement ? "true" : "false"
-    );
-  }, [showAnnouncement]);
+  const showAnnouncement =
+    !!announcement &&
+    !!user?.id &&
+    user.dismissedAnnouncementId !== announcement.id;
 
-  const toggleAnnouncementBar = () => setShowAnnouncement(!showAnnouncement);
+  const dismissAnnouncement = () => {
+    if (!announcement) return;
+    updateUserPreference.mutate({ dismissedAnnouncementId: announcement.id });
+  };
 
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
@@ -37,8 +42,11 @@ export default function MainLayout({ children }: Props) {
   return (
     <DragNDrop activeLink={activeLink} setActiveLink={setActiveLink}>
       <div className="flex" data-testid="dashboard-wrapper">
-        {showAnnouncement && (
-          <Announcement toggleAnnouncementBar={toggleAnnouncementBar} />
+        {showAnnouncement && announcement && (
+          <Announcement
+            announcement={announcement}
+            dismissAnnouncement={dismissAnnouncement}
+          />
         )}
         <Sidebar
           toggleSidebar={toggleSidebar}

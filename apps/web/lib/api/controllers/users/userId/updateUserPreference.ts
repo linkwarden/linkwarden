@@ -31,6 +31,7 @@ export default async function updateUserPreference(
       readableFontSize: data.readableFontSize,
       readableLineHeight: data.readableLineHeight,
       readableLineWidth: data.readableLineWidth,
+      dismissedAnnouncementId: data.dismissedAnnouncementId,
     },
     include: {
       subscriptions: true,

@@ -1,10 +1,6 @@
 import { UpdateUserPreferenceSchemaType } from "@linkwarden/lib/schemaValidation";
 import { resolveTheme } from "@linkwarden/lib/utils";
-import {
-  DashboardSection,
-  Subscription,
-  User,
-} from "@linkwarden/prisma/client";
+import { Subscription, User } from "@linkwarden/prisma/client";
 import { GetUserByIdResponse, MobileAuth } from "@linkwarden/types/global";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
