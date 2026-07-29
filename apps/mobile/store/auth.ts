@@ -20,6 +20,7 @@ import { useOfflineSyncStore } from "@/lib/offlineSync";
 import { hasInactiveSubscription } from "@/lib/subscription";
 import { ensureCloudIsReachable } from "@/lib/ensureCloudIsReachable";
 import { loadCustomHeaders, setCustomHeaders } from "@/lib/customHeaders";
+import { getSessionName } from "@/lib/sessionName";
 
 const cloudInstance = "https://cloud.linkwarden.app";
 const cloudConfig: Config = {
@@ -393,7 +394,11 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         const res = await Promise.race([
           fetch(`${instance}/api/v1/session`, {
             method: "POST",
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({
+              username,
+              password,
+              sessionName: getSessionName(),
+            }),
             headers: { "Content-Type": "application/json" },
           }),
           new Promise<Response>((_, reject) =>
@@ -477,6 +482,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           body: JSON.stringify({
             identityToken: credential.identityToken,
             name: name || undefined,
+            sessionName: getSessionName(),
           }),
           headers: { "Content-Type": "application/json" },
         }),
@@ -546,6 +552,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           body: JSON.stringify({
             identityToken: idToken,
             name: displayName || undefined,
+            sessionName: getSessionName(),
           }),
           headers: { "Content-Type": "application/json" },
         }),
