@@ -4,7 +4,6 @@ import { generatePreview } from "@linkwarden/lib/generatePreview";
 import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 import { safeFetch } from "@linkwarden/lib/safeFetch";
-import { UnsafeUrlError } from "@linkwarden/lib/ssrf";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -28,9 +27,18 @@ const handleArchivePreview = async (
       !ogImageUrl.startsWith("http://") &&
       !ogImageUrl.startsWith("https://")
     ) {
-      const origin = await page.evaluate(() => document.location.origin);
-      ogImageUrl =
-        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
+      const pageUrl = await page.evaluate(
+        () => document.location.href
+      );
+      if (ogImageUrl.startsWith("//")) {
+        // Protocol-relative URL — prepend the page's protocol
+        const protocol = new URL(pageUrl).protocol;
+        ogImageUrl = protocol + ogImageUrl;
+      } else {
+        const origin = new URL(pageUrl).origin;
+        ogImageUrl =
+          origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
+      }
     }
 
     try {
@@ -45,9 +53,12 @@ const handleArchivePreview = async (
         );
       }
     } catch (error) {
-      if (!(error instanceof UnsafeUrlError)) {
-        throw error;
-      }
+      // OG image fetch is non-critical — log and fall through to screenshot
+      console.log(
+        "Failed to fetch OG image preview:",
+        ogImageUrl,
+        error instanceof Error ? error.message : error
+      );
     }
   }
 

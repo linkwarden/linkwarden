@@ -23,9 +23,9 @@ export default async function searchLinks({
 
   const paginationTakeCount = Number(process.env.PAGINATION_TAKE_COUNT) || 50;
 
-  let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
+  let order: Order = { createdAt: "desc" };
+  if (query.sort === Sort.DateNewestFirst) order = { createdAt: "desc" };
+  else if (query.sort === Sort.DateOldestFirst) order = { createdAt: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
 

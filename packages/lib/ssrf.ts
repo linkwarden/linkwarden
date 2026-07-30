@@ -256,6 +256,55 @@ export const defaultHostnameLookup: HostnameLookup = async (hostname) => {
     }));
 };
 
+// Cache validated DNS resolutions for a short TTL to avoid repeated lookups for
+// the same hostname during archival of pages with many subresources.
+// The TTL is short enough that DNS rebinding is not a practical concern.
+const DNS_CACHE_TTL_MS = 30_000;
+
+type CacheEntry = {
+  addresses: ReadonlyArray<ResolvedAddress>;
+  expiresAt: number;
+};
+
+const dnsCache = new Map<string, CacheEntry>();
+const dnsPending = new Map<string, Promise<ReadonlyArray<ResolvedAddress>>>();
+
+async function cachedResolve(
+  hostname: string,
+  lookup: HostnameLookup
+): Promise<ReadonlyArray<ResolvedAddress>> {
+  // Only use the cache when the default system lookup is in use; custom lookups
+  // (e.g. in tests) bypass the cache so their behaviour is unaffected.
+  if (lookup !== defaultHostnameLookup) {
+    return lookup(hostname);
+  }
+
+  const now = Date.now();
+  const cached = dnsCache.get(hostname);
+  if (cached && cached.expiresAt > now) {
+    return cached.addresses;
+  }
+
+  // Deduplicate concurrent lookups for the same hostname
+  const inflight = dnsPending.get(hostname);
+  if (inflight) return inflight;
+
+  const promise = lookup(hostname).then(
+    (addresses) => {
+      dnsCache.set(hostname, { addresses, expiresAt: now + DNS_CACHE_TTL_MS });
+      dnsPending.delete(hostname);
+      return addresses;
+    },
+    (error) => {
+      dnsPending.delete(hostname);
+      throw error;
+    }
+  );
+
+  dnsPending.set(hostname, promise);
+  return promise;
+}
+
 export async function resolveHostnameForServerSideFetch(
   hostname: string,
   lookup: HostnameLookup = defaultHostnameLookup
@@ -279,7 +328,7 @@ export async function resolveHostnameForServerSideFetch(
   let addresses: ReadonlyArray<ResolvedAddress>;
 
   try {
-    addresses = await lookup(normalized);
+    addresses = await cachedResolve(normalized, lookup);
   } catch (error: any) {
     throw new UnsafeUrlError(
       error?.code === "ENOTFOUND" || error?.code === "EAI_AGAIN"

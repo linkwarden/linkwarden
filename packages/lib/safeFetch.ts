@@ -56,6 +56,48 @@ function createSafeLookup() {
   return lookup;
 }
 
+// Module-level cached agents with keepAlive to allow socket reuse across
+// requests. This avoids creating a new agent (and new OS socket) for every
+// subresource fetched during archival, which was causing DNS bursts on
+// rate-limiting resolvers (see issue #1747).
+const agentCache: Record<string, http.Agent | https.Agent> = {};
+
+function getOrCreateAgent(
+  target: URL,
+  lookup: ReturnType<typeof createSafeLookup> | undefined
+): http.Agent | https.Agent {
+  const cacheKey = `${target.protocol}:${lookup ? "safe" : "plain"}:${
+    process.env.ALLOW_INSECURE_TLS
+  }:${process.env.IGNORE_UNAUTHORIZED_CA}`;
+
+  if (agentCache[cacheKey]) {
+    return agentCache[cacheKey];
+  }
+
+  const agentOptions = { keepAlive: true, maxSockets: 8 };
+
+  let agent: http.Agent | https.Agent;
+
+  if (target.protocol === "http:") {
+    agent = lookup
+      ? new http.Agent({ ...agentOptions, lookup })
+      : new http.Agent(agentOptions);
+  } else {
+    agent = new https.Agent({
+      ...agentOptions,
+      ...(lookup ? { lookup } : {}),
+      rejectUnauthorized:
+        process.env.ALLOW_INSECURE_TLS === "true" ||
+        process.env.IGNORE_UNAUTHORIZED_CA === "true"
+          ? false
+          : true,
+    });
+  }
+
+  agentCache[cacheKey] = agent;
+  return agent;
+}
+
 function createAgent(target: URL) {
   if (process.env.PROXY) {
     const proxy = new URL(process.env.PROXY);
@@ -72,20 +114,10 @@ function createAgent(target: URL) {
     return new ProxyAgent(proxy.toString());
   }
 
-  const lookup = createSafeLookup();
+  const allowPrivate = process.env.ALLOW_PRIVATE_NETWORK_ACCESS === "true";
+  const lookup = allowPrivate ? undefined : createSafeLookup();
 
-  if (target.protocol === "http:") {
-    return new http.Agent({ lookup });
-  }
-
-  return new https.Agent({
-    lookup,
-    rejectUnauthorized:
-      process.env.ALLOW_INSECURE_TLS === "true" ||
-      process.env.IGNORE_UNAUTHORIZED_CA === "true"
-        ? false
-        : true,
-  });
+  return getOrCreateAgent(target, lookup);
 }
 
 function isRedirectStatus(status: number) {

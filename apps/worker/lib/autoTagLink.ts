@@ -128,10 +128,27 @@ export default async function autoTagLink(user: User, linkId: number) {
   });
 
   try {
-    // If text has an array inside a "```json ```" block, extract that
-    let tags: string[] = JSON.parse(
-      text.match(/```json\s*([\s\S]*?)\s*```/i)?.[1] ?? text
-    );
+    // Try to extract a JSON array from the response, handling various model output formats:
+    // 1. Raw JSON array: ["tag1", "tag2"]
+    // 2. Markdown code block with json label: ```json\n["tag1"]\n```
+    // 3. Markdown code block without label: ```\n["tag1"]\n```
+    // 4. JSON array embedded in prose text
+    const extractJson = (raw: string): string => {
+      // Strip <think>...</think> reasoning blocks (some models like qwen3 prepend these)
+      const stripped = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+      // Try ```json ... ``` block
+      const jsonBlock = stripped.match(/```json\s*([\s\S]*?)\s*```/i)?.[1];
+      if (jsonBlock) return jsonBlock;
+      // Try generic ``` ... ``` block
+      const genericBlock = stripped.match(/```\s*([\s\S]*?)\s*```/)?.[1];
+      if (genericBlock) return genericBlock;
+      // Try to find the first JSON array in the text
+      const arrayMatch = stripped.match(/\[[\s\S]*?\]/);
+      if (arrayMatch) return arrayMatch[0];
+      return stripped;
+    };
+
+    let tags: string[] = JSON.parse(extractJson(text));
 
     if (!tags || tags.length === 0) {
       return;
