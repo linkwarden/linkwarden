@@ -387,7 +387,7 @@ if (process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true") {
 }
 
 // Azure AD B2C
-if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
+if (process.env.NEXT_PUBLIC_AZURE_AD_B2C_ENABLED === "true") {
   providers.push(
     AzureAdB2CProvider({
       tenantId: process.env.AZURE_AD_B2C_TENANT_NAME,
