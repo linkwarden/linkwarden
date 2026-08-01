@@ -1329,6 +1329,10 @@ if (process.env.NEXT_PUBLIC_OIDC_ENABLED === "true") {
     },
     idToken: true,
     checks: ["pkce", "state"],
+    client: {
+        authorization_signed_response_alg: process.env.OIDC_JWT_ALGORITHM ?? "RS256",
+        id_token_signed_response_alg: process.env.OIDC_JWT_ALGORITHM ?? "RS256",
+    },
     httpOptions: {
       timeout: 10000,
     },
