@@ -70,7 +70,7 @@ export default function ResetPassword() {
         <div className="mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full">
           {!requestSent ? (
             <>
-              <p>{t("enter_email_for_new_password")}</p>
+              <p className="text-center">{t("enter_email_for_new_password")}</p>
               <div>
                 <TextInput
                   autoFocus
@@ -94,7 +94,9 @@ export default function ResetPassword() {
             </>
           ) : (
             <>
-              <p>{t("password_successfully_updated")}</p>
+              <p className="text-center">
+                {t("password_successfully_updated")}
+              </p>
               <div className="mx-auto w-fit mt-3">
                 <Link className="font-semibold" href="/login">
                   {t("back_to_login")}
