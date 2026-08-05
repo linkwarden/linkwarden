@@ -971,7 +971,7 @@ if (process.env.NEXT_PUBLIC_ZOHO_ENABLED === "true") {
 }
 
 // Zoom
-if (process.env.NEXT_PUBLIC_ZOOM_ENABLED_ENABLED === "true") {
+if (process.env.NEXT_PUBLIC_ZOOM_ENABLED === "true") {
   providers.push(
     ZoomProvider({
       clientId: process.env.ZOOM_CLIENT_ID!,
