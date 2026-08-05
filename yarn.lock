@@ -5200,7 +5200,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     jimp: "npm:^0.22.10"
     meilisearch: "npm:^0.48.2"
-    nodemailer: "npm:^9.0.1"
+    nodemailer: "npm:^9.0.3"
     rss-parser: "npm:^3.13.0"
     tailwind-merge: "npm:^3.3.0"
   languageName: unknown
@@ -5389,7 +5389,7 @@ __metadata:
     "@types/rss": "npm:^0.0.32"
     "@types/shelljs": "npm:^0.8.15"
     autoprefixer: "npm:^10.4.14"
-    axios: "npm:^1.18.0"
+    axios: "npm:^1.5.1"
     bcrypt: "npm:^5.1.0"
     bootstrap-icons: "npm:^1.11.2"
     class-variance-authority: "npm:^0.7.1"
@@ -5397,7 +5397,7 @@ __metadata:
     colorjs.io: "npm:^0.5.2"
     csstype: "npm:^3.1.2"
     daisyui: "npm:^4.4.2"
-    dompurify: "npm:^3.4.12"
+    dompurify: "npm:^3.2.4"
     eslint: "npm:8.46.0"
     eslint-config-next: "npm:13.4.9"
     formidable: "npm:^3.5.1"
@@ -5416,7 +5416,7 @@ __metadata:
     next-auth: "npm:^4.22.1"
     next-i18next: "npm:^15.3.0"
     node-fetch: "npm:^2.7.0"
-    nodemailer: "npm:^9.0.1"
+    nodemailer: "npm:^9.0.3"
     papaparse: "npm:^5.5.3"
     playwright: "npm:1.57.0"
     postcss: "npm:^8.4.26"
@@ -10035,6 +10035,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.5.1":
+  version: 1.19.0
+  resolution: "axios@npm:1.19.0"
+  dependencies:
+    follow-redirects: "npm:^1.16.0"
+    form-data: "npm:^4.0.6"
+    https-proxy-agent: "npm:^5.0.1"
+    proxy-from-env: "npm:^2.1.0"
+  checksum: 10c0/559fe7d51291787def61566a3db78b87510c8faf9c8a8c006d9d8b933808628ff0d8eca7756b40ae25e07da96d946c68c1ffba3da9075ed0b5d3661801d76869
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^3.1.1":
   version: 3.1.1
   resolution: "axobject-query@npm:3.1.1"
@@ -11770,6 +11782,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dompurify@npm:^3.2.4":
+  version: 3.4.13
+  resolution: "dompurify@npm:3.4.13"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10c0/9c2a1a71e1a1d8b77953db7a39ffc935ef4ed4f10fe40770232128c2cbfd4c3dc677d3d7bae51eb24cc52d9ff3548612dc540ecb4343e89b26e809d2be2e0cfe
+  languageName: node
+  linkType: hard
+
 "dompurify@npm:^3.4.12":
   version: 3.4.12
   resolution: "dompurify@npm:3.4.12"
@@ -13476,7 +13500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0, form-data@npm:^4.0.4, form-data@npm:^4.0.5":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.4, form-data@npm:^4.0.5, form-data@npm:^4.0.6":
   version: 4.0.6
   resolution: "form-data@npm:4.0.6"
   dependencies:
@@ -17629,10 +17653,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "nodemailer@npm:9.0.1"
-  checksum: 10c0/4213f01aa211127c1ce33243c5e45e7f831601a933d03fa864cd827b1bd5ea2782cb4b43722bee7028cbc193733d9802dad1120fe67181448eb0b7de52218a37
+"nodemailer@npm:^9.0.3":
+  version: 9.0.4
+  resolution: "nodemailer@npm:9.0.4"
+  checksum: 10c0/e213b4b7b4ef97d0f40f88a6f22402ac91de77db568658341c1f4c62ac81b9e5e679ffed2c1090b0ba2b497c531fdbb31b86322e06fc15348212d0e238e7ead2
   languageName: node
   linkType: hard
 
