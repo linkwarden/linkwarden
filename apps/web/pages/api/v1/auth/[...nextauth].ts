@@ -9,7 +9,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Adapter } from "next-auth/adapters";
+import type { Adapter } from "next-auth/adapters";
 import NextAuth from "next-auth/next";
 import { Provider } from "next-auth/providers";
 import FortyTwoProvider from "next-auth/providers/42-school";
@@ -73,11 +73,34 @@ import ZohoProvider from "next-auth/providers/zoho";
 import ZoomProvider from "next-auth/providers/zoom";
 import * as process from "process";
 
+type LinkAccountInput = Parameters<
+  NonNullable<ReturnType<typeof PrismaAdapter>["linkAccount"]>
+>[0];
+
+function sanitizeAccount(account: LinkAccountInput): LinkAccountInput {
+  return {
+    userId: account.userId,
+    type: account.type,
+    provider: account.provider,
+    providerAccountId: account.providerAccountId,
+    refresh_token: account.refresh_token,
+    access_token: account.access_token,
+    expires_at: account.expires_at,
+    token_type: account.token_type,
+    scope: account.scope,
+    id_token: account.id_token,
+    session_state: account.session_state,
+  };
+}
+
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 const newSsoUsersDisabled = process.env.DISABLE_NEW_SSO_USERS === "true";
 const adapter = PrismaAdapter(prisma);
+const linkAccount = adapter.linkAccount;
+
+adapter.linkAccount = (account) => linkAccount?.(sanitizeAccount(account));
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -237,12 +260,6 @@ if (process.env.NEXT_PUBLIC_FORTYTWO_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Apple
@@ -266,12 +283,6 @@ if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Atlassian
@@ -297,12 +308,6 @@ if (process.env.NEXT_PUBLIC_ATLASSIAN_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Auth0
@@ -317,12 +322,6 @@ if (process.env.NEXT_PUBLIC_AUTH0_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Authelia
@@ -349,12 +348,6 @@ if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
       };
     },
   });
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Authentik
@@ -378,12 +371,6 @@ if (process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Azure AD B2C
@@ -397,20 +384,6 @@ if (process.env.NEXT_PUBLIC_AZURE_AD_B2C_ENABLED === "true") {
       authorization: { params: { scope: "offline_access openid" } },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const {
-      "not-before-policy": _,
-      refresh_expires_in,
-      refresh_token_expires_in,
-      not_before,
-      id_token_expires_in,
-      profile_info,
-      ...data
-    } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Azure AD
@@ -422,20 +395,6 @@ if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
       tenantId: process.env.AZURE_AD_TENANT_ID,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const {
-      "not-before-policy": _,
-      refresh_expires_in,
-      token_type,
-      expires_in,
-      ext_expires_in,
-      access_token,
-      ...data
-    } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Battle.net
@@ -450,12 +409,6 @@ if (process.env.NEXT_PUBLIC_BATTLENET_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Box
@@ -466,12 +419,6 @@ if (process.env.NEXT_PUBLIC_BOX_ENABLED === "true") {
       clientSecret: process.env.BOX_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Cognito
@@ -486,12 +433,6 @@ if (process.env.NEXT_PUBLIC_COGNITO_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Coinbase
@@ -502,12 +443,6 @@ if (process.env.NEXT_PUBLIC_COINBASE_ENABLED === "true") {
       clientSecret: process.env.COINBASE_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Discord
@@ -518,12 +453,6 @@ if (process.env.NEXT_PUBLIC_DISCORD_ENABLED === "true") {
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Dropbox
@@ -534,12 +463,6 @@ if (process.env.NEXT_PUBLIC_DROPBOX_ENABLED === "true") {
       clientSecret: process.env.DROPBOX_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Duende IdentityServer6
@@ -554,12 +477,6 @@ if (process.env.NEXT_PUBLIC_DUENDE_IDS6_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // EVE Online
@@ -570,12 +487,6 @@ if (process.env.NEXT_PUBLIC_EVEONLINE_ENABLED === "true") {
       clientSecret: process.env.EVE_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Facebook
@@ -586,12 +497,6 @@ if (process.env.NEXT_PUBLIC_FACEBOOK_ENABLED === "true") {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // FACEIT
@@ -602,12 +507,6 @@ if (process.env.NEXT_PUBLIC_FACEIT_ENABLED === "true") {
       clientSecret: process.env.FACEIT_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Foursquare
@@ -619,12 +518,6 @@ if (process.env.NEXT_PUBLIC_FOURSQUARE_ENABLED === "true") {
       apiVersion: process.env.FOURSQUARE_APIVERSION,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Freshbooks
@@ -635,12 +528,6 @@ if (process.env.NEXT_PUBLIC_FRESHBOOKS_ENABLED === "true") {
       clientSecret: process.env.FRESHBOOKS_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // FusionAuth
@@ -658,12 +545,6 @@ if (process.env.NEXT_PUBLIC_FUSIONAUTH_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // GitHub
@@ -677,12 +558,6 @@ if (process.env.NEXT_PUBLIC_GITHUB_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // GitLab
@@ -708,12 +583,6 @@ if (process.env.NEXT_PUBLIC_GITLAB_ENABLED === "true") {
       }/api/v4/user`,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Google
@@ -727,12 +596,6 @@ if (process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // HubSpot
@@ -743,12 +606,6 @@ if (process.env.NEXT_PUBLIC_HUBSPOT_ENABLED === "true") {
       clientSecret: process.env.HUBSPOT_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // IdentityServer4
@@ -765,12 +622,6 @@ if (process.env.NEXT_PUBLIC_IDS4_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Kakao
@@ -781,12 +632,6 @@ if (process.env.NEXT_PUBLIC_KAKAO_ENABLED === "true") {
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Keycloak
@@ -810,12 +655,6 @@ if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // LINE
@@ -826,12 +665,6 @@ if (process.env.NEXT_PUBLIC_LINE_ENABLED === "true") {
       clientSecret: process.env.LINE_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // LinkedIn
@@ -842,12 +675,6 @@ if (process.env.NEXT_PUBLIC_LINKEDIN_ENABLED === "true") {
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Mailchimp
@@ -858,12 +685,6 @@ if (process.env.NEXT_PUBLIC_MAILCHIMP_ENABLED === "true") {
       clientSecret: process.env.MAILCHIMP_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Mail.ru
@@ -874,12 +695,6 @@ if (process.env.NEXT_PUBLIC_MAILRU_ENABLED === "true") {
       clientSecret: process.env.MAILRU_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Naver
@@ -890,12 +705,6 @@ if (process.env.NEXT_PUBLIC_NAVER_ENABLED === "true") {
       clientSecret: process.env.NAVER_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Netlify
@@ -906,12 +715,6 @@ if (process.env.NEXT_PUBLIC_NETLIFY_ENABLED === "true") {
       clientSecret: process.env.NETLIFY_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Okta
@@ -926,12 +729,6 @@ if (process.env.NEXT_PUBLIC_OKTA_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // OneLogin
@@ -946,12 +743,6 @@ if (process.env.NEXT_PUBLIC_ONELOGIN_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Osso
@@ -966,12 +757,6 @@ if (process.env.NEXT_PUBLIC_OSSO_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // osu!
@@ -982,12 +767,6 @@ if (process.env.NEXT_PUBLIC_OSU_ENABLED === "true") {
       clientSecret: process.env.OSU_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Patreon
@@ -998,12 +777,6 @@ if (process.env.NEXT_PUBLIC_PATREON_ENABLED === "true") {
       clientSecret: process.env.PATREON_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Pinterest
@@ -1014,12 +787,6 @@ if (process.env.NEXT_PUBLIC_PINTEREST_ENABLED === "true") {
       clientSecret: process.env.PINTEREST_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Pipedrive
@@ -1030,12 +797,6 @@ if (process.env.NEXT_PUBLIC_PIPEDRIVE_ENABLED === "true") {
       clientSecret: process.env.PIPEDRIVE_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Reddit
@@ -1046,12 +807,6 @@ if (process.env.NEXT_PUBLIC_REDDIT_ENABLED === "true") {
       clientSecret: process.env.REDDIT_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Salesforce
@@ -1062,12 +817,6 @@ if (process.env.NEXT_PUBLIC_SALESFORCE_ENABLED === "true") {
       clientSecret: process.env.SALESFORCE_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Slack
@@ -1078,12 +827,6 @@ if (process.env.NEXT_PUBLIC_SLACK_ENABLED === "true") {
       clientSecret: process.env.SLACK_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Spotify
@@ -1094,12 +837,6 @@ if (process.env.NEXT_PUBLIC_SPOTIFY_ENABLED === "true") {
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Strava
@@ -1110,12 +847,6 @@ if (process.env.NEXT_PUBLIC_STRAVA_ENABLED === "true") {
       clientSecret: process.env.STRAVA_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Synology
@@ -1139,12 +870,6 @@ if (process.env.NEXT_PUBLIC_SYNOLOGY_ENABLED === "true") {
       };
     },
   });
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Todoist
@@ -1155,12 +880,6 @@ if (process.env.NEXT_PUBLIC_TODOIST_ENABLED === "true") {
       clientSecret: process.env.TODOIST_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Twitch
@@ -1171,12 +890,6 @@ if (process.env.NEXT_PUBLIC_TWITCH_ENABLED === "true") {
       clientSecret: process.env.TWITCH_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // United Effects
@@ -1191,12 +904,6 @@ if (process.env.NEXT_PUBLIC_UNITED_EFFECTS_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // VK
@@ -1207,12 +914,6 @@ if (process.env.NEXT_PUBLIC_VK_ENABLED === "true") {
       clientSecret: process.env.VK_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Wikimedia
@@ -1223,12 +924,6 @@ if (process.env.NEXT_PUBLIC_WIKIMEDIA_ENABLED === "true") {
       clientSecret: process.env.WIKIMEDIA_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Wordpress.com
@@ -1239,12 +934,6 @@ if (process.env.NEXT_PUBLIC_WORDPRESS_ENABLED === "true") {
       clientSecret: process.env.WORDPRESS_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Yandex
@@ -1255,12 +944,6 @@ if (process.env.NEXT_PUBLIC_YANDEX_ENABLED === "true") {
       clientSecret: process.env.YANDEX_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Zitadel
@@ -1275,12 +958,6 @@ if (process.env.NEXT_PUBLIC_ZITADEL_ENABLED === "true") {
       },
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Zoho
@@ -1291,12 +968,6 @@ if (process.env.NEXT_PUBLIC_ZOHO_ENABLED === "true") {
       clientSecret: process.env.ZOHO_CLIENT_SECRET,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Zoom
@@ -1307,12 +978,6 @@ if (process.env.NEXT_PUBLIC_ZOOM_ENABLED_ENABLED === "true") {
       clientSecret: process.env.ZOOM_CLIENT_SECRET!,
     })
   );
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 // Generic OIDC
@@ -1341,12 +1006,6 @@ if (process.env.NEXT_PUBLIC_OIDC_ENABLED === "true") {
       };
     },
   });
-
-  const _linkAccount = adapter.linkAccount;
-  adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
-    return _linkAccount ? _linkAccount(data) : undefined;
-  };
 }
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
