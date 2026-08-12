@@ -12,7 +12,7 @@ import type { Config } from "@linkwarden/router/config";
 import { Alert } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import { queryClient } from "@/lib/queryClient";
-import { mmkvPersister } from "@/lib/queryPersister";
+import { queryPersister } from "@/lib/queryPersister";
 import { clearCache } from "@/lib/cache";
 import useDataStore from "@/store/data";
 import { markWhatsNewSeen } from "@/lib/whatsNew";
@@ -592,7 +592,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 
     queryClient.cancelQueries();
     queryClient.clear();
-    mmkvPersister.removeClient?.();
+    await queryPersister.removeClient?.();
 
     await clearCache();
 

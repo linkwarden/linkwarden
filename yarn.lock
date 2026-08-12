@@ -5249,6 +5249,7 @@ __metadata:
     expo-secure-store: "npm:~15.0.8"
     expo-share-intent: "npm:^5.1.1"
     expo-splash-screen: "npm:~31.0.13"
+    expo-sqlite: "npm:~16.0.10"
     expo-status-bar: "npm:~3.0.9"
     expo-symbols: "npm:~1.0.8"
     expo-system-ui: "npm:~6.0.9"
@@ -5269,8 +5270,6 @@ __metadata:
     react-native-ios-context-menu: "npm:^3.2.0"
     react-native-ios-utilities: "npm:5.2.0"
     react-native-keyboard-controller: "npm:1.20.7"
-    react-native-mmkv: "npm:4.1.2"
-    react-native-nitro-modules: "npm:0.34.1"
     react-native-pdf: "npm:^7.0.3"
     react-native-reanimated: "npm:4.1.1"
     react-native-safe-area-context: "npm:^5.7.0"
@@ -10016,6 +10015,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"await-lock@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "await-lock@npm:2.2.2"
+  checksum: 10c0/bedf00dad44c6325a655bf3bd523ab9e1ce41023da6a8c379990c76ac1d942ac7e5301627ab84ba37917ab5247506ba429b7f6e4bf77074093f255571b9ad5ee
+  languageName: node
+  linkType: hard
+
 "axe-core@npm:^4.6.2":
   version: 4.6.3
   resolution: "axe-core@npm:4.6.3"
@@ -13050,6 +13056,19 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10c0/f2caf9ac41f35f4790ca8cbdecec7f5b453d95f2a31261bb4117c5bb0515547704568998e3c1dfbbad55dc41ec8d1221288a69d2a4a943c4cf4681f5b213e860
+  languageName: node
+  linkType: hard
+
+"expo-sqlite@npm:~16.0.10":
+  version: 16.0.10
+  resolution: "expo-sqlite@npm:16.0.10"
+  dependencies:
+    await-lock: "npm:^2.2.2"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/7d686aa7305071d02a914d11581c763f83cd32c0c04b6a46852c458b81f96e2cbef4178e4526450b14a8bd684be7889ed8445e06cca038005082425b2900267f
   languageName: node
   linkType: hard
 
@@ -19212,27 +19231,6 @@ __metadata:
     react-native: "*"
     react-native-reanimated: ">=3.0.0"
   checksum: 10c0/f3a1682552ed90f086f4442ba2eebfb2080451e4c9d686345ba92b8fbeca3498172e6b302a413406fabe9ab06cc19c67dbec22a7703b72342f89d39fce136db3
-  languageName: node
-  linkType: hard
-
-"react-native-mmkv@npm:4.1.2":
-  version: 4.1.2
-  resolution: "react-native-mmkv@npm:4.1.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-nitro-modules: "*"
-  checksum: 10c0/713f9c76e732fc010e53203f7dcb9fd571b1d89db13b8ea600ebc3b9505a3c8320e24acabdeb285e7bb0cc0c321d0374cf1a0cca9b211e0852555471aa90e396
-  languageName: node
-  linkType: hard
-
-"react-native-nitro-modules@npm:0.34.1":
-  version: 0.34.1
-  resolution: "react-native-nitro-modules@npm:0.34.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/1fbbf49cfd884fa9034f368ea3c989e16a3a6d56fd8001c8afe9839f83b772bc392a477cae962880b9728054a10247a93b1658dc3a8028bcf18032dfaac95a29
   languageName: node
   linkType: hard
 

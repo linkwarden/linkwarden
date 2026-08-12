@@ -14,11 +14,9 @@ import useAuthStore from "@/store/auth";
 import { useUser } from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
 import { shouldRouteToSubscribe } from "@/lib/subscription";
-import { queryClient } from "@/lib/queryClient";
 
-const isCacheEmpty = (instance: string) =>
-  queryClient.getQueryData(["user"]) == null &&
-  queryClient.getQueryData(["config", instance]) == null;
+const isRejectedSession = (error: unknown) =>
+  (error as any)?.status === 401 || (error as any)?.status === 403;
 
 let recoveringSession: string | null = null;
 
@@ -28,28 +26,20 @@ export default function TabLayout() {
   const { auth } = useAuthStore();
   const {
     data: user,
-    isError: isUserError,
+    error: userError,
     isLoading: isUserLoading,
   } = useUser(auth);
   const config = useConfig(auth);
   const routeToSubscribe = shouldRouteToSubscribe(user, config.data);
-  const hasEmptyCache = auth.instance ? isCacheEmpty(auth.instance) : false;
   const shouldRecover =
-    auth.status === "authenticated" &&
-    isUserError &&
-    config.isError &&
-    hasEmptyCache;
+    auth.status === "authenticated" && isRejectedSession(userError);
 
   useEffect(() => {
     if (routeToSubscribe) router.replace("/subscribe");
   }, [routeToSubscribe, router]);
 
   useEffect(() => {
-    if (
-      !shouldRecover ||
-      !auth.session ||
-      recoveringSession === auth.session
-    )
+    if (!shouldRecover || !auth.session || recoveringSession === auth.session)
       return;
 
     recoveringSession = auth.session;

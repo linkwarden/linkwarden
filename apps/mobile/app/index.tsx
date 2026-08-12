@@ -120,7 +120,7 @@ export default function HomeScreen() {
       .then(() => {
         Alert.alert(
           "Signed out",
-          "The server could not be reached and no cached user data was available. Check your connection and sign in again."
+          "Your session is no longer valid. Please sign in again."
         );
       })
       .catch((error) => {

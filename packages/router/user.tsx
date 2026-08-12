@@ -35,7 +35,10 @@ const useUser = (auth?: MobileAuth) => {
           : undefined
       );
 
-      if (!response.ok) throw new Error("Failed to fetch user data.");
+      if (!response.ok)
+        throw Object.assign(new Error("Failed to fetch user data."), {
+          status: response.status,
+        });
 
       const data = (await response.json()).response as GetUserByIdResponse;
 
