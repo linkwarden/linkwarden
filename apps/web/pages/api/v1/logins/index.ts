@@ -14,6 +14,7 @@ export type ResponseData = {
     method: string;
     name: string;
   }[];
+  autoLoginProvider: string | null;
 };
 export default function handler(
   req: NextApiRequest,
@@ -30,6 +31,21 @@ export function getLogins() {
       name: getAuthProviderButtonName(entry),
     }));
 
+  // Only redirect automatically when the provider is unambiguous, otherwise
+  // fall back to the normal login page.
+  let autoLoginProvider: string | null = null;
+
+  if (process.env.NEXT_PUBLIC_SSO_AUTO_LOGIN === "true") {
+    const requested = process.env.SSO_AUTO_LOGIN_PROVIDER;
+
+    if (requested) {
+      autoLoginProvider =
+        buttonAuths.find((auth) => auth.method === requested)?.method ?? null;
+    } else if (buttonAuths.length === 1) {
+      autoLoginProvider = buttonAuths[0].method;
+    }
+  }
+
   return {
     credentialsEnabled:
       process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false"
@@ -42,5 +58,6 @@ export function getLogins() {
         ? "true"
         : "false",
     buttonAuths: buttonAuths,
+    autoLoginProvider,
   };
 }
