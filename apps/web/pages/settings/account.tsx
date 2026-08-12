@@ -338,8 +338,7 @@ const Page: NextPageWithLayout = () => {
 
           <p>
             {t("delete_account_warning")}
-            {process.env.NEXT_PUBLIC_STRIPE &&
-              " " + t("cancel_subscription_notice")}
+            {config?.STRIPE_ENABLED && " " + t("cancel_subscription_notice")}
           </p>
         </div>
 

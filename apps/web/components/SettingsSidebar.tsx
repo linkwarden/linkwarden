@@ -1,5 +1,6 @@
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 import SecondarySidebar, {
   SecondarySidebarLink,
 } from "@/components/SecondarySidebar";
@@ -15,6 +16,7 @@ export default function SettingsSidebar({
 }) {
   const { t } = useTranslation();
   const { data: user } = useUser();
+  const { data: config } = useConfig();
 
   const links: SecondarySidebarLink[] = [
     {
@@ -44,7 +46,7 @@ export default function SettingsSidebar({
     },
   ];
 
-  if (process.env.NEXT_PUBLIC_STRIPE && !user?.parentSubscriptionId) {
+  if (config?.STRIPE_ENABLED && !user?.parentSubscriptionId) {
     links.push({
       title: t("billing"),
       href: "/settings/billing",

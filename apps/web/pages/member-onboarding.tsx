@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 
 interface FormData {
   password: string;
@@ -25,6 +26,7 @@ export default function MemberOnboarding() {
   });
 
   const { data: user } = useUser();
+  const { data: config } = useConfig();
   const updateUser = useUpdateUser();
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -96,7 +98,7 @@ export default function MemberOnboarding() {
             />
           </div>
 
-          {process.env.NEXT_PUBLIC_STRIPE && (
+          {config?.STRIPE_ENABLED && (
             <div className="text-xs text-neutral text-center">
               <p>
                 By continuing, you agree to our{" "}

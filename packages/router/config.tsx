@@ -11,8 +11,14 @@ export type Config = {
   AI_ENABLED: boolean | null;
   INSTANCE_VERSION: string | null;
   STRIPE_ENABLED: boolean | null;
+  STRIPE_BILLING_PORTAL_URL: string | null;
   TRIAL_PERIOD_DAYS: number | null;
   REQUIRE_CC: boolean | null;
+  DEMO: boolean | null;
+  DEMO_USERNAME: string | null;
+  DEMO_PASSWORD: string | null;
+  GOOGLE_ENABLED: boolean | null;
+  MOBILE_APP_REDIRECT_ENABLED: boolean | null;
 };
 
 const normalizeVersion = (version?: string | null) => {

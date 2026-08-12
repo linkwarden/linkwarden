@@ -4,14 +4,17 @@ import { useTranslation } from "next-i18next";
 import CenteredForm from "@/components/CenteredForm";
 import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-
-const MOBILE_APP_REDIRECT_ENABLED =
-  process.env.NEXT_PUBLIC_MOBILE_APP_REDIRECT_ENABLED === "true";
+import { useConfig } from "@linkwarden/router/config";
 
 export default function Verify() {
   const router = useRouter();
   const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
+  const { data: config } = useConfig();
+
+  const MOBILE_APP_REDIRECT_ENABLED = Boolean(
+    config?.MOBILE_APP_REDIRECT_ENABLED
+  );
 
   const token =
     typeof router.query.token === "string" ? router.query.token : "";
@@ -30,7 +33,7 @@ export default function Verify() {
     )}`;
 
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady || !config) return;
 
     if (!token || !email) {
       router.push("/login");
@@ -45,7 +48,7 @@ export default function Verify() {
     } else {
       window.location.replace(webUrl);
     }
-  }, [router.isReady]);
+  }, [router.isReady, config]);
 
   if (isMobile && MOBILE_APP_REDIRECT_ENABLED)
     return (

@@ -11,6 +11,7 @@ import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ const Page: NextPageWithLayout = () => {
   } = useDashboardData();
 
   const { data: user } = useUser();
+  const { data: config } = useConfig();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -70,7 +72,7 @@ const Page: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (
-      process.env.NEXT_PUBLIC_STRIPE === "true" &&
+      config?.STRIPE_ENABLED &&
       user &&
       user.id &&
       user.referredBy === null &&
@@ -82,7 +84,7 @@ const Page: NextPageWithLayout = () => {
         setShowsSurveyModal(true);
       }, 1000);
     }
-  }, [user]);
+  }, [user, config]);
 
   const orderedSections = useMemo(() => {
     return [...dashboardSections].sort((a, b) => {

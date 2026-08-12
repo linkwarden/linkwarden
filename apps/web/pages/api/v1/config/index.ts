@@ -30,9 +30,21 @@ export const getEnvData = () => {
       process.env.NEXT_PUBLIC_STRIPE === "true" ||
       Boolean(process.env.STRIPE_SECRET_KEY) ||
       null,
+    STRIPE_BILLING_PORTAL_URL:
+      process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL || null,
     TRIAL_PERIOD_DAYS:
       Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || null,
     REQUIRE_CC: process.env.NEXT_PUBLIC_REQUIRE_CC === "true" || null,
+    DEMO: process.env.NEXT_PUBLIC_DEMO === "true" || null,
+    DEMO_USERNAME:
+      (process.env.NEXT_PUBLIC_DEMO === "true" &&
+        process.env.NEXT_PUBLIC_DEMO_USERNAME) ||
+      null,
+    DEMO_PASSWORD:
+      (process.env.NEXT_PUBLIC_DEMO === "true" &&
+        process.env.NEXT_PUBLIC_DEMO_PASSWORD) ||
+      null,
+    GOOGLE_ENABLED: process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" || null,
     MOBILE_APP_REDIRECT_ENABLED:
       process.env.NEXT_PUBLIC_MOBILE_APP_REDIRECT_ENABLED === "true" || null,
   };

@@ -14,6 +14,7 @@ import { prisma } from "@linkwarden/prisma";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
+import { useConfig } from "@linkwarden/router/config";
 
 interface FormData {
   username: string;
@@ -26,6 +27,8 @@ export default function Login({
   const { t } = useTranslation();
 
   const router = useRouter();
+
+  const { data: config } = useConfig();
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -88,9 +91,9 @@ export default function Login({
     if (availableLogins.credentialsEnabled === "true") {
       return (
         <>
-          {process.env.NEXT_PUBLIC_DEMO === "true" &&
-            process.env.NEXT_PUBLIC_DEMO_USERNAME &&
-            process.env.NEXT_PUBLIC_DEMO_PASSWORD && (
+          {config?.DEMO &&
+            config?.DEMO_USERNAME &&
+            config?.DEMO_PASSWORD && (
               <div className="p-3 shadow-lg border border-primary rounded-xl">
                 <div className="flex flex-col gap-2 items-center text-center w-full">
                   <div className="flex items-center gap-2">
@@ -128,14 +131,12 @@ export default function Login({
                       const load = toast.loading(t("authenticating"));
 
                       setForm({
-                        username: process.env
-                          .NEXT_PUBLIC_DEMO_USERNAME as string,
-                        password: process.env
-                          .NEXT_PUBLIC_DEMO_PASSWORD as string,
+                        username: config?.DEMO_USERNAME as string,
+                        password: config?.DEMO_PASSWORD as string,
                       });
                       await signIn("credentials", {
-                        username: process.env.NEXT_PUBLIC_DEMO_USERNAME,
-                        password: process.env.NEXT_PUBLIC_DEMO_PASSWORD,
+                        username: config?.DEMO_USERNAME,
+                        password: config?.DEMO_PASSWORD,
                         redirect: false,
                       });
 

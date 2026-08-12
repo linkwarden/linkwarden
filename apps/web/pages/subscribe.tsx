@@ -16,10 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DeleteOwnAccountModal from "@/components/ModalContent/DeleteOwnAccountModal";
-
-const TRIAL_PERIOD_DAYS =
-  Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || 14;
-const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
+import { useConfig } from "@linkwarden/router/config";
 
 export default function Subscribe() {
   const { t } = useTranslation();
@@ -32,6 +29,10 @@ export default function Subscribe() {
   const router = useRouter();
 
   const { data: user } = useUser();
+  const { data: config } = useConfig();
+
+  const TRIAL_PERIOD_DAYS = config?.TRIAL_PERIOD_DAYS || 14;
+  const REQUIRE_CC = Boolean(config?.REQUIRE_CC);
 
   const [daysLeft, setDaysLeft] = useState<number>(0);
 
@@ -43,7 +44,7 @@ export default function Subscribe() {
 
       setDaysLeft(Math.floor((trialEndTime - Date.now()) / 86400000));
     }
-  }, [user]);
+  }, [user, config]);
 
   useEffect(() => {
     if (
@@ -73,9 +74,7 @@ export default function Subscribe() {
       className="bg-gradient-to-b from-[#289DF220] to-transparent"
       text={
         REQUIRE_CC && user?.subscription?.provider === undefined
-          ? `Start with a ${
-              process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-            }-day free trial, cancel anytime!`
+          ? `Start with a ${TRIAL_PERIOD_DAYS}-day free trial, cancel anytime!`
           : !REQUIRE_CC && daysLeft > 0
             ? `You have ${daysLeft} ${
                 daysLeft === 1 ? "day" : "days"

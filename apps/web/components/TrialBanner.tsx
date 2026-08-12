@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
-
-const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE === "true";
-const TRIAL_PERIOD_DAYS =
-  Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || 14;
+import { useConfig } from "@linkwarden/router/config";
 
 export default function TrialBanner() {
   const { t } = useTranslation();
   const { data: user } = useUser();
+  const { data: config } = useConfig();
+
+  const STRIPE_ENABLED = Boolean(config?.STRIPE_ENABLED);
+  const TRIAL_PERIOD_DAYS = config?.TRIAL_PERIOD_DAYS || 14;
 
   const [daysLeft, setDaysLeft] = useState<number>(0);
   const [isTrialing, setIsTrialing] = useState<boolean>(false);
@@ -22,7 +23,7 @@ export default function TrialBanner() {
 
       setDaysLeft(Math.floor((trialEndTime - Date.now()) / 86400000));
     }
-  }, [user]);
+  }, [user, config]);
 
   useEffect(() => {
     const isTrialing =
