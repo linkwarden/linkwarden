@@ -72,7 +72,10 @@ function createAgent(target: URL) {
     return new ProxyAgent(proxy.toString());
   }
 
-  const lookup = createSafeLookup();
+  const lookup =
+    process.env.ALLOW_PRIVATE_NETWORK_ACCESS === "true"
+      ? undefined
+      : createSafeLookup();
 
   if (target.protocol === "http:") {
     return new http.Agent({ lookup });
