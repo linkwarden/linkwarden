@@ -196,6 +196,25 @@ export default async function updateUserById(
     saltRounds
   );
 
+  // Partial updates shouldn't wipe the avatar or reset the locale, so these
+  // are only sent to the database when the request actually carries them.
+
+  const image =
+    data.image === undefined || data.image === null
+      ? undefined
+      : data.image.startsWith("http")
+        ? data.image
+        : data.image
+          ? `uploads/avatar/${userId}.jpg`
+          : "";
+
+  const locale =
+    data.locale === undefined
+      ? undefined
+      : i18n.locales.includes(data.locale)
+        ? data.locale
+        : "en";
+
   const updatedUser = await prisma.user.update({
     where: {
       id: userId,
@@ -203,19 +222,14 @@ export default async function updateUserById(
     data: {
       name: data.name,
       username: data.username,
-      image:
-        data.image && data.image.startsWith("http")
-          ? data.image
-          : data.image
-            ? `uploads/avatar/${userId}.jpg`
-            : "",
+      image,
       collectionOrder: data.collectionOrder?.filter(
         (value, index, self) => self.indexOf(value) === index
       ),
       aiTaggingMethod: data.aiTaggingMethod,
       aiPredefinedTags: data.aiPredefinedTags,
       aiTagExistingLinks: data.aiTagExistingLinks,
-      locale: i18n.locales.includes(data.locale || "") ? data.locale : "en",
+      locale,
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,
       archiveAsPDF: data.archiveAsPDF,
