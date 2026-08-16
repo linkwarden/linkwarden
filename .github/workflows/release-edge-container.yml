@@ -1,8 +1,10 @@
-name: Create and publish an edge container image on dispatch
+name: Create and publish an edge container image
 
 on:
   workflow_dispatch:
-
+  push:
+    branches:
+      - main
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-edge
@@ -37,5 +39,3 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
