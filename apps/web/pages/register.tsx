@@ -149,9 +149,9 @@ export default function Register({
     <CenteredForm
       header={t("reimagine_how_you_save_links")}
       text={
-        process.env.NEXT_PUBLIC_STRIPE
+        config?.STRIPE_ENABLED
           ? t("trial_offer_desc", {
-              count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14),
+              count: config?.TRIAL_PERIOD_DAYS || 14,
             })
           : t("register_desc")
       }
@@ -213,7 +213,7 @@ export default function Register({
               />
             </div>
 
-            {process.env.NEXT_PUBLIC_STRIPE && (
+            {config?.STRIPE_ENABLED && (
               <>
                 <Checkbox
                   className="p-0"
@@ -249,7 +249,7 @@ export default function Register({
 
             {displayLoginExternalButton()}
 
-            {process.env.NEXT_PUBLIC_STRIPE && (
+            {config?.STRIPE_ENABLED && (
               <div className="text-xs text-neutral text-center">
                 <p>
                   By continuing, you agree to our{" "}
@@ -284,7 +284,7 @@ export default function Register({
                   {t("login")}
                 </Link>
               </div>
-              {process.env.NEXT_PUBLIC_STRIPE && (
+              {config?.STRIPE_ENABLED && (
                 <div className="text-neutral text-center flex items-baseline gap-1 justify-center">
                   <p>{t("need_help")}</p>
                   <Link

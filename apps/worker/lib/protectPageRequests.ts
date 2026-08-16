@@ -1,5 +1,8 @@
 import { BrowserContext, Route } from "playwright";
-import { UnsafeUrlError } from "@linkwarden/lib/ssrf";
+import {
+  assertUrlIsSafeForServerSideFetch,
+  UnsafeUrlError,
+} from "@linkwarden/lib/ssrf";
 import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 function isNonNetworkUrl(url: string) {
@@ -11,11 +14,25 @@ function isNonNetworkUrl(url: string) {
 }
 
 export default async function protectPageRequests(context: BrowserContext) {
+  const remoteBrowser = Boolean(process.env.PLAYWRIGHT_WS_URL);
+
   await context.route("**/*", async (route: Route) => {
     const request = route.request();
 
     if (isNonNetworkUrl(request.url())) {
       await route.continue();
+      return;
+    }
+
+    if (remoteBrowser) {
+      try {
+        await assertUrlIsSafeForServerSideFetch(request.url());
+        await route.continue();
+      } catch (error) {
+        await route.abort(
+          error instanceof UnsafeUrlError ? "blockedbyclient" : "failed"
+        );
+      }
       return;
     }
 

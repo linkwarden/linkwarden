@@ -1,12 +1,20 @@
 import { create } from "zustand";
 import NetInfo from "@react-native-community/netinfo";
+import { notifyManager } from "@tanstack/react-query";
 import {
   LinkIncludingShortenedCollectionAndTags,
   MobileAuth,
 } from "@linkwarden/types/global";
 import { formatAvailable } from "@linkwarden/lib/formatStats";
 import * as FileSystem from "expo-file-system/legacy";
-import { CacheFormat, fetchFormatToCache, getCacheSize } from "@/lib/cache";
+import {
+  CacheFormat,
+  cancelActiveTransfers,
+  fetchFormatToCache,
+  getCacheSize,
+  isCancelledTransfer,
+  isConnectionError,
+} from "@/lib/cache";
 import { queryClient } from "@/lib/queryClient";
 
 type SyncStatus = "idle" | "syncing" | "paused";
@@ -63,7 +71,8 @@ let cacheSyncTimeout: ReturnType<typeof setTimeout> | null = null;
 let activeAuth: MobileAuth | null = null;
 let activeUserContentDomain: string | null | undefined = undefined;
 let syncQueryWriteDepth = 0;
-let ignoredQueryKeyClearTimeout: ReturnType<typeof setTimeout> | null = null;
+let pendingRescan = false;
+let storageSettleTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const archiveRoot = FileSystem.documentDirectory + "archivedData";
 const staleFileGraceMs = 5000;
@@ -122,26 +131,31 @@ const isOnline = (state: {
   isInternetReachable?: boolean | null;
 }) => state.isConnected === true && state.isInternetReachable !== false;
 
-const ignoredQueryKeySignatures = new Set<string>();
+const connectionRetryMs = 30_000;
 
-const getQueryKeySignature = (queryKey: unknown) => {
-  try {
-    return JSON.stringify(queryKey);
-  } catch {
-    return undefined;
-  }
+let connectionRetryTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const clearConnectionRetry = () => {
+  if (!connectionRetryTimeout) return;
+  clearTimeout(connectionRetryTimeout);
+  connectionRetryTimeout = null;
 };
 
-const ignoreQueryKeyTemporarily = (queryKey: unknown) => {
-  const signature = getQueryKeySignature(queryKey);
-  if (!signature) return;
+const scheduleConnectionRetry = () => {
+  if (connectionRetryTimeout) return;
 
-  ignoredQueryKeySignatures.add(signature);
-  if (ignoredQueryKeyClearTimeout) clearTimeout(ignoredQueryKeyClearTimeout);
-  ignoredQueryKeyClearTimeout = setTimeout(() => {
-    ignoredQueryKeySignatures.clear();
-    ignoredQueryKeyClearTimeout = null;
-  }, 500);
+  connectionRetryTimeout = setTimeout(() => {
+    connectionRetryTimeout = null;
+    if (activeAuth) startSync(activeAuth, activeUserContentDomain);
+  }, connectionRetryMs);
+};
+
+let connectionPauses = 0;
+
+const pauseForConnection = () => {
+  connectionPauses += 1;
+  useOfflineSyncStore.getState().setStatus("paused");
+  scheduleConnectionRetry();
 };
 
 const sameArchiveState = (a: any, b: LinkIncludingShortenedCollectionAndTags) =>
@@ -160,20 +174,35 @@ const setCachedLinkQueryData = (
   const existing = queryClient.getQueryData(queryKey);
   if (sameArchiveState(existing, link)) return;
 
-  ignoreQueryKeyTemporarily(queryKey);
-  syncQueryWriteDepth += 1;
-  try {
-    queryClient.setQueryData(queryKey, link);
-  } finally {
-    syncQueryWriteDepth -= 1;
-  }
+  queryClient.setQueryData(queryKey, link);
+};
+
+const hydrateLinkQueries = (
+  links: LinkIncludingShortenedCollectionAndTags[]
+) => {
+  notifyManager.batch(() => {
+    syncQueryWriteDepth += 1;
+    try {
+      for (const link of links) {
+        if (typeof link.id !== "number") continue;
+        setCachedLinkQueryData(
+          link as LinkIncludingShortenedCollectionAndTags & { id: number }
+        );
+      }
+    } finally {
+      syncQueryWriteDepth -= 1;
+    }
+  });
 };
 
 const getLinksFromCache = (): LinksCacheSnapshot => {
   const linksById = new Map<number, LinkIncludingShortenedCollectionAndTags>();
-  const add = (link: any) => {
+  const dashboardLinkIds = new Set<number>();
+  const add = (link: any, fromDashboard = false) => {
     const id = Number(link?.id);
     if (!Number.isFinite(id)) return;
+
+    if (fromDashboard) dashboardLinkIds.add(id);
 
     const existing = linksById.get(id);
     if (
@@ -197,16 +226,34 @@ const getLinksFromCache = (): LinksCacheSnapshot => {
         for (const link of page?.links ?? []) add(link);
       }
     } else if (key[0] === "dashboardData") {
-      if (Array.isArray(data.links)) hasLinkSource = true;
-      for (const link of data.links ?? []) add(link);
+      const collectionLinks =
+        data.collectionLinks && typeof data.collectionLinks === "object"
+          ? Object.values(
+              data.collectionLinks as Record<string, unknown>
+            ).flatMap((links) => (Array.isArray(links) ? links : []))
+          : [];
+
+      if (Array.isArray(data.links) || collectionLinks.length > 0) {
+        hasLinkSource = true;
+      }
+
+      for (const link of data.links ?? []) add(link, true);
+      for (const link of collectionLinks) add(link, true);
     } else if (key[0] === "link") {
       if (Number.isFinite(Number(data?.id))) hasLinkSource = true;
       add(data);
     }
   }
 
+  const links = Array.from(linksById.values());
+  const isDashboardLink = (link: LinkIncludingShortenedCollectionAndTags) =>
+    dashboardLinkIds.has(Number(link.id));
+
   return {
-    links: Array.from(linksById.values()),
+    links: [
+      ...links.filter(isDashboardLink),
+      ...links.filter((link) => !isDashboardLink(link)),
+    ],
     hasLinkSource,
   };
 };
@@ -394,22 +441,40 @@ const downloadLinkFormats = async (
   userContentDomain: string | null | undefined
 ) => {
   const concurrency = 2;
+  let lostConnection = false;
 
   for (let i = 0; i < formats.length; i += concurrency) {
-    if (cancelled) return;
+    if (cancelled || lostConnection) break;
 
     const slice = formats.slice(i, i + concurrency);
     await Promise.all(
       slice.map(async (format) => {
+        let streamedBytes = 0;
+
         try {
           const { delta } = await fetchFormatToCache({
             link: { id: link.id, updatedAt: link.updatedAt },
             format,
             auth,
             userContentDomain,
+            onProgress: (deltaBytes) => {
+              streamedBytes += deltaBytes;
+              useOfflineSyncStore.getState().addBytes(deltaBytes);
+            },
           });
-          useOfflineSyncStore.getState().addBytes(delta);
+          useOfflineSyncStore.getState().addBytes(delta - streamedBytes);
         } catch (e) {
+          if (streamedBytes) {
+            useOfflineSyncStore.getState().addBytes(-streamedBytes);
+          }
+
+          if (isCancelledTransfer(e)) return;
+
+          if (isConnectionError(e)) {
+            lostConnection = true;
+            return;
+          }
+
           console.warn(
             `[offlineSync] Failed to cache link ${link.id} format ${format}`,
             e
@@ -419,18 +484,43 @@ const downloadLinkFormats = async (
       })
     );
   }
+
+  return { lostConnection };
+};
+
+const sameSyncTarget = (
+  auth: MobileAuth,
+  userContentDomain: string | null | undefined
+) =>
+  activeAuth?.session === auth.session &&
+  activeAuth?.instance === auth.instance &&
+  activeUserContentDomain === userContentDomain;
+
+const sameIdSet = (a: Set<number>, b: Set<number>) => {
+  if (a.size !== b.size) return false;
+  for (const id of a) if (!b.has(id)) return false;
+  return true;
 };
 
 export const startSync = async (
   auth: MobileAuth,
   userContentDomain: string | null | undefined
 ) => {
-  const generation = ++syncGeneration;
+  const targetUnchanged = sameSyncTarget(auth, userContentDomain);
+
   activeAuth = auth;
   activeUserContentDomain = userContentDomain;
 
+  if (runPromise && targetUnchanged) {
+    pendingRescan = true;
+    return runPromise;
+  }
+
+  const generation = ++syncGeneration;
+
   if (runPromise) {
     cancelled = true;
+    cancelActiveTransfers();
     await runPromise;
     if (generation !== syncGeneration) return;
   }
@@ -438,61 +528,122 @@ export const startSync = async (
   const net = await NetInfo.fetch();
   if (generation !== syncGeneration) return;
   if (!isOnline(net)) {
-    useOfflineSyncStore.getState().setStatus("paused");
+    pauseForConnection();
     return;
   }
 
   cancelled = false;
+  clearConnectionRetry();
 
   const store = useOfflineSyncStore.getState();
-  store.setStatus("syncing");
+  let waitingForConnection = store.status === "paused";
 
   const currentRun = (async () => {
+    const pausesAtStart = connectionPauses;
+    const processedRevisions = new Map<number, unknown>();
+    let previousLinkIds: Set<number> | null = null;
+
     try {
-      const { links, hasLinkSource } = getLinksFromCache();
-      const cacheSnapshot = await scanCacheSnapshot();
-      const expectedFormatsByLinkId = new Map<number, Set<CacheFormat>>();
+      do {
+        pendingRescan = false;
 
-      for (const link of links) {
-        if (typeof link.id !== "number") continue;
-        expectedFormatsByLinkId.set(link.id, new Set(formatsForLink(link)));
-      }
+        const { links, hasLinkSource } = getLinksFromCache();
 
-      const removedBytes = await cleanupUnexpectedFiles(
-        cacheSnapshot,
-        expectedFormatsByLinkId,
-        hasLinkSource
-      );
-      store.setBytesUsed(Math.max(0, cacheSnapshot.bytesUsed - removedBytes));
+        hydrateLinkQueries(links);
 
-      store.setProgress(0, links.length);
-
-      for (const link of links) {
-        if (cancelled || generation !== syncGeneration) break;
-        if (link.id === undefined) continue;
-
-        const fullLink = link as LinkIncludingShortenedCollectionAndTags & {
+        const linkIds = new Set<number>();
+        const queue: (LinkIncludingShortenedCollectionAndTags & {
           id: number;
-        };
+        })[] = [];
 
-        setCachedLinkQueryData(fullLink);
+        for (const link of links) {
+          if (typeof link.id !== "number") continue;
+          linkIds.add(link.id);
 
-        const missing = missingFormatsForLink(fullLink, cacheSnapshot);
-        if (missing.length === 0) {
-          store.incrementProcessed();
-          continue;
+          if (
+            !processedRevisions.has(link.id) ||
+            processedRevisions.get(link.id) !== (link as any).updatedAt
+          ) {
+            queue.push(
+              link as LinkIncludingShortenedCollectionAndTags & { id: number }
+            );
+          }
         }
 
-        store.setCurrentLinkId(fullLink.id);
-        await downloadLinkFormats(fullLink, missing, auth, userContentDomain);
-        store.incrementProcessed();
-      }
+        const linkSetChanged =
+          !previousLinkIds || !sameIdSet(previousLinkIds, linkIds);
+        previousLinkIds = linkIds;
+
+        if (queue.length === 0 && !linkSetChanged) continue;
+
+        const cacheSnapshot = await scanCacheSnapshot();
+        const expectedFormatsByLinkId = new Map<number, Set<CacheFormat>>();
+
+        for (const link of links) {
+          if (typeof link.id !== "number") continue;
+          expectedFormatsByLinkId.set(link.id, new Set(formatsForLink(link)));
+        }
+
+        const removedBytes = await cleanupUnexpectedFiles(
+          cacheSnapshot,
+          expectedFormatsByLinkId,
+          hasLinkSource
+        );
+        store.setBytesUsed(Math.max(0, cacheSnapshot.bytesUsed - removedBytes));
+
+        const work: {
+          link: LinkIncludingShortenedCollectionAndTags & { id: number };
+          missing: CacheFormat[];
+        }[] = [];
+
+        for (const fullLink of queue) {
+          const missing = missingFormatsForLink(fullLink, cacheSnapshot);
+          if (missing.length > 0) {
+            work.push({ link: fullLink, missing });
+          } else {
+            processedRevisions.set(fullLink.id, (fullLink as any).updatedAt);
+          }
+        }
+
+        if (work.length === 0) continue;
+
+        store.setProgress(linkIds.size - work.length, linkIds.size);
+        if (!waitingForConnection) store.setStatus("syncing");
+
+        for (const { link: fullLink, missing } of work) {
+          if (cancelled || generation !== syncGeneration) break;
+
+          store.setCurrentLinkId(fullLink.id);
+          const { lostConnection } = await downloadLinkFormats(
+            fullLink,
+            missing,
+            auth,
+            userContentDomain
+          );
+
+          if (lostConnection) {
+            if (generation === syncGeneration) {
+              cancelled = true;
+              pauseForConnection();
+            }
+            break;
+          }
+
+          if (waitingForConnection) {
+            waitingForConnection = false;
+            store.setStatus("syncing");
+          }
+
+          processedRevisions.set(fullLink.id, (fullLink as any).updatedAt);
+          store.incrementProcessed();
+        }
+      } while (pendingRescan && !cancelled && generation === syncGeneration);
     } catch (e) {
       console.error("[offlineSync] Sync failed", e);
     } finally {
       const currentStore = useOfflineSyncStore.getState();
       currentStore.setCurrentLinkId(null);
-      if (generation === syncGeneration && currentStore.status !== "paused") {
+      if (generation === syncGeneration && connectionPauses === pausesAtStart) {
         currentStore.setStatus("idle");
       }
     }
@@ -510,11 +661,20 @@ export const startSync = async (
 export const stopSync = () => {
   syncGeneration += 1;
   cancelled = true;
+  pendingRescan = false;
+  cancelActiveTransfers();
+  clearConnectionRetry();
   activeAuth = null;
   activeUserContentDomain = undefined;
   const store = useOfflineSyncStore.getState();
   store.setCurrentLinkId(null);
   if (store.status !== "idle") store.setStatus("idle");
+
+  if (storageSettleTimeout) clearTimeout(storageSettleTimeout);
+  storageSettleTimeout = setTimeout(() => {
+    storageSettleTimeout = null;
+    if (!runPromise) recomputeStorage();
+  }, 3000);
 };
 
 export const recomputeStorage = async () => {
@@ -526,17 +686,24 @@ export const subscribeToConnectivity = () => {
   if (netUnsubscribe) return;
 
   netUnsubscribe = NetInfo.addEventListener((state) => {
-    const store = useOfflineSyncStore.getState();
+    if (!activeAuth) return;
+
     if (!isOnline(state)) {
-      if (runPromise) {
-        cancelled = true;
-        store.setStatus("paused");
-      }
-    } else {
-      if (store.status === "paused" && activeAuth && !runPromise) {
-        startSync(activeAuth, activeUserContentDomain);
-      }
+      cancelled = true;
+      cancelActiveTransfers();
+      pauseForConnection();
+      return;
     }
+
+    if (useOfflineSyncStore.getState().status !== "paused") return;
+
+    if (runPromise) {
+      scheduleConnectionRetry();
+      return;
+    }
+
+    clearConnectionRetry();
+    startSync(activeAuth, activeUserContentDomain);
   });
 };
 

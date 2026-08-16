@@ -3,6 +3,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { ArchivedFormat, MobileAuth } from "@linkwarden/types/global";
 import getPreservedFormatUrl from "@linkwarden/lib/getPreservedFormatUrl";
 import { customHeadersFor } from "@/lib/customHeaders";
+import { queryPersister } from "@/lib/queryPersister";
 
 type LoadCacheOrFetchOptions<T> = {
   filePath: string;
@@ -141,6 +142,121 @@ type FetchFormatToCacheOptions = {
   format: CacheFormat;
   auth: MobileAuth;
   userContentDomain?: string | null;
+  onProgress?: (deltaBytes: number) => void;
+};
+
+const connectionErrorFlag = "isConnectionError";
+
+const connectionError = (cause: unknown) =>
+  Object.assign(
+    new Error(
+      `Could not reach the server: ${(cause as any)?.message ?? cause}`
+    ),
+    { [connectionErrorFlag]: true }
+  );
+
+export const isConnectionError = (e: unknown): boolean =>
+  Boolean(e && typeof e === "object" && (e as any)[connectionErrorFlag]);
+
+const unavailableStatuses = new Set([502, 503, 504]);
+
+const failedResponse = (status: number) => {
+  const error = new Error(`HTTP ${status}`);
+  return unavailableStatuses.has(status)
+    ? Object.assign(error, { [connectionErrorFlag]: true })
+    : error;
+};
+
+const cancelledFlag = "isCancelledTransfer";
+
+const cancelledError = () =>
+  Object.assign(new Error("Transfer cancelled"), { [cancelledFlag]: true });
+
+export const isCancelledTransfer = (e: unknown): boolean =>
+  Boolean(e && typeof e === "object" && (e as any)[cancelledFlag]);
+
+const stallTimeoutMs = 30_000;
+
+const progressStepBytes = Math.round((1024 * 1024) / 10);
+
+const activeTransfers = new Set<{ cancel: () => void }>();
+
+export const cancelActiveTransfers = () => {
+  for (const transfer of [...activeTransfers]) transfer.cancel();
+};
+
+const downloadWithStallTimeout = async ({
+  url,
+  toPath,
+  headers,
+  onBytesWritten,
+}: {
+  url: string;
+  toPath: string;
+  headers?: Record<string, string>;
+  onBytesWritten?: (totalBytesWritten: number) => void;
+}) => {
+  let stallTimer: ReturnType<typeof setTimeout> | null = null;
+  let interrupt: (e: Error) => void = () => {};
+  let settled = false;
+
+  const interrupted = new Promise<never>((_, reject) => {
+    interrupt = reject;
+  });
+
+  let lastSize = -1;
+  const checkStalled = async () => {
+    const info = await FileSystem.getInfoAsync(toPath).catch(() => null);
+    if (settled) return;
+
+    const size = info?.exists ? (info as any).size ?? 0 : 0;
+    if (size > lastSize) {
+      lastSize = size;
+      armStallTimer();
+      return;
+    }
+
+    interrupt(new Error("Download stalled"));
+  };
+
+  const armStallTimer = () => {
+    if (stallTimer) clearTimeout(stallTimer);
+    stallTimer = setTimeout(checkStalled, stallTimeoutMs);
+  };
+
+  const resumable = FileSystem.createDownloadResumable(
+    url,
+    toPath,
+    { headers },
+    ({ totalBytesWritten }) => {
+      if (settled) return;
+
+      onBytesWritten?.(totalBytesWritten);
+      armStallTimer();
+    }
+  );
+
+  const transfer = { cancel: () => interrupt(cancelledError()) };
+  activeTransfers.add(transfer);
+  armStallTimer();
+
+  const download = resumable.downloadAsync().catch((e) => {
+    throw connectionError(e);
+  });
+  download.catch(() => {});
+
+  try {
+    const result = await Promise.race([download, interrupted]);
+    if (!result) throw cancelledError();
+    return result;
+  } catch (e) {
+    resumable.cancelAsync().catch(() => {});
+    throw e;
+  } finally {
+    settled = true;
+    activeTransfers.delete(transfer);
+    if (stallTimer) clearTimeout(stallTimer);
+  }
 };
 
 export const fetchFormatToCache = async ({
@@ -148,6 +264,7 @@ export const fetchFormatToCache = async ({
   format,
   auth,
   userContentDomain,
+  onProgress,
 }: FetchFormatToCacheOptions): Promise<{
   uri: string;
   size: number;
@@ -185,12 +302,16 @@ export const fetchFormatToCache = async ({
   };
 
   if (format === "webpage" && userContentDomain) {
-    apiUrl = await getPreservedFormatUrl({
-      tokenEndpoint: `${auth.instance}/api/v1/preserved/token`,
-      linkId: link.id,
-      format: archivedFormat,
-      headers,
-    });
+    try {
+      apiUrl = await getPreservedFormatUrl({
+        tokenEndpoint: `${auth.instance}/api/v1/preserved/token`,
+        linkId: link.id,
+        format: archivedFormat,
+        headers,
+      });
+    } catch (e) {
+      throw connectionError(e);
+    }
     headers = undefined;
   } else {
     apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${archivedFormat}${previewSuffix}`;
@@ -199,21 +320,47 @@ export const fetchFormatToCache = async ({
   const tmpPath = `${filePath}.part`;
   await FileSystem.deleteAsync(tmpPath, { idempotent: true }).catch(() => {});
 
+  let reportedBytes = 0;
+  const reportBytesWritten = (totalBytesWritten: number) => {
+    if (!onProgress) return;
+
+    const target =
+      Math.floor(totalBytesWritten / progressStepBytes) * progressStepBytes;
+    if (target > reportedBytes) {
+      onProgress(target - reportedBytes);
+      reportedBytes = target;
+    }
+  };
+
   try {
     if (format === "readable") {
-      const response = await fetch(apiUrl, { headers });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = (await response.json()).content;
+      const result = await downloadWithStallTimeout({
+        url: apiUrl,
+        toPath: tmpPath,
+        headers,
+        onBytesWritten: reportBytesWritten,
+      });
+      if (result.status < 200 || result.status >= 300) {
+        throw failedResponse(result.status);
+      }
+
+      const payload = await FileSystem.readAsStringAsync(tmpPath, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+      const data = JSON.parse(payload).content;
 
       await FileSystem.writeAsStringAsync(tmpPath, data, {
         encoding: FileSystem.EncodingType.UTF8,
       });
     } else {
-      const result = await FileSystem.downloadAsync(apiUrl, tmpPath, {
+      const result = await downloadWithStallTimeout({
+        url: apiUrl,
+        toPath: tmpPath,
         headers: { ...customHeadersFor(apiUrl), ...headers },
+        onBytesWritten: reportBytesWritten,
       });
       if (result.status < 200 || result.status >= 300) {
-        throw new Error(`HTTP ${result.status}`);
+        throw failedResponse(result.status);
       }
     }
 
@@ -245,9 +392,7 @@ export const clearCache = async () => {
     FileSystem.deleteAsync(FileSystem.documentDirectory + "archivedData", {
       idempotent: true,
     }),
-    FileSystem.deleteAsync(FileSystem.documentDirectory + "mmkv", {
-      idempotent: true,
-    }),
+    queryPersister.removeClient?.(),
   ]);
 };
 

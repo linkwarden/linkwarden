@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import useAuthStore from "@/store/auth";
+import { getSessionName } from "@/lib/sessionName";
 
 const cloudInstance = "https://cloud.linkwarden.app";
 
@@ -43,7 +44,11 @@ export default function VerifyEmail() {
       try {
         const res = await fetch(`${instance}/api/v1/auth/verify-email-token`, {
           method: "POST",
-          body: JSON.stringify({ token, email }),
+          body: JSON.stringify({
+            token,
+            email,
+            sessionName: getSessionName(),
+          }),
           headers: { "Content-Type": "application/json" },
         });
         const data = await res.json().catch(() => null);

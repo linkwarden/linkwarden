@@ -71,10 +71,10 @@ export default function SettingsScreen() {
   const syncStatusLabel =
     syncStatus === "paused"
       ? "Waiting for connection"
-      : syncPercent === null
-        ? "Preparing…"
-        : syncPercent >= 100
-          ? "Up to date"
+      : syncStatus !== "syncing"
+        ? "Up to date"
+        : syncPercent === null
+          ? "Preparing…"
           : `${syncPercent}%`;
 
   return (

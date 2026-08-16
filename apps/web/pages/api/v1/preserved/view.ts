@@ -88,6 +88,12 @@ const getDownloadFilename = (format: ArchivedFormat, filePath: string) => {
   }
 };
 
+export const config = {
+  api: {
+    responseLimit: "100mb",
+  },
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

@@ -26,7 +26,7 @@
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
   "devDependencies": {
-    "vitest": "^4.0.17"
+    "vitest": "^4.1.0"
   },
   "dependencies": {
     "concurrently": "^9.1.2",
@@ -35,8 +35,6 @@
   },
   "resolutions": {
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-native-mmkv": "4.1.2",
-    "react-native-nitro-modules": "0.34.1"
+    "react-dom": "19.1.0"
   }
 }

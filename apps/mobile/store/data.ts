@@ -29,9 +29,9 @@ const useDataStore = create<DataStore>((set, get) => ({
   },
   updateData: async (patch) => {
     const merged = { ...get().data, ...patch };
+    set({ data: merged });
     const { shareIntent, ...persistable } = merged;
     await AsyncStorage.setItem("data", JSON.stringify(persistable));
-    set({ data: merged });
   },
 }));
 

@@ -55,6 +55,7 @@ model User {
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
   theme                   Theme                 @default(dark)
+  dismissedAnnouncementId String?
   readableFontFamily      String?               @default("sans-serif")
   readableFontSize        String?               @default("20px")
   readableLineHeight      String?               @default("1.8")

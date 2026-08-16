@@ -17,7 +17,7 @@ import { ArchivedFormat } from "@linkwarden/types/global";
 export const config = {
   api: {
     bodyParser: false,
-    responseLimit: "50mb",
+    responseLimit: "100mb",
   },
 };
 

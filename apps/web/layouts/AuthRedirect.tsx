@@ -4,20 +4,22 @@ import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
 import useTheme from "@/hooks/useTheme";
 import { useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 
 interface Props {
   children: ReactNode;
 }
-
-const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE === "true";
-const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
-const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
   const { status } = useSession();
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
   const { data: user } = useUser();
+  const { data: config } = useConfig();
+
+  const STRIPE_ENABLED = Boolean(config?.STRIPE_ENABLED);
+  const TRIAL_PERIOD_DAYS = config?.TRIAL_PERIOD_DAYS || 14;
+  const REQUIRE_CC = Boolean(config?.REQUIRE_CC);
 
   useInitialData();
   useTheme();
@@ -80,7 +82,7 @@ export default function AuthRedirect({ children }: Props) {
         setShouldRenderChildren(true);
       }
     }
-  }, [status, user, router.pathname]);
+  }, [status, user, config, router.pathname]);
 
   function redirectTo(destination: string) {
     router.push(destination).then(() => setShouldRenderChildren(true));

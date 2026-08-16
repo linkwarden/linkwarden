@@ -83,6 +83,10 @@ RUN set -eux && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Next.js writes its image-optimizer cache here at runtime; precreate it as
+# world-writable so it also works when the container runs as a non-root user
+RUN mkdir -p apps/web/.next/cache && chmod 777 apps/web/.next/cache
+
 HEALTHCHECK --interval=30s \
             --timeout=5s \
             --start-period=10s \

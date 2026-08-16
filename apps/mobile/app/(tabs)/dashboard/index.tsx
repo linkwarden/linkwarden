@@ -43,12 +43,14 @@ export default function DashboardScreen() {
   const { data: user, ...userData } = useUser(auth);
   const { data: collections = [], ...collectionsData } = useCollections(auth);
   const config = useConfig(auth);
+  const instanceVersion = config.data?.INSTANCE_VERSION;
   const supportsDashboardTagCount = isAtLeastInstanceVersion(
-    config.data?.INSTANCE_VERSION,
+    instanceVersion,
     DASHBOARD_TAG_COUNT_VERSION
   );
-  const shouldUseLegacyTagsCount =
-    config.isError || (config.isSuccess && !supportsDashboardTagCount);
+  const shouldUseLegacyTagsCount = instanceVersion
+    ? !supportsDashboardTagCount
+    : config.isError;
   const legacyTags = useTags(auth, {
     enabled: shouldUseLegacyTagsCount,
   });
@@ -84,9 +86,10 @@ export default function DashboardScreen() {
   }, [dashboardSections]);
 
   const [pullRefreshing, setPullRefreshing] = useState(false);
-  const resolvedNumberOfTags = shouldUseLegacyTagsCount
-    ? legacyTags.data.length
-    : numberOfTags;
+  const resolvedNumberOfTags =
+    shouldUseLegacyTagsCount && legacyTags.isSuccess
+      ? legacyTags.data.length
+      : numberOfTags;
 
   const onRefresh = async () => {
     setPullRefreshing(true);

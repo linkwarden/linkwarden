@@ -5,7 +5,7 @@ import {
   useRouter,
 } from "expo-router";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { mmkvPersister } from "@/lib/queryPersister";
+import { queryPersister } from "@/lib/queryPersister";
 import { useState, useEffect } from "react";
 import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
@@ -90,11 +90,11 @@ export default Sentry.wrap(function RootLayout() {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        persister: mmkvPersister,
+        persister: queryPersister,
         maxAge: Infinity,
         dehydrateOptions: {
           shouldDehydrateMutation: () => true,
-          shouldDehydrateQuery: (query) => query.state.status === "success",
+          shouldDehydrateQuery: (query) => query.state.data !== undefined,
         },
       }}
       onSuccess={() => {

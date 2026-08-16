@@ -4,7 +4,7 @@ import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
 } from "@linkwarden/types/global";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -36,21 +36,63 @@ export function DashboardLinks({
   isLoading?: boolean;
   type?: "collection" | "recent";
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const [showLeftFade, setShowLeftFade] = useState(false);
+  const [showRightFade, setShowRightFade] = useState(false);
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    setShowLeftFade(el.scrollLeft > 0);
+    setShowRightFade(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+
+    const observer = new ResizeObserver(updateScrollState);
+    if (scrollRef.current) observer.observe(scrollRef.current);
+    if (contentRef.current) observer.observe(contentRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div
-      className={`flex gap-3 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
-    >
-      {isLoading ? (
-        <div className="flex flex-col gap-4 min-w-60 w-60">
-          <div className="skeleton h-40 w-full"></div>
-          <div className="skeleton h-3 w-2/3"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-1/3"></div>
+    <div className="relative w-full min-h-fit">
+      <div
+        ref={scrollRef}
+        onScroll={updateScrollState}
+        className={`flex overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit isolate`}
+      >
+        <div ref={contentRef} className="flex gap-3 min-h-fit">
+          {isLoading ? (
+            <div className="flex flex-col gap-4 min-w-60 w-60">
+              <div className="skeleton h-40 w-full"></div>
+              <div className="skeleton h-3 w-2/3"></div>
+              <div className="skeleton h-3 w-full"></div>
+              <div className="skeleton h-3 w-full"></div>
+              <div className="skeleton h-3 w-1/3"></div>
+            </div>
+          ) : (
+            links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)
+          )}
         </div>
-      ) : (
-        links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)
-      )}
+      </div>
+      <div
+        className={cn(
+          "absolute left-0 inset-y-0 w-6 bg-gradient-to-r from-base-100 to-transparent pointer-events-none transition-opacity duration-200",
+          showLeftFade ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <div
+        className={cn(
+          "absolute right-0 inset-y-0 w-6 bg-gradient-to-l from-base-100 to-transparent pointer-events-none transition-opacity duration-200",
+          showRightFade ? "opacity-100" : "opacity-0"
+        )}
+      />
     </div>
   );
 }

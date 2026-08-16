@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NextPageWithLayout } from "../_app";
+import { useConfig } from "@linkwarden/router/config";
 
 interface User extends U {
   subscriptions: {
@@ -33,17 +34,20 @@ type UserModal = {
   userId: number | null;
 };
 
-const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
-
 const Page: NextPageWithLayout = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
   const { data: account } = useUser();
   const { data: users = [] } = useUsers();
+  const { data: config } = useConfig();
+
+  const TRIAL_PERIOD_DAYS = config?.TRIAL_PERIOD_DAYS || 14;
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE || account?.parentSubscriptionId) {
+    if (!config) return;
+
+    if (!config.STRIPE_ENABLED || account?.parentSubscriptionId) {
       router.push("/settings/account");
     } else if (account?.createdAt) {
       const trialEndTime =
@@ -56,7 +60,7 @@ const Page: NextPageWithLayout = () => {
         router.push("/subscribe");
       }
     }
-  }, [account]);
+  }, [account, config]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();
@@ -105,7 +109,7 @@ const Page: NextPageWithLayout = () => {
             <p className="text-md">
               {t("manage_subscription_intro")}{" "}
               <a
-                href={process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL}
+                href={config?.STRIPE_BILLING_PORTAL_URL || undefined}
                 className="underline"
                 target="_blank"
               >
@@ -177,10 +181,10 @@ const Page: NextPageWithLayout = () => {
             <table className="table bg-base-300 rounded-md">
               <thead>
                 <tr className="sm:table-row hidden border-b-neutral-content">
-                  {process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" && (
+                  {config?.EMAIL_PROVIDER && (
                     <th>{t("email")}</th>
                   )}
-                  {process.env.NEXT_PUBLIC_STRIPE === "true" && (
+                  {config?.STRIPE_ENABLED && (
                     <th>{t("status")}</th>
                   )}
                   <th>{t("date_added")}</th>
@@ -197,7 +201,7 @@ const Page: NextPageWithLayout = () => {
                         "hover:bg-neutral-content hover:bg-opacity-30"
                     )}
                   >
-                    {process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" && (
+                    {config?.EMAIL_PROVIDER && (
                       <td
                         className="truncate max-w-full"
                         title={user.email || ""}
@@ -208,7 +212,7 @@ const Page: NextPageWithLayout = () => {
                         <p>{user.email}</p>
                       </td>
                     )}
-                    {process.env.NEXT_PUBLIC_STRIPE === "true" && (
+                    {config?.STRIPE_ENABLED && (
                       <td>
                         <p className="sm:hidden block text-neutral text-xs font-bold mb-2">
                           {t("status")}

@@ -175,9 +175,8 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 {formatAvailable(link, "preview") ? (
                   preview ? (
                     <Image
-                      source={{
-                        uri: `${preview}?updatedAt=${link.updatedAt}`,
-                      }}
+                      key={String(link.updatedAt)}
+                      source={{ uri: preview }}
                       className="rounded-md h-[60px] w-[90px] object-cover scale-105"
                     />
                   ) : (

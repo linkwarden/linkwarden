@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { useConfig } from "@linkwarden/router/config";
 
 type Props = {
   onClose: Function;
@@ -20,6 +21,7 @@ export default function EmailChangeVerificationModal({
 }: Props) {
   const { t } = useTranslation();
   const [password, setPassword] = useState("");
+  const { data: config } = useConfig();
 
   return (
     <Modal toggleModal={onClose}>
@@ -30,13 +32,12 @@ export default function EmailChangeVerificationModal({
       <div className="flex flex-col gap-5">
         <p>
           {t("password_change_warning")}
-          {process.env.NEXT_PUBLIC_STRIPE === "true" && t("stripe_update_note")}
+          {config?.STRIPE_ENABLED && t("stripe_update_note")}
         </p>
 
         <p>
           {t("sso_will_be_removed_warning", {
-            service:
-              process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" ? "Google" : "",
+            service: config?.GOOGLE_ENABLED ? "Google" : "",
           })}
         </p>
 

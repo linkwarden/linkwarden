@@ -37,7 +37,7 @@ const UserListing: React.FC<UserListingProps> = ({
             <th></th>
             <th>{t("username")}</th>
             {config?.EMAIL_PROVIDER && <th>{t("email")}</th>}
-            {process.env.NEXT_PUBLIC_STRIPE === "true" && (
+            {config?.STRIPE_ENABLED && (
               <th>{t("subscribed")}</th>
             )}
             <th>{t("created_at")}</th>
@@ -55,7 +55,7 @@ const UserListing: React.FC<UserListingProps> = ({
                 {user.username ? user.username : <b>{t("not_available")}</b>}
               </td>
               {config?.EMAIL_PROVIDER && <td>{user.email}</td>}
-              {process.env.NEXT_PUBLIC_STRIPE === "true" && (
+              {config?.STRIPE_ENABLED && (
                 <td>
                   {user.subscriptions?.active ? (
                     <i className="bi bi-check text-green-500"></i>

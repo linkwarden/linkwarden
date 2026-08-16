@@ -17,6 +17,11 @@ const BROWSER_IDLE_TIMEOUT_MS = 60_000;
 // Blue console output
 const logInfo = (message: string) => console.log("\x1b[34m%s\x1b[0m", message);
 
+const launchingMessage = () =>
+  process.env.PLAYWRIGHT_WS_URL
+    ? `Connecting to remote browser (${process.env.PLAYWRIGHT_WS_URL}).`
+    : "Launching browser.";
+
 export async function linkProcessing(interval = 10) {
   logInfo("Starting link processing...");
 
@@ -119,7 +124,7 @@ async function linkProcessingOnDemand(interval: number) {
       }
     }
 
-    logInfo("Launching browser.");
+    logInfo(launchingMessage());
     browser = await launchBrowser();
     browserStartTs = Date.now();
     return browser;
