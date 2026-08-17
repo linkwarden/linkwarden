@@ -1,0 +1,80 @@
+name: Mobile Android (build & submit)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options:
+          - production
+        default: production
+      submit:
+        description: Submit to Google Play after building
+        type: boolean
+        default: true
+
+concurrency:
+  group: mobile-android
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Android (eas build --local)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+        working-directory: .
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: .
+
+      - name: Build (local)
+        run: >
+          eas build
+          --platform android
+          --profile ${{ inputs.profile }}
+          --local
+          --non-interactive
+          --output build.aab
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: apps/mobile/build.aab
+          retention-days: 14
+
+      - name: Submit to Google Play
+        if: ${{ inputs.submit }}
+        run: >
+          eas submit
+          --platform android
+          --profile production
+          --path build.aab
+          --non-interactive
