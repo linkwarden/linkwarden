@@ -3,6 +3,14 @@ name: Mobile Android (build & submit)
 on:
   workflow_dispatch:
     inputs:
+      target:
+        description: What to build
+        type: choice
+        options:
+          - both
+          - aab
+          - apk
+        default: both
       submit:
         description: Submit the AAB to Google Play after building
         type: boolean
@@ -15,6 +23,7 @@ concurrency:
 jobs:
   aab:
     name: Build AAB (production) & submit
+    if: ${{ inputs.target == 'both' || inputs.target == 'aab' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -76,6 +85,7 @@ jobs:
 
   apk:
     name: Build APK (production)
+    if: ${{ inputs.target == 'both' || inputs.target == 'apk' }}
     runs-on: ubuntu-latest
     defaults:
       run:
