@@ -23,7 +23,8 @@
       "corepack": true,
       "distribution": "store",
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "environment": "production"
     }
   },
   "submit": {
@@ -32,7 +33,6 @@
         "ascAppId": "6752550960"
       },
       "android": {
-        "serviceAccountKeyPath": "./service-account-file.json",
         "track": "internal",
         "releaseStatus": "draft"
       }
