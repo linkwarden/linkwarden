@@ -41,6 +41,7 @@ jobs:
       - name: Setup EAS CLI
         uses: expo/expo-github-action@v8
         with:
+          packager: npm
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
