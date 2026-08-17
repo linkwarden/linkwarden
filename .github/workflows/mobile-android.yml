@@ -3,14 +3,8 @@ name: Mobile Android (build & submit)
 on:
   workflow_dispatch:
     inputs:
-      profile:
-        description: EAS build profile
-        type: choice
-        options:
-          - production
-        default: production
       submit:
-        description: Submit to Google Play after building
+        description: Submit the AAB to Google Play after building
         type: boolean
         default: true
 
@@ -19,8 +13,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build Android (eas build --local)
+  aab:
+    name: Build AAB (production) & submit
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -58,7 +52,7 @@ jobs:
         run: >
           eas build
           --platform android
-          --profile ${{ inputs.profile }}
+          --profile production
           --local
           --non-interactive
           --output build.aab
@@ -78,3 +72,66 @@ jobs:
           --profile production
           --path build.aab
           --non-interactive
+
+  apk:
+    name: Build APK (production)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+        working-directory: .
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: .
+
+      - name: Build (local)
+        run: >
+          eas build
+          --platform android
+          --profile apk
+          --local
+          --non-interactive
+          --output build.apk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: apps/mobile/build.apk
+          retention-days: 14
+
+      - name: Create draft release on linkwarden/builds
+        env:
+          GH_TOKEN: ${{ secrets.BUILDS_RELEASE_TOKEN }}
+        run: |
+          VERSION=$(npx expo config --json | jq -r '.version')
+          cp build.apk "linkwarden-v${VERSION}.apk"
+          gh release create "apk-v${VERSION}" "linkwarden-v${VERSION}.apk" \
+            --repo linkwarden/builds \
+            --draft \
+            --title "apk-v${VERSION}" \
+            --notes ""

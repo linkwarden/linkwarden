@@ -4,7 +4,8 @@
     "appVersionSource": "remote"
   },
   "build": {
-    "preview": {
+    "apk": {
+      "environment": "production",
       "android": {
         "buildType": "apk"
       }
