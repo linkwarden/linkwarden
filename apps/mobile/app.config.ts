@@ -89,6 +89,12 @@ const config: ExpoConfig = {
           buildToolsVersion: "36.0.0",
           usesCleartextTraffic: true,
         },
+        ios: {
+          extraPods: [
+            { name: "GoogleUtilities", modular_headers: true },
+            { name: "RecaptchaInterop", modular_headers: true },
+          ],
+        },
       },
     ],
     [
