@@ -1,0 +1,74 @@
+name: Mobile iOS (build & submit)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options:
+          - production
+        default: production
+      submit:
+        description: Submit to App Store Connect after building
+        type: boolean
+        default: true
+
+concurrency:
+  group: mobile-ios
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build iOS (eas build --local)
+    runs-on: macos-26
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+        working-directory: .
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: .
+
+      - name: Build (local)
+        run: >
+          eas build
+          --platform ios
+          --profile ${{ inputs.profile }}
+          --local
+          --non-interactive
+          --output build.ipa
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: apps/mobile/build.ipa
+          retention-days: 14
+
+      - name: Submit to App Store Connect
+        if: ${{ inputs.submit }}
+        run: >
+          eas submit
+          --platform ios
+          --profile production
+          --path build.ipa
+          --non-interactive
