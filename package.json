@@ -20,6 +20,7 @@
     "prisma:dev": "dotenv -- yarn workspace @linkwarden/prisma dev",
     "prisma:generate": "yarn workspace @linkwarden/prisma generate",
     "prisma:studio": "yarn workspace @linkwarden/prisma studio",
+    "docker:build": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "format": "yarn workspaces run format",
     "test": "vitest",
     "coverage": "vitest run --coverage",
