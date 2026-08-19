@@ -1,7 +1,6 @@
-const { S3 } = require("@aws-sdk/client-s3");
+const { S3, HeadObjectCommand } = require("@aws-sdk/client-s3");
 const { PrismaClient } = require("@prisma/client");
 const { existsSync } = require("fs");
-const util = require("util");
 
 const prisma = new PrismaClient();
 
@@ -31,12 +30,8 @@ async function checkFileExistence(path) {
     };
 
     try {
-      const headObjectAsync = util.promisify(
-        s3Client.headObject.bind(s3Client)
-      );
-
       try {
-        await headObjectAsync(bucketParams);
+        await s3Client.send(new HeadObjectCommand(bucketParams));
         return true;
       } catch (err) {
         return false;
