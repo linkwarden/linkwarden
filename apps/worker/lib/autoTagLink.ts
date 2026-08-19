@@ -17,6 +17,12 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
 import { titleCase } from "@linkwarden/lib/utils";
+import parseAiTagResponse from "./parseAiTagResponse";
+
+// "skipped" means there is nothing to tag and retrying won't help. A genuine
+// failure (provider error, unusable response) throws so the caller can leave
+// the link untagged and try again later.
+export type AutoTagResult = "tagged" | "skipped";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>
@@ -66,18 +72,24 @@ const getAIModel = (): LanguageModelV2 => {
   throw new Error("No AI provider configured");
 };
 
-export default async function autoTagLink(user: User, linkId: number) {
+export default async function autoTagLink(
+  user: User,
+  linkId: number
+): Promise<AutoTagResult> {
   const link = await prisma.link.findUnique({
     where: { id: linkId },
   });
 
-  if (!link) return console.log("Link not found for auto tagging.");
+  if (!link) {
+    console.log("Link not found for auto tagging.");
+    return "skipped";
+  }
 
   const description =
     (link.metaDescription ? link.metaDescription + "..." : undefined) ||
     (link.textContent ? link.textContent?.slice(0, 500) + "..." : undefined);
 
-  if (!description) return;
+  if (!description) return "skipped";
 
   let prompt;
 
@@ -119,7 +131,8 @@ export default async function autoTagLink(user: User, linkId: number) {
     user.aiTaggingMethod === AiTaggingMethod.PREDEFINED &&
     user.aiPredefinedTags.length === 0
   ) {
-    return console.log("No predefined tags to auto tag for link: ", link.url);
+    console.log("No predefined tags to auto tag for link: ", link.url);
+    return "skipped";
   }
 
   const { text } = await generateText({
@@ -127,57 +140,60 @@ export default async function autoTagLink(user: User, linkId: number) {
     prompt: prompt,
   });
 
-  try {
-    // If text has an array inside a "```json ```" block, extract that
-    let tags: string[] = JSON.parse(
-      text.match(/```json\s*([\s\S]*?)\s*```/i)?.[1] ?? text
+  let tags = parseAiTagResponse(text);
+
+  if (!tags) {
+    throw new Error(
+      `The AI response for ${link.url} didn't contain a list of tags: ${text.slice(
+        0,
+        200
+      )}`
     );
-
-    if (!tags || tags.length === 0) {
-      return;
-    } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
-      tags = tags.filter((tag: string) => existingTagsNames.includes(tag));
-    } else if (user.aiTaggingMethod === AiTaggingMethod.PREDEFINED) {
-      tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
-    } else if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
-      tags = tags.map((tag: string) =>
-        tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
-      );
-    }
-
-    console.log("Tags for link:", link.url, "=>", tags);
-
-    if (tags.length > 5) {
-      tags = tags.slice(0, 5);
-    }
-
-    await prisma.link.update({
-      where: { id: linkId },
-      data: {
-        tags: {
-          connectOrCreate: tags.map((tag: string) => ({
-            where: {
-              name_ownerId: {
-                name: tag.trim().slice(0, 50),
-                ownerId: user.id,
-              },
-            },
-            create: {
-              name: tag.trim().slice(0, 50),
-              owner: {
-                connect: {
-                  id: user.id,
-                },
-              },
-              aiGenerated: true,
-            },
-          })),
-        },
-        aiTagged: true,
-      },
-    });
-  } catch (err) {
-    console.log("Error auto tagging link: ", link.url);
-    console.log("Error: ", err);
   }
+
+  if (tags.length === 0) return "skipped";
+
+  if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
+    tags = tags.filter((tag: string) => existingTagsNames.includes(tag));
+  } else if (user.aiTaggingMethod === AiTaggingMethod.PREDEFINED) {
+    tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
+  } else if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
+    tags = tags.map((tag: string) =>
+      tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
+    );
+  }
+
+  console.log("Tags for link:", link.url, "=>", tags);
+
+  if (tags.length > 5) {
+    tags = tags.slice(0, 5);
+  }
+
+  await prisma.link.update({
+    where: { id: linkId },
+    data: {
+      tags: {
+        connectOrCreate: tags.map((tag: string) => ({
+          where: {
+            name_ownerId: {
+              name: tag.trim().slice(0, 50),
+              ownerId: user.id,
+            },
+          },
+          create: {
+            name: tag.trim().slice(0, 50),
+            owner: {
+              connect: {
+                id: user.id,
+              },
+            },
+            aiGenerated: true,
+          },
+        })),
+      },
+      aiTagged: true,
+    },
+  });
+
+  return "tagged";
 }
