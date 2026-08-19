@@ -560,8 +560,8 @@
   "note": "Note",
   "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed.",
   "reimagine_how_you_save_links": "Reimagine how you save links",
-  "sign_in_to_linkwarden": "Welcome back!",
+  "sign_in_to_linkwarden": "欢迎回来！",
   "or": "Or",
-  "continue_with_apple": "Continue with Apple",
-  "continue_with_google": "Continue with Google"
+  "continue_with_apple": "使用 Apple 账号登录",
+  "continue_with_google": "使用 Google 账号登录"
 }
