@@ -163,7 +163,7 @@ export default function SearchModal({ onClose }: { onClose: () => void }) {
           <div className="flex justify-end mt-2">
             <Button asChild variant="ghost" size="sm" className="text-xs">
               <Link
-                href="https://docs.linkwarden.app/Usage/advanced-search"
+                href="https://docs.linkwarden.app/usage/advanced-search"
                 target="_blank"
                 className="flex items-center gap-1"
               >
