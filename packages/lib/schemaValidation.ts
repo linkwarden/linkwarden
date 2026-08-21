@@ -88,6 +88,7 @@ export const UpdateUserSchema = () => {
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
+    readingProgressEnabled: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.enum(LinksRouteTo).optional(),
     referredBy: z.string().max(100).nullish(),
@@ -115,6 +116,14 @@ export const UpdateUserPreferenceSchema = z.object({
 
 export type UpdateUserPreferenceSchemaType = z.infer<
   typeof UpdateUserPreferenceSchema
+>;
+
+export const UpsertReadingProgressSchema = z.object({
+  progress: z.number().min(0).max(1),
+});
+
+export type UpsertReadingProgressSchemaType = z.infer<
+  typeof UpsertReadingProgressSchema
 >;
 
 export const PostSessionSchema = z.object({

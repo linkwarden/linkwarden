@@ -45,6 +45,7 @@ model User {
   createdLinks            Link[]                @relation("CreatedLinks")
   createdCollections      Collection[]          @relation("CreatedCollections")
   highlights              Highlight[]
+  readingProgress         ReadingProgress[]
   collectionsJoined       UsersAndCollections[]
   collectionOrder         Int[]                 @default([])
   whitelistedUsers        WhitelistedUser[]
@@ -61,6 +62,7 @@ model User {
   readableLineHeight      String?               @default("1.8")
   readableLineWidth       String?               @default("normal")
   preventDuplicateLinks   Boolean               @default(false)
+  readingProgressEnabled  Boolean               @default(true)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
@@ -171,6 +173,7 @@ model Link {
   type            String      @default("url")
   description     String      @default("")
   highlight       Highlight[]
+  readingProgress ReadingProgress[]
   pinnedBy        User[]      @relation("PinnedLinks")
   createdBy       User?       @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById     Int?
@@ -286,6 +289,19 @@ model Highlight {
   text        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model ReadingProgress {
+  id        Int      @id @default(autoincrement())
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  linkId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  progress  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([linkId, userId])
 }
 
 model DashboardSection {
