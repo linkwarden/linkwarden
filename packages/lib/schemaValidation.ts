@@ -153,6 +153,7 @@ export const UpdateLinkSchema = z.object({
   name: z.string().trim().max(2048).nullish(),
   url: z.string().trim().max(2048).nullish(),
   description: z.string().trim().max(2048).nullish(),
+  publishedAt: z.string().datetime().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
   color: z.string().trim().max(50).nullish(),
