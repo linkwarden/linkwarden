@@ -16,6 +16,7 @@ export interface LinkIncludingShortenedCollectionAndTags
     Link,
     | "id"
     | "createdAt"
+    | "publishedAt"
     | "collectionId"
     | "updatedAt"
     | "lastPreserved"
@@ -23,6 +24,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   > {
   id?: number;
   createdAt?: string;
+  publishedAt?: string;
   importDate?: string;
   lastPreserved?: string | Date | null;
   collectionId?: number;
