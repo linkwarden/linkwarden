@@ -88,6 +88,7 @@ export const UpdateUserSchema = () => {
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
+    usePublicationDate: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.enum(LinksRouteTo).optional(),
     referredBy: z.string().max(100).nullish(),
