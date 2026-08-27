@@ -61,6 +61,7 @@ model User {
   readableLineHeight      String?               @default("1.8")
   readableLineWidth       String?               @default("normal")
   preventDuplicateLinks   Boolean               @default(false)
+  usePublicationDate     Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
@@ -193,6 +194,7 @@ model Link {
   indexVersion    Int?
   lastPreserved   DateTime?
   importDate      DateTime?
+  publishedAt     DateTime    @default(now())
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @default(now()) @updatedAt
 
