@@ -12,9 +12,22 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
 
-  let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
+  const userPreference = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { usePublicationDate: true },
+  });
+  const usePublicationDate =
+    userPreference?.usePublicationDate ?? false;
+
+  let order: Order | Order[] = { id: "desc" };
+  if (query.sort === Sort.DateNewestFirst)
+    order = usePublicationDate
+      ? [{ publishedAt: "desc" }, { id: "desc" }]
+      : { id: "desc" };
+  else if (query.sort === Sort.DateOldestFirst)
+    order = usePublicationDate
+      ? [{ publishedAt: "asc" }, { id: "asc" }]
+      : { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
 

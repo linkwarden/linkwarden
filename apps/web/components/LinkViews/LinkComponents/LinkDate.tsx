@@ -1,10 +1,14 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import React from "react";
+import { useUser } from "@linkwarden/router/user";
 
 function LinkDate({ link }: { link: LinkIncludingShortenedCollectionAndTags }) {
-  const formattedDate = new Date(
-    (link.importDate || link.createdAt) as string
-  ).toLocaleString("en-US", {
+  const { data: user } = useUser();
+  const date = user?.usePublicationDate
+    ? link.publishedAt || link.importDate || link.createdAt
+    : link.importDate || link.createdAt;
+
+  const formattedDate = new Date(date as string).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
