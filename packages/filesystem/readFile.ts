@@ -1,12 +1,12 @@
 import {
   GetObjectCommand,
   GetObjectCommandInput,
+  HeadObjectCommand,
   S3,
 } from "@aws-sdk/client-s3";
 import fs from "fs";
 import path from "path";
 import s3Client from "./s3Client";
-import util from "util";
 
 type ReturnContentTypes =
   | "text/plain"
@@ -34,12 +34,8 @@ export async function readFile(filePath: string) {
           }
         | undefined;
 
-      const headObjectAsync = util.promisify(
-        s3Client.headObject.bind(s3Client)
-      );
-
       try {
-        await headObjectAsync(bucketParams);
+        await (s3Client as S3).send(new HeadObjectCommand(bucketParams));
       } catch (err) {
         contentType = "text/plain";
 

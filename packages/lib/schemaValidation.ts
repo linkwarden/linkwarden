@@ -62,7 +62,7 @@ export const UpdateUserSchema = () => {
     process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
   return z.object({
-    name: z.string().trim().min(0).max(50).optional(),
+    name: z.string().trim().max(50).nullish(),
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
       : z.string().nullish(),

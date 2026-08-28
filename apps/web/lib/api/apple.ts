@@ -96,6 +96,22 @@ export async function verifyAppleIdentityToken(
   };
 }
 
+export function parseAppleSignupName(body: any): string | undefined {
+  if (typeof body?.user !== "string") return undefined;
+
+  try {
+    const user = JSON.parse(body.user);
+    const name = [user?.name?.firstName, user?.name?.lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    return name || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function getAppleClientSecret() {
   const now = Math.floor(Date.now() / 1000);
 

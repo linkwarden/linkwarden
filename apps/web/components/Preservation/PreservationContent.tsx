@@ -228,7 +228,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
               <img
                 alt=""
                 ref={imgRef}
-                src={`/api/v1/archives/${link.id}?format=${currentFormat}`}
+                src={`/api/v1/archives/${link.id}?format=${currentFormat}&_=${link.updatedAt}`}
                 className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
                 onLoad={(e) => {
                   const img = e.currentTarget;
