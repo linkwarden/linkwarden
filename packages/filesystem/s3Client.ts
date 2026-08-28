@@ -9,6 +9,7 @@ const s3Client: S3 | undefined =
         forcePathStyle: process.env.SPACES_FORCE_PATH_STYLE === "true",
         endpoint: process.env.SPACES_ENDPOINT,
         region: process.env.SPACES_REGION,
+        maxAttempts: 10,
         credentials: {
           accessKeyId: process.env.SPACES_KEY,
           secretAccessKey: process.env.SPACES_SECRET,
