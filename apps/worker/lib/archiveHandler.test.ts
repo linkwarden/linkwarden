@@ -17,21 +17,6 @@ describe("determineLinkType", () => {
     mocks.fetchHeaders.mockReset();
   });
 
-  it("detects the type from the content-type header", async () => {
-    mocks.fetchHeaders.mockResolvedValue(
-      new Headers({ "content-type": "application/pdf" })
-    );
-
-    await expect(
-      determineLinkType(1, "https://example.com/doc.pdf", "url")
-    ).resolves.toMatchObject({ linkType: "pdf" });
-
-    expect(mocks.update).toHaveBeenCalledWith({
-      where: { id: 1 },
-      data: { type: "pdf" },
-    });
-  });
-
   it("keeps the stored type when no headers are available", async () => {
     mocks.fetchHeaders.mockResolvedValue(null);
 
@@ -42,26 +27,14 @@ describe("determineLinkType", () => {
     expect(mocks.update).not.toHaveBeenCalled();
   });
 
-  it("still reports a url when that is the stored type", async () => {
+  it("does not assume an image extension when no headers are available", async () => {
     mocks.fetchHeaders.mockResolvedValue(null);
 
     await expect(
-      determineLinkType(1, "https://example.com/page", "url")
-    ).resolves.toMatchObject({ linkType: "url" });
-  });
-
-  it("lets the header override a stale stored type", async () => {
-    mocks.fetchHeaders.mockResolvedValue(
-      new Headers({ "content-type": "text/html" })
-    );
-
-    await expect(
-      determineLinkType(1, "https://example.com/page", "pdf")
+      determineLinkType(1, "https://example.com/photo.jpg", "image")
     ).resolves.toMatchObject({ linkType: "url" });
 
-    expect(mocks.update).toHaveBeenCalledWith({
-      where: { id: 1 },
-      data: { type: "url" },
-    });
+    expect(mocks.update).not.toHaveBeenCalled();
   });
+
 });

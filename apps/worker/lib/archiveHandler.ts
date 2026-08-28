@@ -243,19 +243,17 @@ export async function determineLinkType(
   linkType: "url" | "pdf" | "image";
   imageExtension: "png" | "jpeg";
 }> {
-  const knownType =
-    storedType === "pdf" || storedType === "image" ? storedType : "url";
+  const fallbackType = storedType === "pdf" ? "pdf" : "url";
   let linkType: "url" | "pdf" | "image" = "url";
   let imageExtension: "png" | "jpeg" = "png";
 
-  if (!url) return { linkType: knownType, imageExtension };
+  if (!url) return { linkType: fallbackType, imageExtension };
 
   const headers = await fetchHeaders(url);
   const contentType = headers?.get("content-type");
 
-  // Without a content-type nothing was learned, so the type postLink already
-  // derived stands rather than being overwritten with the "url" default.
-  if (!contentType) return { linkType: knownType, imageExtension };
+  // A stored PDF needs no subtype; an image still needs its extension detected.
+  if (!contentType) return { linkType: fallbackType, imageExtension };
 
   if (contentType.includes("application/pdf")) {
     linkType = "pdf";
