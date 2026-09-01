@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-interface ResponseCollections {
+export interface ResponseCollections {
   color: string;
   createdAt: string;
   description: string;
@@ -16,6 +16,8 @@ interface ResponseCollections {
   parentId: null | number; // Assuming parentId can be null or a number
   updatedAt: string;
 }
+
+export type Collection = ResponseCollections & { pathname: string };
 
 function buildFullPath(
   collection: ResponseCollections,
