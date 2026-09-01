@@ -66,9 +66,9 @@ yarn dev:firefox
 ```
 
 Either command builds the extension, launches the browser with it already installed,
-and reloads it whenever a file under `src/` changes. Both run off the same
-`manifest.json` and `dist/` folder, so there is nothing else to set up. Firefox
-reports that `background.service_worker` is ignored, which is expected: it uses
+and reloads it whenever a file under `src/` changes. Both run off the same manifest
+and `dist/` folder, so there is nothing else to set up. Firefox reports that
+`background.service_worker` is ignored, which is expected: it uses
 `background.scripts` from that same manifest.
 
 The browser starts from a temporary profile, so your Linkwarden server settings are
@@ -77,6 +77,18 @@ gone on the next start. Add `--keep-profile-changes --chromium-profile ./.profil
 
 To load the extension into a browser yourself, `yarn dev` runs only the watching
 build and keeps `dist/` up to date.
+
+### The manifest
+
+`manifest.config.ts` is the only manifest source. It describes one shared manifest
+plus the few keys that differ per target, and a vite plugin writes the result to
+`manifest.json` in the build output. There are two targets: `default` for the
+Chrome and Firefox build in `dist/`, and `safari` for `dist-safari/`, selected by
+the `EXT_TARGET` environment variable that `yarn build:safari` sets.
+
+Version bumps and permission changes go in that one file. Anything Safari cannot
+do (the bookmarks permission, the service worker, the omnibox keyword) is a flag
+on the target rather than a second copy of the manifest.
 
 ## Safari
 

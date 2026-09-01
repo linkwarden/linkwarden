@@ -7,8 +7,8 @@
     "dev": "vite build --watch",
     "dev:chrome": "yarn build && concurrently -k -n build,chrome -c blue,green \"vite build --watch\" \"web-ext run --target chromium --source-dir dist\"",
     "dev:firefox": "yarn build && concurrently -k -n build,firefox -c blue,magenta \"vite build --watch\" \"web-ext run --target firefox-desktop --source-dir dist\"",
-    "build": "tsc && vite build && cp ./manifest.json dist/manifest.json",
-    "build:safari": "tsc && vite build --outDir dist-safari && cp ./manifest.safari.json dist-safari/manifest.json && cp public/*.png dist-safari/",
+    "build": "tsc && vite build",
+    "build:safari": "tsc && EXT_TARGET=safari vite build --outDir dist-safari && cp public/*.png dist-safari/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
