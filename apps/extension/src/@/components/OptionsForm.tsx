@@ -8,48 +8,48 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './ui/Form.tsx';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from "./ui/Form.tsx";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   optionsFormInput,
   optionsFormSchema,
   optionsFormValues,
-} from '../lib/validators/optionsForm.ts';
-import { Input } from './ui/Input.tsx';
-import { Button } from './ui/Button.tsx';
-import { useMutation } from '@tanstack/react-query';
-import { useEffect } from 'react';
+} from "../lib/validators/optionsForm.ts";
+import { Input } from "./ui/Input.tsx";
+import { Button } from "./ui/Button.tsx";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 import {
   clearConfig,
   getConfig,
   isConfigured,
   saveConfig,
-} from '../lib/config.ts';
-import { Toaster } from './ui/Toaster.tsx';
-import { toast } from '../../hooks/use-toast.ts';
-import { AxiosError } from 'axios';
-import { clearBookmarksMetadata } from '../lib/cache.ts';
-import { getSession } from '../lib/auth/auth.ts';
+} from "../lib/config.ts";
+import { Toaster } from "./ui/Toaster.tsx";
+import { toast } from "../../hooks/useToast.ts";
+import { AxiosError } from "axios";
+import { clearBookmarksMetadata } from "../lib/cache.ts";
+import { getSession } from "../lib/auth/auth.ts";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/Select.tsx'; // Import the Select component
+} from "./ui/Select.tsx";
 
 const OptionsForm = () => {
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
     defaultValues: {
-      baseUrl: 'https://cloud.linkwarden.app',
-      method: 'username', // Default to 'username'
-      username: '',
-      password: '',
-      apiKey: '',
+      baseUrl: "https://cloud.linkwarden.app",
+      method: "username",
+      username: "",
+      password: "",
+      apiKey: "",
       syncBookmarks: false,
-      defaultCollection: 'Unorganized',
+      defaultCollection: "Unorganized",
     },
   });
 
@@ -58,30 +58,30 @@ const OptionsForm = () => {
       const configured = await isConfigured();
 
       if (!configured) {
-        return new Error('Not configured');
+        return new Error("Not configured");
       }
 
       return;
     },
     onError: () => {
       toast({
-        title: 'Error',
+        title: "Error",
         description:
           "Either you didn't configure the extension or there was an error while trying to log out. Please try again.",
-        variant: 'destructive',
+        variant: "destructive",
       });
       return;
     },
     onSuccess: async () => {
       // Reset the form
       form.reset({
-        baseUrl: '',
-        method: 'username',
-        username: '',
-        password: '',
-        apiKey: '',
+        baseUrl: "",
+        method: "username",
+        username: "",
+        password: "",
+        apiKey: "",
         syncBookmarks: false,
-        defaultCollection: 'Unorganized',
+        defaultCollection: "Unorganized",
       });
       await clearConfig();
       await clearBookmarksMetadata();
@@ -91,10 +91,10 @@ const OptionsForm = () => {
 
   const { mutate: onSubmit, isPending } = useMutation({
     mutationFn: async (values: optionsFormValues) => {
-      values.baseUrl = values.baseUrl.replace(/\/$/, '');
+      values.baseUrl = values.baseUrl.replace(/\/$/, "");
       // Do API call to test the connection and save the values
 
-      if (values.method === 'apiKey') {
+      if (values.method === "apiKey") {
         return {
           ...values,
           data: {
@@ -116,7 +116,7 @@ const OptionsForm = () => {
         );
 
         if (session.status !== 200) {
-          throw new Error('Invalid credentials');
+          throw new Error("Invalid credentials");
         }
 
         return {
@@ -134,22 +134,22 @@ const OptionsForm = () => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           toast({
-            title: 'Error',
-            description: 'Invalid credentials or API Key',
-            variant: 'destructive',
+            title: "Error",
+            description: "Invalid credentials or API Key",
+            variant: "destructive",
           });
         } else {
           toast({
-            title: 'Error',
-            description: 'Something went wrong, try again please.',
-            variant: 'destructive',
+            title: "Error",
+            description: "Something went wrong, try again please.",
+            variant: "destructive",
           });
         }
       } else {
         toast({
-          title: 'Error',
-          description: 'Something went wrong, check your values are correct.',
-          variant: 'destructive',
+          title: "Error",
+          description: "Something went wrong, check your values are correct.",
+          variant: "destructive",
         });
       }
     },
@@ -159,16 +159,16 @@ const OptionsForm = () => {
         defaultCollection: values.defaultCollection,
         syncBookmarks: values.syncBookmarks,
         apiKey:
-          values.method === 'apiKey' && values.apiKey
+          values.method === "apiKey" && values.apiKey
             ? values.apiKey
             : values.data.response.token,
       });
 
       toast({
-        title: 'Saved',
+        title: "Saved",
         description:
-          'Your settings have been saved, you can now close this tab.',
-        variant: 'default',
+          "Your settings have been saved, you can now close this tab.",
+        variant: "default",
       });
     },
   });
@@ -184,7 +184,7 @@ const OptionsForm = () => {
   }, [form]);
 
   const { handleSubmit, control, watch } = form;
-  const method = watch('method'); // Watch the 'method' field
+  const method = watch("method");
 
   return (
     <div>
@@ -242,7 +242,7 @@ const OptionsForm = () => {
           />
 
           {/* Conditionally render API Key or Username/Password fields */}
-          {method === 'apiKey' ? (
+          {method === "apiKey" ? (
             <FormField
               control={control}
               name="apiKey"

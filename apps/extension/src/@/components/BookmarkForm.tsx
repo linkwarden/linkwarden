@@ -23,7 +23,7 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { getConfig, isConfigured as getIsConfigured } from "../lib/config.ts";
 import { checkLinkExists, postLink } from "../lib/actions/links.ts";
 import { AxiosError } from "axios";
-import { toast } from "../../hooks/use-toast.ts";
+import { toast } from "../../hooks/useToast.ts";
 import { Toaster } from "./ui/Toaster.tsx";
 import { getCollections } from "../lib/actions/collections.ts";
 import { getShouldUseTagSearch, getTags } from "../lib/actions/tags.ts";

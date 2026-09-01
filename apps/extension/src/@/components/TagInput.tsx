@@ -1,8 +1,10 @@
 import { UIEvent, useMemo, useState } from "react";
 import { Check, ChevronsUpDown, Search } from "lucide-react";
 import { Button } from "./ui/Button.tsx";
+import { FormControl } from "./ui/Form.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover.tsx";
 import { ResponseTags } from "../lib/actions/tags.ts";
+import { useListboxKeys } from "../../hooks/useListboxKeys.ts";
 
 type Props = {
   value: { name: string; id?: number }[];
@@ -54,6 +56,12 @@ export default function TagInput({
     onSearchChange?.("");
   };
 
+  const { activeIndex, listId, optionId, handleKeyDown } = useListboxKeys({
+    options: filteredTags,
+    onEnter: (tag) => (tag ? handleToggleTag(tag) : handleAddSearchAsTag()),
+    onClose: () => setOpen(false),
+  });
+
   const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     if (!hasNextPage || isFetchingNextPage || !onReachEnd) return;
 
@@ -66,33 +74,48 @@ export default function TagInput({
     <div className="min-w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between bg-neutral-100 dark:bg-neutral-900"
-          >
-            {value.length > 0
-              ? value.map((tag) => tag.name).join(", ")
-              : "Select tags..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+          <FormControl>
+            <Button
+              variant="outline"
+              aria-haspopup="listbox"
+              aria-expanded={open}
+              className="w-full justify-between bg-neutral-100 dark:bg-neutral-900"
+            >
+              {value.length > 0
+                ? value.map((tag) => tag.name).join(", ")
+                : "Select tags..."}
+              <ChevronsUpDown
+                aria-hidden
+                className="ml-2 h-4 w-4 shrink-0 opacity-50"
+              />
+            </Button>
+          </FormControl>
         </PopoverTrigger>
 
         <PopoverContent className="min-w-full p-0">
-          <div className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
+          <div
+            onKeyDown={handleKeyDown}
+            className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground"
+          >
             <div className="flex items-center border-b px-3">
-              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+              <Search
+                aria-hidden
+                className="mr-2 h-4 w-4 shrink-0 opacity-50"
+              />
               <input
+                role="combobox"
+                aria-expanded
+                aria-controls={listId}
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  activeIndex === null ? undefined : optionId(activeIndex)
+                }
                 className="flex h-11 w-full min-w-[280px] bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
                 placeholder="Search tag or add tag (Enter)"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
                   onSearchChange?.(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleAddSearchAsTag();
                 }}
               />
             </div>
@@ -104,14 +127,27 @@ export default function TagInput({
               {filteredTags.length === 0 && !isFetchingNextPage ? (
                 <p className="py-6 text-center text-sm">No tag found.</p>
               ) : (
-                <div className="w-full overflow-hidden p-1 text-foreground">
-                  {filteredTags.map((tag) => (
+                <div
+                  id={listId}
+                  role="listbox"
+                  aria-multiselectable
+                  className="w-full overflow-hidden p-1 text-foreground"
+                >
+                  {filteredTags.map((tag, index) => (
                     <div
                       key={tag.name}
+                      id={optionId(index)}
+                      role="option"
+                      aria-selected={value.some((v) => v.name === tag.name)}
                       onClick={() => handleToggleTag(tag)}
-                      className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
+                      className={`relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground ${
+                        index === activeIndex
+                          ? "bg-accent text-accent-foreground"
+                          : ""
+                      }`}
                     >
                       <Check
+                        aria-hidden
                         className={`mr-2 h-4 w-4 ${
                           value.some((v) => v.name === tag.name)
                             ? "opacity-100"
@@ -123,7 +159,12 @@ export default function TagInput({
                   ))}
 
                   {isFetchingNextPage && (
-                    <div className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm opacity-50">
+                    <div
+                      role="option"
+                      aria-disabled
+                      aria-selected={false}
+                      className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm opacity-50"
+                    >
                       Loading more tags...
                     </div>
                   )}
