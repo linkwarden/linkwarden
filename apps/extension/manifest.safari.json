@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Linkwarden",
+  "description": "Save webpages, capture screenshots, and organize links in your Linkwarden collections.",
+  "homepage_url": "https://linkwarden.app/",
+  "version": "1.5.4",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "16.png",
+      "32": "32.png",
+      "48": "48.png",
+      "128": "128.png"
+    },
+    "default_title": "Linkwarden"
+  },
+  "options_ui": {
+    "page": "src/pages/Options/options.html",
+    "browser_style": false
+  },
+  "icons": { "16": "16.png", "32": "32.png", "48": "48.png", "128": "128.png" },
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "tabs",
+    "contextMenus"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' http: https:;"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Ctrl+Shift+F", "mac": "Command+Shift+Y" }
+    }
+  },
+  "browser_specific_settings": {
+    "safari": {
+      "strict_min_version": "15.4"
+    }
+  }
+}
