@@ -58,10 +58,6 @@ export async function setStorageItem(key: string, value: string) {
   }
 }
 
-export function openOptions() {
-  getBrowser().runtime.openOptionsPage();
-}
-
 export function isSafari(): boolean {
   try {
     return /^safari-web-extension:/.test(getBrowser().runtime.getURL(''));

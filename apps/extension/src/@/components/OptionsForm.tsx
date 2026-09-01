@@ -19,7 +19,7 @@ import {
 import { Input } from "./ui/Input.tsx";
 import { Button } from "./ui/Button.tsx";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   clearConfig,
   getConfig,
@@ -39,7 +39,19 @@ import {
   SelectValue,
 } from "./ui/Select.tsx";
 
-const OptionsForm = () => {
+interface OptionsFormProps {
+  onSaved?: () => void;
+  onCleared?: () => void;
+}
+
+const displayInstance = (baseUrl: string) =>
+  baseUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+const OptionsForm = ({ onSaved, onCleared }: OptionsFormProps) => {
+  const [signedInTo, setSignedInTo] = useState<string | undefined | null>(
+    undefined
+  );
+
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
     defaultValues: {
@@ -53,7 +65,7 @@ const OptionsForm = () => {
     },
   });
 
-  const { mutate: onReset, isPending: resetLoading } = useMutation({
+  const { mutate: onSignOut, isPending: signOutLoading } = useMutation({
     mutationFn: async () => {
       const configured = await isConfigured();
 
@@ -67,7 +79,7 @@ const OptionsForm = () => {
       toast({
         title: "Error",
         description:
-          "Either you didn't configure the extension or there was an error while trying to log out. Please try again.",
+          "Either you didn't configure the extension or there was an error while trying to sign out. Please try again.",
         variant: "destructive",
       });
       return;
@@ -85,6 +97,8 @@ const OptionsForm = () => {
       });
       await clearConfig();
       await clearBookmarksMetadata();
+      setSignedInTo(null);
+      onCleared?.();
       return;
     },
   });
@@ -164,12 +178,15 @@ const OptionsForm = () => {
             : values.data.response.token,
       });
 
+      setSignedInTo(values.baseUrl);
+
       toast({
         title: "Saved",
-        description:
-          "Your settings have been saved, you can now close this tab.",
+        description: "Your settings have been saved.",
         variant: "default",
       });
+
+      onSaved?.();
     },
   });
 
@@ -179,6 +196,9 @@ const OptionsForm = () => {
       if (configured) {
         const cachedOptions = await getConfig();
         form.reset(cachedOptions);
+        setSignedInTo(cachedOptions.baseUrl);
+      } else {
+        setSignedInTo(null);
       }
     })();
   }, [form]);
@@ -186,12 +206,37 @@ const OptionsForm = () => {
   const { handleSubmit, control, watch } = form;
   const method = watch("method");
 
+  if (signedInTo === undefined) return null;
+
+  if (signedInTo) {
+    return (
+      <div className="px-2 space-y-4">
+        <p className="text-sm">
+          Signed in to{" "}
+          <span className="font-medium break-all">
+            {displayInstance(signedInTo)}
+          </span>
+        </p>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={() => onSignOut()}
+          disabled={signOutLoading}
+        >
+          Sign Out
+        </Button>
+        <Toaster />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Form {...form}>
         <form
           onSubmit={handleSubmit((data) => onSubmit(data))}
-          className="space-y-3 p-2"
+          className="space-y-3 px-2"
         >
           <FormField
             control={control}
@@ -346,19 +391,7 @@ const OptionsForm = () => {
           />
           */}
 
-          <div className="flex justify-between">
-            <div>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/*@ts-ignore*/}
-              <Button
-                type="button"
-                className="mb-2"
-                onClick={() => onReset()}
-                disabled={resetLoading}
-              >
-                Reset
-              </Button>
-            </div>
+          <div className="flex justify-end pb-2">
             <Button disabled={isPending} type="submit">
               Save
             </Button>

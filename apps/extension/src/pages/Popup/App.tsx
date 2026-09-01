@@ -1,27 +1,32 @@
-import Container from '../../@/components/Container.tsx';
-import WholeContainer from '../../@/components/WholeContainer.tsx';
-import BookmarkForm from '../../@/components/BookmarkForm.tsx';
-import { openOptions } from '../../@/lib/utils.ts';
-import { useEffect, useState } from 'react';
-import { getConfig, isConfigured } from '../../@/lib/config.ts';
-import NotConfigured from '../../@/components/NotConfigured.tsx';
-import { ModeToggle } from '../../@/components/ModeToggle.tsx';
-import { Button } from '@/@/components/ui/Button.tsx';
-import { Settings } from 'lucide-react';
+import Container from "../../@/components/Container.tsx";
+import WholeContainer from "../../@/components/WholeContainer.tsx";
+import BookmarkForm from "../../@/components/BookmarkForm.tsx";
+import OptionsForm from "../../@/components/OptionsForm.tsx";
+import { useCallback, useEffect, useState } from "react";
+import { getConfig, isConfigured } from "../../@/lib/config.ts";
+import NotConfigured from "../../@/components/NotConfigured.tsx";
+import { ModeToggle } from "../../@/components/ModeToggle.tsx";
+import { Button } from "@/@/components/ui/Button.tsx";
+import { Settings, X } from "lucide-react";
 
 function App() {
   const [isAllConfigured, setIsAllConfigured] = useState<boolean>();
   const [baseUrl, setBaseUrl] = useState<string>();
+  const [showSettings, setShowSettings] = useState(false);
+
+  const refreshConfig = useCallback(async () => {
+    const cachedOptions = await isConfigured();
+    const cachedConfig = await getConfig();
+
+    setBaseUrl(cachedConfig.baseUrl);
+    setIsAllConfigured(cachedOptions);
+
+    return cachedOptions;
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      const cachedOptions = await isConfigured();
-      const cachedConfig = await getConfig();
-
-      setBaseUrl(cachedConfig.baseUrl);
-      setIsAllConfigured(cachedOptions);
-    })();
-  }, []);
+    refreshConfig();
+  }, [refreshConfig]);
 
   return (
     <WholeContainer>
@@ -43,7 +48,9 @@ function App() {
                 alt="Linkwarden Logo"
               />
             </a>
-            <h1 className="text-lg">Add Link</h1>
+            <h1 className="text-lg">
+              {showSettings ? "Settings" : "Add Link"}
+            </h1>
           </div>
           <div className="flex items-center justify-center space-x-2">
             <ModeToggle />
@@ -51,14 +58,39 @@ function App() {
               variant="ghost"
               size="icon"
               className="ring-0 focus:ring-0 outline-none focus:outline-none ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
-              onClick={openOptions}
+              onClick={() => setShowSettings((prevState) => !prevState)}
             >
-              <Settings className="h-[1.2rem] w-[1.2rem] transition-colors" />
+              {showSettings ? (
+                <X className="h-[1.2rem] w-[1.2rem] transition-colors" />
+              ) : (
+                <Settings className="h-[1.2rem] w-[1.2rem] transition-colors" />
+              )}
+              <span className="sr-only">
+                {showSettings ? "Close settings" : "Open settings"}
+              </span>
             </Button>
           </div>
         </div>
-        <BookmarkForm />
-        <NotConfigured open={!isAllConfigured} />
+
+        {showSettings ? (
+          <div className="max-h-[500px] overflow-y-auto mt-1">
+            <OptionsForm
+              onSaved={async () => {
+                const configured = await refreshConfig();
+                if (configured) setShowSettings(false);
+              }}
+              onCleared={refreshConfig}
+            />
+          </div>
+        ) : (
+          <>
+            <BookmarkForm />
+            <NotConfigured
+              open={isAllConfigured === false}
+              onConfigure={() => setShowSettings(true)}
+            />
+          </>
+        )}
       </Container>
     </WholeContainer>
   );
