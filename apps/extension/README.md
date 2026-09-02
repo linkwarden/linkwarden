@@ -86,7 +86,8 @@ plus the few keys that differ per target, and a vite plugin writes the result to
 Chrome and Firefox build in `dist/`, and `safari` for `dist-safari/`, selected by
 the `EXT_TARGET` environment variable that `yarn build:safari` sets.
 
-Version bumps and permission changes go in that one file. Anything Safari cannot
+Version bumps and permission changes go in that one file, Safari included: see
+[Versioning](#versioning) below. Anything Safari cannot
 do (the bookmarks permission, the service worker, the omnibox keyword) is a flag
 on the target rather than a second copy of the manifest.
 
@@ -106,3 +107,21 @@ The Xcode project references `dist-safari/` directly rather than holding its own
 of the extension, so `yarn build:safari` has to run first or you will archive a
 stale build. There is no conversion step: running `safari-web-extension-converter`
 against `safari/` would replace the committed project and its signing configuration.
+
+## Versioning
+
+The version lives in `manifest.config.ts` and nowhere else. Every build writes it
+to `version.xcconfig`, which the Xcode project reads as the base configuration on
+both targets, so one edit covers Chrome, Firefox and Safari.
+
+`version.xcconfig` is generated and committed. Do not edit it by hand. It is
+committed rather than ignored so a fresh clone opens in Xcode without a dangling
+file reference, which would silently resolve `MARKETING_VERSION` to empty and
+produce an archive App Store Connect rejects. Any build regenerates it, so
+`git diff --exit-code apps/extension/version.xcconfig` after a build is a
+reasonable CI check that the two have not drifted.
+
+`CURRENT_PROJECT_VERSION` also lives there. It is the build number rather than the
+version, and only has to be unique per App Store Connect upload, so CI passes
+`CURRENT_PROJECT_VERSION=$GITHUB_RUN_NUMBER` on the `xcodebuild` command line,
+which takes precedence over the xcconfig.

@@ -79,6 +79,7 @@
 		65E051FE2F9AFEE300628D48 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = "../../../dist-safari/manifest.json"; sourceTree = "<group>"; };
 		65E051FF2F9AFEE300628D48 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = "../../../dist-safari/assets"; sourceTree = "<group>"; };
 		65E052002F9AFEE300628D48 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = "../../../dist-safari/src"; sourceTree = "<group>"; };
+		65E0520C2F9AFEE300628D48 /* version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = version.xcconfig; path = "../../version.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +103,7 @@
 		65E051C02F9AFEE100628D48 = {
 			isa = PBXGroup;
 			children = (
+				65E0520C2F9AFEE300628D48 /* version.xcconfig */,
 				65E051CB2F9AFEE100628D48 /* Linkwarden */,
 				65E051E82F9AFEE300628D48 /* Linkwarden Extension */,
 				65E051CA2F9AFEE100628D48 /* Products */,
@@ -335,6 +337,7 @@
 /* Begin XCBuildConfiguration section */
 		65E051EC2F9AFEE300628D48 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65E0520C2F9AFEE300628D48 /* version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -398,6 +401,7 @@
 		};
 		65E051ED2F9AFEE300628D48 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65E0520C2F9AFEE300628D48 /* version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -455,7 +459,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FZ44882Y36;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -470,7 +473,6 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.5.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -490,7 +492,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FZ44882Y36;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -506,7 +507,6 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.5.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -530,7 +530,6 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FZ44882Y36;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -547,7 +546,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
@@ -574,7 +572,6 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FZ44882Y36;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -592,7 +589,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,

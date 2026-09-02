@@ -3,7 +3,9 @@
  *
  * Every browser gets the same manifest apart from the handful of keys collected
  * in `targets` below. The vite plugin in vite.config.ts writes the result into
- * the build output, so there is no manifest.json checked into the repo.
+ * the build output, so there is no manifest.json checked into the repo. The same
+ * plugin writes `version` out to version.xcconfig for the Safari Xcode project,
+ * which cannot read this file itself.
  */
 
 /**
@@ -49,7 +51,12 @@ const targets: Record<ManifestTarget, TargetOptions> = {
   },
 };
 
-const version = "1.5.4";
+/**
+ * The version for every target, including Safari: the vite plugin mirrors this
+ * into `version.xcconfig`, which the Xcode project reads as its base
+ * configuration. Bump it here and nowhere else.
+ */
+export const version = "1.5.4";
 
 const icons = {
   "16": "16.png",
