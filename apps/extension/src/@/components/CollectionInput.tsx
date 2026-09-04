@@ -62,7 +62,7 @@ export default function CollectionInput({
   const list = (
     <div
       onKeyDown={handleKeyDown}
-      className={`flex h-full w-full flex-col overflow-hidden bg-popover text-popover-foreground ${
+      className={`flex h-full w-full flex-col bg-popover text-popover-foreground ${
         fullScreen ? "rounded-none" : "rounded-md"
       }`}
     >
@@ -92,7 +92,7 @@ export default function CollectionInput({
         <div
           id={listId}
           role="listbox"
-          className="w-full overflow-hidden p-1 text-foreground"
+          className="w-full overflow-y-auto p-1 text-foreground"
         >
           {filteredCollections.map((collection, index) => (
             <div
@@ -142,7 +142,7 @@ export default function CollectionInput({
               role="dialog"
               aria-modal
               aria-label="Select a collection"
-              className="fade-up fixed inset-0 z-50 h-full w-full overflow-y-auto bg-white"
+              className="fade-up fixed inset-0 z-50 h-full w-full bg-white"
             >
               <Button
                 type="button"
@@ -155,7 +155,7 @@ export default function CollectionInput({
               {list}
             </div>
           ) : (
-            <PopoverContent className="min-w-full p-0 overflow-y-auto max-h-[200px]">
+            <PopoverContent className="min-w-full p-0 h-[250px]">
               {list}
             </PopoverContent>
           ))}
