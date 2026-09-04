@@ -1,0 +1,328 @@
+name: Extension (build)
+
+on:
+  workflow_dispatch:
+    inputs:
+      chrome:
+        description: Build the Chrome package
+        type: boolean
+        default: true
+      firefox:
+        description: Build the Firefox package and its AMO source archive
+        type: boolean
+        default: true
+      safari:
+        description: Build and sign the Safari .pkg for App Store Connect
+        type: boolean
+        default: true
+
+concurrency:
+  group: extension-build
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  chrome:
+    name: Chrome
+    if: ${{ inputs.chrome }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Read version
+        run: |
+          VERSION=$(sed -n 's/^export const version = "\(.*\)";$/\1/p' apps/extension/manifest.config.ts | head -n 1)
+          # Two jobs at once. VERSION is written to $GITHUB_ENV, where a value
+          # carrying a newline would let the manifest define arbitrary
+          # environment variables for every step after this one. And a version
+          # the stores reject is better caught here than after a build: this
+          # takes two or three dot-separated numbers and nothing else. Three is the
+          # ceiling because Safari's MARKETING_VERSION is a
+          # CFBundleShortVersionString, so "1.5.4.1" would build and sign and
+          # then be rejected on upload. "1..2" and "v1.5.4" stop here too.
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){1,2}$'; then
+            echo "Bad or missing version in manifest.config.ts: '$VERSION'"
+            exit 1
+          fi
+          echo "Extension version: $VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+
+      - name: Build
+        run: yarn build
+        working-directory: apps/extension
+
+      - name: Check output
+        run: test -f apps/extension/dist/manifest.json
+
+      - name: Upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linkwarden-chrome-v${{ env.VERSION }}
+          path: apps/extension/dist
+          if-no-files-found: error
+          overwrite: true
+
+  firefox:
+    name: Firefox
+    if: ${{ inputs.firefox }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Read version
+        run: |
+          VERSION=$(sed -n 's/^export const version = "\(.*\)";$/\1/p' apps/extension/manifest.config.ts | head -n 1)
+          # Two jobs at once. VERSION is written to $GITHUB_ENV, where a value
+          # carrying a newline would let the manifest define arbitrary
+          # environment variables for every step after this one. And a version
+          # the stores reject is better caught here than after a build: this
+          # takes two or three dot-separated numbers and nothing else. Three is the
+          # ceiling because Safari's MARKETING_VERSION is a
+          # CFBundleShortVersionString, so "1.5.4.1" would build and sign and
+          # then be rejected on upload. "1..2" and "v1.5.4" stop here too.
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){1,2}$'; then
+            echo "Bad or missing version in manifest.config.ts: '$VERSION'"
+            exit 1
+          fi
+          echo "Extension version: $VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+
+      - name: Build
+        run: yarn build
+        working-directory: apps/extension
+
+      - name: Check file sizes
+        run: |
+          if find apps/extension/dist -type f -size +5M | grep -q .; then
+            echo "AMO rejects uploads containing files larger than 5MB:"
+            find apps/extension/dist -type f -size +5M -exec du -h {} +
+            exit 1
+          fi
+          echo "No file exceeds 5MB."
+
+      - name: Lint
+        continue-on-error: true
+        run: yarn web-ext lint --source-dir dist
+        working-directory: apps/extension
+
+      - name: Upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linkwarden-firefox-v${{ env.VERSION }}
+          path: apps/extension/dist
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Stage source for AMO
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/source"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/source"
+          du -sh "$RUNNER_TEMP/source"
+
+      - name: Verify the source archive installs
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/source-check"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/source-check"
+          cd "$RUNNER_TEMP/source-check"
+          yarn install --immutable --mode=skip-build
+
+      - name: Assert the staged source is clean
+        run: |
+          if [ -e "$RUNNER_TEMP/source/node_modules" ] || [ -e "$RUNNER_TEMP/source/.yarn/install-state.gz" ]; then
+            echo "Install output leaked into the source archive; it must stay tracked files only."
+            exit 1
+          fi
+          echo "Staged source is clean: $(find "$RUNNER_TEMP/source" -type f | wc -l | tr -d ' ') files."
+
+      - name: Upload source
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linkwarden-firefox-source-v${{ env.VERSION }}
+          path: ${{ runner.temp }}/source
+          include-hidden-files: true
+          if-no-files-found: error
+          overwrite: true
+
+  safari:
+    name: Safari
+    if: ${{ inputs.safari }}
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Read version
+        run: |
+          VERSION=$(sed -n 's/^export const version = "\(.*\)";$/\1/p' apps/extension/manifest.config.ts | head -n 1)
+          # Two jobs at once. VERSION is written to $GITHUB_ENV, where a value
+          # carrying a newline would let the manifest define arbitrary
+          # environment variables for every step after this one. And a version
+          # the stores reject is better caught here than after a build: this
+          # takes two or three dot-separated numbers and nothing else. Three is the
+          # ceiling because Safari's MARKETING_VERSION is a
+          # CFBundleShortVersionString, so "1.5.4.1" would build and sign and
+          # then be rejected on upload. "1..2" and "v1.5.4" stop here too.
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){1,2}$'; then
+            echo "Bad or missing version in manifest.config.ts: '$VERSION'"
+            exit 1
+          fi
+          echo "Extension version: $VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+
+      - name: Build web extension
+        run: yarn build:safari
+        working-directory: apps/extension
+
+      - name: Check version.xcconfig is in sync
+        run: git diff --exit-code apps/extension/version.xcconfig
+
+      - name: Set up signing keychain
+        env:
+          APPLE_DIST_CERT_P12: ${{ secrets.APPLE_DIST_CERT_P12 }}
+          APPLE_INSTALLER_CERT_P12: ${{ secrets.APPLE_INSTALLER_CERT_P12 }}
+          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/extension-signing.keychain-db"
+          KEYCHAIN_PASSWORD=$(openssl rand -hex 32)
+          echo "::add-mask::$KEYCHAIN_PASSWORD"
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          echo "$APPLE_DIST_CERT_P12" | base64 -d > "$RUNNER_TEMP/dist.p12"
+          echo "$APPLE_INSTALLER_CERT_P12" | base64 -d > "$RUNNER_TEMP/installer.p12"
+
+          for CERT in dist installer; do
+            security import "$RUNNER_TEMP/$CERT.p12" -k "$KEYCHAIN_PATH" \
+              -P "$APPLE_CERT_PASSWORD" \
+              -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          done
+          rm "$RUNNER_TEMP"/dist.p12 "$RUNNER_TEMP"/installer.p12
+
+          # Without this, codesign blocks on a GUI prompt for keychain access.
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign:,productbuild: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+
+          # xcodebuild only searches keychains on the user search list.
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          security default-keychain -s "$KEYCHAIN_PATH"
+
+          echo "$ASC_KEY_P8" | base64 -d > "$RUNNER_TEMP/asc.p8"
+
+      - name: Archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          xcodebuild archive \
+            -project apps/extension/safari/Linkwarden/Linkwarden.xcodeproj \
+            -scheme Linkwarden \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -archivePath "$RUNNER_TEMP/Linkwarden.xcarchive" \
+            -authenticationKeyPath "$RUNNER_TEMP/asc.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            -allowProvisioningUpdates \
+            CURRENT_PROJECT_VERSION=$((GITHUB_RUN_NUMBER * 100 + GITHUB_RUN_ATTEMPT))
+
+      - name: Export .pkg
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>destination</key>
+            <string>export</string>
+            <key>teamID</key>
+            <string>FZ44882Y36</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Linkwarden.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -authenticationKeyPath "$RUNNER_TEMP/asc.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            -allowProvisioningUpdates
+
+          PKG=$(find "$RUNNER_TEMP/export" -maxdepth 1 -name '*.pkg' | head -n 1)
+          if [ -z "$PKG" ]; then
+            echo "exportArchive produced no .pkg"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/pkg"
+          cp "$PKG" "$RUNNER_TEMP/pkg/linkwarden-safari-v$VERSION.pkg"
+          ls -la "$RUNNER_TEMP/pkg"
+
+      - name: Upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linkwarden-safari-v${{ env.VERSION }}
+          path: ${{ runner.temp }}/pkg
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/asc.p8"
+          if [ -n "$KEYCHAIN_PATH" ] && [ -f "$KEYCHAIN_PATH" ]; then
+            security delete-keychain "$KEYCHAIN_PATH"
+          fi
