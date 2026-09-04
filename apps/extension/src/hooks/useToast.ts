@@ -8,6 +8,8 @@ import type {
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
 
+const SUCCESS_TOAST_DURATION = 1000;
+
 type ToasterToast = ToastProps & {
   id: string;
   title?: React.ReactNode;
@@ -150,6 +152,8 @@ function toast({ ...props }: Toast) {
   dispatch({
     type: "ADD_TOAST",
     toast: {
+      duration:
+        props.variant === "success" ? SUCCESS_TOAST_DURATION : undefined,
       ...props,
       id,
       open: true,

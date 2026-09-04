@@ -117,6 +117,7 @@ const BookmarkForm = () => {
       toast({
         title: "Success",
         description: "Link saved successfully!",
+        variant: "success",
       });
     },
   });

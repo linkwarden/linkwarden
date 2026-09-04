@@ -26,43 +26,59 @@ import {
   isConfigured,
   saveConfig,
 } from "../lib/config.ts";
+import { configType } from "../lib/validators/config.ts";
 import { Toaster } from "./ui/Toaster.tsx";
 import { toast } from "../../hooks/useToast.ts";
 import { AxiosError } from "axios";
 import { clearBookmarksMetadata } from "../lib/cache.ts";
 import { getSession } from "../lib/auth/auth.ts";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/Select.tsx";
+import SelectInput, { SelectOption } from "./SelectInput.tsx";
 
 interface OptionsFormProps {
   onSaved?: () => void;
   onCleared?: () => void;
+  initialConfig?: configType;
 }
+
+const EMPTY_FORM: optionsFormInput = {
+  baseUrl: "https://cloud.linkwarden.app",
+  method: "username",
+  username: "",
+  password: "",
+  apiKey: "",
+  syncBookmarks: false,
+  defaultCollection: "Unorganized",
+};
+
+const METHOD_OPTIONS: SelectOption[] = [
+  { value: "username", label: "Username and Password" },
+  { value: "apiKey", label: "API Key" },
+];
 
 const displayInstance = (baseUrl: string) =>
   baseUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
-const OptionsForm = ({ onSaved, onCleared }: OptionsFormProps) => {
+const signedInInstance = (config: configType | undefined) => {
+  if (config === undefined) return undefined;
+  return config.baseUrl && config.apiKey ? config.baseUrl : null;
+};
+
+const OptionsForm = ({
+  onSaved,
+  onCleared,
+  initialConfig,
+}: OptionsFormProps) => {
+  const initialSignedInTo = signedInInstance(initialConfig);
+
   const [signedInTo, setSignedInTo] = useState<string | undefined | null>(
-    undefined
+    initialSignedInTo
   );
 
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
-    defaultValues: {
-      baseUrl: "https://cloud.linkwarden.app",
-      method: "username",
-      username: "",
-      password: "",
-      apiKey: "",
-      syncBookmarks: false,
-      defaultCollection: "Unorganized",
-    },
+    defaultValues: initialSignedInTo
+      ? { ...EMPTY_FORM, ...initialConfig }
+      : EMPTY_FORM,
   });
 
   const { mutate: onSignOut, isPending: signOutLoading } = useMutation({
@@ -183,7 +199,7 @@ const OptionsForm = ({ onSaved, onCleared }: OptionsFormProps) => {
       toast({
         title: "Saved",
         description: "Your settings have been saved.",
-        variant: "default",
+        variant: "success",
       });
 
       onSaved?.();
@@ -191,17 +207,15 @@ const OptionsForm = ({ onSaved, onCleared }: OptionsFormProps) => {
   });
 
   useEffect(() => {
+    if (initialSignedInTo !== undefined) return;
+
     (async () => {
-      const configured = await isConfigured();
-      if (configured) {
-        const cachedOptions = await getConfig();
-        form.reset(cachedOptions);
-        setSignedInTo(cachedOptions.baseUrl);
-      } else {
-        setSignedInTo(null);
-      }
+      const cachedOptions = await getConfig();
+      const instance = signedInInstance(cachedOptions);
+      if (instance) form.reset({ ...EMPTY_FORM, ...cachedOptions });
+      setSignedInTo(instance);
     })();
-  }, [form]);
+  }, [form, initialSignedInTo]);
 
   const { handleSubmit, control, watch } = form;
   const method = watch("method");
@@ -268,19 +282,12 @@ const OptionsForm = ({ onSaved, onCleared }: OptionsFormProps) => {
                 <FormDescription>
                   Choose your preferred authentication method.
                 </FormDescription>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full justify-between bg-neutral-100 dark:bg-neutral-900 outline-none focus:outline-none ring-0 focus:ring-0">
-                      <SelectValue placeholder="Select authentication method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="username">
-                        Username and Password
-                      </SelectItem>
-                      <SelectItem value="apiKey">API Key</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                <SelectInput
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  options={METHOD_OPTIONS}
+                  placeholder="Select authentication method"
+                />
                 <FormMessage />
               </FormItem>
             )}

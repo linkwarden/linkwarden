@@ -2,8 +2,9 @@ import WholeContainer from "../../@/components/WholeContainer.tsx";
 import Container from "../../@/components/Container.tsx";
 import { Separator } from "../../@/components/ui/Separator.tsx";
 import OptionsForm from "../../@/components/OptionsForm.tsx";
+import { configType } from "../../@/lib/validators/config.ts";
 
-const App = () => {
+const App = ({ initialConfig }: { initialConfig: configType }) => {
   return (
     <WholeContainer className="max-h-[750px]">
       <Container>
@@ -13,7 +14,7 @@ const App = () => {
         <div>
           <Separator />
         </div>
-        <OptionsForm />
+        <OptionsForm initialConfig={initialConfig} />
       </Container>
     </WholeContainer>
   );
