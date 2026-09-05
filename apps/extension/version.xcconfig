@@ -1,4 +1,8 @@
-// Generated from manifest.config.ts by vite.config.ts. Do not edit.
-// Bump the version in manifest.config.ts and rebuild.
-MARKETING_VERSION = 1.5.4
-CURRENT_PROJECT_VERSION = 1
+// Generated from manifest.config.ts by vite.config.ts.
+// MARKETING_VERSION is overwritten on every build: change it in
+// manifest.config.ts, not here.
+// CURRENT_PROJECT_VERSION is preserved across builds and is yours to edit.
+// Raise it before every App Store Connect upload you archive locally; it
+// must always be higher than the last build Apple accepted.
+MARKETING_VERSION = 1.5.5
+CURRENT_PROJECT_VERSION = 3

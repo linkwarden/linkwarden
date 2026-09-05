@@ -56,7 +56,7 @@ const targets: Record<ManifestTarget, TargetOptions> = {
  * into `version.xcconfig`, which the Xcode project reads as its base
  * configuration. Bump it here and nowhere else.
  */
-export const version = "1.5.4";
+export const version = "1.5.5";
 
 const icons = {
   "16": "16.png",

@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite build --watch",
     "dev:chrome": "yarn build && concurrently -k -n build,chrome -c blue,green \"vite build --watch\" \"web-ext run --target chromium --source-dir dist\"",
     "dev:firefox": "yarn build && concurrently -k -n build,firefox -c blue,magenta \"vite build --watch\" \"web-ext run --target firefox-desktop --source-dir dist\"",
+    "build:safari": "tsc && EXT_TARGET=safari vite build --outDir dist-safari && cp public/*.png dist-safari/ && node scripts/safari-next-steps.mjs",
+    "dev": "vite build --watch",
     "build": "tsc && vite build",
-    "build:safari": "tsc && EXT_TARGET=safari vite build --outDir dist-safari && cp public/*.png dist-safari/",
+    "bump:build": "node scripts/bump-build.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

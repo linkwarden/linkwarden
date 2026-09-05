@@ -65,63 +65,30 @@ yarn dev:chrome
 yarn dev:firefox
 ```
 
-Either command builds the extension, launches the browser with it already installed,
-and reloads it whenever a file under `src/` changes. Both run off the same manifest
-and `dist/` folder, so there is nothing else to set up. Firefox reports that
-`background.service_worker` is ignored, which is expected: it uses
-`background.scripts` from that same manifest.
-
-The browser starts from a temporary profile, so your Linkwarden server settings are
-gone on the next start. Add `--keep-profile-changes --chromium-profile ./.profile`
-(or `--firefox-profile`) to the relevant script if you would rather keep them.
-
-To load the extension into a browser yourself, `yarn dev` runs only the watching
-build and keeps `dist/` up to date.
-
-### The manifest
-
-`manifest.config.ts` is the only manifest source. It describes one shared manifest
-plus the few keys that differ per target, and a vite plugin writes the result to
-`manifest.json` in the build output. There are two targets: `default` for the
-Chrome and Firefox build in `dist/`, and `safari` for `dist-safari/`, selected by
-the `EXT_TARGET` environment variable that `yarn build:safari` sets.
-
-Version bumps and permission changes go in that one file, Safari included: see
-[Versioning](#versioning) below. Anything Safari cannot
-do (the bookmarks permission, the service worker, the omnibox keyword) is a flag
-on the target rather than a second copy of the manifest.
-
 ## Safari
-
-Safari is built through the Xcode project in `safari/`, which is committed to this
-repository and maintained by hand.
 
 ```
 yarn build:safari
-open safari/Linkwarden/Linkwarden.xcodeproj
 ```
 
-Then Product → Archive in Xcode.
+Then Cmd+R to run it, or Product → Archive to build for the App Store.
 
-The Xcode project references `dist-safari/` directly rather than holding its own copy
-of the extension, so `yarn build:safari` has to run first or you will archive a
-stale build. There is no conversion step: running `safari-web-extension-converter`
-against `safari/` would replace the committed project and its signing configuration.
+Cmd+R launches `Linkwarden for Safari.app`. Launching it registers the extension with Safari.
 
-## Versioning
+### First run
 
-The version lives in `manifest.config.ts` and nowhere else. Every build writes it
-to `version.xcconfig`, which the Xcode project reads as the base configuration on
-both targets, so one edit covers Chrome, Firefox and Safari.
+Safari hides locally built extensions until the developer settings are on:
 
-`version.xcconfig` is generated and committed. Do not edit it by hand. It is
-committed rather than ignored so a fresh clone opens in Xcode without a dangling
-file reference, which would silently resolve `MARKETING_VERSION` to empty and
-produce an archive App Store Connect rejects. Any build regenerates it, so
-`git diff --exit-code apps/extension/version.xcconfig` after a build is a
-reasonable CI check that the two have not drifted.
+1. Safari → Settings → Advanced → **Show features for web developers**
+2. The new Develop menu → **Allow unsigned extensions**
+3. Safari → Settings → Extensions → enable **Linkwarden**
 
-`CURRENT_PROJECT_VERSION` also lives there. It is the build number rather than the
-version, and only has to be unique per App Store Connect upload, so CI passes
-`CURRENT_PROJECT_VERSION=$GITHUB_RUN_NUMBER` on the `xcodebuild` command line,
-which takes precedence over the xcconfig.
+Step 2 resets every time Safari restarts, so expect to repeat it. Steps 1 and 3 are
+one-time.
+
+### Iterating
+
+There is no live reload here, unlike `yarn dev:chrome` and `yarn dev:firefox`. The
+build output is copied into the app extension at compile time, so every change to
+`src/` means `yarn build:safari` followed by another Cmd+R. Develop against Chrome or
+Firefox and use Safari to verify, rather than working in it directly.
