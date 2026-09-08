@@ -300,7 +300,7 @@ browser.runtime.onInstalled.addListener(async function () {
   });
 });
 
-browser.tabs.onUpdated.addListener(async (tabId: any, changeInfo: any) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   if (!changeInfo.url) return;
   try {
     await updateBadge(tabId, false);

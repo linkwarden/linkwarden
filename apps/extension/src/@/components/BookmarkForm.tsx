@@ -17,7 +17,12 @@ import { Button } from "./ui/Button.tsx";
 import TagInput from "./TagInput.tsx";
 import CollectionInput from "./CollectionInput.tsx";
 import { Textarea } from "./ui/Textarea.tsx";
-import { getCurrentTabInfo, updateBadge } from "../lib/utils.ts";
+import {
+  getCurrentTabInfo,
+  getStorageItem,
+  setStorageItem,
+  updateBadge,
+} from "../lib/utils.ts";
 import { useEffect, useMemo, useState } from "react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { getConfig, isConfigured as getIsConfigured } from "../lib/config.ts";
@@ -30,6 +35,10 @@ import { getShouldUseTagSearch, getTags } from "../lib/actions/tags.ts";
 import { ExternalLink } from "lucide-react";
 import { Checkbox } from "./ui/CheckBox.tsx";
 import { Label } from "./ui/Label.tsx";
+
+// The popup is torn down every time it loses focus, so remember whether the
+// user had the extra options expanded and bring them back that way.
+const MORE_OPTIONS_KEY = "lw_more_options_open";
 
 const BookmarkForm = () => {
   const [openOptions, setOpenOptions] = useState<boolean>(false);
@@ -57,6 +66,12 @@ const BookmarkForm = () => {
     if (s === "indeterminate") return;
     setUploadImage(s);
     form.setValue("image", s ? "png" : undefined);
+  };
+
+  const handleOptionsToggle = () => {
+    const next = !openOptions;
+    setOpenOptions(next);
+    void setStorageItem(MORE_OPTIONS_KEY, next ? "true" : "false");
   };
 
   const form = useForm<bookmarkFormValues>({
@@ -122,6 +137,8 @@ const BookmarkForm = () => {
 
   useEffect(() => {
     const setTabInformation = async () => {
+      setOpenOptions((await getStorageItem(MORE_OPTIONS_KEY)) === "true");
+
       const t = await getCurrentTabInfo();
       const c = await getConfig();
 
@@ -361,7 +378,7 @@ const BookmarkForm = () => {
             <Button
               variant="ghost"
               type="button"
-              onClick={() => setOpenOptions((prevState) => !prevState)}
+              onClick={handleOptionsToggle}
             >
               {openOptions ? "Hide" : "More"} Options
             </Button>
