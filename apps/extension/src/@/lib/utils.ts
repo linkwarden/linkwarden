@@ -1,7 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { checkLinkExists } from './actions/links.ts';
-import { getConfig } from './config.ts';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -32,11 +30,11 @@ export async function getCurrentTabInfo(): Promise<{
 export function getBrowser(): typeof chrome {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  return typeof browser !== 'undefined' ? browser : chrome;
+  return typeof browser !== "undefined" ? browser : chrome;
 }
 
 export function getChromeStorage() {
-  return typeof chrome !== 'undefined' && !!chrome.storage;
+  return typeof chrome !== "undefined" && !!chrome.storage;
 }
 
 export async function getStorageItem(key: string): Promise<string | undefined> {
@@ -60,7 +58,7 @@ export async function setStorageItem(key: string, value: string) {
 
 export function isSafari(): boolean {
   try {
-    return /^safari-web-extension:/.test(getBrowser().runtime.getURL(''));
+    return /^safari-web-extension:/.test(getBrowser().runtime.getURL(""));
   } catch {
     return false;
   }
@@ -69,38 +67,27 @@ export function isSafari(): boolean {
 export function hasAPI(api: string): boolean {
   const b = getBrowser();
   let obj: any = b;
-  for (const part of api.split('.')) {
-    if (!obj || typeof obj[part] === 'undefined') return false;
+  for (const part of api.split(".")) {
+    if (!obj || typeof obj[part] === "undefined") return false;
     obj = obj[part];
   }
   return true;
 }
 
-export async function updateBadge(tabId: number | undefined) {
+export async function updateBadge(
+  tabId: number | undefined,
+  linkExists: boolean
+) {
   if (!tabId) return;
 
   const browser = getBrowser();
-  const cachedConfig = await getConfig();
-  const linkExists = await checkLinkExists(
-    cachedConfig.baseUrl,
-    cachedConfig.apiKey
-  );
+  const action = browser.action ?? browser.browserAction;
+  if (!action) return;
+
   if (linkExists) {
-    if (browser.action) {
-      browser.action.setBadgeText({ tabId, text: '✓' });
-      browser.action.setBadgeBackgroundColor({ tabId, color: '#98c0ff' });
-    } else {
-      browser.browserAction.setBadgeText({ tabId, text: '✓' });
-      browser.browserAction.setBadgeBackgroundColor({
-        tabId,
-        color: '#98c0ff',
-      });
-    }
+    action.setBadgeText({ tabId, text: "✓" });
+    action.setBadgeBackgroundColor({ tabId, color: "#98c0ff" });
   } else {
-    if (browser.action) {
-      browser.action.setBadgeText({ tabId, text: '' });
-    } else {
-      browser.browserAction.setBadgeText({ tabId, text: '' });
-    }
+    action.setBadgeText({ tabId, text: "" });
   }
 }

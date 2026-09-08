@@ -107,9 +107,7 @@ const BookmarkForm = () => {
     },
     onSuccess: () => {
       // Update badge to show link is saved
-      getCurrentTabInfo().then(({ id }) => {
-        updateBadge(id);
-      });
+      updateBadge(tabInfo?.id, true);
       setTimeout(() => {
         window.close();
         // I want to show some confirmation before it's closed...
@@ -130,8 +128,6 @@ const BookmarkForm = () => {
       setTabInfo(t);
       setConfig(c);
 
-      updateBadge(t.id);
-
       form.setValue("url", t.url ? t.url : "");
       form.setValue("name", t.title ? t.title : "");
       form.setValue("collection", {
@@ -139,9 +135,13 @@ const BookmarkForm = () => {
       });
 
       const configured = await getIsConfigured();
-      const duplicate = await checkLinkExists(c.baseUrl, c.apiKey);
-      setIsDuplicate(duplicate);
       setIsConfigured(configured);
+
+      if (!configured) return;
+
+      const duplicate = await checkLinkExists(c.baseUrl, c.apiKey, t.url);
+      setIsDuplicate(duplicate);
+      updateBadge(t.id, duplicate);
     };
 
     setTabInformation();
