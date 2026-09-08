@@ -159,7 +159,8 @@ const createCollection = async (
 
   const findCollection = await prisma.collection.findFirst({
     where: {
-      parentId,
+      // An omitted Prisma filter matches every parent, including nested folders.
+      parentId: parentId ?? null,
       name: collectionName,
       ownerId: userId,
     },
