@@ -52,7 +52,7 @@ export default function DeleteOwnAccountModal({ onClose }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      signOut();
+      signOut({ callbackUrl: "/login?nosso=1" });
     } else {
       toast.error(message);
       setSubmitLoader(false);
