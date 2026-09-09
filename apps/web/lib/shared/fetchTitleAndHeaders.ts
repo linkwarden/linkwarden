@@ -1,4 +1,5 @@
 import { safeFetch } from "@linkwarden/lib/safeFetch";
+import { extractTitle } from "./extractTitle";
 
 export default async function fetchTitleAndHeaders(
   url: string,
@@ -28,10 +29,7 @@ export default async function fetchTitleAndHeaders(
 
       const headers = (response as Response | null)?.headers || null;
 
-      // regular expression to find the <title> tag
-      let match = text.match(/<title.*>([^<]*)<\/title>/);
-
-      const title = match?.[1] || "";
+      const title = extractTitle(text);
 
       return { title, headers };
     } else {
