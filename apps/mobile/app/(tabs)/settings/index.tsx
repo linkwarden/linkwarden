@@ -63,14 +63,16 @@ export default function SettingsScreen() {
   const router = useRouter();
 
   const syncStatus = useOfflineSyncStore((s) => s.status);
+  const syncOnline = useOfflineSyncStore((s) => s.online);
   const syncProcessed = useOfflineSyncStore((s) => s.processed);
   const syncTotal = useOfflineSyncStore((s) => s.total);
   const bytesUsed = useOfflineSyncStore((s) => s.bytesUsed);
   const syncPercent =
     syncTotal > 0 ? Math.floor((syncProcessed / syncTotal) * 100) : null;
-  const syncStatusLabel =
-    syncStatus === "paused"
-      ? "Waiting for connection"
+  const syncStatusLabel = !syncOnline
+    ? "Waiting for connection"
+    : syncStatus === "paused"
+      ? "Retrying…"
       : syncStatus !== "syncing"
         ? "Up to date"
         : syncPercent === null
