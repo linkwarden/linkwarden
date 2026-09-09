@@ -53,6 +53,9 @@ const Page: NextPageWithLayout = () => {
   const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
     account.preventDuplicateLinks || false
   );
+  const [readingProgressEnabled, setReadingProgressEnabled] = useState<boolean>(
+    account.readingProgressEnabled ?? true
+  );
   const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
     account.archiveAsScreenshot || false
   );
@@ -89,6 +92,7 @@ const Page: NextPageWithLayout = () => {
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine ?? false);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks ?? false);
+      setReadingProgressEnabled(account.readingProgressEnabled ?? true);
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks ?? false);
@@ -148,6 +152,7 @@ const Page: NextPageWithLayout = () => {
   const hasLinkChanges =
     !!account?.id &&
     (preventDuplicateLinks !== (account.preventDuplicateLinks ?? false) ||
+      readingProgressEnabled !== (account.readingProgressEnabled ?? true) ||
       linksRouteTo !== account.linksRouteTo);
 
   const saveAiSection = async () => {
@@ -226,6 +231,7 @@ const Page: NextPageWithLayout = () => {
       await updateUser.mutateAsync({
         ...baseUserPayload(),
         preventDuplicateLinks,
+        readingProgressEnabled,
         linksRouteTo,
       });
 
@@ -595,6 +601,13 @@ const Page: NextPageWithLayout = () => {
               label={t("prevent_duplicate_links")}
               state={preventDuplicateLinks}
               onClick={() => setPreventDuplicateLinks(!preventDuplicateLinks)}
+            />
+          </div>
+          <div className="mb-3">
+            <Checkbox
+              label={t("save_reading_progress")}
+              state={readingProgressEnabled}
+              onClick={() => setReadingProgressEnabled(!readingProgressEnabled)}
             />
           </div>
           <p>{t("clicking_on_links_should")}</p>
