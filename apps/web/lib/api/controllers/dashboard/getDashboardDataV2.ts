@@ -1,19 +1,19 @@
 import { prisma } from "@linkwarden/prisma";
 import { Order } from "@linkwarden/types/global";
+import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
 
 export default async function getDashboardData(userId: number) {
   const order: Order = { id: "desc" };
+  const { accessibleCollectionIds, memberCollectionIds } =
+    await getAccessibleCollectionIds(userId);
+  const accessibleCollectionIdSet = new Set(accessibleCollectionIds);
   const accessibleTagsWhere = {
     OR: [
       { ownerId: userId },
       {
         links: {
           some: {
-            collection: {
-              members: {
-                some: { userId },
-              },
-            },
+            collectionId: { in: memberCollectionIds },
           },
         },
       },
@@ -26,11 +26,7 @@ export default async function getDashboardData(userId: number) {
       prisma.link.count({
         where: {
           AND: [
-            {
-              collection: {
-                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-              },
-            },
+            { collectionId: { in: accessibleCollectionIds } },
             { pinnedBy: { some: { id: userId } } },
           ],
         },
@@ -65,11 +61,7 @@ export default async function getDashboardData(userId: number) {
         take: 16,
         where: {
           AND: [
-            {
-              collection: {
-                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-              },
-            },
+            { collectionId: { in: accessibleCollectionIds } },
             { pinnedBy: { some: { id: userId } } },
           ],
         },
@@ -90,9 +82,7 @@ export default async function getDashboardData(userId: number) {
     ? prisma.link.findMany({
         take: 16,
         where: {
-          collection: {
-            OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-          },
+          collectionId: { in: accessibleCollectionIds },
         },
         omit: { textContent: true },
         include: {
@@ -112,31 +102,23 @@ export default async function getDashboardData(userId: number) {
     .filter((id): id is number => id != null);
 
   const collectionPromises = collectionIds.map((colId) =>
-    prisma.link
-      .findMany({
-        where: {
-          AND: [
-            {
-              collection: {
-                id: colId,
-                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-              },
+    (accessibleCollectionIdSet.has(colId)
+      ? prisma.link.findMany({
+          where: { collectionId: colId },
+          take: 16,
+          omit: { textContent: true },
+          include: {
+            tags: true,
+            collection: true,
+            pinnedBy: {
+              where: { id: userId },
+              select: { id: true },
             },
-          ],
-        },
-        take: 16,
-        omit: { textContent: true },
-        include: {
-          tags: true,
-          collection: true,
-          pinnedBy: {
-            where: { id: userId },
-            select: { id: true },
           },
-        },
-        orderBy: order,
-      })
-      .then((links) => ({ colId, links }))
+          orderBy: order,
+        })
+      : Promise.resolve([] as any[])
+    ).then((links) => ({ colId, links }))
   );
 
   const [pinnedLinks, recentlyAddedLinks, ...collectionsResult] =

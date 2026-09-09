@@ -6,6 +6,7 @@ import {
   buildMeiliQuery,
   parseSearchTokens,
 } from "../../searchQueryBuilder";
+import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
 
 interface SearchLinksParams {
   query: LinkRequestQuery;
@@ -22,6 +23,17 @@ export default async function searchLinks({
     process.env.DATABASE_URL?.startsWith("postgresql");
 
   const paginationTakeCount = Number(process.env.PAGINATION_TAKE_COUNT) || 50;
+
+  const accessibleCollectionIdsPromise = userId
+    ? getAccessibleCollectionIds(userId)
+    : null;
+  accessibleCollectionIdsPromise?.catch(() => {});
+
+  const resolveAccessCondition = async () => {
+    if (!accessibleCollectionIdsPromise) return [];
+    const { accessibleCollectionIds } = await accessibleCollectionIdsPromise;
+    return [{ collectionId: { in: accessibleCollectionIds } }];
+  };
 
   let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
@@ -92,26 +104,13 @@ export default async function searchLinks({
 
     const meiliIds = meiliResp.hits.map((h: any) => h.id);
 
+    const accessCondition = await resolveAccessCondition();
+
     const links = await prisma.link.findMany({
       where: {
         id: { in: meiliIds },
         AND: [
-          ...(userId
-            ? [
-                {
-                  collection: {
-                    OR: [
-                      { ownerId: userId },
-                      {
-                        members: {
-                          some: { userId },
-                        },
-                      },
-                    ],
-                  },
-                },
-              ]
-            : []),
+          ...accessCondition,
           ...collectionCondition,
           {
             OR: [
@@ -189,28 +188,15 @@ export default async function searchLinks({
     });
   }
 
+  const accessCondition = await resolveAccessCondition();
+
   const links = await prisma.link.findMany({
     take: paginationTakeCount,
     skip: query.cursor ? 1 : undefined,
     cursor: query.cursor ? { id: query.cursor } : undefined,
     where: {
       AND: [
-        ...(userId
-          ? [
-              {
-                collection: {
-                  OR: [
-                    { ownerId: userId },
-                    {
-                      members: {
-                        some: { userId },
-                      },
-                    },
-                  ],
-                },
-              },
-            ]
-          : []),
+        ...accessCondition,
         ...collectionCondition,
         {
           OR: [

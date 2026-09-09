@@ -1,5 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types/global";
+import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
 
 export default async function getDashboardData(
   userId: number,
@@ -11,21 +12,14 @@ export default async function getDashboardData(
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
 
+  const { accessibleCollectionIds } = await getAccessibleCollectionIds(userId);
+
   const pinnedLinks = await prisma.link.findMany({
     take: 10,
     where: {
       AND: [
         {
-          collection: {
-            OR: [
-              { ownerId: userId },
-              {
-                members: {
-                  some: { userId },
-                },
-              },
-            ],
-          },
+          collectionId: { in: accessibleCollectionIds },
         },
         {
           pinnedBy: { some: { id: userId } },
@@ -46,16 +40,7 @@ export default async function getDashboardData(
   const recentlyAddedLinks = await prisma.link.findMany({
     take: 10,
     where: {
-      collection: {
-        OR: [
-          { ownerId: userId },
-          {
-            members: {
-              some: { userId },
-            },
-          },
-        ],
-      },
+      collectionId: { in: accessibleCollectionIds },
     },
     include: {
       tags: true,

@@ -1,9 +1,14 @@
-import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
+// import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 import { prisma } from "@linkwarden/prisma";
 import { GetUserByIdResponse } from "@linkwarden/types/global";
+// import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
 
 export default async function getUserById(userId: number) {
-  const [user, firstUnIndexedLinks, oauthAccountCount] = await Promise.all([
+  const [
+    user,
+    // firstUnIndexedLinks,
+    oauthAccountCount,
+  ] = await Promise.all([
     prisma.user.findUnique({
       where: {
         id: userId,
@@ -18,17 +23,17 @@ export default async function getUserById(userId: number) {
         dashboardSections: true,
       },
     }),
-    prisma.link.findFirst({
-      where: {
-        collection: {
-          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-        },
-        OR: [
-          { indexVersion: null },
-          { NOT: { indexVersion: MEILI_INDEX_VERSION } },
-        ],
-      },
-    }),
+    // getAccessibleCollectionIds(userId).then(({ accessibleCollectionIds }) =>
+    //   prisma.link.findFirst({
+    //     where: {
+    //       collectionId: { in: accessibleCollectionIds },
+    //       OR: [
+    //         { indexVersion: null },
+    //         { NOT: { indexVersion: MEILI_INDEX_VERSION } },
+    //       ],
+    //     },
+    //   })
+    // ),
     prisma.account.count({
       where: {
         userId,
@@ -62,7 +67,7 @@ export default async function getUserById(userId: number) {
     },
     hasPassword: !!password,
     hasOAuthAccount: oauthAccountCount.provider > 0,
-    hasUnIndexedLinks: !!firstUnIndexedLinks,
+    // hasUnIndexedLinks: !!firstUnIndexedLinks,
   };
 
   return { response: data, status: 200 };

@@ -4,14 +4,14 @@ import {
   hasAPI,
   isSafari,
   updateBadge,
-} from '../../@/lib/utils.ts';
+} from "../../@/lib/utils.ts";
 // import BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
-import { getConfig, isConfigured } from '../../@/lib/config.ts';
+import { getConfig, isConfigured } from "../../@/lib/config.ts";
 import {
   // deleteLinkFetch,
   // updateLinkFetch,
   postLinkFetch,
-} from '../../@/lib/actions/links.ts';
+} from "../../@/lib/actions/links.ts";
 import {
   bookmarkMetadata,
   // deleteBookmarkMetadata,
@@ -19,7 +19,7 @@ import {
   // getBookmarkMetadataByUrl,
   getBookmarksMetadata,
   saveBookmarkMetadata,
-} from '../../@/lib/cache.ts';
+} from "../../@/lib/cache.ts";
 import OnClickData = chrome.contextMenus.OnClickData;
 
 // @types/chrome models these as TS enums, but the runtime APIs take and hand
@@ -211,15 +211,15 @@ async function genericOnClick(
     return;
   }
   switch (info.menuItemId) {
-    case 'save-all-tabs': {
+    case "save-all-tabs": {
       const tabs = await browser.tabs.query({ currentWindow: true });
       const config = await getConfig();
 
       for (const tab of tabs) {
         if (
           tab.url &&
-          !tab.url.startsWith('chrome://') &&
-          !tab.url.startsWith('about:')
+          !tab.url.startsWith("chrome://") &&
+          !tab.url.startsWith("about:")
         ) {
           try {
             if (new URL(tab.url))
@@ -227,8 +227,8 @@ async function genericOnClick(
                 config.baseUrl,
                 {
                   url: tab.url,
-                  name: tab.title || '',
-                  description: tab.title || '',
+                  name: tab.title || "",
+                  description: tab.title || "",
                   collection: {
                     name: config.defaultCollection,
                   },
@@ -245,9 +245,9 @@ async function genericOnClick(
     }
     default:
       // Handle cases where sync is enabled or not
-      if (syncBookmarks && hasAPI('bookmarks.create')) {
+      if (syncBookmarks && hasAPI("bookmarks.create")) {
         browser.bookmarks.create({
-          parentId: '1',
+          parentId: "1",
           title: tab.title,
           url: tab.url,
         });
@@ -260,7 +260,7 @@ async function genericOnClick(
             {
               url: tab.url,
               collection: {
-                name: 'Unorganized',
+                name: "Unorganized",
               },
               tags: [],
               name: tab.title,
@@ -283,10 +283,10 @@ async function genericOnClick(
 browser.runtime.onInstalled.addListener(async function () {
   // Create one test item for each context type.
   const contexts: ContextType[] = isSafari()
-    ? ['page', 'selection', 'link']
-    : ['page', 'selection', 'link', 'editable', 'image', 'video', 'audio'];
+    ? ["page", "selection", "link"]
+    : ["page", "selection", "link", "editable", "image", "video", "audio"];
   for (const context of contexts) {
-    const title: string = 'Add link to Linkwarden';
+    const title: string = "Add link to Linkwarden";
     browser.contextMenus.create({
       title: title,
       contexts: [context],
@@ -294,65 +294,29 @@ browser.runtime.onInstalled.addListener(async function () {
     });
   }
   browser.contextMenus.create({
-    id: 'save-all-tabs',
-    title: 'Save all tabs to Linkwarden',
-    contexts: ['page'],
+    id: "save-all-tabs",
+    title: "Save all tabs to Linkwarden",
+    contexts: ["page"],
   });
-
-  const { id: tabId } = await getCurrentTabInfo();
-  await updateBadge(tabId);
 });
 
-browser.tabs.onActivated.addListener(async ({ tabId }) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  if (!changeInfo.url) return;
   try {
-    await updateBadge(tabId);
+    await updateBadge(tabId, false);
   } catch (error) {
-    console.error(`Error checking tab ${tabId} on activation:`, error);
+    console.error(`Error clearing the badge of tab ${tabId}:`, error);
   }
 });
-
-browser.tabs.onUpdated.addListener(async (tabId) => {
-  try {
-    await updateBadge(tabId);
-  } catch (error) {
-    console.error(`Error checking tab ${tabId} on activation:`, error);
-  }
-});
-
-// Listen for URL changes (navigation, page loads)
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  try {
-    if (changeInfo.status === 'complete' && tab?.active) {
-      await updateBadge(tabId);
-    }
-  } catch (error) {
-    console.error(`Error checking tab ${tabId} on update:`, error);
-  }
-});
-
-// On extension startup - check current tab
-(async () => {
-  try {
-    const [tab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (tab?.id) {
-      await updateBadge(tab.id);
-    }
-  } catch (error) {
-    console.error(`Error checking tab on startup:`, error);
-  }
-})();
 
 // Omnibox implementation (not available in Safari)
 
-if (hasAPI('omnibox.onInputStarted')) {
+if (hasAPI("omnibox.onInputStarted")) {
   browser.omnibox.onInputStarted.addListener(async () => {
     const configured = await isConfigured();
     const description = configured
-      ? 'Search links in linkwarden'
-      : 'Please configure the extension first';
+      ? "Search links in linkwarden"
+      : "Please configure the extension first";
 
     browser.omnibox.setDefaultSuggestion({
       description: description,
@@ -400,23 +364,23 @@ if (hasAPI('omnibox.onInputStarted')) {
       // Edge doesn't allow updating the New Tab Page (tested with version 117).
       // Trying to do so will throw: "Error: Cannot update NTP tab."
       // As a workaround, open a new tab instead.
-      if (disposition === 'currentTab') {
+      if (disposition === "currentTab") {
         const tabInfo = await getCurrentTabInfo();
-        if (tabInfo.url === 'edge://newtab/') {
-          disposition = 'newForegroundTab';
+        if (tabInfo.url === "edge://newtab/") {
+          disposition = "newForegroundTab";
         }
       }
 
       switch (disposition) {
-        case 'currentTab':
+        case "currentTab":
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           await browser.tabs.update({ url });
           break;
-        case 'newForegroundTab':
+        case "newForegroundTab":
           await browser.tabs.create({ url });
           break;
-        case 'newBackgroundTab':
+        case "newBackgroundTab":
           await browser.tabs.create({ url, active: false });
           break;
       }

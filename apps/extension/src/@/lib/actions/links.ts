@@ -1,22 +1,21 @@
-import captureScreenshot from '../screenshot.ts';
-import { bookmarkFormValues } from '../validators/bookmarkForm.ts';
-import axios from 'axios';
+import captureScreenshot from "../screenshot.ts";
+import { bookmarkFormValues } from "../validators/bookmarkForm.ts";
+import axios from "axios";
 // import { bookmarkMetadata } from '../cache.ts';
-import { getCurrentTabInfo } from '../utils.ts';
 
 export async function postLink(
   baseUrl: string,
   uploadImage: boolean,
   data: bookmarkFormValues,
-  setState: (state: 'capturing' | 'uploading' | null) => void,
+  setState: (state: "capturing" | "uploading" | null) => void,
   apiKey: string
 ) {
   const url = `${baseUrl}/api/v1/links`;
 
   if (uploadImage) {
-    setState('capturing');
+    setState("capturing");
     const screenshot = await captureScreenshot();
-    setState('uploading');
+    setState("uploading");
 
     const link = await axios.post(url, data, {
       headers: {
@@ -28,11 +27,11 @@ export async function postLink(
     const archiveUrl = `${baseUrl}/api/v1/archives/${id}?format=0`;
 
     const formData = new FormData();
-    formData.append('file', screenshot, 'screenshot.png');
+    formData.append("file", screenshot, "screenshot.png");
 
     await axios.post(archiveUrl, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${apiKey}`,
       },
     });
@@ -43,7 +42,7 @@ export async function postLink(
   } else {
     return await axios.post(url, data, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
     });
@@ -58,10 +57,10 @@ export async function postLinkFetch(
   const url = `${baseUrl}/api/v1/links`;
 
   return await fetch(url, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(data),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
   });
@@ -76,10 +75,10 @@ export async function updateLinkFetch(
   const url = `${baseUrl}/api/v1/links/${id}`;
 
   return await fetch(url, {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify(data),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
   });
@@ -93,7 +92,7 @@ export async function deleteLinkFetch(
   const url = `${baseUrl}/api/v1/links/${id}`;
 
   return await fetch(url, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
       Authorization: `Bearer ${apiKey}`,
     },
@@ -115,27 +114,29 @@ export async function deleteLinkFetch(
 
 export async function checkLinkExists(
   baseUrl: string,
-  apiKey: string
+  apiKey: string,
+  linkUrl: string | undefined
 ): Promise<boolean> {
-  const tabInfo = await getCurrentTabInfo();
-  if (!tabInfo.url) {
-    console.error('No URL found for current tab');
+  if (!baseUrl || !apiKey || !linkUrl) {
     return false;
   }
 
   const url =
     `${baseUrl}/api/v1/search?sort=0&searchQueryString=` +
-    encodeURIComponent(`url:${tabInfo.url}`);
+    encodeURIComponent(`url:${linkUrl}`);
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
 
-  const { data } = await response.json();
+    const { data } = await response.json();
 
-  const exists = !!data && data.links?.length > 0;
-
-  return exists;
+    return !!data && data.links?.length > 0;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }

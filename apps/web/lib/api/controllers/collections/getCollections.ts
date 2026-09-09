@@ -1,7 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 
 export default async function getCollection(userId: number) {
-  const [user, collections] = await Promise.all([
+  const [user, collectionsWithoutCount] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
       select: { collectionOrder: true },
@@ -14,9 +14,6 @@ export default async function getCollection(userId: number) {
         ],
       },
       include: {
-        _count: {
-          select: { links: true },
-        },
         parent: {
           select: {
             id: true,
@@ -37,6 +34,26 @@ export default async function getCollection(userId: number) {
       },
     }),
   ]);
+
+  const linkCounts =
+    collectionsWithoutCount.length > 0
+      ? await prisma.link.groupBy({
+          by: ["collectionId"],
+          where: {
+            collectionId: { in: collectionsWithoutCount.map((c) => c.id) },
+          },
+          _count: { _all: true },
+        })
+      : [];
+
+  const linkCountByCollectionId = new Map(
+    linkCounts.map((row) => [row.collectionId, row._count._all])
+  );
+
+  const collections = collectionsWithoutCount.map((collection) => ({
+    ...collection,
+    _count: { links: linkCountByCollectionId.get(collection.id) ?? 0 },
+  }));
 
   const orderIndex = new Map<number, number>(
     (user?.collectionOrder ?? []).map((id, index) => [Number(id), index])

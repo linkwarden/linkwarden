@@ -1,5 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types/global";
+import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {
   if (process.env.DISABLE_DEPRECATED_ROUTES === "true")
@@ -11,6 +12,9 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
 
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
+
+  const { accessibleCollectionIds, memberCollectionIds } =
+    await getAccessibleCollectionIds(userId);
 
   let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
@@ -54,11 +58,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
             {
               links: {
                 some: {
-                  collection: {
-                    members: {
-                      some: { userId },
-                    },
-                  },
+                  collectionId: { in: memberCollectionIds },
                 },
               },
             },
@@ -97,16 +97,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
     where: {
       AND: [
         {
-          collection: {
-            OR: [
-              { ownerId: userId },
-              {
-                members: {
-                  some: { userId },
-                },
-              },
-            ],
-          },
+          collectionId: { in: accessibleCollectionIds },
         },
         ...collectionCondition,
         {
