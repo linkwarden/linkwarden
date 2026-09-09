@@ -17,6 +17,8 @@ import { SheetManager } from "react-native-actions-sheet";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+let pendingSubmission: { url: string; promise: Promise<any> } | null = null;
+
 export default function IncomingScreen() {
   const { auth } = useAuthStore();
   const router = useRouter();
@@ -27,33 +29,58 @@ export default function IncomingScreen() {
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();
 
   useEffect(() => {
-    if (auth.status === "authenticated" && data.shareIntent.url)
-      addLink.mutate(
-        {
-          url: data.shareIntent.url,
+    const url = data.shareIntent.url;
+
+    if (!url) {
+      pendingSubmission = null;
+      return;
+    }
+
+    if (auth.status !== "authenticated") return;
+
+    if (pendingSubmission?.url !== url) {
+      pendingSubmission = {
+        url,
+        promise: addLink.mutateAsync({
+          url,
           collection: { id: data.preferredCollection?.id },
-        },
-        {
-          onSuccess: (e) => {
-            setLink(e as unknown as LinkIncludingShortenedCollectionAndTags);
-            setShowSuccess(true);
-            setTimeout(() => {
-              updateData({
-                shareIntent: {
-                  hasShareIntent: false,
-                  url: "",
-                },
-              });
-              router.replace("/dashboard");
-            }, 1500);
-          },
-          onError: (error) => {
-            Alert.alert("Error", "There was an error adding the link.");
-            console.error("Error adding link:", error);
-          },
-        }
-      );
-  }, [auth, data.shareIntent.url]);
+        }),
+      };
+    }
+
+    let ignore = false;
+
+    pendingSubmission.promise.then(
+      (e) => {
+        if (ignore) return;
+
+        setLink(e as unknown as LinkIncludingShortenedCollectionAndTags);
+        setShowSuccess(true);
+        setTimeout(() => {
+          pendingSubmission = null;
+          updateData({
+            shareIntent: {
+              hasShareIntent: false,
+              url: "",
+            },
+          });
+          router.replace("/dashboard");
+        }, 1500);
+      },
+      (error) => {
+        pendingSubmission = null;
+
+        if (ignore) return;
+
+        Alert.alert("Error", "There was an error adding the link.");
+        console.error("Error adding link:", error);
+      }
+    );
+
+    return () => {
+      ignore = true;
+    };
+  }, [auth.status, data.shareIntent.url]);
 
   if (auth.status === "unauthenticated") return <Redirect href="/" />;
 
