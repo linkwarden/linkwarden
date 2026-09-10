@@ -21,12 +21,14 @@ type SyncStatus = "idle" | "syncing" | "paused";
 
 type OfflineSyncState = {
   status: SyncStatus;
+  online: boolean;
   processed: number;
   total: number;
   failed: number;
   currentLinkId: number | null;
   bytesUsed: number;
   setStatus: (status: SyncStatus) => void;
+  setOnline: (online: boolean) => void;
   setProgress: (processed: number, total: number) => void;
   incrementProcessed: () => void;
   incrementFailed: () => void;
@@ -38,12 +40,14 @@ type OfflineSyncState = {
 
 export const useOfflineSyncStore = create<OfflineSyncState>((set) => ({
   status: "idle",
+  online: true,
   processed: 0,
   total: 0,
   failed: 0,
   currentLinkId: null,
   bytesUsed: 0,
   setStatus: (status) => set({ status }),
+  setOnline: (online) => set({ online }),
   setProgress: (processed, total) =>
     set((s) => ({ processed, total, failed: processed === 0 ? 0 : s.failed })),
   incrementProcessed: () => set((s) => ({ processed: s.processed + 1 })),
@@ -131,7 +135,7 @@ const isOnline = (state: {
   isInternetReachable?: boolean | null;
 }) => state.isConnected === true && state.isInternetReachable !== false;
 
-const connectionRetryMs = 30_000;
+const connectionRetryMs = 60_000;
 
 let connectionRetryTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -513,6 +517,10 @@ export const startSync = async (
 
   if (runPromise && targetUnchanged) {
     pendingRescan = true;
+
+    if (useOfflineSyncStore.getState().status === "paused")
+      scheduleConnectionRetry();
+
     return runPromise;
   }
 
@@ -527,6 +535,9 @@ export const startSync = async (
 
   const net = await NetInfo.fetch();
   if (generation !== syncGeneration) return;
+
+  useOfflineSyncStore.getState().setOnline(isOnline(net));
+
   if (!isOnline(net)) {
     pauseForConnection();
     return;
@@ -542,6 +553,7 @@ export const startSync = async (
     const pausesAtStart = connectionPauses;
     const processedRevisions = new Map<number, unknown>();
     let previousLinkIds: Set<number> | null = null;
+    let serverFailures = 0;
 
     try {
       do {
@@ -622,11 +634,32 @@ export const startSync = async (
           );
 
           if (lostConnection) {
-            if (generation === syncGeneration) {
+            if (generation !== syncGeneration) break;
+
+            const net = await NetInfo.fetch();
+            if (generation !== syncGeneration) break;
+
+            store.setOnline(isOnline(net));
+
+            if (!isOnline(net)) {
               cancelled = true;
               pauseForConnection();
+              break;
             }
-            break;
+
+            console.warn(
+              `[offlineSync] Could not fetch link ${fullLink.id}, skipping`
+            );
+            serverFailures += 1;
+            store.incrementFailed();
+            store.incrementProcessed();
+
+            if (waitingForConnection) {
+              waitingForConnection = false;
+              store.setStatus("syncing");
+            }
+
+            continue;
           }
 
           if (waitingForConnection) {
@@ -646,6 +679,7 @@ export const startSync = async (
       if (generation === syncGeneration && connectionPauses === pausesAtStart) {
         currentStore.setStatus("idle");
       }
+      if (serverFailures > 0) scheduleConnectionRetry();
     }
   })();
 
@@ -686,6 +720,8 @@ export const subscribeToConnectivity = () => {
   if (netUnsubscribe) return;
 
   netUnsubscribe = NetInfo.addEventListener((state) => {
+    useOfflineSyncStore.getState().setOnline(isOnline(state));
+
     if (!activeAuth) return;
 
     if (!isOnline(state)) {

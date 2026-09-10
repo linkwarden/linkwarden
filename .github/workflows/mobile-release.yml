@@ -1,29 +1,97 @@
-name: Mobile Android (build & submit)
+name: Mobile (build & submit)
 
 on:
   workflow_dispatch:
     inputs:
-      target:
-        description: What to build
+      ios:
+        description: iOS
         type: choice
         options:
-          - both
-          - aab
-          - apk
-        default: both
-      submit:
-        description: Submit the AAB to Google Play after building
-        type: boolean
-        default: true
+          - Build & submit to App Store Connect
+          - Build only
+          - Skip
+        default: Build & submit to App Store Connect
+      aab:
+        description: Android (AAB)
+        type: choice
+        options:
+          - Build & submit to Google Play Console
+          - Build only
+          - Skip
+        default: Build & submit to Google Play Console
+      apk:
+        description: Android (APK)
+        type: choice
+        options:
+          - Build & submit a new GitHub release
+          - Build only
+          - Skip
+        default: Build & submit a new GitHub release
 
 concurrency:
-  group: mobile-android
+  group: mobile-release
   cancel-in-progress: false
 
 jobs:
+  ios:
+    name: Build iOS (production) & submit
+    if: ${{ inputs.ios != 'Skip' }}
+    runs-on: macos-26
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+        working-directory: .
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # 8.2.1
+        with:
+          packager: npm
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: .
+
+      - name: Build (local)
+        run: >
+          eas build
+          --platform ios
+          --profile production
+          --local
+          --non-interactive
+          --output build.ipa
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-ipa
+          path: apps/mobile/build.ipa
+          retention-days: 14
+
+      - name: Submit to App Store Connect
+        if: ${{ inputs.ios == 'Build & submit to App Store Connect' }}
+        run: >
+          eas submit
+          --platform ios
+          --profile production
+          --path build.ipa
+          --non-interactive
+
   aab:
     name: Build AAB (production) & submit
-    if: ${{ inputs.target == 'both' || inputs.target == 'aab' }}
+    if: ${{ inputs.aab != 'Skip' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -75,7 +143,7 @@ jobs:
           retention-days: 14
 
       - name: Submit to Google Play
-        if: ${{ inputs.submit }}
+        if: ${{ inputs.aab == 'Build & submit to Google Play Console' }}
         run: >
           eas submit
           --platform android
@@ -84,8 +152,8 @@ jobs:
           --non-interactive
 
   apk:
-    name: Build APK (production)
-    if: ${{ inputs.target == 'both' || inputs.target == 'apk' }}
+    name: Build APK (production) & release
+    if: ${{ inputs.apk != 'Skip' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -137,6 +205,7 @@ jobs:
           retention-days: 14
 
       - name: Create draft release on linkwarden/builds
+        if: ${{ inputs.apk == 'Build & submit a new GitHub release' }}
         env:
           GH_TOKEN: ${{ secrets.BUILDS_RELEASE_TOKEN }}
         run: |
