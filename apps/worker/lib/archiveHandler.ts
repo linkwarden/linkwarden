@@ -114,7 +114,8 @@ export default async function archiveHandler(
       (async () => {
         const { linkType, imageExtension } = await determineLinkType(
           link.id,
-          link.url
+          link.url,
+          link.type
         );
 
         // send to archive.org
@@ -234,24 +235,29 @@ export default async function archiveHandler(
 }
 
 // Determine the type of the link based on its content-type header.
-async function determineLinkType(
+export async function determineLinkType(
   linkId: number,
-  url?: string | null
+  url?: string | null,
+  storedType?: string
 ): Promise<{
   linkType: "url" | "pdf" | "image";
   imageExtension: "png" | "jpeg";
 }> {
+  const fallbackType = storedType === "pdf" ? "pdf" : "url";
   let linkType: "url" | "pdf" | "image" = "url";
   let imageExtension: "png" | "jpeg" = "png";
 
-  if (!url) return { linkType: "url", imageExtension };
+  if (!url) return { linkType: fallbackType, imageExtension };
 
   const headers = await fetchHeaders(url);
   const contentType = headers?.get("content-type");
 
-  if (contentType?.includes("application/pdf")) {
+  // A stored PDF needs no subtype; an image still needs its extension detected.
+  if (!contentType) return { linkType: fallbackType, imageExtension };
+
+  if (contentType.includes("application/pdf")) {
     linkType = "pdf";
-  } else if (contentType?.startsWith("image")) {
+  } else if (contentType.startsWith("image")) {
     linkType = "image";
     if (contentType.includes("image/jpeg")) imageExtension = "jpeg";
     else if (contentType.includes("image/png")) imageExtension = "png";
