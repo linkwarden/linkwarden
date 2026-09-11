@@ -1,0 +1,23 @@
+{
+  "name": "mcp-linkwarden",
+  "version": "0.1.0",
+  "description": "MCP server that connects AI agents to Linkwarden highlights and data",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-linkwarden": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
