@@ -151,6 +151,9 @@ export default async function updateLinkById(
         name: data.name || "",
         url: data.url,
         description: data.description || "",
+        publishedAt: data.publishedAt
+          ? new Date(data.publishedAt)
+          : undefined,
         icon: data.icon,
         iconWeight: data.iconWeight,
         color: data.color,

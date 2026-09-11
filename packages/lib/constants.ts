@@ -1,1 +1,1 @@
-export const MEILI_INDEX_VERSION = 1;
+export const MEILI_INDEX_VERSION = 2;
