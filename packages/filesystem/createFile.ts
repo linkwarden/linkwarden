@@ -1,4 +1,5 @@
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import crypto from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
 import s3Client from "./s3Client";
@@ -22,10 +23,20 @@ export async function createFile({
   }
 
   if (s3Client) {
+    const bytes = new Uint8Array(bufferData);
+
+    let contentMD5: string | undefined;
+    try {
+      contentMD5 = crypto.createHash("md5").update(bytes).digest("base64");
+    } catch (err) {
+      console.warn("Skipping Content-MD5, unable to hash:", err);
+    }
+
     const bucketParams: PutObjectCommandInput = {
       Bucket: process.env.SPACES_BUCKET_NAME!,
       Key: filePath,
-      Body: new Uint8Array(bufferData),
+      Body: bytes,
+      ContentMD5: contentMD5,
     };
 
     try {

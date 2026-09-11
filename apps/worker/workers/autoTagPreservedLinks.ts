@@ -19,7 +19,7 @@ const hasAiTaggingProvider = () =>
 export async function autoTagPreservedLinks(interval = 10) {
   if (!hasAiTaggingProvider()) return;
 
-  console.log("\x1b[34m%s\x1b[0m", "Starting preserved link auto-tagging...");
+  console.log("\x1b[34m%s\x1b[0m", "Starting link auto-tagging...");
 
   while (true) {
     const links = await getLinkBatchFairly({

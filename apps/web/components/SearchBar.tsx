@@ -150,7 +150,7 @@ export default function SearchBar({ placeholder, fullWidth }: Props) {
             <div className="flex justify-end">
               <Button asChild variant="ghost" size="sm" className="text-xs">
                 <Link
-                  href="https://docs.linkwarden.app/Usage/advanced-search"
+                  href="https://docs.linkwarden.app/usage/advanced-search"
                   target="_blank"
                   className="flex items-center gap-1"
                 >

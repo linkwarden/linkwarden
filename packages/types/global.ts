@@ -242,5 +242,5 @@ export type GetUserByIdResponse = Omit<User, "password"> &
     dashboardSections: DashboardSection[];
     hasPassword: boolean;
     hasOAuthAccount: boolean;
-    hasUnIndexedLinks: boolean;
+    // hasUnIndexedLinks: boolean;
   };

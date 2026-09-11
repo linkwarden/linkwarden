@@ -1,5 +1,20 @@
 import { prisma } from "@linkwarden/prisma";
 import { TagRequestQuery, TagSort } from "@linkwarden/types/global";
+import { Tag } from "@linkwarden/prisma/client";
+
+async function withLinkCounts<T extends Tag>(
+  tags: T[]
+): Promise<(T & { _count: { links: number } })[]> {
+  if (tags.length === 0) return [];
+
+  const counts = await prisma.$transaction(
+    tags.map((tag) =>
+      prisma.link.count({ where: { tags: { some: { id: tag.id } } } })
+    )
+  );
+
+  return tags.map((tag, i) => ({ ...tag, _count: { links: counts[i] } }));
+}
 
 export default async function getTags({
   userId,
@@ -59,40 +74,37 @@ export default async function getTags({
       (memberCollection) => memberCollection.collectionId
     );
 
-    const tags = await prisma.tag.findMany({
-      take: paginationTakeCount,
-      skip: query.cursor ? 1 : undefined,
-      cursor: query.cursor ? { id: query.cursor } : undefined,
-      where: {
-        AND: [
-          ...(searchCondition ? [searchCondition] : []),
-          {
-            OR: [
-              { ownerId: userId }, // Tags owned by the user
-              ...(memberCollectionIds.length > 0
-                ? [
-                    {
-                      links: {
-                        some: {
-                          collectionId: {
-                            in: memberCollectionIds,
+    const tags = await withLinkCounts(
+      await prisma.tag.findMany({
+        take: paginationTakeCount,
+        skip: query.cursor ? 1 : undefined,
+        cursor: query.cursor ? { id: query.cursor } : undefined,
+        where: {
+          AND: [
+            ...(searchCondition ? [searchCondition] : []),
+            {
+              OR: [
+                { ownerId: userId }, // Tags owned by the user
+                ...(memberCollectionIds.length > 0
+                  ? [
+                      {
+                        links: {
+                          some: {
+                            collectionId: {
+                              in: memberCollectionIds,
+                            },
                           },
                         },
                       },
-                    },
-                  ]
-                : []),
-            ],
-          },
-        ],
-      },
-      include: {
-        _count: {
-          select: { links: true },
+                    ]
+                  : []),
+              ],
+            },
+          ],
         },
-      },
-      orderBy,
-    });
+        orderBy,
+      })
+    );
 
     return {
       data: {
@@ -105,28 +117,23 @@ export default async function getTags({
       message: "Success",
     };
   } else if (collectionId) {
-    const tags = await prisma.tag.findMany({
-      where: {
-        AND: [
-          ...(searchCondition ? [searchCondition] : []),
-          {
-            links: {
-              some: {
-                collectionId,
+    const tags = await withLinkCounts(
+      await prisma.tag.findMany({
+        where: {
+          AND: [
+            ...(searchCondition ? [searchCondition] : []),
+            {
+              links: {
+                some: {
+                  collectionId,
+                },
               },
             },
-          },
-        ],
-      },
-      include: {
-        _count: {
-          select: {
-            links: true,
-          },
+          ],
         },
-      },
-      orderBy: [{ name: "asc" }, { id: "asc" }],
-    });
+        orderBy: [{ name: "asc" }, { id: "asc" }],
+      })
+    );
 
     return {
       data: {

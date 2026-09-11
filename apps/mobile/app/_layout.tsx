@@ -6,7 +6,7 @@ import {
 } from "expo-router";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryPersister } from "@/lib/queryPersister";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
@@ -44,6 +44,7 @@ export default Sentry.wrap(function RootLayout() {
 
   const { setAuth } = useAuthStore();
   const rootNavState = useRootNavigationState();
+  const redirectingToIncoming = useRef(false);
 
   useEffect(() => {
     setAuth();
@@ -54,13 +55,15 @@ export default Sentry.wrap(function RootLayout() {
   useEffect(() => {
     if (!rootNavState?.key || isLoading) return;
 
-    if (hasShareIntent && shareIntent.webUrl) {
-      updateData({
-        shareIntent: {
-          hasShareIntent: true,
-          url: shareIntent.webUrl || "",
-        },
-      });
+    if (hasShareIntent) {
+      if (shareIntent.webUrl) {
+        updateData({
+          shareIntent: {
+            hasShareIntent: true,
+            url: shareIntent.webUrl,
+          },
+        });
+      }
 
       resetShareIntent();
     }
@@ -71,11 +74,12 @@ export default Sentry.wrap(function RootLayout() {
       pathname !== "/incoming";
 
     if (needsRewrite) {
-      router.replace("/incoming");
-    }
-    if (hasShareIntent) {
-      resetShareIntent();
-      router.replace("/incoming");
+      if (!redirectingToIncoming.current) {
+        redirectingToIncoming.current = true;
+        router.replace("/incoming");
+      }
+    } else if (pathname === "/incoming") {
+      redirectingToIncoming.current = false;
     }
   }, [
     rootNavState?.key,
