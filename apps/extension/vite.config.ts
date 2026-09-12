@@ -77,6 +77,7 @@ export default defineConfig({
         main: path.resolve(__dirname, "index.html"),
         options: path.resolve(__dirname, "src/pages/Options/options.html"),
         background: path.resolve(__dirname, "src/pages/Background/index.ts"),
+        content: path.resolve(__dirname, "src/pages/Content/index.ts"),
       },
       output: {
         entryFileNames: "[name].js",

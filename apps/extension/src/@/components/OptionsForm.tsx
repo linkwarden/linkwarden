@@ -18,7 +18,7 @@ import {
 } from "../lib/validators/optionsForm.ts";
 import { Input } from "./ui/Input.tsx";
 import { Button } from "./ui/Button.tsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   clearConfig,
@@ -33,6 +33,9 @@ import { AxiosError } from "axios";
 import { clearBookmarksMetadata } from "../lib/cache.ts";
 import { getSession } from "../lib/auth/auth.ts";
 import SelectInput, { SelectOption } from "./SelectInput.tsx";
+import { Checkbox } from "./ui/CheckBox.tsx";
+import CollectionInput from "./CollectionInput.tsx";
+import { getCollections } from "../lib/actions/collections.ts";
 
 interface OptionsFormProps {
   onSaved?: () => void;
@@ -48,7 +51,36 @@ const EMPTY_FORM: optionsFormInput = {
   apiKey: "",
   syncBookmarks: false,
   defaultCollection: "Unorganized",
+  overrideBookmarkShortcut: true,
 };
+
+const ShortcutOverrideToggle = ({
+  checked,
+  onCheckedChange,
+}: {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}) => (
+  <label className="flex items-start gap-2 cursor-pointer">
+    <Checkbox
+      className="mt-0.5"
+      checked={checked}
+      onCheckedChange={(value) => {
+        if (value === "indeterminate") return;
+        onCheckedChange(value);
+      }}
+    />
+    <span className="space-y-1">
+      <span className="block text-sm font-medium leading-none">
+        Override Ctrl+D
+      </span>
+      <span className="block text-xs text-muted-foreground">
+        Open Linkwarden instead of the browser bookmark dialog. On Mac this is
+        Command+D.
+      </span>
+    </span>
+  </label>
+);
 
 const METHOD_OPTIONS: SelectOption[] = [
   { value: "username", label: "Username and Password" },
@@ -74,12 +106,43 @@ const OptionsForm = ({
     initialSignedInTo
   );
 
+  const [overrideBookmarkShortcut, setOverrideBookmarkShortcut] = useState(
+    initialConfig?.overrideBookmarkShortcut !== false
+  );
+  const [defaultCollection, setDefaultCollection] = useState(
+    initialConfig?.defaultCollection || "Unorganized"
+  );
+  const [defaultCollectionId, setDefaultCollectionId] = useState<
+    number | undefined
+  >(initialConfig?.defaultCollectionId);
+  const [openDefaultCollection, setOpenDefaultCollection] = useState(false);
+
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
     defaultValues: initialSignedInTo
       ? { ...EMPTY_FORM, ...initialConfig }
       : EMPTY_FORM,
   });
+
+  const persistOverride = async (enabled: boolean) => {
+    setOverrideBookmarkShortcut(enabled);
+    const config = await getConfig();
+    await saveConfig({ ...config, overrideBookmarkShortcut: enabled });
+  };
+
+  const persistDefaultCollection = async (collection: {
+    id?: number;
+    name: string;
+  }) => {
+    setDefaultCollection(collection.name);
+    setDefaultCollectionId(collection.id);
+    const config = await getConfig();
+    await saveConfig({
+      ...config,
+      defaultCollection: collection.name,
+      defaultCollectionId: collection.id,
+    });
+  };
 
   const { mutate: onSignOut, isPending: signOutLoading } = useMutation({
     mutationFn: async () => {
@@ -110,6 +173,7 @@ const OptionsForm = ({
         apiKey: "",
         syncBookmarks: false,
         defaultCollection: "Unorganized",
+        overrideBookmarkShortcut,
       });
       await clearConfig();
       await clearBookmarksMetadata();
@@ -186,8 +250,10 @@ const OptionsForm = ({
     onSuccess: async (values) => {
       await saveConfig({
         baseUrl: values.baseUrl,
-        defaultCollection: values.defaultCollection,
+        defaultCollection,
+        defaultCollectionId,
         syncBookmarks: values.syncBookmarks,
+        overrideBookmarkShortcut,
         apiKey:
           values.method === "apiKey" && values.apiKey
             ? values.apiKey
@@ -214,11 +280,31 @@ const OptionsForm = ({
       const instance = signedInInstance(cachedOptions);
       if (instance) form.reset({ ...EMPTY_FORM, ...cachedOptions });
       setSignedInTo(instance);
+      setOverrideBookmarkShortcut(
+        cachedOptions.overrideBookmarkShortcut !== false
+      );
+      setDefaultCollection(cachedOptions.defaultCollection || "Unorganized");
+      setDefaultCollectionId(cachedOptions.defaultCollectionId);
     })();
   }, [form, initialSignedInTo]);
 
   const { handleSubmit, control, watch } = form;
   const method = watch("method");
+
+  const {
+    data: collections,
+    isLoading: loadingCollections,
+  } = useQuery({
+    queryKey: ["settings-collections", signedInTo],
+    queryFn: async () => {
+      const config = await getConfig();
+      const response = await getCollections(config.baseUrl, config.apiKey);
+      return response.data.response.sort((a, b) =>
+        a.pathname.localeCompare(b.pathname)
+      );
+    },
+    enabled: Boolean(signedInTo),
+  });
 
   if (signedInTo === undefined) return null;
 
@@ -231,6 +317,47 @@ const OptionsForm = ({
             {displayInstance(signedInTo)}
           </span>
         </p>
+        <ShortcutOverrideToggle
+          checked={overrideBookmarkShortcut}
+          onCheckedChange={(enabled) => {
+            void persistOverride(enabled);
+          }}
+        />
+        <p className="text-xs text-muted-foreground">
+          Search saved links from the address bar by typing{" "}
+          <span className="font-medium">lk</span>, then your query. The
+          extension asks the server for a few matches; it does not copy your
+          library into the browser.
+        </p>
+        <Form {...form}>
+          <FormField
+            control={control}
+            name="defaultCollection"
+            render={() => (
+              <FormItem>
+                <FormLabel>Default collection</FormLabel>
+                <FormDescription>
+                  New bookmarks are saved to this collection.
+                </FormDescription>
+                <CollectionInput
+                  value={{
+                    id: defaultCollectionId,
+                    name: defaultCollection,
+                  }}
+                  onChange={(collection) => {
+                    void persistDefaultCollection(collection);
+                  }}
+                  collections={collections}
+                  isLoading={loadingCollections}
+                  open={openDefaultCollection}
+                  onOpenChange={setOpenDefaultCollection}
+                  fullScreen={false}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Form>
         <Button
           type="button"
           variant="outline"
@@ -397,6 +524,19 @@ const OptionsForm = ({
             )}
           />
           */}
+
+          <ShortcutOverrideToggle
+            checked={overrideBookmarkShortcut}
+            onCheckedChange={(enabled) => {
+              void persistOverride(enabled);
+            }}
+          />
+          <p className="text-xs text-muted-foreground">
+            Search saved links from the address bar by typing{" "}
+            <span className="font-medium">lk</span>, then your query. The
+            extension asks the server for a few matches; it does not copy your
+            library into the browser.
+          </p>
 
           <div className="flex justify-end pb-2">
             <Button disabled={isPending} type="submit">

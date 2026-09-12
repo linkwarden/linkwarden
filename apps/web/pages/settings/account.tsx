@@ -112,7 +112,6 @@ const Page: NextPageWithLayout = () => {
         email: user.email,
         locale: user.locale,
         image: user.image,
-        isPrivate: user.isPrivate,
         password: password ? password : undefined,
       },
       {

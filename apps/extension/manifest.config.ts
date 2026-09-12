@@ -93,10 +93,18 @@ export function buildManifest(target: ManifestTarget) {
       "scripting",
       "activeTab",
       "tabs",
+      "webNavigation",
       ...(options.bookmarks ? ["bookmarks"] : []),
       "contextMenus",
     ],
     host_permissions: ["<all_urls>"],
+    content_scripts: [
+      {
+        matches: ["http://*/*", "https://*/*"],
+        js: ["content.js"],
+        run_at: "document_start",
+      },
+    ],
     background: {
       ...(options.serviceWorker ? { service_worker: "background.js" } : {}),
       scripts: ["background.js"],
@@ -109,7 +117,8 @@ export function buildManifest(target: ManifestTarget) {
     ...(options.omnibox ? { omnibox: { keyword: "lk" } } : {}),
     commands: {
       _execute_action: {
-        suggested_key: { default: "Ctrl+Shift+F", mac: "Command+Shift+Y" },
+        suggested_key: { default: "Ctrl+D", mac: "Command+D" },
+        description: "Save the current page to Linkwarden",
       },
     },
     browser_specific_settings: options.browserSpecificSettings,
