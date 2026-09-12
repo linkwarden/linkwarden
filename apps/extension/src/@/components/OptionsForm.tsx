@@ -323,6 +323,12 @@ const OptionsForm = ({
             void persistOverride(enabled);
           }}
         />
+        <p className="text-xs text-muted-foreground">
+          Search saved links from the address bar by typing{" "}
+          <span className="font-medium">lk</span>, then your query. The
+          extension asks the server for a few matches; it does not copy your
+          library into the browser.
+        </p>
         <Form {...form}>
           <FormField
             control={control}
@@ -525,6 +531,12 @@ const OptionsForm = ({
               void persistOverride(enabled);
             }}
           />
+          <p className="text-xs text-muted-foreground">
+            Search saved links from the address bar by typing{" "}
+            <span className="font-medium">lk</span>, then your query. The
+            extension asks the server for a few matches; it does not copy your
+            library into the browser.
+          </p>
 
           <div className="flex justify-end pb-2">
             <Button disabled={isPending} type="submit">

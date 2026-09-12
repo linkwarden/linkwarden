@@ -1,8 +1,10 @@
 import {
   getBrowser,
   getCurrentTabInfo,
+  getStorageItem,
   hasAPI,
   isSafari,
+  setStorageItem,
   updateBadge,
 } from "../../@/lib/utils.ts";
 // import BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
@@ -12,13 +14,13 @@ import {
   // deleteLinkFetch,
   // updateLinkFetch,
   postLinkFetch,
+  searchSavedLinks,
 } from "../../@/lib/actions/links.ts";
 import {
   bookmarkMetadata,
   // deleteBookmarkMetadata,
   // getBookmarkMetadataByBookmarkId,
   // getBookmarkMetadataByUrl,
-  getBookmarksMetadata,
   saveBookmarkMetadata,
 } from "../../@/lib/cache.ts";
 import OnClickData = chrome.contextMenus.OnClickData;
@@ -428,11 +430,39 @@ void (async () => {
 
 // Omnibox implementation (not available in Safari)
 
+function omniboxText(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+async function removeMirroredAddressBarFolder() {
+  if (hasAPI("alarms.clear")) {
+    try {
+      getBrowser().alarms.clear("lw-address-bar-sync");
+    } catch {
+      // Permission may already be gone.
+    }
+  }
+  if (!hasAPI("bookmarks.removeTree")) return;
+  const id = await getStorageItem("lw_address_bar_folder_id");
+  if (!id) return;
+  try {
+    await getBrowser().bookmarks.removeTree(id);
+  } catch {
+    // Already gone.
+  }
+  await setStorageItem("lw_address_bar_folder_id", "");
+}
+
+void removeMirroredAddressBarFolder();
+
 if (hasAPI("omnibox.onInputStarted")) {
   browser.omnibox.onInputStarted.addListener(async () => {
     const configured = await isConfigured();
     const description = configured
-      ? "Search links in linkwarden"
+      ? "Search your Linkwarden links"
       : "Please configure the extension first";
 
     browser.omnibox.setDefaultSuggestion({
@@ -446,24 +476,18 @@ if (hasAPI("omnibox.onInputStarted")) {
       suggest: (arg0: { content: string; description: string }[]) => void
     ) => {
       const configured = await isConfigured();
+      if (!configured) return;
 
-      if (!configured) {
-        return;
-      }
-
-      const currentBookmarks = await getBookmarksMetadata();
-
-      const searchedBookmarks = currentBookmarks.filter((bookmark) => {
-        return bookmark.name?.includes(text) || bookmark.url.includes(text);
-      });
-
-      const bookmarkSuggestions = searchedBookmarks.map((bookmark) => {
-        return {
-          content: bookmark.url,
-          description: bookmark.name || bookmark.url,
-        };
-      });
-      suggest(bookmarkSuggestions);
+      const { baseUrl, apiKey } = await getConfig();
+      const links = await searchSavedLinks(baseUrl, apiKey, text);
+      suggest(
+        links
+          .filter((link) => link.url)
+          .map((link) => ({
+            content: link.url as string,
+            description: omniboxText(link.name || (link.url as string)),
+          }))
+      );
     }
   );
 
@@ -476,7 +500,14 @@ if (hasAPI("omnibox.onInputStarted")) {
       }
 
       const isUrl = /^http(s)?:\/\//.test(content);
-      const url = isUrl ? content : `lk`;
+      let url = content;
+      if (!isUrl) {
+        const { baseUrl, apiKey } = await getConfig();
+        const links = await searchSavedLinks(baseUrl, apiKey, content);
+        const first = links.find((link) => link.url);
+        if (!first?.url) return;
+        url = first.url;
+      }
 
       // Edge doesn't allow updating the New Tab Page (tested with version 117).
       // Trying to do so will throw: "Error: Cannot update NTP tab."

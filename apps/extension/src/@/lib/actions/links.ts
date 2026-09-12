@@ -461,3 +461,26 @@ export async function checkLinkExists(
   if (found === null) return null;
   return found !== false;
 }
+
+export async function searchSavedLinks(
+  baseUrl: string,
+  apiKey: string,
+  query: string
+): Promise<SavedLink[]> {
+  const trimmed = query.trim();
+  const encoded = encodeURIComponent(trimmed);
+  const urls = trimmed
+    ? [
+        `${apiRoot(baseUrl)}/api/v1/search?sort=0&searchQueryString=${encoded}`,
+        `${apiRoot(baseUrl)}/api/v1/links?sort=0&searchQueryString=${encoded}`,
+      ]
+    : [
+        `${apiRoot(baseUrl)}/api/v1/links?sort=0`,
+        `${apiRoot(baseUrl)}/api/v1/search?sort=0`,
+      ];
+  for (const url of urls) {
+    const links = await fetchLinkResults(url, apiKey);
+    if (links) return links.slice(0, 6);
+  }
+  return [];
+}
