@@ -231,7 +231,10 @@ async function genericOnClick(
                   name: tab.title || "",
                   description: tab.title || "",
                   collection: {
-                    name: config.defaultCollection,
+                    ...(typeof config.defaultCollectionId === "number"
+                      ? { id: config.defaultCollectionId }
+                      : {}),
+                    name: config.defaultCollection || "Unorganized",
                   },
                   tags: [],
                 },
@@ -263,7 +266,10 @@ async function genericOnClick(
             {
               url: tab.url,
               collection: {
-                name: "Unorganized",
+                ...(typeof config.defaultCollectionId === "number"
+                  ? { id: config.defaultCollectionId }
+                  : {}),
+                name: config.defaultCollection || "Unorganized",
               },
               tags: [],
               name: tab.title,

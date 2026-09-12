@@ -18,7 +18,7 @@ import {
 } from "../lib/validators/optionsForm.ts";
 import { Input } from "./ui/Input.tsx";
 import { Button } from "./ui/Button.tsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
   clearConfig,
@@ -34,6 +34,8 @@ import { clearBookmarksMetadata } from "../lib/cache.ts";
 import { getSession } from "../lib/auth/auth.ts";
 import SelectInput, { SelectOption } from "./SelectInput.tsx";
 import { Checkbox } from "./ui/CheckBox.tsx";
+import CollectionInput from "./CollectionInput.tsx";
+import { getCollections } from "../lib/actions/collections.ts";
 
 interface OptionsFormProps {
   onSaved?: () => void;
@@ -107,6 +109,13 @@ const OptionsForm = ({
   const [overrideBookmarkShortcut, setOverrideBookmarkShortcut] = useState(
     initialConfig?.overrideBookmarkShortcut !== false
   );
+  const [defaultCollection, setDefaultCollection] = useState(
+    initialConfig?.defaultCollection || "Unorganized"
+  );
+  const [defaultCollectionId, setDefaultCollectionId] = useState<
+    number | undefined
+  >(initialConfig?.defaultCollectionId);
+  const [openDefaultCollection, setOpenDefaultCollection] = useState(false);
 
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
@@ -119,6 +128,20 @@ const OptionsForm = ({
     setOverrideBookmarkShortcut(enabled);
     const config = await getConfig();
     await saveConfig({ ...config, overrideBookmarkShortcut: enabled });
+  };
+
+  const persistDefaultCollection = async (collection: {
+    id?: number;
+    name: string;
+  }) => {
+    setDefaultCollection(collection.name);
+    setDefaultCollectionId(collection.id);
+    const config = await getConfig();
+    await saveConfig({
+      ...config,
+      defaultCollection: collection.name,
+      defaultCollectionId: collection.id,
+    });
   };
 
   const { mutate: onSignOut, isPending: signOutLoading } = useMutation({
@@ -227,7 +250,8 @@ const OptionsForm = ({
     onSuccess: async (values) => {
       await saveConfig({
         baseUrl: values.baseUrl,
-        defaultCollection: values.defaultCollection,
+        defaultCollection,
+        defaultCollectionId,
         syncBookmarks: values.syncBookmarks,
         overrideBookmarkShortcut,
         apiKey:
@@ -259,11 +283,28 @@ const OptionsForm = ({
       setOverrideBookmarkShortcut(
         cachedOptions.overrideBookmarkShortcut !== false
       );
+      setDefaultCollection(cachedOptions.defaultCollection || "Unorganized");
+      setDefaultCollectionId(cachedOptions.defaultCollectionId);
     })();
   }, [form, initialSignedInTo]);
 
   const { handleSubmit, control, watch } = form;
   const method = watch("method");
+
+  const {
+    data: collections,
+    isLoading: loadingCollections,
+  } = useQuery({
+    queryKey: ["settings-collections", signedInTo],
+    queryFn: async () => {
+      const config = await getConfig();
+      const response = await getCollections(config.baseUrl, config.apiKey);
+      return response.data.response.sort((a, b) =>
+        a.pathname.localeCompare(b.pathname)
+      );
+    },
+    enabled: Boolean(signedInTo),
+  });
 
   if (signedInTo === undefined) return null;
 
@@ -282,6 +323,35 @@ const OptionsForm = ({
             void persistOverride(enabled);
           }}
         />
+        <Form {...form}>
+          <FormField
+            control={control}
+            name="defaultCollection"
+            render={() => (
+              <FormItem>
+                <FormLabel>Default collection</FormLabel>
+                <FormDescription>
+                  New bookmarks are saved to this collection.
+                </FormDescription>
+                <CollectionInput
+                  value={{
+                    id: defaultCollectionId,
+                    name: defaultCollection,
+                  }}
+                  onChange={(collection) => {
+                    void persistDefaultCollection(collection);
+                  }}
+                  collections={collections}
+                  isLoading={loadingCollections}
+                  open={openDefaultCollection}
+                  onOpenChange={setOpenDefaultCollection}
+                  fullScreen={false}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Form>
         <Button
           type="button"
           variant="outline"

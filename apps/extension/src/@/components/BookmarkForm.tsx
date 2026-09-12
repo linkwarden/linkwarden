@@ -84,6 +84,7 @@ const BookmarkForm = () => {
   const [config, setConfig] = useState<{
     baseUrl: string;
     defaultCollection: string;
+    defaultCollectionId?: number;
     apiKey: string;
     syncBookmarks: boolean;
   }>();
@@ -256,7 +257,10 @@ const BookmarkForm = () => {
       form.setValue("url", t.url ? t.url : "");
       form.setValue("name", t.title ? t.title : "");
       form.setValue("collection", {
-        name: c.defaultCollection,
+        ...(typeof c.defaultCollectionId === "number"
+          ? { id: c.defaultCollectionId }
+          : {}),
+        name: c.defaultCollection || "Unorganized",
       });
 
       const configured = await getIsConfigured();
