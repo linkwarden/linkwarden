@@ -33,6 +33,7 @@ import { AxiosError } from "axios";
 import { clearBookmarksMetadata } from "../lib/cache.ts";
 import { getSession } from "../lib/auth/auth.ts";
 import SelectInput, { SelectOption } from "./SelectInput.tsx";
+import { Checkbox } from "./ui/CheckBox.tsx";
 
 interface OptionsFormProps {
   onSaved?: () => void;
@@ -48,7 +49,36 @@ const EMPTY_FORM: optionsFormInput = {
   apiKey: "",
   syncBookmarks: false,
   defaultCollection: "Unorganized",
+  overrideBookmarkShortcut: true,
 };
+
+const ShortcutOverrideToggle = ({
+  checked,
+  onCheckedChange,
+}: {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}) => (
+  <label className="flex items-start gap-2 cursor-pointer">
+    <Checkbox
+      className="mt-0.5"
+      checked={checked}
+      onCheckedChange={(value) => {
+        if (value === "indeterminate") return;
+        onCheckedChange(value);
+      }}
+    />
+    <span className="space-y-1">
+      <span className="block text-sm font-medium leading-none">
+        Override Ctrl+D
+      </span>
+      <span className="block text-xs text-muted-foreground">
+        Open Linkwarden instead of the browser bookmark dialog. On Mac this is
+        Command+D.
+      </span>
+    </span>
+  </label>
+);
 
 const METHOD_OPTIONS: SelectOption[] = [
   { value: "username", label: "Username and Password" },
@@ -74,12 +104,22 @@ const OptionsForm = ({
     initialSignedInTo
   );
 
+  const [overrideBookmarkShortcut, setOverrideBookmarkShortcut] = useState(
+    initialConfig?.overrideBookmarkShortcut !== false
+  );
+
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
     resolver: zodResolver(optionsFormSchema),
     defaultValues: initialSignedInTo
       ? { ...EMPTY_FORM, ...initialConfig }
       : EMPTY_FORM,
   });
+
+  const persistOverride = async (enabled: boolean) => {
+    setOverrideBookmarkShortcut(enabled);
+    const config = await getConfig();
+    await saveConfig({ ...config, overrideBookmarkShortcut: enabled });
+  };
 
   const { mutate: onSignOut, isPending: signOutLoading } = useMutation({
     mutationFn: async () => {
@@ -110,6 +150,7 @@ const OptionsForm = ({
         apiKey: "",
         syncBookmarks: false,
         defaultCollection: "Unorganized",
+        overrideBookmarkShortcut,
       });
       await clearConfig();
       await clearBookmarksMetadata();
@@ -188,6 +229,7 @@ const OptionsForm = ({
         baseUrl: values.baseUrl,
         defaultCollection: values.defaultCollection,
         syncBookmarks: values.syncBookmarks,
+        overrideBookmarkShortcut,
         apiKey:
           values.method === "apiKey" && values.apiKey
             ? values.apiKey
@@ -214,6 +256,9 @@ const OptionsForm = ({
       const instance = signedInInstance(cachedOptions);
       if (instance) form.reset({ ...EMPTY_FORM, ...cachedOptions });
       setSignedInTo(instance);
+      setOverrideBookmarkShortcut(
+        cachedOptions.overrideBookmarkShortcut !== false
+      );
     })();
   }, [form, initialSignedInTo]);
 
@@ -231,6 +276,12 @@ const OptionsForm = ({
             {displayInstance(signedInTo)}
           </span>
         </p>
+        <ShortcutOverrideToggle
+          checked={overrideBookmarkShortcut}
+          onCheckedChange={(enabled) => {
+            void persistOverride(enabled);
+          }}
+        />
         <Button
           type="button"
           variant="outline"
@@ -397,6 +448,13 @@ const OptionsForm = ({
             )}
           />
           */}
+
+          <ShortcutOverrideToggle
+            checked={overrideBookmarkShortcut}
+            onCheckedChange={(enabled) => {
+              void persistOverride(enabled);
+            }}
+          />
 
           <div className="flex justify-end pb-2">
             <Button disabled={isPending} type="submit">

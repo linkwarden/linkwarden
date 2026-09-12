@@ -5,6 +5,7 @@ export const optionsFormSchema = z.object({
   username: z.string(),
   password: z.string(),
   syncBookmarks: z.boolean().default(false),
+  overrideBookmarkShortcut: z.boolean().default(true),
   defaultCollection: z.string().optional().default('Unorganized'),
   useApiKey: z.boolean().default(false),
   apiKey: z.string().optional(),
