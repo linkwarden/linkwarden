@@ -29,6 +29,11 @@ import {
   ReadableHighlightDraft,
 } from "@/components/ActionSheets/ReadableHighlightSheet";
 import { useGetLinkHighlights } from "@linkwarden/router/highlights";
+import { useUser } from "@linkwarden/router/user";
+import {
+  useGetReadingProgress,
+  useUpdateReadingProgress,
+} from "@linkwarden/router/readingProgress";
 import useReaderStore, {
   getReadableFontFamily,
   resolveReaderTheme,
@@ -287,6 +292,17 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
 
     const { data: linkHighlights = [] } = useGetLinkHighlights(link.id, auth);
 
+    const { data: user } = useUser(auth);
+    const readingProgressEnabled = user?.readingProgressEnabled ?? false;
+    const {
+      data: savedReadingProgress,
+      isFetchedAfterMount: progressIsFresh,
+      isError: progressFetchFailed,
+    } = useGetReadingProgress(link.id, auth, readingProgressEnabled);
+    const updateReadingProgress = useUpdateReadingProgress(link.id, auth);
+    const hasRestoredProgressRef = useRef(false);
+    const latestProgressRef = useRef<number | null>(null);
+
     const clearWebSelection = useCallback(() => {
       pendingSelectionTextRef.current = null;
 
@@ -405,6 +421,51 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
       true;
     `);
     }, []);
+
+    const restoreReadingProgressInWebView = useCallback((progress: number) => {
+      if (!isWebViewReadyRef.current) return;
+
+      webViewRef.current?.injectJavaScript(`
+      if (window.__READABLE_VIEW__?.restoreReadingProgress) {
+        window.__READABLE_VIEW__.restoreReadingProgress(${progress});
+      }
+      true;
+    `);
+    }, []);
+
+    const flushProgressRestore = useCallback(() => {
+      if (
+        !isWebViewReadyRef.current ||
+        hasRestoredProgressRef.current ||
+        !readingProgressEnabled ||
+        latestProgressRef.current === null
+      )
+        return;
+
+      if (latestProgressRef.current > 0) {
+        restoreReadingProgressInWebView(latestProgressRef.current);
+      }
+      hasRestoredProgressRef.current = true;
+    }, [readingProgressEnabled, restoreReadingProgressInWebView]);
+
+    useEffect(() => {
+      // Only trust this mount's fetch — another device may have moved the
+      // position since the query cache was written. Fall back to the cache
+      // when the fetch fails (e.g. offline).
+      if (
+        (progressIsFresh || progressFetchFailed) &&
+        latestProgressRef.current === null
+      ) {
+        latestProgressRef.current = savedReadingProgress ?? 0;
+      }
+      // Also retries when the user preference loads after the WebView is ready
+      flushProgressRestore();
+    }, [
+      savedReadingProgress,
+      progressIsFresh,
+      progressFetchFailed,
+      flushProgressRestore,
+    ]);
 
     const readerStyleConfig = useMemo(
       () =>
@@ -947,12 +1008,54 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
             postMessage("highlight-press", highlight);
           });
 
+          let scrollProgressTimeout = null;
+
+          function restoreReadingProgress(progress) {
+            let lastHeight = -1;
+            let attempts = 0;
+            const interval = setInterval(function () {
+              attempts++;
+              if (attempts > 40) {
+                clearInterval(interval);
+                return;
+              }
+              // wait until the layout has settled before scrolling
+              const height = document.documentElement.scrollHeight;
+              if (height !== lastHeight) {
+                lastHeight = height;
+                return;
+              }
+              clearInterval(interval);
+              const maxScroll = height - window.innerHeight;
+              if (maxScroll > 0) window.scrollTo(0, progress * maxScroll);
+            }, 250);
+          }
+
+          window.addEventListener(
+            "scroll",
+            function () {
+              if (scrollProgressTimeout) clearTimeout(scrollProgressTimeout);
+              scrollProgressTimeout = setTimeout(function () {
+                const maxScroll =
+                  document.documentElement.scrollHeight - window.innerHeight;
+                if (maxScroll <= 0) return;
+                const progress = Math.min(
+                  Math.max(window.scrollY / maxScroll, 0),
+                  1
+                );
+                postMessage("scroll-progress", progress);
+              }, 500);
+            },
+            { passive: true }
+          );
+
           window.__READABLE_VIEW__ = {
             applyReaderStyles: applyReaderStyles,
             clearSelection: clearSelection,
             getSelectionInfo: getSelectionInfo,
             renderHighlights: renderHighlights,
             scrollToHighlight: scrollToHighlight,
+            restoreReadingProgress: restoreReadingProgress,
           };
 
           applyReaderStyles(initialReaderStyles);
@@ -1045,9 +1148,26 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
 
       if (message?.type === "ready") {
         isWebViewReadyRef.current = true;
+        const hadPendingHighlightScroll =
+          pendingHighlightScrollIdRef.current !== null;
         syncReaderStylesToWebView(readerStyleConfig);
         syncHighlightsToWebView(linkHighlights);
         flushPendingHighlightScroll();
+        // The document is rebuilt from scratch, so the position needs to be
+        // restored again — unless a highlight scroll takes precedence.
+        hasRestoredProgressRef.current = hadPendingHighlightScroll;
+        flushProgressRestore();
+        return;
+      }
+
+      if (
+        message?.type === "scroll-progress" &&
+        typeof message.payload === "number"
+      ) {
+        // Don't overwrite the saved progress before it was restored
+        if (!readingProgressEnabled || !hasRestoredProgressRef.current) return;
+        latestProgressRef.current = message.payload;
+        updateReadingProgress.mutate(message.payload);
         return;
       }
 
