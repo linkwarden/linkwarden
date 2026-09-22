@@ -88,7 +88,7 @@
   "billed_yearly": "Рахунок виставляється щорічно",
   "total": "Всього",
   "total_annual_desc": "{{count}}-денна безкоштовна пробна версія, а потім {{annualPrice}}$ щорічно",
-  "total_monthly_desc": "{{count}}-денна безкоштовна пробна версія, потім {{monthly Price}}$ на місяць",
+  "total_monthly_desc": "{{count}}-денна безкоштовна пробна версія, потім {{monthlyPrice}}$ на місяць",
   "plus_tax": "+ ПДВ, якщо є",
   "complete_subscription": "Повна підписка",
   "sign_out": "Вийти",
