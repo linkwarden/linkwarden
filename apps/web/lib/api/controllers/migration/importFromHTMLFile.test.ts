@@ -183,6 +183,29 @@ describe.sequential("importFromHTMLFile integration", () => {
     expect(link?.tags.map((tag) => tag.name).sort()).toEqual(["news", "tech"]);
   });
 
+  it("keeps descriptions longer than 254 characters", async () => {
+    const user = await createTestUser();
+    const description = "a".repeat(600);
+
+    const html = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<html>
+<body>
+<DL><p>
+<DT><A HREF="https://example.com/long-description">Long</A>
+<DD>${description}</DD>
+</DL><p>
+</body>
+</html>`;
+
+    await importFromHTMLFile(user.id, html);
+
+    const link = await prisma.link.findFirst({
+      where: { url: "https://example.com/long-description" },
+    });
+
+    expect(link?.description).toBe(description);
+  });
+
   it("creates nested collections and assigns links to the correct parent", async () => {
     const user = await createTestUser();
 

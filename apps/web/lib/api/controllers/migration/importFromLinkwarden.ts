@@ -39,7 +39,7 @@ export default async function importFromLinkwarden(
                 },
               },
               name: e.name?.trim().slice(0, 254),
-              description: e.description?.trim().slice(0, 254),
+              description: e.description?.trim().slice(0, 2047),
               color: e.color?.trim().slice(0, 50),
               createdBy: {
                 connect: {
@@ -65,7 +65,7 @@ export default async function importFromLinkwarden(
               data: {
                 url: link.url?.trim().slice(0, 2047),
                 name: link.name?.trim().slice(0, 254),
-                description: link.description?.trim().slice(0, 254),
+                description: link.description?.trim().slice(0, 2047),
                 importDate: new Date(link.importDate || link.createdAt),
                 collection: {
                   connect: {
