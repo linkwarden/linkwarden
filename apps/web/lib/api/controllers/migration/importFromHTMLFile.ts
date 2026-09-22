@@ -215,7 +215,7 @@ const createLink = async (
 
   tags = tags?.map((tag) => tag.trim().slice(0, 49));
   name = name?.trim().slice(0, 254);
-  description = description?.trim().slice(0, 254);
+  description = description?.trim().slice(0, 2047);
 
   if (importDate) {
     const dateString = importDate.toISOString();
