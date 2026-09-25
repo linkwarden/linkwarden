@@ -42,9 +42,13 @@ export default Sentry.wrap(function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { setAuth } = useAuthStore();
+  const { setAuth, auth } = useAuthStore();
   const rootNavState = useRootNavigationState();
   const redirectingToIncoming = useRef(false);
+  // The path the app was on when it asked for /incoming. On a cold start from
+  // a share, the Redirect in index.tsx can land on /dashboard after that
+  // request, so a new path means the redirect must be sent again.
+  const redirectedFromPath = useRef<string | null>(null);
 
   useEffect(() => {
     setAuth();
@@ -68,18 +72,28 @@ export default Sentry.wrap(function RootLayout() {
       resetShareIntent();
     }
 
+    // resetShareIntent() clears hasShareIntent after the first pass, so a
+    // shared URL that waits in the store also needs the redirect. Only when
+    // signed in: signed out, incoming.tsx redirects to "/" and the stored URL
+    // would send the app back to /incoming in a loop.
     const needsRewrite =
       ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
-        hasShareIntent) &&
+        hasShareIntent ||
+        (!!data.shareIntent?.url && auth.status === "authenticated")) &&
       pathname !== "/incoming";
 
     if (needsRewrite) {
-      if (!redirectingToIncoming.current) {
+      if (
+        !redirectingToIncoming.current ||
+        redirectedFromPath.current !== pathname
+      ) {
         redirectingToIncoming.current = true;
+        redirectedFromPath.current = pathname;
         router.replace("/incoming");
       }
     } else if (pathname === "/incoming") {
       redirectingToIncoming.current = false;
+      redirectedFromPath.current = null;
     }
   }, [
     rootNavState?.key,
@@ -88,6 +102,7 @@ export default Sentry.wrap(function RootLayout() {
     shareIntent?.webUrl,
     data.shareIntent,
     isLoading,
+    auth.status,
   ]);
 
   return (
