@@ -67,7 +67,6 @@ model User {
   archiveAsWaybackMachine Boolean               @default(false)
   referredBy              String?
   dashboardSections       DashboardSection[]
-  layoutPreference        Layout[]
   lastPickedAt            DateTime?
   acceptPromotionalEmails Boolean               @default(false)
   trialEndEmailSent       Boolean               @default(false)
@@ -95,11 +94,6 @@ enum LinksRouteTo {
   MONOLITH
   SCREENSHOT
   DETAILS
-}
-
-enum Layout {
-  V1
-  V2
 }
 
 model VerificationToken {
