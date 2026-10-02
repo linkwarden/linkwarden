@@ -6,6 +6,32 @@ import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 
 const takeCount = Number(process.env.INDEX_TAKE_COUNT || "") || 50;
 
+// Meilisearch rejects request bodies over its payload size limit (~95 MiB by
+// default), which a batch holding a few links with very large `textContent`
+// can exceed. Send the documents in smaller requests instead.
+function chunkByPayloadSize<T>(items: T[]) {
+  const chunks: T[][] = [];
+  let chunk: T[] = [];
+  let chunkBytes = 2; // the enclosing "[]"
+
+  for (const item of items) {
+    const itemBytes = Buffer.byteLength(JSON.stringify(item), "utf-8") + 1;
+
+    if (chunk.length > 0 && chunkBytes + itemBytes > 50 * 1024 * 1024) {
+      chunks.push(chunk);
+      chunk = [];
+      chunkBytes = 2;
+    }
+
+    chunk.push(item);
+    chunkBytes += itemBytes;
+  }
+
+  if (chunk.length > 0) chunks.push(chunk);
+
+  return chunks;
+}
+
 async function setupLinksIndexSchema() {
   if (!meiliClient) return;
 
@@ -142,15 +168,17 @@ export async function startIndexing(interval = 10) {
       indexVersion: MEILI_INDEX_VERSION,
     }));
 
-    const task = await meiliClient.index("links").addDocuments(docs);
-    await meiliClient
-      .index("links")
-      .waitForTask(task.taskUid, {
-        timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
-      })
-      .catch((err) => {
-        console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
-      });
+    for (const chunk of chunkByPayloadSize(docs)) {
+      const task = await meiliClient.index("links").addDocuments(chunk);
+      await meiliClient
+        .index("links")
+        .waitForTask(task.taskUid, {
+          timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
+        })
+        .catch((err) => {
+          console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
+        });
+    }
 
     const ids = links.map((l) => l.id);
     await prisma.link.updateMany({
