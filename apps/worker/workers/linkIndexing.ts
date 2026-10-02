@@ -10,14 +10,23 @@ const takeCount = Number(process.env.INDEX_TAKE_COUNT || "") || 50;
 // default), which a batch holding a few links with very large `textContent`
 // can exceed. Send the documents in smaller requests instead.
 function chunkByPayloadSize<T>(items: T[]) {
+  const maxBytes = 80 * 1024 * 1024;
   const chunks: T[][] = [];
+  const oversized: T[] = [];
   let chunk: T[] = [];
   let chunkBytes = 2; // the enclosing "[]"
 
   for (const item of items) {
     const itemBytes = Buffer.byteLength(JSON.stringify(item), "utf-8") + 1;
 
-    if (chunk.length > 0 && chunkBytes + itemBytes > 80 * 1024 * 1024) {
+    // A single item past the limit can't be split any further, so set it aside
+    // instead of building a request that's bound to be rejected.
+    if (2 + itemBytes > maxBytes) {
+      oversized.push(item);
+      continue;
+    }
+
+    if (chunk.length > 0 && chunkBytes + itemBytes > maxBytes) {
       chunks.push(chunk);
       chunk = [];
       chunkBytes = 2;
@@ -29,7 +38,7 @@ function chunkByPayloadSize<T>(items: T[]) {
 
   if (chunk.length > 0) chunks.push(chunk);
 
-  return chunks;
+  return { chunks, oversized };
 }
 
 async function setupLinksIndexSchema() {
@@ -168,10 +177,22 @@ export async function startIndexing(interval = 10) {
       indexVersion: MEILI_INDEX_VERSION,
     }));
 
+    const { chunks, oversized } = chunkByPayloadSize(docs);
     const indexedIds: number[] = [];
 
+    if (oversized.length > 0) {
+      console.error(
+        "\x1b[34m%s\x1b[0m",
+        `Skipping ${oversized.length} link${
+          oversized.length === 1 ? "" : "s"
+        } too large to index: ${oversized.map((doc) => doc.id).join(", ")}`
+      );
+
+      indexedIds.push(...oversized.map((doc) => doc.id));
+    }
+
     try {
-      for (const chunk of chunkByPayloadSize(docs)) {
+      for (const chunk of chunks) {
         const task = await meiliClient.index("links").addDocuments(chunk);
         const result = await meiliClient
           .index("links")
