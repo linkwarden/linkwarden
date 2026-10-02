@@ -17,7 +17,7 @@ function chunkByPayloadSize<T>(items: T[]) {
   for (const item of items) {
     const itemBytes = Buffer.byteLength(JSON.stringify(item), "utf-8") + 1;
 
-    if (chunk.length > 0 && chunkBytes + itemBytes > 50 * 1024 * 1024) {
+    if (chunk.length > 0 && chunkBytes + itemBytes > 80 * 1024 * 1024) {
       chunks.push(chunk);
       chunk = [];
       chunkBytes = 2;
@@ -168,23 +168,35 @@ export async function startIndexing(interval = 10) {
       indexVersion: MEILI_INDEX_VERSION,
     }));
 
-    for (const chunk of chunkByPayloadSize(docs)) {
-      const task = await meiliClient.index("links").addDocuments(chunk);
-      await meiliClient
-        .index("links")
-        .waitForTask(task.taskUid, {
-          timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
-        })
-        .catch((err) => {
-          console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
-        });
+    const indexedIds: number[] = [];
+
+    try {
+      for (const chunk of chunkByPayloadSize(docs)) {
+        const task = await meiliClient.index("links").addDocuments(chunk);
+        const result = await meiliClient
+          .index("links")
+          .waitForTask(task.taskUid, {
+            timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
+          });
+
+        if (result.status !== "succeeded")
+          throw new Error(
+            `Indexing task ${task.taskUid} ${result.status}: ${
+              result.error?.message ?? "no error message"
+            }`
+          );
+
+        indexedIds.push(...chunk.map((doc) => doc.id));
+      }
+    } catch (err) {
+      console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
     }
 
-    const ids = links.map((l) => l.id);
-    await prisma.link.updateMany({
-      where: { id: { in: ids } },
-      data: { indexVersion: MEILI_INDEX_VERSION },
-    });
+    if (indexedIds.length > 0)
+      await prisma.link.updateMany({
+        where: { id: { in: indexedIds } },
+        data: { indexVersion: MEILI_INDEX_VERSION },
+      });
 
     const indexesLeft = await prisma.link.count({
       where: {
@@ -197,8 +209,8 @@ export async function startIndexing(interval = 10) {
 
     console.log(
       "\x1b[34m%s\x1b[0m",
-      `Indexed ${links.length} link${
-        links.length === 1 ? "" : "s"
+      `Indexed ${indexedIds.length} link${
+        indexedIds.length === 1 ? "" : "s"
       }, ${indexesLeft} left.`
     );
 
