@@ -33,6 +33,7 @@ import { AxiosError } from "axios";
 import { clearBookmarksMetadata } from "../lib/cache.ts";
 import { getSession } from "../lib/auth/auth.ts";
 import SelectInput, { SelectOption } from "./SelectInput.tsx";
+import DefaultCollectionInput from "./DefaultCollectionInput.tsx";
 
 interface OptionsFormProps {
   onSaved?: () => void;
@@ -72,6 +73,12 @@ const OptionsForm = ({
 
   const [signedInTo, setSignedInTo] = useState<string | undefined | null>(
     initialSignedInTo
+  );
+
+  // The config as it is currently stored, needed to talk to the account from
+  // the signed-in panel (and to show which default collection is selected).
+  const [savedConfig, setSavedConfig] = useState<configType | undefined>(
+    initialSignedInTo ? initialConfig : undefined
   );
 
   const form = useForm<optionsFormInput, unknown, optionsFormValues>({
@@ -114,6 +121,7 @@ const OptionsForm = ({
       await clearConfig();
       await clearBookmarksMetadata();
       setSignedInTo(null);
+      setSavedConfig(undefined);
       onCleared?.();
       return;
     },
@@ -184,17 +192,21 @@ const OptionsForm = ({
       }
     },
     onSuccess: async (values) => {
-      await saveConfig({
+      const config: configType = {
         baseUrl: values.baseUrl,
         defaultCollection: values.defaultCollection,
+        defaultCollectionId: values.defaultCollectionId,
         syncBookmarks: values.syncBookmarks,
         apiKey:
           values.method === "apiKey" && values.apiKey
             ? values.apiKey
             : values.data.response.token,
-      });
+      };
+
+      await saveConfig(config);
 
       setSignedInTo(values.baseUrl);
+      setSavedConfig(config);
 
       toast({
         title: "Saved",
@@ -212,7 +224,10 @@ const OptionsForm = ({
     (async () => {
       const cachedOptions = await getConfig();
       const instance = signedInInstance(cachedOptions);
-      if (instance) form.reset({ ...EMPTY_FORM, ...cachedOptions });
+      if (instance) {
+        form.reset({ ...EMPTY_FORM, ...cachedOptions });
+        setSavedConfig(cachedOptions);
+      }
       setSignedInTo(instance);
     })();
   }, [form, initialSignedInTo]);
@@ -231,6 +246,15 @@ const OptionsForm = ({
             {displayInstance(signedInTo)}
           </span>
         </p>
+
+        {savedConfig && (
+          <DefaultCollectionInput
+            baseUrl={savedConfig.baseUrl}
+            apiKey={savedConfig.apiKey}
+            initialCollectionId={savedConfig.defaultCollectionId}
+          />
+        )}
+
         <Button
           type="button"
           variant="outline"
@@ -356,26 +380,10 @@ const OptionsForm = ({
             </>
           )}
 
-          {/* Commented out fields */}
-          {/* 
-          <FormField
-            control={control}
-            name="defaultCollection"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Default collection</FormLabel>
-                <FormDescription>
-                  Default collection to add bookmarks to.
-                </FormDescription>
-                <FormControl>
-                  <Input placeholder="Unorganized" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          */}
+          {/* The default collection is configured from the signed-in panel,
+              since it needs a working connection to list the collections. */}
 
+          {/* Commented out fields */}
           {/* 
           <FormField
             control={control}
