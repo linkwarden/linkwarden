@@ -186,7 +186,7 @@ export default function Subscribe() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="center">
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login?nosso=1" })}>
                   <i className="bi-box-arrow-right" />
                   {t("sign_out")}
                 </DropdownMenuItem>

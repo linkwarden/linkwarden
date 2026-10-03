@@ -193,7 +193,7 @@ export default function ProfileDropdown({
         </DropdownMenuSub>
 
         <DropdownMenuItem asChild>
-          <div onClick={() => signOut()} className="whitespace-nowrap">
+          <div onClick={() => signOut({ callbackUrl: "/login?nosso=1" })} className="whitespace-nowrap">
             <i className="bi-box-arrow-left" />
             {t("logout")}
           </div>

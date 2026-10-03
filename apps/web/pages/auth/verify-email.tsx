@@ -24,7 +24,7 @@ const VerifyEmail = () => {
       if (res.ok) {
         toast.success(t("email_verified_signing_out"));
         setTimeout(() => {
-          signOut();
+          signOut({ callbackUrl: "/login?nosso=1" });
         }, 3000);
       } else {
         toast.error(t("invalid_token"));
