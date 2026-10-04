@@ -434,6 +434,44 @@ export default function LinkDetails({
 
           <br />
 
+          {user?.usePublicationDate && (
+            <>
+              <div className="relative">
+                <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
+                  {t("publication_date")}
+                </p>
+                {mode === "view" ? (
+                  <div className="rounded-md p-2 bg-base-200">
+                    {new Intl.DateTimeFormat(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }).format(new Date(link.publishedAt || Date.now()))}
+                  </div>
+                ) : (
+                  <input
+                    type="date"
+                    required
+                    value={new Date(
+                      link.publishedAt || Date.now()
+                    )
+                      .toISOString()
+                      .slice(0, 10)}
+                    onChange={(e) => {
+                      if (!e.target.value) return;
+                      setLink({
+                        ...link,
+                        publishedAt: `${e.target.value}T12:00:00.000Z`,
+                      });
+                    }}
+                    className="w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                  />
+                )}
+              </div>
+              <br />
+            </>
+          )}
+
           <div className="relative">
             <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
               {t("description")}

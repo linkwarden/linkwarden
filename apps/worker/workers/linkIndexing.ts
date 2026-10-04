@@ -81,7 +81,7 @@ async function setupLinksIndexSchema() {
 
   const updateSortableAttributes = await meiliClient
     .index("links")
-    .updateSortableAttributes(["id", "name"]);
+    .updateSortableAttributes(["id", "name", "publicationTimestamp"]);
 
   await meiliClient
     .index("links")
@@ -174,6 +174,7 @@ export async function startIndexing(interval = 10) {
       tags: link.tags.map((t) => t.name),
       pinnedBy: link.pinnedBy.map((p) => p.id),
       creationTimestamp: Date.parse(link.createdAt.toISOString()) / 1000,
+      publicationTimestamp: Date.parse(link.publishedAt.toISOString()) / 1000,
       indexVersion: MEILI_INDEX_VERSION,
     }));
 

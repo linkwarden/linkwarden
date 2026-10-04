@@ -31,13 +31,29 @@ export default async function searchLinks({
 
   const resolveAccessCondition = async () => {
     if (!accessibleCollectionIdsPromise) return [];
-    const { accessibleCollectionIds } = await accessibleCollectionIdsPromise;
+    const { accessibleCollectionIds } =
+      await accessibleCollectionIdsPromise;
     return [{ collectionId: { in: accessibleCollectionIds } }];
   };
 
-  let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
+  const userPreference = userId
+    ? await prisma.user.findUnique({
+        where: { id: userId },
+        select: { usePublicationDate: true },
+      })
+    : null;
+  const usePublicationDate =
+    userPreference?.usePublicationDate ?? false;
+
+  let order: Order | Order[] = { id: "desc" };
+  if (query.sort === Sort.DateNewestFirst)
+    order = usePublicationDate
+      ? [{ publishedAt: "desc" }, { id: "desc" }]
+      : { id: "desc" };
+  else if (query.sort === Sort.DateOldestFirst)
+    order = usePublicationDate
+      ? [{ publishedAt: "asc" }, { id: "asc" }]
+      : { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
 
@@ -83,9 +99,13 @@ export default async function searchLinks({
       offset,
       sort:
         query.sort === Sort.DateNewestFirst
-          ? ["id:desc"]
+          ? usePublicationDate
+            ? ["publicationTimestamp:desc", "id:desc"]
+            : ["id:desc"]
           : query.sort === Sort.DateOldestFirst
-            ? ["id:asc"]
+            ? usePublicationDate
+              ? ["publicationTimestamp:asc", "id:asc"]
+              : ["id:asc"]
             : query.sort === Sort.NameAZ
               ? ["name:asc"]
               : query.sort === Sort.NameZA
