@@ -26,6 +26,8 @@ export default function Layout() {
             ...(isIOS26Plus && {
               allowToolbarIntegration: false,
               placement: "integratedButton",
+              // Without this, iOS 27 drops the large title's padding while searching
+              hideNavigationBar: false,
             }),
             onChangeText: (e) => {
               router.setParams({
@@ -35,6 +37,10 @@ export default function Layout() {
             headerIconColor: colorScheme === "dark" ? "white" : "black",
           },
           headerShadowVisible: false,
+          ...(isIOS26Plus && {
+            // Without this, iOS 27 leaves the back button blank after a search is closed
+            headerBackButtonDisplayMode: "minimal",
+          }),
           headerBlurEffect: isIOS26Plus
             ? undefined
             : colorScheme === "dark"

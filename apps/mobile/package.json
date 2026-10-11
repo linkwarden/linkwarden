@@ -28,7 +28,7 @@
     "@react-native-google-signin/google-signin": "^15.0.0",
     "@react-native-menu/menu": "2.0.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
-    "@react-navigation/native": "^7.0.0",
+    "@react-navigation/native": "^7.1.8",
     "@sentry/react-native": "^8.4.0",
     "@tanstack/react-query": "^5.51.15",
     "@tanstack/react-query-persist-client": "^5.51.15",

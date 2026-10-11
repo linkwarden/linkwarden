@@ -27,6 +27,8 @@ export default function Layout() {
             ...(isIOS26Plus && {
               allowToolbarIntegration: false,
               placement: "integratedButton",
+              // Without this, iOS 27 drops the large title's padding while searching
+              hideNavigationBar: false,
             }),
             onChangeText: (e) => {
               router.setParams({
