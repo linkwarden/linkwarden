@@ -11,7 +11,13 @@ import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
-import { lightTheme, darkTheme } from "../lib/theme";
+import { ThemeProvider } from "@react-navigation/native";
+import {
+  lightTheme,
+  darkTheme,
+  lightNavigationTheme,
+  darkNavigationTheme,
+} from "../lib/theme";
 import { View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
@@ -126,37 +132,45 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
             backgroundColor={rawTheme[colorScheme as ThemeName]["base-100"]}
           />
           {!isLoading && (
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                },
-              }}
+            <ThemeProvider
+              value={
+                colorScheme === "dark"
+                  ? darkNavigationTheme
+                  : lightNavigationTheme
+              }
             >
-              {/* <Stack.Screen name="(tabs)" /> */}
-              <Stack.Screen
-                name="links/[id]"
-                options={{
-                  headerShown: true,
-                  headerBackTitle: "Back",
-                  headerTitle: "",
-                  headerTintColor: colorScheme === "dark" ? "white" : "black",
-                  headerStyle: {
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: {
                     backgroundColor:
-                      colorScheme === "dark"
-                        ? rawTheme["dark"]["base-100"]
-                        : "white",
+                      rawTheme[colorScheme as ThemeName]["base-100"],
                   },
                 }}
-              />
-              <Stack.Screen name="index" />
-              <Stack.Screen name="subscribe" />
-              <Stack.Screen name="incoming" />
-              <Stack.Screen name="verify-email" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
+              >
+                {/* <Stack.Screen name="(tabs)" /> */}
+                <Stack.Screen
+                  name="links/[id]"
+                  options={{
+                    headerShown: true,
+                    headerBackTitle: "Back",
+                    headerTitle: "",
+                    headerTintColor: colorScheme === "dark" ? "white" : "black",
+                    headerStyle: {
+                      backgroundColor:
+                        colorScheme === "dark"
+                          ? rawTheme["dark"]["base-100"]
+                          : "white",
+                    },
+                  }}
+                />
+                <Stack.Screen name="index" />
+                <Stack.Screen name="subscribe" />
+                <Stack.Screen name="incoming" />
+                <Stack.Screen name="verify-email" />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </ThemeProvider>
           )}
         </SheetProvider>
       </View>
