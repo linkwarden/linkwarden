@@ -1,9 +1,38 @@
 import { spawn } from "child_process";
+import { promises as fs } from "fs";
+import os from "os";
+import path from "path";
 import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 import { Link } from "@linkwarden/prisma/client";
 import sanitizeHtmlForMonolith from "./sanitizeHtmlForMonolith";
 import { getSsrfProxyUrl } from "../ssrfProxy";
+
+const TEMP_ROOT = path.join(os.tmpdir(), "linkwarden-monolith");
+
+const STALE_RUN_MS = 60 * 60 * 1000;
+
+async function createRunDir(): Promise<string | null> {
+  try {
+    await fs.mkdir(TEMP_ROOT, { recursive: true });
+    return await fs.mkdtemp(path.join(TEMP_ROOT, "run-"));
+  } catch {
+    return null; // Read-only or full /tmp; fall back to monolith's default.
+  }
+}
+
+async function removeStaleRunDirs(): Promise<void> {
+  try {
+    const cutoff = Date.now() - STALE_RUN_MS;
+
+    for (const entry of await fs.readdir(TEMP_ROOT)) {
+      const runDir = path.join(TEMP_ROOT, entry);
+      if ((await fs.stat(runDir)).mtimeMs < cutoff) {
+        await fs.rm(runDir, { recursive: true, force: true });
+      }
+    }
+  } catch {}
+}
 
 export default async function handleMonolith(
   link: Link,
@@ -18,6 +47,10 @@ export default async function handleMonolith(
     process.env.ALLOW_PRIVATE_NETWORK_ACCESS === "true"
       ? null
       : await getSsrfProxyUrl();
+
+  await removeStaleRunDirs();
+  const runDir = await createRunDir();
+  const tempDirEnv = runDir ? { TMPDIR: runDir } : {};
 
   return new Promise<void>((resolve, reject) => {
     const args = [
@@ -47,8 +80,9 @@ export default async function handleMonolith(
             all_proxy: proxyUrl,
             NO_PROXY: "",
             no_proxy: "",
+            ...tempDirEnv,
           }
-        : process.env,
+        : { ...process.env, ...tempDirEnv },
     });
 
     child.stdin.write(pageContent);
@@ -92,5 +126,9 @@ export default async function handleMonolith(
         reject(err);
       }
     });
+  }).finally(() => {
+    if (runDir) {
+      return fs.rm(runDir, { recursive: true, force: true }).catch(() => {});
+    }
   });
 }
