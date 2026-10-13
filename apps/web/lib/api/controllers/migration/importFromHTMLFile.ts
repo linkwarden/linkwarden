@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 
 export default async function importFromHTMLFile(
   userId: number,
@@ -224,12 +225,15 @@ const createLink = async (
     }
   }
 
+  const collectionOrder = await nextCollectionOrder(collectionId);
+
   await prisma.link.create({
     data: {
       name: name || "",
       url,
       description,
       collectionId,
+      collectionOrder,
       createdById: userId,
       tags:
         tags && tags[0]

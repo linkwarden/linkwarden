@@ -90,6 +90,7 @@ export enum Sort {
   DateOldestFirst = 1,
   NameAZ = 2,
   NameZA = 3,
+  Custom = 4,
 }
 
 export enum TagSort {

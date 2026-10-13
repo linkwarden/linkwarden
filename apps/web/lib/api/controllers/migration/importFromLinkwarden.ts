@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { Backup } from "@linkwarden/types/global";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
 
 export default async function importFromLinkwarden(
   userId: number,
@@ -51,6 +52,10 @@ export default async function importFromLinkwarden(
 
           createFolder({ filePath: `archives/${newCollection.id}` });
 
+          // The collection was just created, so its links can be numbered as they
+          // are read instead of asking the database for the top of the list.
+          let collectionOrder = COLLECTION_ORDER_STEP;
+
           // Import Links
           for (const link of e.links) {
             if (link.url) {
@@ -67,6 +72,7 @@ export default async function importFromLinkwarden(
                 name: link.name?.trim().slice(0, 254),
                 description: link.description?.trim().slice(0, 254),
                 importDate: new Date(link.importDate || link.createdAt),
+                collectionOrder,
                 collection: {
                   connect: {
                     id: newCollection.id,
@@ -98,6 +104,8 @@ export default async function importFromLinkwarden(
                 },
               },
             });
+            collectionOrder += COLLECTION_ORDER_STEP;
+
             // Import pinnedLinks
             data?.pinnedLinks.forEach(async (pinnedLink) => {
               if (pinnedLink.url === newLink.url) {

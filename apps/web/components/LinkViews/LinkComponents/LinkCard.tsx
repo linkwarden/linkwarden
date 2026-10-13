@@ -71,7 +71,7 @@ function LinkCard({
     <div
       ref={setNodeRef}
       className={cn(
-        "border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group",
+        "h-full border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group",
         isSelected && "border-primary bg-base-300",
         isDragging ? "opacity-30" : "opacity-100",
         "relative group touch-manipulation select-none"

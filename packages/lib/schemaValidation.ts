@@ -178,6 +178,14 @@ export const UpdateLinkSchema = z.object({
 
 export type UpdateLinkSchemaType = z.infer<typeof UpdateLinkSchema>;
 
+export const UpdateLinkOrderSchema = z.object({
+  // The link the moved one should end up directly below. Left out, the moved link
+  // goes to the top of its collection.
+  beforeId: z.number().optional(),
+});
+
+export type UpdateLinkOrderSchemaType = z.infer<typeof UpdateLinkOrderSchema>;
+
 const ACCEPTED_TYPES = [
   "image/jpeg",
   "image/jpg",

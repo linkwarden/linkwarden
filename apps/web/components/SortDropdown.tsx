@@ -17,9 +17,19 @@ type Props = {
   sortBy: Sort;
   setSort: Dispatch<SetStateAction<Sort>>;
   t: TFunction<"translation", undefined>;
+  /**
+   * Whether the list being sorted is a single collection, which is the only place a
+   * hand-made order means anything.
+   */
+  allowCustomOrder?: boolean;
 };
 
-export default function SortDropdown({ sortBy, setSort, t }: Props) {
+export default function SortDropdown({
+  sortBy,
+  setSort,
+  t,
+  allowCustomOrder,
+}: Props) {
   const { updateSettings } = useLocalSettingsStore();
   const queryClient = useQueryClient();
 
@@ -27,9 +37,21 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
     updateSettings({ sortBy });
   }, [sortBy]);
 
+  // The chosen sort is remembered across the whole app, so arriving on a list that
+  // can't be hand-ordered with "Custom Order" still selected would leave the menu
+  // showing an option that isn't there. Fall back to the default instead.
+  useEffect(() => {
+    if (sortBy === Sort.Custom && !allowCustomOrder) {
+      setSort(Sort.DateNewestFirst);
+    }
+  }, [sortBy, allowCustomOrder]);
+
   const handleValueChange = (value: string) => {
     resetInfiniteQueryPagination(queryClient, ["links"]);
-    setSort(value as unknown as Sort);
+    // The radio group hands back a string. It has to become a number again here, or
+    // the state typed as Sort holds "4" and every `sortBy === Sort.X` comparison a
+    // page makes is false until the next reload reads it back out of localStorage.
+    setSort(Number(value) as Sort);
   };
 
   return (
@@ -60,6 +82,12 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
           <DropdownMenuRadioItem value={Sort.NameZA.toString()}>
             {t("name_za")}
           </DropdownMenuRadioItem>
+
+          {allowCustomOrder && (
+            <DropdownMenuRadioItem value={Sort.Custom.toString()}>
+              {t("custom_order")}
+            </DropdownMenuRadioItem>
+          )}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

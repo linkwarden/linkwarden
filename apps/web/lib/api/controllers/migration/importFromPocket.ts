@@ -1,6 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
 import Papa from "papaparse";
 
 type PocketBackup = {
@@ -54,6 +55,10 @@ export default async function importFromPocket(
 
         createFolder({ filePath: `archives/${newCollection.id}` });
 
+        // The collection was just created, so its links can be numbered as they are
+        // read instead of asking the database for the top of the list.
+        let collectionOrder = COLLECTION_ORDER_STEP;
+
         for (const link of backup) {
           if (link.url) {
             try {
@@ -70,6 +75,7 @@ export default async function importFromPocket(
               importDate: link.time_added
                 ? new Date(Number(link.time_added) * 1000).toISOString()
                 : null,
+              collectionOrder,
               collection: {
                 connect: {
                   id: newCollection.id,

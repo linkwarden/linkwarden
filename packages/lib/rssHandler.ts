@@ -3,6 +3,7 @@ import { hasPassedLimit } from "./verifyCapacity";
 import { prisma } from "@linkwarden/prisma";
 import Parser from "rss-parser";
 import { assertUrlIsSafeForServerSideFetch } from "./ssrf";
+import { COLLECTION_ORDER_STEP, nextCollectionOrder } from "./linkOrder";
 
 export const rssHandler = async (
   rssSubscription: RssSubscription,
@@ -53,9 +54,14 @@ export const rssHandler = async (
         return;
       }
 
+      // One lookup for the whole batch: the links are created concurrently, so
+      // asking for the top of the list inside each one would hand them all the
+      // same order.
+      const baseOrder = await nextCollectionOrder(rssSubscription.collectionId);
+
       // Create all links concurrently
       await Promise.all(
-        newItems.map(async (item) => {
+        newItems.map(async (item, index) => {
           if (!item.link) return null;
 
           try {
@@ -69,6 +75,7 @@ export const rssHandler = async (
               name: item.title,
               url: item.link,
               type: "url",
+              collectionOrder: baseOrder + index * COLLECTION_ORDER_STEP,
               createdBy: {
                 connect: {
                   id: rssSubscription.ownerId,

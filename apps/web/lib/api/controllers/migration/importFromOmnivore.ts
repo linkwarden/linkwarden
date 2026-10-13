@@ -1,6 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
 
 type OmnivoreItem = {
   id: string;
@@ -58,6 +59,10 @@ export default async function importFromOmnivore(
 
         createFolder({ filePath: `archives/${newCollection.id}` });
 
+        // The collection was just created, so its links can be numbered as they are
+        // read instead of asking the database for the top of the list.
+        let collectionOrder = COLLECTION_ORDER_STEP;
+
         for (const item of backup) {
           try {
             new URL(item.url.trim());
@@ -72,6 +77,7 @@ export default async function importFromOmnivore(
               description: item.description?.trim().slice(0, 2047) || "",
               image: item.thumbnail || "",
               importDate: item.savedAt ? new Date(item.savedAt) : null,
+              collectionOrder,
               collection: {
                 connect: {
                   id: newCollection.id,

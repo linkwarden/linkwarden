@@ -5,7 +5,6 @@ import { createFile, createFolder } from "@linkwarden/filesystem";
 import { generatePreview } from "@linkwarden/lib/generatePreview";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
-import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
@@ -13,6 +12,7 @@ import setCollection from "@/lib/api/setCollection";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 import { ArchivedFormat } from "@linkwarden/types/global";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 
 export const config = {
   api: {
@@ -173,9 +173,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             )
           : {};
 
+      const collectionOrder = await nextCollectionOrder(collection.id);
+
       const link = await prisma.link.create({
         data: {
           name: title,
+          collectionOrder,
           createdBy: {
             connect: {
               id: user.id,

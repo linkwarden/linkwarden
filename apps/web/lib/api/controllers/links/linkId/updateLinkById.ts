@@ -7,6 +7,7 @@ import {
   UpdateLinkSchema,
   UpdateLinkSchemaType,
 } from "@linkwarden/lib/schemaValidation";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 
 export default async function updateLinkById(
   userId: number,
@@ -143,12 +144,22 @@ export default async function updateLinkById(
         status: 401,
       };
 
+    const isMovingCollection =
+      collectionIsAccessible?.id !== data.collection.id;
+
+    // The order a link had in its old collection means nothing in the new one, so a
+    // moved link goes to the top of where it lands.
+    const collectionOrder = isMovingCollection
+      ? await nextCollectionOrder(data.collection.id)
+      : undefined;
+
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
         name: data.name || "",
+        collectionOrder,
         url: data.url,
         description: data.description || "",
         icon: data.icon,
@@ -192,7 +203,7 @@ export default async function updateLinkById(
       },
     });
 
-    if (collectionIsAccessible?.id !== data.collection.id) {
+    if (isMovingCollection) {
       await moveFiles(linkId, collectionIsAccessible?.id, data.collection.id);
     }
 

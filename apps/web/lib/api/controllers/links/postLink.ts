@@ -7,6 +7,7 @@ import {
   PostLinkSchemaType,
 } from "@linkwarden/lib/schemaValidation";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 
 export default async function postLink(
@@ -101,9 +102,12 @@ export default async function postLink(
 
   if (!link.tags) link.tags = [];
 
+  const collectionOrder = await nextCollectionOrder(linkCollection.id);
+
   const newLink = await prisma.link.create({
     data: {
       url: link.url?.trim() || null,
+      collectionOrder,
       name,
       description: link.description,
       type: linkType,

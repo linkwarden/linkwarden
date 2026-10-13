@@ -4,6 +4,8 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
+const COLLECTION_ORDER_STEP = 65536;
+
 async function main() {
   const saltRounds = 10;
   const defaultPassword = "11111111";
@@ -368,13 +370,16 @@ async function main() {
       },
     ];
 
-    for (const link of projectAlphaLinks) {
+    for (let i = 0; i < projectAlphaLinks.length; i++) {
+      const link = projectAlphaLinks[i];
+
       await prisma.link.create({
         data: {
           name: link.name,
           url: link.url,
           collectionId: projectAlphaCollection.id,
           createdById: user2.id,
+          collectionOrder: COLLECTION_ORDER_STEP * (i + 1),
         },
       });
     }
@@ -396,7 +401,9 @@ async function main() {
         });
       }
 
-      for (const link of links) {
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+
         await prisma.link.create({
           data: {
             name: link.name,
@@ -418,6 +425,7 @@ async function main() {
             },
             collectionId: collection.id,
             createdById: user1.id,
+            collectionOrder: COLLECTION_ORDER_STEP * (i + 1),
           },
         });
       }

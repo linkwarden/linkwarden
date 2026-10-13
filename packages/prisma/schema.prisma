@@ -165,6 +165,7 @@ model Link {
   createdById     Int?
   collection      Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId    Int
+  collectionOrder Float
   tags            Tag[]
   icon            String?
   iconWeight      String?
@@ -186,6 +187,7 @@ model Link {
   updatedAt       DateTime    @default(now()) @updatedAt
 
   @@index([collectionId])
+  @@index([collectionId, collectionOrder, id])
 }
 
 model Tag {

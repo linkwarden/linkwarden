@@ -6,7 +6,7 @@ import {
   ViewMode,
 } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -22,7 +22,10 @@ import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useLinks } from "@linkwarden/router/links";
+import { useLinks, useReorderLink } from "@linkwarden/router/links";
+import { arrayMove } from "@dnd-kit/sortable";
+import toast from "react-hot-toast";
+import { useRegisterLinkReorder } from "@/lib/client/linkReorder";
 import Links from "@/components/LinkViews/Links";
 import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
@@ -49,7 +52,7 @@ const Page: NextPageWithLayout = () => {
     Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
   );
 
-  const { links, data } = useLinks({
+  const { links, data, queryString } = useLinks({
     sort: sortBy,
     collectionId: Number(router.query.id),
   });
@@ -112,6 +115,43 @@ const Page: NextPageWithLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>(
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
+
+  const reorderLink = useReorderLink();
+
+  const canReorder =
+    sortBy === Sort.Custom &&
+    !editMode &&
+    (permissions === true || !!permissions?.canUpdate);
+
+  // dnd-kit reports which link was dragged and which one it was let go over. Settling
+  // the list first and then reading off the neighbour above the link's new home gives
+  // the same answer for a drag in either direction, which is all the route wants.
+  const handleReorder = useCallback(
+    (draggedLinkId: number, droppedOnLinkId: number) => {
+      const from = links.findIndex((e) => e.id === draggedLinkId);
+      const to = links.findIndex((e) => e.id === droppedOnLinkId);
+
+      if (from === -1 || to === -1 || from === to) return;
+
+      const settled = arrayMove(links, from, to);
+      const landedAt = settled.findIndex((e) => e.id === draggedLinkId);
+
+      reorderLink.mutate(
+        {
+          linkId: draggedLinkId,
+          beforeId:
+            landedAt > 0 ? (settled[landedAt - 1].id as number) : undefined,
+          queryParams: queryString,
+        },
+        // The card springs back on a failure, which on its own looks like a glitch.
+        { onError: (error) => toast.error(error.message) }
+      );
+    },
+    // mutate is stable, so the handler only changes when the list does.
+    [links, queryString, reorderLink.mutate]
+  );
+
+  useRegisterLinkReorder(canReorder ? handleReorder : null);
 
   return (
     <div
@@ -346,6 +386,7 @@ const Page: NextPageWithLayout = () => {
             : undefined
         }
         links={links}
+        allowCustomOrder
       >
         {collections.some((e) => e.parentId === activeCollection?.id) ? (
           <PageHeader
@@ -380,6 +421,7 @@ const Page: NextPageWithLayout = () => {
         links={links}
         layout={viewMode}
         useData={data}
+        reorderable={canReorder}
       />
       {!data.isLoading && links && !links[0] && <NoLinksFound />}
       {activeCollection && (

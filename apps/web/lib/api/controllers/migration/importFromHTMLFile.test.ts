@@ -109,6 +109,7 @@ describe.sequential("importFromHTMLFile integration", () => {
           name: `Existing ${i}`,
           url: `https://example.com/existing-${i}`,
           collectionId: collection.id,
+          collectionOrder: (i + 1) * 65536,
           createdById: user.id,
         },
       });

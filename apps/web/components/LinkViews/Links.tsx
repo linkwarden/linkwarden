@@ -18,6 +18,13 @@ import { TFunction } from "i18next";
 import useLinkStore from "@/store/links";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { useUser } from "@linkwarden/router/user";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableLink from "@/components/LinkViews/SortableLink";
+import { masonrySortingStrategy } from "@/lib/client/masonrySortingStrategy";
 
 function CardView({
   links,
@@ -32,6 +39,7 @@ function CardView({
   isLoading,
   hasNextPage,
   placeHolderRef,
+  canReorder,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
@@ -45,6 +53,7 @@ function CardView({
   isLoading: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
+  canReorder: boolean;
 }) {
   const settings = useLocalSettingsStore((state) => state.settings);
 
@@ -122,19 +131,20 @@ function CardView({
         const selected = isSelected(e.id as number);
 
         return (
-          <LinkCard
-            key={e.id}
-            link={e}
-            collection={collection as CollectionIncludingMembersAndLinkCount}
-            isPublicRoute={isPublicRoute}
-            t={t}
-            user={user}
-            disableDraggable={disableDraggable}
-            isSelected={selected}
-            toggleSelected={toggleSelected}
-            editMode={editMode}
-            imageHeightClass={imageHeightClass}
-          />
+          <SortableLink key={e.id} link={e} disabled={!canReorder} fillHeight>
+            <LinkCard
+              link={e}
+              collection={collection as CollectionIncludingMembersAndLinkCount}
+              isPublicRoute={isPublicRoute}
+              t={t}
+              user={user}
+              disableDraggable={disableDraggable}
+              isSelected={selected}
+              toggleSelected={toggleSelected}
+              editMode={editMode}
+              imageHeightClass={imageHeightClass}
+            />
+          </SortableLink>
         );
       })}
 
@@ -164,6 +174,7 @@ function MasonryView({
   isLoading,
   hasNextPage,
   placeHolderRef,
+  canReorder,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
@@ -177,6 +188,7 @@ function MasonryView({
   isLoading: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
+  canReorder: boolean;
 }) {
   const settings = useLocalSettingsStore((state) => state.settings);
 
@@ -262,19 +274,20 @@ function MasonryView({
         const selected = isSelected(e.id as number);
 
         return (
-          <LinkMasonry
-            key={e.id}
-            link={e}
-            collection={collection as CollectionIncludingMembersAndLinkCount}
-            isPublicRoute={isPublicRoute}
-            t={t}
-            disableDraggable={disableDraggable}
-            user={user}
-            isSelected={selected}
-            toggleSelected={toggleSelected}
-            imageHeightClass={imageHeightClass}
-            editMode={editMode}
-          />
+          <SortableLink key={e.id} link={e} disabled={!canReorder}>
+            <LinkMasonry
+              link={e}
+              collection={collection as CollectionIncludingMembersAndLinkCount}
+              isPublicRoute={isPublicRoute}
+              t={t}
+              disableDraggable={disableDraggable}
+              user={user}
+              isSelected={selected}
+              toggleSelected={toggleSelected}
+              imageHeightClass={imageHeightClass}
+              editMode={editMode}
+            />
+          </SortableLink>
         );
       })}
 
@@ -304,6 +317,7 @@ function ListView({
   isLoading,
   hasNextPage,
   placeHolderRef,
+  canReorder,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
@@ -317,6 +331,7 @@ function ListView({
   isLoading: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
+  canReorder: boolean;
 }) {
   return (
     <div className="flex flex-col">
@@ -325,19 +340,20 @@ function ListView({
         const selected = isSelected(e.id as number);
 
         return (
-          <LinkList
-            key={e.id}
-            link={e}
-            collection={collection as CollectionIncludingMembersAndLinkCount}
-            isPublicRoute={isPublicRoute}
-            t={t}
-            disableDraggable={disableDraggable}
-            user={user}
-            isSelected={selected}
-            toggleSelected={toggleSelected}
-            count={i}
-            editMode={editMode}
-          />
+          <SortableLink key={e.id} link={e} disabled={!canReorder}>
+            <LinkList
+              link={e}
+              collection={collection as CollectionIncludingMembersAndLinkCount}
+              isPublicRoute={isPublicRoute}
+              t={t}
+              disableDraggable={disableDraggable}
+              user={user}
+              isSelected={selected}
+              toggleSelected={toggleSelected}
+              count={i}
+              editMode={editMode}
+            />
+          </SortableLink>
         );
       })}
 
@@ -360,11 +376,18 @@ export default function Links({
   links,
   editMode,
   useData,
+  reorderable,
 }: {
   layout: ViewMode;
   links?: LinkIncludingShortenedCollectionAndTags[];
   editMode?: boolean;
   useData?: any;
+  /**
+   * Whether this list is in an order the viewer is allowed to rearrange. Only the page
+   * that owns the list knows that, so it says so here and registers what to do with a
+   * drop through useRegisterLinkReorder.
+   */
+  reorderable?: boolean;
 }) {
   const { ref, inView } = useInView();
 
@@ -402,12 +425,34 @@ export default function Links({
     }
   }, [editMode]);
 
-  const disableDraggable = useMediaQuery("(max-width: 1023px)");
+  const isTouchLayout = useMediaQuery("(max-width: 1023px)");
+
+  // Same breakpoint the drag-onto-a-collection gesture already uses: below it a drag
+  // and a scroll are hard to tell apart, so neither is offered.
+  const canReorder = !!reorderable && !isTouchLayout;
+
+  // While a list can be reordered, SortableLink is the drag source for each card, so
+  // the card's own draggable has to stand down or both would answer the same gesture.
+  const disableDraggable = isTouchLayout || canReorder;
 
   const { data: user } = useUser();
 
+  const sortableIds = useMemo(
+    () => (links || []).map((e) => e.id as number),
+    [links]
+  );
+
+  const sortingStrategy =
+    layout === ViewMode.List
+      ? verticalListSortingStrategy
+      : layout === ViewMode.Masonry
+        ? masonrySortingStrategy
+        : rectSortingStrategy;
+
+  let view;
+
   if (layout === ViewMode.List) {
-    return (
+    view = (
       <ListView
         links={links || []}
         collectionsById={collectionsById}
@@ -421,10 +466,11 @@ export default function Links({
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
+        canReorder={canReorder}
       />
     );
   } else if (layout === ViewMode.Masonry) {
-    return (
+    view = (
       <MasonryView
         links={links || []}
         collectionsById={collectionsById}
@@ -438,11 +484,12 @@ export default function Links({
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
+        canReorder={canReorder}
       />
     );
   } else {
     // Default to card view
-    return (
+    view = (
       <CardView
         links={links || []}
         collectionsById={collectionsById}
@@ -456,7 +503,14 @@ export default function Links({
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
+        canReorder={canReorder}
       />
     );
   }
+
+  return (
+    <SortableContext items={sortableIds} strategy={sortingStrategy}>
+      {view}
+    </SortableContext>
+  );
 }
