@@ -227,6 +227,7 @@
   "date_oldest_first": "Data (începând cu cele mai vechi)",
   "name_az": "Nume (A-Z)",
   "name_za": "Nume (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "Descriere (A-Z)",
   "description_za": "Descriere (Z-A)",
   "all_rights_reserved": "©️ {{date}} <0>Linkwarden</0>. Toate drepturile rezervate.",
