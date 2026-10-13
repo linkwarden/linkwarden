@@ -227,6 +227,7 @@
   "date_oldest_first": "Tarih (En Eskiler İlk)",
   "name_az": "Ad (A-Z)",
   "name_za": "Ad (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "Açıklama (A-Z)",
   "description_za": "Açıklama (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. Tüm hakları saklıdır.",
