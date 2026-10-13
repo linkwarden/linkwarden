@@ -227,6 +227,7 @@
   "date_oldest_first": "Дата (сначала старые)",
   "name_az": "Название (А-Я)",
   "name_za": "Название (Я-А)",
+  "custom_order": "Custom Order",
   "description_az": "Описание (А-Я)",
   "description_za": "Описание (Я-А)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. Все права защищены.",
