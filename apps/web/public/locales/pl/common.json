@@ -227,6 +227,7 @@
   "date_oldest_first": "Data (od najstarszych)",
   "name_az": "Nazwa (A-Z)",
   "name_za": "Nazwa (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "Opis (A-Z)",
   "description_za": "Opis (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. Wszelkie prawa zastrzeżone.",

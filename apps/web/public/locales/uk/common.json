@@ -227,6 +227,7 @@
   "date_oldest_first": "Дата (спочатку найдавніші)",
   "name_az": "Ім'я, зростання за алфавітом (А-Я)",
   "name_za": "Ім'я, спадання за алфавітом (Я-А)",
+  "custom_order": "Custom Order",
   "description_az": "Опис, зростання за алфавітом (A-Z)",
   "description_za": "Опис, спадання за алфавітом (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. Всі права захищені.",

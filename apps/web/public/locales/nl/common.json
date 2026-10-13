@@ -227,6 +227,7 @@
   "date_oldest_first": "Datum (Oudste Eerst)",
   "name_az": "Naam (A-Z)",
   "name_za": "Naam (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "Beschrijving (A-Z)",
   "description_za": "Beschrijving (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. Alle rechten voorbehouden.",

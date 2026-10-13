@@ -227,6 +227,7 @@
   "date_oldest_first": "日付 (古い順)",
   "name_az": "名前 (A-Z)",
   "name_za": "名前 (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "説明 (A-Z)",
   "description_za": "説明 (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. All rights reserved.",

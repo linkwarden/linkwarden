@@ -227,6 +227,7 @@
   "date_oldest_first": "日期 (最早)",
   "name_az": "名字 (A-Z)",
   "name_za": "名字 (Z-A)",
+  "custom_order": "Custom Order",
   "description_az": "描述 (A-Z)",
   "description_za": "描述 (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0> 版权所有",
