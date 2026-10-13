@@ -60,9 +60,10 @@ COPY --from=monolith-builder /usr/local/cargo/bin/monolith /usr/local/bin/monoli
 
 # Install minimal runtime system utilities
 # procps provides `ps`, which concurrently -k needs to manage child processes
+# tini runs as PID 1 to reap orphaned Chromium processes (avoids zombies)
 RUN set -eux && \
     apt-get update && \
-    apt-get install -yqq --no-install-recommends curl ca-certificates openssl procps && \
+    apt-get install -yqq --no-install-recommends curl ca-certificates openssl procps tini && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -95,5 +96,7 @@ HEALTHCHECK --interval=30s \
             CMD [ "/usr/bin/curl", "--silent", "--fail", "http://127.0.0.1:3000/" ]
 
 EXPOSE 3000
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
 CMD ["sh", "-c", "export PATH=/data/node_modules/.bin:$PATH && prisma migrate deploy --schema=/data/packages/prisma/schema.prisma && exec concurrently -k -n web,worker \"cd /data/apps/web && exec next start\" \"cd /data/apps/worker && exec tsx worker.ts\""]
