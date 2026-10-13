@@ -1,7 +1,7 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Icon from "@/components/Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -28,11 +28,13 @@ function LinkIcon({
   const url =
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
-  const [faviconLoaded, setFaviconLoaded] = useState(false);
+  const faviconSrc = url
+    ? `/api/v1/getFavicon?url=${encodeURIComponent(url.origin)}`
+    : undefined;
 
-  useEffect(() => {
-    setFaviconLoaded(false);
-  }, [link.url]);
+  const [loadedFavicon, setLoadedFavicon] = useState<string>();
+  const faviconLoaded =
+    faviconSrc !== undefined && loadedFavicon === faviconSrc;
 
   return (
     <div onClick={() => onClick && onClick()}>
@@ -46,10 +48,15 @@ function LinkIcon({
             className="m-auto"
           />
         </div>
-      ) : link.type === "url" && url ? (
+      ) : link.type === "url" && faviconSrc ? (
         <>
           <Image
-            src={`/api/v1/getFavicon?url=${encodeURIComponent(url.origin)}`}
+            ref={(node) => {
+              if (node?.complete && node.naturalWidth > 0) {
+                setLoadedFavicon(faviconSrc);
+              }
+            }}
+            src={faviconSrc}
             width={64}
             height={64}
             alt=""
@@ -59,7 +66,7 @@ function LinkIcon({
               faviconLoaded ? "" : "absolute opacity-0"
             )}
             draggable="false"
-            onLoad={() => setFaviconLoaded(true)}
+            onLoad={() => setLoadedFavicon(faviconSrc)}
           />
           {!faviconLoaded && (
             <LinkPlaceholderIcon
