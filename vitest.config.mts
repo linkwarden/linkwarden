@@ -5,6 +5,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(process.cwd(), "apps/web"),
+      // Next resolves this through the web app's tsconfig baseUrl, Vite doesn't.
+      "next-i18next.config": path.resolve(
+        process.cwd(),
+        "apps/web/next-i18next.config.js"
+      ),
     },
   },
   test: {
