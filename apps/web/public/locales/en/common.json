@@ -44,6 +44,7 @@
   "from_wallabag": "From Wallabag (JSON file)",
   "from_omnivore": "From Omnivore (ZIP file)",
   "from_pocket": "From Pocket (CSV file)",
+  "from_karakeep": "From Karakeep (JSON file)",
   "pinned": "Pinned",
   "pinned_links_desc": "Your pinned Links",
   "pin_favorite_links_here": "Pin Your Favorite Links Here!",
