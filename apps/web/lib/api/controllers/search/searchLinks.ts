@@ -7,6 +7,7 @@ import {
   parseSearchTokens,
 } from "../../searchQueryBuilder";
 import getAccessibleCollectionIds from "@/lib/api/getAccessibleCollectionIds";
+import getReadingListLinks from "../readingList/getReadingListLinks";
 
 interface SearchLinksParams {
   query: LinkRequestQuery;
@@ -19,6 +20,9 @@ export default async function searchLinks({
   userId,
   publicOnly,
 }: SearchLinksParams) {
+  if (query.readingList && userId && !publicOnly)
+    return getReadingListLinks(userId, query.readingList, query);
+
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
 

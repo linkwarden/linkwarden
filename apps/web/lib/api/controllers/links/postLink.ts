@@ -9,6 +9,7 @@ import {
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
+import { matchesReadingListRule } from "@linkwarden/lib/readingList";
 
 export default async function postLink(
   body: PostLinkSchemaType,
@@ -104,6 +105,14 @@ export default async function postLink(
 
   const collectionOrder = await nextCollectionOrder(linkCollection.id);
 
+  const addToReadingList =
+    link.readingList ??
+    (!!user &&
+      matchesReadingListRule(user, {
+        collectionId: linkCollection.id,
+        tagNames: link.tags.map((tag) => tag.name),
+      }));
+
   const newLink = await prisma.link.create({
     data: {
       url: link.url?.trim() || null,
@@ -139,6 +148,7 @@ export default async function postLink(
           },
         })),
       },
+      readingList: addToReadingList ? { create: { userId } } : undefined,
       ...(!shouldPreserveUrl && link.url
         ? {
             lastPreserved: new Date().toISOString(),

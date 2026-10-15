@@ -8,10 +8,18 @@ import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
+  ReadingListStatus,
   Sort,
   ViewMode,
 } from "@linkwarden/types/global";
 import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
+import useSetReadingListStatus from "@/lib/client/readingList";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +60,7 @@ const LinkListOptions = ({
 
   const deleteLinksById = useBulkDeleteLinks();
   const refreshPreservations = useArchiveAction();
+  const setReadingListStatus = useSetReadingListStatus();
 
   const router = useRouter();
 
@@ -114,6 +123,15 @@ const LinkListOptions = ({
         },
       }
     );
+  };
+
+  const bulkSetReadingListStatus = async (status: ReadingListStatus | null) => {
+    const ids = Object.keys(selectedIds).map(Number);
+
+    if (await setReadingListStatus(ids, status)) {
+      clearSelected();
+      setEditMode?.(false);
+    }
   };
 
   return (
@@ -193,6 +211,47 @@ const LinkListOptions = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+
+            <DropdownMenu>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={selectionCount === 0}
+                      >
+                        <i className="bi-bookmark" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("reading_list")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={() => bulkSetReadingListStatus("unread")}
+                >
+                  <i className="bi-bookmark-plus" />
+                  {t("add_to_reading_list")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => bulkSetReadingListStatus("read")}
+                >
+                  <i className="bi-bookmark-check" />
+                  {t("mark_as_read")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => bulkSetReadingListStatus(null)}
+                >
+                  <i className="bi-bookmark-x" />
+                  {t("remove_from_reading_list")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <TooltipProvider>
               <Tooltip>

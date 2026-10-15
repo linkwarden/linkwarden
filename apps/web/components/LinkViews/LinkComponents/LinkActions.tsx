@@ -8,6 +8,8 @@ import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
+import useSetReadingListStatus from "@/lib/client/readingList";
+import { useReadingListStatus } from "@linkwarden/router/readingList";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -45,6 +47,9 @@ export default function LinkActions({
   const updateArchiveMutation = useUpdateArchive();
 
   const pinLink = usePinLink();
+
+  const readingListStatus = useReadingListStatus(link.id);
+  const setReadingListStatus = useSetReadingListStatus();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
@@ -99,6 +104,51 @@ export default function LinkActions({
                 ? t("unpin")
                 : t("pin_to_dashboard")}
             </DropdownMenuItem>
+
+            {readingListStatus ? (
+              <>
+                <DropdownMenuItem
+                  onSelect={() =>
+                    setReadingListStatus(
+                      [link.id as number],
+                      readingListStatus === "unread" ? "read" : "unread"
+                    )
+                  }
+                >
+                  <i
+                    className={
+                      readingListStatus === "unread"
+                        ? "bi-bookmark-check"
+                        : "bi-bookmark"
+                    }
+                  />
+
+                  {readingListStatus === "unread"
+                    ? t("mark_as_read")
+                    : t("mark_as_unread")}
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onSelect={() =>
+                    setReadingListStatus([link.id as number], null)
+                  }
+                >
+                  <i className="bi-bookmark-x" />
+
+                  {t("remove_from_reading_list")}
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem
+                onSelect={() =>
+                  setReadingListStatus([link.id as number], "unread")
+                }
+              >
+                <i className="bi-bookmark-plus" />
+
+                {t("add_to_reading_list")}
+              </DropdownMenuItem>
+            )}
 
             <DropdownMenuItem onSelect={() => setLinkModal(true)}>
               <i className="bi-info-circle" />
