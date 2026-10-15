@@ -42,6 +42,7 @@ model User {
   collections             Collection[]
   tags                    Tag[]
   pinnedLinks             Link[]                @relation("PinnedLinks")
+  readingList             ReadingListItem[]
   createdLinks            Link[]                @relation("CreatedLinks")
   createdCollections      Collection[]          @relation("CreatedCollections")
   highlights              Highlight[]
@@ -53,6 +54,8 @@ model User {
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
+  readingListCollections  Int[]                 @default([])
+  readingListTags         String[]              @default([])
   theme                   Theme                 @default(dark)
   dismissedAnnouncementId String?
   readableFontFamily      String?               @default("sans-serif")
@@ -161,6 +164,7 @@ model Link {
   description     String      @default("")
   highlight       Highlight[]
   pinnedBy        User[]      @relation("PinnedLinks")
+  readingList     ReadingListItem[]
   createdBy       User?       @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById     Int?
   collection      Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
@@ -312,4 +316,15 @@ enum AppMigrationStatus {
   APPLIED
   PENDING
   FAILED
+}
+
+model ReadingListItem {
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+  link    Link      @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  linkId  Int
+  addedAt DateTime  @default(now())
+  readAt  DateTime?
+
+  @@id([userId, linkId])
 }
