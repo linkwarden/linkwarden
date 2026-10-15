@@ -75,12 +75,12 @@ COPY --from=app-builder /data/packages ./packages
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && corepack install
 
-# Install only the Chromium headless shell (Playwright's smallest browser) plus
-# the shared libraries it needs at runtime. Full Chromium is not required.
+# Install full Chromium for compatibility with sites that reject the
+# headless-shell-only browser used by Playwright.
 RUN set -eux && \
     export PATH=/data/node_modules/.bin:$PATH && \
     apt-get update && \
-    playwright install --with-deps chromium-headless-shell && \
+    playwright install --with-deps chromium && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
