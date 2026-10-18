@@ -26,9 +26,19 @@ import Droppable from "./Droppable";
 import { cn } from "@linkwarden/lib/utils";
 import { Active, useDndContext } from "@dnd-kit/core";
 
+const SIDEBAR_ROOT_LIMIT = 100;
+
+const VIEW_ALL_ID = "view-all";
+
+// Stands in for the top-level collections past SIDEBAR_ROOT_LIMIT.
+type ViewAllItemData = { viewAllHref: string; label: string };
+
 interface ExtendedTreeItem extends TreeItem {
-  data: Collection;
+  data: Collection | ViewAllItemData;
 }
+
+const isViewAll = (data: ExtendedTreeItem["data"]): data is ViewAllItemData =>
+  "viewAllHref" in data;
 
 const CollectionListing = () => {
   const { active: droppableActive } = useDndContext();
@@ -48,6 +58,7 @@ const CollectionListing = () => {
       return buildTreeFromCollections(
         collections,
         router,
+        t("view_all"),
         tree,
         user?.collectionOrder
       );
@@ -208,6 +219,9 @@ const CollectionListing = () => {
       return;
     }
 
+    // Nothing can be dropped into the "View All" row.
+    if (destination.parentId === VIEW_ALL_ID) return;
+
     const movedCollectionId = Number(
       tree.items[source.parentId].children[source.index]
     );
@@ -255,9 +269,22 @@ const CollectionListing = () => {
       );
     }
 
+    // The tree only holds the first SIDEBAR_ROOT_LIMIT top-level collections, so
+    // keep the saved order of the rest after them. Saving only the tree would drop
+    // them to the bottom, with the collections that were never ordered.
+    const treeOrder = flattenTreeIds(newTree).filter(
+      (id) => id !== VIEW_ALL_ID
+    );
+    const inTree = new Set(treeOrder);
+
     await updateUser.mutateAsync({
       ...user,
-      collectionOrder: flattenTreeIds(newTree),
+      collectionOrder: [
+        ...treeOrder,
+        ...(user?.collectionOrder ?? []).filter(
+          (id: number) => !inTree.has(id)
+        ),
+      ],
     });
   };
 
@@ -285,7 +312,7 @@ const CollectionListing = () => {
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}
-        isDragEnabled
+        isDragEnabled={(item) => !isViewAll(item.data)}
         isNestingEnabled
       />
     );
@@ -298,6 +325,23 @@ const renderItem = (
   currentPath: string,
   droppableActive: Active | null
 ) => {
+  if (isViewAll(item.data)) {
+    return (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        className="mb-1"
+      >
+        <Link
+          href={item.data.viewAllHref}
+          className="flex items-center h-7 pl-5 pr-2 rounded-md text-xs text-neutral hover:bg-neutral/20 duration-100"
+        >
+          {item.data.label}
+        </Link>
+      </div>
+    );
+  }
+
   const collection = item.data;
 
   return (
@@ -398,12 +442,24 @@ const Dropdown = (
 const buildTreeFromCollections = (
   collections: CollectionIncludingMembersAndLinkCount[],
   router: ReturnType<typeof useRouter>,
+  viewAllLabel: string,
   tree?: TreeData,
   order?: number[]
 ): TreeData => {
   if (order) {
+    // Saved position first, then the collections missing from the order, which
+    // keep the API's order (oldest first). A map rather than indexOf, which is
+    // quadratic over thousands of collections.
+    const position = new Map<number, number>();
+    order.forEach((id, index) => {
+      if (!position.has(id)) position.set(id, index);
+    });
+
     collections.sort((a: any, b: any) => {
-      return order.indexOf(a.id) - order.indexOf(b.id);
+      return (
+        (position.get(a.id) ?? order.length) -
+        (position.get(b.id) ?? order.length)
+      );
     });
   }
 
@@ -424,7 +480,7 @@ const buildTreeFromCollections = (
     return totalLinkCount;
   }
 
-  const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
+  const items: { [key: string]: TreeItem } = collections.reduce(
     (acc: any, collection) => {
       acc[collection.id as number] = {
         id: collection.id,
@@ -485,19 +541,31 @@ const buildTreeFromCollections = (
     }
   });
 
+  const rootIds = collections
+    .filter((c) => c.parentId === null || !items[c.parentId])
+    .map((c) => c.id as number);
+
   const rootId = "root";
   items[rootId] = {
     id: rootId,
-    children: (collections
-      .filter(
-        (c) =>
-          c.parentId === null || !collections.find((i) => i.id === c.parentId)
-      )
-      .map((c) => c.id) || "") as unknown as string[],
+    children: rootIds.slice(0, SIDEBAR_ROOT_LIMIT),
     hasChildren: true,
     isExpanded: true,
     data: { name: "Root" } as Collection,
   };
+
+  if (rootIds.length > SIDEBAR_ROOT_LIMIT) {
+    items[VIEW_ALL_ID] = {
+      id: VIEW_ALL_ID,
+      children: [],
+      hasChildren: false,
+      data: {
+        viewAllHref: "/collections",
+        label: `${viewAllLabel} (${rootIds.length})`,
+      },
+    };
+    items[rootId].children.push(VIEW_ALL_ID);
+  }
 
   return { rootId, items };
 };
