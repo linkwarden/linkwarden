@@ -25,16 +25,18 @@ export const config = {
 /** Helper Functions   */
 /** ------------------ */
 
-// Check whether user can create in the given collection
-function userHasCreatePermission(
+function userCanUploadToLink(
   collectionPermissions: any,
-  userId: number
+  userId: number,
+  linkCreatedById: number | null | undefined
 ): boolean {
   if (!collectionPermissions) return false;
-  const memberHasAccess = collectionPermissions.members.some(
-    (e: UsersAndCollections) => e.userId === userId && e.canCreate
+  if (collectionPermissions.ownerId === userId) return true;
+  const member = collectionPermissions.members.find(
+    (e: UsersAndCollections) => e.userId === userId
   );
-  return collectionPermissions.ownerId === userId || Boolean(memberHasAccess);
+  if (!member) return false;
+  return member.canUpdate || (member.canCreate && linkCreatedById === userId);
 }
 
 // Ensure user does not exceed maximum link limit
@@ -162,18 +164,19 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     userId: user.id,
     linkId,
   });
-  if (
-    !userHasCreatePermission(collectionPermissions, user.id) ||
-    !collectionPermissions
-  ) {
-    return res.status(400).json({ response: "Collection is not accessible." });
-  }
 
   const link = await prisma.link.findUnique({
     where: {
       id: linkId,
     },
   });
+
+  if (
+    !userCanUploadToLink(collectionPermissions, user.id, link?.createdById) ||
+    !collectionPermissions
+  ) {
+    return res.status(400).json({ response: "Collection is not accessible." });
+  }
 
   if (!link) {
     return res.status(400).json({ response: "Link not found." });
