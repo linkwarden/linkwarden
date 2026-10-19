@@ -2,7 +2,6 @@ import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import {
   LinkIncludingShortenedCollectionAndTags,
-  Sort,
   ViewMode,
 } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
@@ -13,6 +12,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
 import { NextPageWithLayout } from "./_app";
+import useLinkSort from "@/hooks/useLinkSort";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -23,9 +23,7 @@ const Page: NextPageWithLayout = () => {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
+  const [sortBy, setSortBy] = useLinkSort();
 
   const [editMode, setEditMode] = useState(false);
 

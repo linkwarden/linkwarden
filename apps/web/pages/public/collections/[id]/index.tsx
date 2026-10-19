@@ -3,7 +3,6 @@ import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import {
   AccountSettings,
   CollectionIncludingMembersAndLinkCount,
-  Sort,
   ViewMode,
 } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
@@ -31,6 +30,7 @@ import {
 } from "@/components/ui/tooltip";
 import useTheme from "@/hooks/useTheme";
 import { Separator } from "@/components/ui/separator";
+import useLinkSort from "@/hooks/useLinkSort";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -56,9 +56,7 @@ export default function PublicCollections() {
     }
   };
 
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
+  const [sortBy, setSortBy] = useLinkSort();
 
   const { data: tags } = usePublicTags();
 

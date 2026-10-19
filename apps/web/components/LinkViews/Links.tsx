@@ -68,24 +68,12 @@ function useLinkDrag(links: LinkIncludingShortenedCollectionAndTags[]) {
   const { active } = useDndContext();
   const activeId = active ? Number(active.id) : undefined;
 
-  // The drag ends one render before the list shows the move. In that render the
-  // link would be back at its old place, often far off screen, and unmount, to
-  // mount again (fading in) where it was dropped. So it stays mounted until the
-  // links change.
-  const lastDrag = useRef<{
-    id: number;
-    links: LinkIncludingShortenedCollectionAndTags[];
-  }>(undefined);
-  if (activeId !== undefined) lastDrag.current = { id: activeId, links };
-
-  const keptId =
-    activeId ??
-    (lastDrag.current?.links === links ? lastDrag.current.id : undefined);
-
   const draggedIndex = useMemo(
     () =>
-      keptId === undefined ? -1 : links.findIndex((link) => link.id === keptId),
-    [links, keptId]
+      activeId === undefined
+        ? -1
+        : links.findIndex((link) => link.id === activeId),
+    [links, activeId]
   );
 
   return { draggedIndex, reordering: !!active?.data.current?.sortable };
@@ -509,7 +497,23 @@ function MasonryColumn({
       const slot = slots[index];
       return slot === NEXT_PAGE ? NEXT_PAGE : (slot.id as number);
     },
-    estimateSize: () => ESTIMATED_MASONRY_CARD_HEIGHT,
+    // A card a reorder moves here from another column was measured there, and the
+    // columns are all one width. Starting it at the estimate instead would put
+    // every card below it out by the difference until it's measured again, and
+    // scroll the page by that much when it sits above the screen.
+    estimateSize: (index) => {
+      const slot = slots[index];
+      if (slot === NEXT_PAGE) return ESTIMATED_MASONRY_CARD_HEIGHT;
+
+      for (const other of geometry.current) {
+        const size = other?.rows.virtualizer.itemSizeCache.get(
+          slot.id as number
+        );
+        if (size !== undefined) return size;
+      }
+
+      return ESTIMATED_MASONRY_CARD_HEIGHT;
+    },
     gap: CARD_GAP,
     keepMounted: [draggedIndex],
     fadeIn,

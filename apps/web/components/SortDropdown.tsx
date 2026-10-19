@@ -1,7 +1,6 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React from "react";
 import { Sort } from "@linkwarden/types/global";
 import { TFunction } from "i18next";
-import useLocalSettingsStore from "@/store/localSettings";
 import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -15,7 +14,7 @@ import { Button } from "./ui/button";
 
 type Props = {
   sortBy: Sort;
-  setSort: Dispatch<SetStateAction<Sort>>;
+  setSort: (sort: Sort) => void;
   t: TFunction<"translation", undefined>;
   /**
    * Whether the list being sorted is a single collection, which is the only place a
@@ -30,21 +29,7 @@ export default function SortDropdown({
   t,
   allowCustomOrder,
 }: Props) {
-  const { updateSettings } = useLocalSettingsStore();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    updateSettings({ sortBy });
-  }, [sortBy]);
-
-  // The chosen sort is remembered across the whole app, so arriving on a list that
-  // can't be hand-ordered with "Custom Order" still selected would leave the menu
-  // showing an option that isn't there. Fall back to the default instead.
-  useEffect(() => {
-    if (sortBy === Sort.Custom && !allowCustomOrder) {
-      setSort(Sort.DateNewestFirst);
-    }
-  }, [sortBy, allowCustomOrder]);
 
   const handleValueChange = (value: string) => {
     resetInfiniteQueryPagination(queryClient, ["links"]);
@@ -67,6 +52,12 @@ export default function SortDropdown({
           value={sortBy.toString()}
           onValueChange={handleValueChange}
         >
+          {allowCustomOrder && (
+            <DropdownMenuRadioItem value={Sort.Custom.toString()}>
+              {t("custom_order")}
+            </DropdownMenuRadioItem>
+          )}
+
           <DropdownMenuRadioItem value={Sort.DateNewestFirst.toString()}>
             {t("date_newest_first")}
           </DropdownMenuRadioItem>
@@ -82,12 +73,6 @@ export default function SortDropdown({
           <DropdownMenuRadioItem value={Sort.NameZA.toString()}>
             {t("name_za")}
           </DropdownMenuRadioItem>
-
-          {allowCustomOrder && (
-            <DropdownMenuRadioItem value={Sort.Custom.toString()}>
-              {t("custom_order")}
-            </DropdownMenuRadioItem>
-          )}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

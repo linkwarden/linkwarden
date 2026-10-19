@@ -28,7 +28,7 @@ type Props = {
   viewMode: ViewMode;
   setViewMode: Dispatch<SetStateAction<ViewMode>>;
   sortBy: Sort;
-  setSortBy: Dispatch<SetStateAction<Sort>>;
+  setSortBy: (sort: Sort) => void;
   editMode?: boolean;
   setEditMode?: (mode: boolean) => void;
   links: LinkIncludingShortenedCollectionAndTags[];

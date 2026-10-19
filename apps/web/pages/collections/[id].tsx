@@ -41,6 +41,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NextPageWithLayout } from "../_app";
+import useLinkSort from "@/hooks/useLinkSort";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -48,14 +49,28 @@ const Page: NextPageWithLayout = () => {
 
   const { data: collections = [] } = useCollections();
 
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
+  const [sortBy, setSortBy] = useLinkSort(true);
 
-  const { links, data, queryString } = useLinks({
+  const {
+    links: fetchedLinks,
+    data,
+    queryString,
+  } = useLinks({
     sort: sortBy,
     collectionId: Number(router.query.id),
   });
+
+  // dnd-kit ends a drag in the render that handles the drop, which puts every card
+  // the drag pushed aside back in its old place. The cache only passes the new order
+  // on a task later, so the cards would slide back and then jump to where they were
+  // dropped. The dropped order is shown from that first render instead, until the
+  // cache has it too.
+  const [drop, setDrop] = useState<{
+    from: LinkIncludingShortenedCollectionAndTags[];
+    to: LinkIncludingShortenedCollectionAndTags[];
+  }>();
+
+  const links = drop?.from === fetchedLinks ? drop.to : fetchedLinks;
 
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
@@ -136,6 +151,8 @@ const Page: NextPageWithLayout = () => {
       const settled = arrayMove(links, from, to);
       const landedAt = settled.findIndex((e) => e.id === draggedLinkId);
 
+      setDrop({ from: fetchedLinks, to: settled });
+
       reorderLink.mutate(
         {
           linkId: draggedLinkId,
@@ -148,7 +165,7 @@ const Page: NextPageWithLayout = () => {
       );
     },
     // mutate is stable, so the handler only changes when the list does.
-    [links, queryString, reorderLink.mutate]
+    [links, fetchedLinks, queryString, reorderLink.mutate]
   );
 
   useRegisterLinkReorder(canReorder ? handleReorder : null);

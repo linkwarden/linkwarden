@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { FormEvent, ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { Sort, ViewMode } from "@linkwarden/types/global";
+import { ViewMode } from "@linkwarden/types/global";
 import { useLinks } from "@linkwarden/router/links";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
@@ -20,6 +20,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { NextPageWithLayout } from "../_app";
+import useLinkSort from "@/hooks/useLinkSort";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -36,9 +37,7 @@ const Page: NextPageWithLayout = () => {
   const updateTag = useUpdateTag();
   const removeTag = useRemoveTag();
 
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
+  const [sortBy, setSortBy] = useLinkSort();
 
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
