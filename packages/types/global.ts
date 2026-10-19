@@ -104,12 +104,20 @@ export enum TagSort {
 
 export type Order = { [key: string]: "asc" | "desc" };
 
+export type ReadingListStatus = "unread" | "read";
+
+export type ReadingListState = {
+  unread: number[];
+  read: number[];
+};
+
 export type LinkRequestQuery = {
   sort?: Sort;
   cursor?: number;
   collectionId?: number;
   tagId?: number;
   pinnedOnly?: boolean;
+  readingList?: ReadingListStatus;
   searchQueryString?: string;
 };
 

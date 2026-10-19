@@ -26,6 +26,7 @@ import clsx from "clsx";
 import ToggleDarkMode from "../ToggleDarkMode";
 import TextStyleDropdown from "../TextStyleDropdown";
 import HighlightDrawer from "../HighlightDrawer";
+import ReadingListButton from "../ReadingListButton";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -244,6 +245,9 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
         </DropdownMenu>
 
         <div className="flex gap-2 items-center text-neutral">
+          {link.id && !router.pathname.startsWith("/public") && (
+            <ReadingListButton linkId={link.id} />
+          )}
           <ToggleDarkMode />
           <LinkActions
             link={link}
