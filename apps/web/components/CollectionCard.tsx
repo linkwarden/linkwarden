@@ -143,7 +143,7 @@ export default function CollectionCard({
             user?.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
           } 100%)`,
         }}
-        className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
+        className="card card-compact shadow-md hover:shadow-none transition-shadow duration-200 border border-neutral-content"
       >
         <div className="card-body flex flex-col justify-between min-h-[9rem]">
           <div className="flex justify-between">
