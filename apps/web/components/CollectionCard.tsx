@@ -1,17 +1,13 @@
 import Link from "next/link";
-import {
-  AccountSettings,
-  CollectionIncludingMembersAndLinkCount,
-} from "@linkwarden/types/global";
-import React, { useEffect, useState } from "react";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
+import React, { useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
-import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@linkwarden/router/user";
+import { usePublicUser, useUser } from "@linkwarden/router/user";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -40,30 +36,13 @@ export default function CollectionCard({
 
   const permissions = usePermissions(collection.id as number);
 
-  const [collectionOwner, setCollectionOwner] = useState<
-    Partial<AccountSettings>
-  >({});
+  const isOwner = !!user && collection.ownerId === user.id;
 
-  useEffect(() => {
-    const fetchOwner = async () => {
-      if (collection && collection.ownerId !== user?.id) {
-        const owner = await getPublicUserData(collection.ownerId as number);
-        setCollectionOwner(owner);
-      } else if (collection && collection.ownerId === user?.id) {
-        setCollectionOwner({
-          id: user?.id as number,
-          name: user?.name,
-          username: user?.username as string,
-          image: user?.image as string,
-          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user?.archiveAsMonolith as boolean,
-          archiveAsPDF: user?.archiveAsPDF as boolean,
-        });
-      }
-    };
+  const { data: publicOwner } = usePublicUser(
+    user && !isOwner ? (collection.ownerId as number) : undefined
+  );
 
-    fetchOwner();
-  }, [collection]);
+  const collectionOwner = isOwner ? user : publicOwner;
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
@@ -128,7 +107,7 @@ export default function CollectionCard({
         className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
         onClick={() => setEditCollectionSharingModal(true)}
       >
-        {collectionOwner.id && (
+        {collectionOwner?.id && (
           <ProfilePhoto
             src={collectionOwner.image || undefined}
             name={collectionOwner.name}

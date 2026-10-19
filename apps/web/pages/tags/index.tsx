@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import NewTagModal from "@/components/ModalContent/NewTagModal";
 import {
   Tooltip,
@@ -25,6 +25,24 @@ import MergeTagsModal from "@/components/ModalContent/MergeTagsModal";
 import { NextPageWithLayout } from "../_app";
 import { TagSort } from "@linkwarden/types/global";
 import { useInView } from "react-intersection-observer";
+import VirtualRows, {
+  useBreakpointColumns,
+  useVirtualRows,
+} from "@/components/VirtualRows";
+
+// Matches the grid classes below: two columns, three from sm, five from xl, six
+// from 2xl.
+const TAG_COLUMNS: [string, number][] = [
+  ["(min-width: 1536px)", 6],
+  ["(min-width: 1280px)", 5],
+  ["(min-width: 640px)", 3],
+];
+
+// A tag card's height until rows are measured.
+const ESTIMATED_TAG_CARD_HEIGHT = 72;
+
+// Where the next page goes while it loads, laid out as one more card.
+const LOADING = "loading";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -54,6 +72,51 @@ const Page: NextPageWithLayout = () => {
 
     fetchNextPage();
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const columns = useBreakpointColumns(TAG_COLUMNS, 2);
+
+  const slots = useMemo(
+    () =>
+      (isLoading && !tags.length) || isFetchingNextPage
+        ? [...tags, LOADING]
+        : tags,
+    [tags, isLoading, isFetchingNextPage]
+  );
+
+  const rows = useVirtualRows({
+    count: Math.ceil(slots.length / columns),
+    // Keyed by column count too, so a measured height isn't reused for a row
+    // holding different cards.
+    getItemKey: (row) => `${columns}-${row}`,
+    estimateSize: () => ESTIMATED_TAG_CARD_HEIGHT,
+    gap: 12,
+  });
+
+  const renderRow = useCallback(
+    (row: number) => (
+      <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3">
+        {slots.slice(row * columns, (row + 1) * columns).map((tag: any) =>
+          tag === LOADING ? (
+            <TagCardSkeleton key={LOADING} />
+          ) : (
+            <TagCard
+              key={tag.id}
+              tag={tag}
+              selected={selectedTags.includes(tag.id)}
+              editMode={editMode}
+              onSelect={(id: number) => {
+                console.log(id);
+                if (selectedTags.includes(id))
+                  setSelectedTags((prev) => prev.filter((t) => t !== id));
+                else setSelectedTags((prev) => [...prev, id]);
+              }}
+            />
+          )
+        )}
+      </div>
+    ),
+    [slots, columns, selectedTags, editMode]
+  );
 
   return (
     <div className="p-3 flex flex-col gap-5 w-full flex-1">
@@ -205,24 +268,7 @@ const Page: NextPageWithLayout = () => {
         </div>
       )}
 
-      <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-3">
-        {tags.map((tag: any) => (
-          <TagCard
-            key={tag.id}
-            tag={tag}
-            selected={selectedTags.includes(tag.id)}
-            editMode={editMode}
-            onSelect={(id: number) => {
-              console.log(id);
-              if (selectedTags.includes(id))
-                setSelectedTags((prev) => prev.filter((t) => t !== id));
-              else setSelectedTags((prev) => [...prev, id]);
-            }}
-          />
-        ))}
-        {isLoading && !tags.length && <TagCardSkeleton />}
-        {isFetchingNextPage && <TagCardSkeleton />}
-      </div>
+      <VirtualRows rows={rows} renderRow={renderRow} />
 
       {hasNextPage && <div ref={ref} className="h-1 w-full" />}
 

@@ -1,11 +1,29 @@
-import { useEffect, useState } from "react";
+import { ComponentType, useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import { InputActionMeta } from "react-select";
+import { components, InputActionMeta, MenuListProps } from "react-select";
 import { styles } from "./styles";
 import { ArchivalTagOption, Option } from "@linkwarden/types/inputSelect";
 import { useTags } from "@linkwarden/router/tags";
 import { useTranslation } from "next-i18next";
 import { TagSort } from "@linkwarden/types/global";
+
+const DefaultMenuList = components.MenuList as ComponentType<MenuListProps>;
+
+const MenuList = (props: MenuListProps) => (
+  <DefaultMenuList {...props}>
+    {props.children}
+    {props.selectProps.isLoading && (
+      <div aria-hidden>
+        {["w-1/3", "w-1/2", "w-1/4"].map((width) => (
+          // Same height as an option row.
+          <div key={width} className="px-3 py-2.5">
+            <div className={`skeleton h-4 ${width}`}></div>
+          </div>
+        ))}
+      </div>
+    )}
+  </DefaultMenuList>
+);
 
 type Props = {
   onChange: (e: any) => void;
@@ -30,6 +48,7 @@ export default function TagSelection({
   const [searchQuery, setSearchQuery] = useState("");
   const {
     data: tags = [],
+    isLoading,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
@@ -63,7 +82,12 @@ export default function TagSelection({
       isMulti
       autoFocus={autoFocus}
       onBlur={onBlur}
-      isLoading={isFetchingNextPage}
+      isLoading={!isArchivalSelection && (isLoading || isFetchingNextPage)}
+      components={{
+        MenuList,
+        LoadingIndicator: () => null,
+        LoadingMessage: () => null,
+      }}
       onInputChange={(value: string, { action }: InputActionMeta) => {
         if (action === "input-change") setSearchQuery(value);
         else if (

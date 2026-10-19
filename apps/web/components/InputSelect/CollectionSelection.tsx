@@ -1,11 +1,60 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import {
+  ComponentType,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { styles } from "./styles";
 import { Option } from "@linkwarden/types/inputSelect";
 import CreatableSelect from "react-select/creatable";
-import Select from "react-select";
+import Select, { components, MenuListProps } from "react-select";
 import { useCollections } from "@linkwarden/router/collections";
 import clsx from "clsx";
+import VirtualRows, { useVirtualRows } from "@/components/VirtualRows";
+
+const DefaultMenuList = components.MenuList as ComponentType<
+  MenuListProps<Option, false>
+>;
+
+// An option's height (name over its path) until rows are measured.
+const ESTIMATED_OPTION_HEIGHT = 57;
+
+// Renders only the options near the visible part of the menu, since it can
+// list thousands of collections.
+function VirtualMenuList(props: MenuListProps<Option, false>) {
+  // react-select's own option elements, passed through untouched so a row that
+  // stays mounted isn't rendered again (Children.toArray would clone them).
+  const options = (
+    Array.isArray(props.children) ? props.children : [props.children]
+  ) as ReactElement[];
+
+  const rows = useVirtualRows({
+    count: options.length,
+    getItemKey: (index) => options[index]?.key ?? index,
+    estimateSize: () => ESTIMATED_OPTION_HEIGHT,
+  });
+
+  const renderRow = useCallback(
+    (index: number) => (
+      // Each option sits alone in its row, so it can't tell it's the last one
+      // from :last-child.
+      <div
+        className={index === options.length - 1 ? "[&>*]:border-0" : undefined}
+      >
+        {options[index]}
+      </div>
+    ),
+    [options]
+  );
+
+  return (
+    <DefaultMenuList {...props}>
+      <VirtualRows rows={rows} renderRow={renderRow} />
+    </DefaultMenuList>
+  );
+}
 
 type Props = {
   onChange: any;
@@ -90,7 +139,7 @@ export default function CollectionSelection({
     return (
       <div
         {...innerProps}
-        className="px-2 py-2 last:border-0 border-b border-neutral-content hover:bg-neutral-content duration-100 cursor-pointer"
+        className="px-2 py-2 border-b border-neutral-content hover:bg-neutral-content duration-100 cursor-pointer"
       >
         <div className="flex w-full justify-between items-center">
           <span>{data.label}</span>
@@ -117,6 +166,7 @@ export default function CollectionSelection({
         defaultValue={showDefaultValue ? defaultValue : null}
         components={{
           Option: customOption,
+          MenuList: VirtualMenuList,
         }}
         // menuPosition="fixed"
       />
@@ -135,6 +185,7 @@ export default function CollectionSelection({
         onBlur={onBlur}
         components={{
           Option: customOption,
+          MenuList: VirtualMenuList,
         }}
         // menuPosition="fixed"
       />

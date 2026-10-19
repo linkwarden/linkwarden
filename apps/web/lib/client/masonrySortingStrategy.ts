@@ -1,6 +1,7 @@
 import type { SortingStrategy } from "@dnd-kit/sortable";
 
-type Box = { left: number; top: number; height: number };
+export type MasonryBox = { left: number; top: number; height: number };
+type Box = MasonryBox;
 type Place = { x: number; y: number };
 
 /**
@@ -75,17 +76,6 @@ export function masonryLayoutAfterMove(
   return places;
 }
 
-// dnd-kit asks for a transform once per card on every frame of a drag, and the packing
-// is one answer that covers all of them. `rects` holds a single identity for as long as
-// the measurements do, so remembering the last answer turns the work from O(n^2) a
-// frame into O(n).
-let lastPacking: {
-  boxes: unknown;
-  activeIndex: number;
-  overIndex: number;
-  places: Place[] | null;
-} | null = null;
-
 /**
  * Opens a gap in a masonry list for the card being dragged.
  *
@@ -93,38 +83,55 @@ let lastPacking: {
  * over its neighbour's exact box. That only holds when every card is the same size.
  * In masonry a tall card sent to a short card's slot would be drawn over whatever sits
  * below it, so this works out the real layout the drop would produce instead.
+ *
+ * The list is virtualized, so dnd-kit only has rects for the cards that are mounted,
+ * while packing a column needs every card above. `getBoxes` supplies all of them, in
+ * the list's own coordinates, from the column virtualizers.
  */
-export const masonrySortingStrategy: SortingStrategy = ({
-  rects,
-  activeIndex,
-  overIndex,
-  index,
-}) => {
-  if (activeIndex < 0 || overIndex < 0) return null;
+export function createMasonrySortingStrategy(
+  getBoxes: () => Box[] | null
+): SortingStrategy {
+  // dnd-kit asks for a transform once per card on every frame of a drag, and the
+  // packing is one answer that covers all of them. `rects` holds a single identity
+  // for as long as the measurements do, so remembering the last answer turns the
+  // work from O(n^2) a frame into O(n).
+  let lastPacking: {
+    rects: unknown;
+    activeIndex: number;
+    overIndex: number;
+    boxes: Box[] | null;
+    places: Place[] | null;
+  } | null = null;
 
-  if (
-    !lastPacking ||
-    lastPacking.boxes !== rects ||
-    lastPacking.activeIndex !== activeIndex ||
-    lastPacking.overIndex !== overIndex
-  ) {
-    lastPacking = {
-      boxes: rects,
-      activeIndex,
-      overIndex,
-      places: masonryLayoutAfterMove(rects, activeIndex, overIndex),
+  return ({ rects, activeIndex, overIndex, index }) => {
+    if (activeIndex < 0 || overIndex < 0) return null;
+
+    if (
+      !lastPacking ||
+      lastPacking.rects !== rects ||
+      lastPacking.activeIndex !== activeIndex ||
+      lastPacking.overIndex !== overIndex
+    ) {
+      const boxes = getBoxes();
+      lastPacking = {
+        rects,
+        activeIndex,
+        overIndex,
+        boxes,
+        places: boxes && masonryLayoutAfterMove(boxes, activeIndex, overIndex),
+      };
+    }
+
+    const place = lastPacking.places?.[index];
+    const box = lastPacking.boxes?.[index];
+
+    if (!place || !box) return null;
+
+    return {
+      x: place.x - box.left,
+      y: place.y - box.top,
+      scaleX: 1,
+      scaleY: 1,
     };
-  }
-
-  const place = lastPacking.places?.[index];
-  const box = rects[index];
-
-  if (!place || !box) return null;
-
-  return {
-    x: place.x - box.left,
-    y: place.y - box.top,
-    scaleX: 1,
-    scaleY: 1,
   };
-};
+}

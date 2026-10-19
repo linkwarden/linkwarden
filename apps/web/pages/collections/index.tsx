@@ -1,4 +1,6 @@
-import CollectionCard from "@/components/CollectionCard";
+import CollectionGrid, {
+  CollectionGridSection,
+} from "@/components/CollectionGrid";
 import { ReactElement, useMemo, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
@@ -49,6 +51,31 @@ const Page: NextPageWithLayout = () => {
   const sortedCollections = useMemo(
     () => [...collections].sort(compare),
     [collections, compare]
+  );
+
+  const userId = data?.user.id;
+
+  const sections = useMemo<CollectionGridSection[]>(
+    () => [
+      {
+        collections: sortedCollections.filter(
+          (e) => e.ownerId === userId && e.parentId === null
+        ),
+        gap: 12,
+      },
+      {
+        header: (
+          <PageHeader
+            icon={"bi-folder"}
+            title={t("other_collections")}
+            description={t("other_collections_desc")}
+          />
+        ),
+        collections: sortedCollections.filter((e) => e.ownerId !== userId),
+        gap: 20,
+      },
+    ],
+    [sortedCollections, userId, t]
   );
 
   const [newCollectionModal, setNewCollectionModal] = useState(false);
@@ -107,31 +134,7 @@ const Page: NextPageWithLayout = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-3">
-          {sortedCollections
-            .filter((e) => e.ownerId === data?.user.id && e.parentId === null)
-            .map((e) => (
-              <CollectionCard key={e.id} collection={e} />
-            ))}
-        </div>
-      )}
-
-      {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] && (
-        <>
-          <PageHeader
-            icon={"bi-folder"}
-            title={t("other_collections")}
-            description={t("other_collections_desc")}
-          />
-
-          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
-            {sortedCollections
-              .filter((e) => e.ownerId !== data?.user.id)
-              .map((e) => (
-                <CollectionCard key={e.id} collection={e} />
-              ))}
-          </div>
-        </>
+        <CollectionGrid sections={sections} />
       )}
       {newCollectionModal && (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />

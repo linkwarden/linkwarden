@@ -134,4 +134,24 @@ const useUpdateUserPreference = () => {
   });
 };
 
-export { useUser, useUpdateUser, useUpdateUserPreference };
+// Another user's public profile, e.g. the owner of a collection shared with you.
+const usePublicUser = (id?: number) => {
+  return useQuery({
+    queryKey: ["publicUser", id],
+    queryFn: async (): Promise<
+      Pick<User, "id" | "name" | "username" | "image">
+    > => {
+      const response = await fetch(`/api/v1/public/users/${id}`);
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    enabled: !!id,
+    staleTime: Infinity,
+  });
+};
+
+export { useUser, useUpdateUser, useUpdateUserPreference, usePublicUser };

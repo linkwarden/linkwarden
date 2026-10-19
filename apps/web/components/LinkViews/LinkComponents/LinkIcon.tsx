@@ -66,7 +66,14 @@ function LinkIcon({
               faviconLoaded ? "" : "absolute opacity-0"
             )}
             draggable="false"
-            onLoad={() => setLoadedFavicon(faviconSrc)}
+            onLoad={(e) => {
+              // next/image also calls onLoad when it mounts over an image the
+              // browser already holds, broken or not. A site without a favicon
+              // gets an empty 204, so only an image with pixels counts, or a
+              // card remounted by a reorder would hide its placeholder.
+              if (e.currentTarget.naturalWidth > 0)
+                setLoadedFavicon(faviconSrc);
+            }}
           />
           {!faviconLoaded && (
             <LinkPlaceholderIcon
