@@ -80,14 +80,19 @@ export default async function updateLinkById(
       ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
       : true;
 
-  if (!targetCollectionMatchesData)
+  if (!targetCollectionIsAccessible || !targetCollectionMatchesData)
     return {
       response: "Target collection does not match the data.",
       status: 401,
     };
 
+  // Use the owners from the database, not data.collection.ownerId from the request.
+  const ownsSourceAndTarget =
+    collectionIsAccessible?.ownerId === userId &&
+    targetCollectionIsAccessible.ownerId === userId;
+
   const unauthorizedSwitchCollection =
-    !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;
+    !ownsSourceAndTarget && collectionIsAccessible?.id !== data.collection.id;
 
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
   if (unauthorizedSwitchCollection)
@@ -122,12 +127,12 @@ export default async function updateLinkById(
       where: {
         name_ownerId: {
           name: tag.name,
-          ownerId: data.collection.ownerId,
+          ownerId: targetCollectionIsAccessible.ownerId,
         },
       },
       create: {
         name: tag.name,
-        owner: { connect: { id: data.collection.ownerId } },
+        owner: { connect: { id: targetCollectionIsAccessible.ownerId } },
       },
     }));
 
