@@ -38,7 +38,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     if (userId !== queryId && !isServerAdmin)
       return res.status(401).json({ response: "Permission denied." });
 
-    const users = await getUserById(userId);
+    const users = await getUserById(queryId);
     return res.status(users.status).json({ response: users.response });
   }
 
@@ -85,7 +85,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const updated = await updateUserById(userId, req.body);
+    const updated = await updateUserById(queryId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   } else if (req.method === "DELETE") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")
