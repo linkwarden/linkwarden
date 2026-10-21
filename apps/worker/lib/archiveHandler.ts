@@ -6,6 +6,8 @@ import fetchHeaders from "./fetchHeaders";
 import { createFolder, readFile, removeFiles } from "@linkwarden/filesystem";
 import handleMonolith from "./preservationScheme/handleMonolith";
 import handleReadability from "./preservationScheme/handleReadability";
+import handleXPost from "./preservationScheme/handleXPost";
+import { isFxTwitterEnabled } from "./xPost";
 import handleArchivePreview from "./preservationScheme/handleArchivePreview";
 import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
 import imageHandler from "./preservationScheme/imageHandler";
@@ -129,6 +131,14 @@ export default async function archiveHandler(
           await pdfHandler(link);
           return;
         } else if (link.url) {
+          // X shows a logged-out browser an empty page, so X posts get
+          // their readable copy from FxTwitter, before the browser can fail.
+          const savedAsXPost =
+            archivalSettings.archiveAsReadable &&
+            !link.readable &&
+            isFxTwitterEnabled() &&
+            (await handleXPost(link));
+
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
           // Handle Monolith being sent in beforehand while making sure other values line up
@@ -158,13 +168,14 @@ export default async function archiveHandler(
             return description?.getAttribute("content") ?? undefined;
           });
 
-          await prisma.link.update({
-            where: { id: link.id },
-            data: {
-              metaDescription:
-                metaDescription?.trim().slice(0, 500) ?? undefined,
-            },
-          });
+          if (!savedAsXPost)
+            await prisma.link.update({
+              where: { id: link.id },
+              data: {
+                metaDescription:
+                  metaDescription?.trim().slice(0, 500) ?? undefined,
+              },
+            });
 
           const content = await page.content();
 
@@ -172,7 +183,11 @@ export default async function archiveHandler(
           if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
-          if (archivalSettings.archiveAsReadable && !link.readable)
+          if (
+            archivalSettings.archiveAsReadable &&
+            !link.readable &&
+            !savedAsXPost
+          )
             await handleReadability(content, link);
 
           // Screenshot/PDF
