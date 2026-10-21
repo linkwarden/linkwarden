@@ -64,4 +64,15 @@ export default async function protectPageRequests(context: BrowserContext) {
       );
     }
   });
+
+  await context.routeWebSocket("**/*", async (ws) => {
+    const target = ws.url().replace(/^ws/, "http");
+
+    try {
+      await assertUrlIsSafeForServerSideFetch(target);
+      ws.connectToServer();
+    } catch {
+      await ws.close();
+    }
+  });
 }
