@@ -2,23 +2,28 @@ import { prisma } from "@linkwarden/prisma";
 
 export default async function getPublicUser(
   targetId: number | string,
-  isId: boolean
+  isId: boolean,
+  allowEmailLookup = false
 ) {
   const user = await prisma.user.findFirst({
     where: isId
       ? {
           id: Number(targetId) as number,
         }
-      : {
-          OR: [
-            {
-              username: targetId as string,
-            },
-            {
-              email: targetId as string,
-            },
-          ],
-        },
+      : allowEmailLookup
+        ? {
+            OR: [
+              {
+                username: targetId as string,
+              },
+              {
+                email: targetId as string,
+              },
+            ],
+          }
+        : {
+            username: targetId as string,
+          },
   });
 
   if (!user || !user.id) return { response: "User not found.", status: 404 };
