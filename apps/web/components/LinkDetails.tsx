@@ -14,6 +14,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
+import { handleLinkAnchorClick } from "@/lib/client/openLink";
 import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
@@ -46,6 +47,7 @@ type Props = {
   mode?: "view" | "edit";
   setMode?: Function;
   onUpdateArchive?: () => void;
+  onOpenScriptLink: (url: string) => void;
 };
 
 export default function LinkDetails({
@@ -55,6 +57,7 @@ export default function LinkDetails({
   mode = "view",
   setMode,
   onUpdateArchive,
+  onOpenScriptLink,
 }: Props) {
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
@@ -311,7 +314,14 @@ export default function LinkDetails({
 
               <div className="relative">
                 <div className="rounded-md p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14">
-                  <Link href={link.url} title={link.url} target="_blank">
+                  <Link
+                    href={link.url}
+                    title={link.url}
+                    target="_blank"
+                    onClick={(e) =>
+                      handleLinkAnchorClick(e, link, user, onOpenScriptLink)
+                    }
+                  >
                     {link.url}
                   </Link>
                   <div className="absolute right-0 px-2 bg-base-200">

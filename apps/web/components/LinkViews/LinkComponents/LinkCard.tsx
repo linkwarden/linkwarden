@@ -67,6 +67,8 @@ function LinkCard({
 
   const [linkModal, setLinkModal] = useState(false);
 
+  const [scriptWarningUrl, setScriptWarningUrl] = useState<string | null>(null);
+
   return (
     <div
       ref={setNodeRef}
@@ -88,7 +90,8 @@ function LinkCard({
         <div
           className="rounded-xl cursor-pointer h-full flex flex-col justify-between"
           onClick={() =>
-            !editMode && openLink(link, user, () => setLinkModal(true))
+            !editMode &&
+            openLink(link, user, () => setLinkModal(true), setScriptWarningUrl)
           }
           {...listeners}
           {...attributes}
@@ -147,7 +150,12 @@ function LinkCard({
                 </p>
               )}
 
-              {show.link && <LinkTypeBadge link={link} />}
+              {show.link && (
+                <LinkTypeBadge
+                  link={link}
+                  onOpenScriptLink={setScriptWarningUrl}
+                />
+              )}
             </div>
 
             {(show.collection || show.date) && (
@@ -178,6 +186,8 @@ function LinkCard({
           linkModal={linkModal}
           t={t}
           setLinkModal={(e) => setLinkModal(e)}
+          scriptWarningUrl={scriptWarningUrl}
+          setScriptWarningUrl={(url) => setScriptWarningUrl(url)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
         {!isPublicRoute && <LinkPin link={link} />}

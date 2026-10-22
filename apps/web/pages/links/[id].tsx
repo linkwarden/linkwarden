@@ -1,4 +1,6 @@
+import { useState } from "react";
 import LinkDetails from "@/components/LinkDetails";
+import DangerousLinkWarningModal from "@/components/ModalContent/DangerousLinkWarningModal";
 import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import getServerSideProps from "@/lib/client/getServerSideProps";
@@ -8,6 +10,8 @@ const Index = () => {
   const { id } = router.query;
 
   let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
+
+  const [scriptWarningUrl, setScriptWarningUrl] = useState<string | null>(null);
 
   const { data } = useGetLink({
     id: Number(id) as number,
@@ -23,6 +27,7 @@ const Index = () => {
           activeLink={data}
           className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
           standalone
+          onOpenScriptLink={(url) => setScriptWarningUrl(url)}
         />
       ) : (
         <div className="max-w-xl p-5 m-auto w-full flex flex-col items-center gap-5">
@@ -32,6 +37,12 @@ const Index = () => {
           <div className="w-full h-10 skeleton rounded-xl"></div>
           <div className="w-full h-10 skeleton rounded-xl"></div>
         </div>
+      )}
+      {scriptWarningUrl && (
+        <DangerousLinkWarningModal
+          onClose={() => setScriptWarningUrl(null)}
+          url={scriptWarningUrl}
+        />
       )}
     </div>
   );

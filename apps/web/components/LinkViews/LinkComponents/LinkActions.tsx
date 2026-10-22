@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import DangerousLinkWarningModal from "@/components/ModalContent/DangerousLinkWarningModal";
 import { TFunction } from "i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   linkModal: boolean;
   setLinkModal: (value: boolean) => void;
+  scriptWarningUrl: string | null;
+  setScriptWarningUrl: (url: string | null) => void;
   t: TFunction<"translation", undefined>;
   className?: string;
   ghost?: boolean;
@@ -33,6 +36,8 @@ export default function LinkActions({
   linkModal,
   t,
   setLinkModal,
+  scriptWarningUrl,
+  setScriptWarningUrl,
   className,
   ghost,
 }: Props) {
@@ -142,6 +147,7 @@ export default function LinkActions({
           onPin={() => pinLink(link)}
           onUpdateArchive={() => setRefreshPreservationsModal(true)}
           onDelete={() => setDeleteLinkModal(true)}
+          onOpenScriptLink={(url) => setScriptWarningUrl(url)}
           link={link}
           activeMode="edit"
         />
@@ -173,7 +179,14 @@ export default function LinkActions({
           onPin={() => pinLink(link)}
           onUpdateArchive={() => setRefreshPreservationsModal(true)}
           onDelete={() => setDeleteLinkModal(true)}
+          onOpenScriptLink={(url) => setScriptWarningUrl(url)}
           link={link}
+        />
+      )}
+      {scriptWarningUrl && (
+        <DangerousLinkWarningModal
+          onClose={() => setScriptWarningUrl(null)}
+          url={scriptWarningUrl}
         />
       )}
     </>

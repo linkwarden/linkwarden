@@ -45,6 +45,7 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
     );
 
   const [linkModal, setLinkModal] = useState(false);
+  const [scriptWarningUrl, setScriptWarningUrl] = useState<string | null>(null);
   const [highlightDrawer, setHighlightDrawer] = useState(false);
 
   useEffect(() => {
@@ -250,6 +251,8 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
             t={t}
             linkModal={linkModal}
             setLinkModal={(e) => setLinkModal(e)}
+            scriptWarningUrl={scriptWarningUrl}
+            setScriptWarningUrl={(url) => setScriptWarningUrl(url)}
             ghost
           />
         </div>
