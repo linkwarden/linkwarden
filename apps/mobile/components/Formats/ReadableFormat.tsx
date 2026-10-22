@@ -109,6 +109,15 @@ function escapeForInjectedScript(value: unknown) {
     .replace(/\u2029/g, "\\u2029");
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function isSelectionInfo(value: unknown): value is SelectionInfo {
   if (!value || typeof value !== "object") return false;
 
@@ -585,13 +594,11 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
     </head>
     <body>
       <div id="readable-shell">
-        <div class="rv-header-title">${title
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")}</div>
+        <div class="rv-header-title">${escapeHtml(title)}</div>
         <div class="rv-header-meta">
-          <a href="${(link.url || "").replace(/"/g, "&quot;")}">${
+          <a href="${escapeHtml(link.url || "")}">${escapeHtml(
             link.url || ""
-          }</a>
+          )}</a>
         </div>
         <div class="rv-header-meta">${dateStr}</div>
         <hr class="rv-header-separator" />
