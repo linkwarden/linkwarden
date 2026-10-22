@@ -1,12 +1,18 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Link from "next/link";
 import React, { useMemo } from "react";
+import { useUser } from "@linkwarden/router/user";
+import { handleLinkAnchorClick } from "@/lib/client/openLink";
 
 function LinkTypeBadge({
   link,
+  onOpenScriptLink,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
+  onOpenScriptLink: (url: string) => void;
 }) {
+  const { data: user } = useUser();
+
   // Worked out while rendering rather than in an effect, which would draw a card
   // with the shorter fallback badge first. A reorder that moves a card to another
   // row or column mounts it again, and the list measures it right then.
@@ -38,6 +44,7 @@ function LinkTypeBadge({
       title={link.url || ""}
       onClick={(e) => {
         e.stopPropagation();
+        handleLinkAnchorClick(e, link, user, onOpenScriptLink);
       }}
       className="flex gap-1 item-center select-none text-neutral hover:opacity-70 duration-100 max-w-full w-fit"
     >

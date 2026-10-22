@@ -59,6 +59,8 @@ function LinkList({
 
   const [linkModal, setLinkModal] = useState(false);
 
+  const [scriptWarningUrl, setScriptWarningUrl] = useState<string | null>(null);
+
   return (
     <>
       <div
@@ -83,7 +85,8 @@ function LinkList({
         <div
           className="flex items-center cursor-pointer w-full min-h-12"
           onClick={() =>
-            !editMode && openLink(link, user, () => setLinkModal(true))
+            !editMode &&
+            openLink(link, user, () => setLinkModal(true), setScriptWarningUrl)
           }
           {...attributes}
           {...listeners}
@@ -112,7 +115,12 @@ function LinkList({
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
-                {show.link && <LinkTypeBadge link={link} />}
+                {show.link && (
+                  <LinkTypeBadge
+                    link={link}
+                    onOpenScriptLink={setScriptWarningUrl}
+                  />
+                )}
                 {show.collection && collection && (
                   <LinkCollection
                     link={link}
@@ -131,6 +139,8 @@ function LinkList({
           linkModal={linkModal}
           t={t}
           setLinkModal={(e) => setLinkModal(e)}
+          scriptWarningUrl={scriptWarningUrl}
+          setScriptWarningUrl={(url) => setScriptWarningUrl(url)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
       </div>

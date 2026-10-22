@@ -17,6 +17,8 @@ import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
+import ConfirmationModal from "@/components/ConfirmationModal";
+import { isDangerousLinkUrl } from "@linkwarden/lib/isDangerousLinkUrl";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
@@ -121,7 +123,39 @@ const Page: NextPageWithLayout = () => {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+  const [openAllWarning, setOpenAllWarning] = useState(false);
   const [editMode, setEditMode] = useState(false);
+
+  // A script-scheme link (javascript:/data:/vbscript:) that the current viewer
+  // did not create is a stored-XSS risk; "Open all Links" warns once before
+  // including those in the batch. The link's own author is never warned.
+  const isUnverifiedScriptLink = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) =>
+    isDangerousLinkUrl(link.url) &&
+    !(!!user?.id && user.id === link.createdById);
+
+  const openAllLinks = () => {
+    let blocked = false;
+
+    for (const link of links) {
+      if (!link.url) continue;
+
+      const openedWindow = window.open(link.url, "_blank");
+
+      if (openedWindow) {
+        (openedWindow as { blur: () => void }).blur();
+      } else {
+        blocked = true;
+      }
+    }
+
+    window.focus();
+
+    if (blocked) {
+      alert(t("popups_blocked_open_all_links"));
+    }
+  };
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -224,24 +258,10 @@ const Page: NextPageWithLayout = () => {
             >
               <DropdownMenuItem
                 onClick={() => {
-                  let blocked = false;
-
-                  for (const link of links) {
-                    if (!link.url) continue;
-
-                    const openedWindow = window.open(link.url, "_blank");
-
-                    if (openedWindow) {
-                      (openedWindow as { blur: () => void }).blur();
-                    } else {
-                      blocked = true;
-                    }
-                  }
-
-                  window.focus();
-
-                  if (blocked) {
-                    alert(t("popups_blocked_open_all_links"));
+                  if (links.some(isUnverifiedScriptLink)) {
+                    setOpenAllWarning(true);
+                  } else {
+                    openAllLinks();
                   }
                 }}
               >
@@ -468,6 +488,20 @@ const Page: NextPageWithLayout = () => {
             />
           )}
         </>
+      )}
+
+      {openAllWarning && (
+        <ConfirmationModal
+          toggleModal={() => setOpenAllWarning(false)}
+          title={t("open_all_script_links_warning_title")}
+          onConfirmed={() => openAllLinks()}
+        >
+          <p className="text-sm">
+            {t("open_all_script_links_warning_desc", {
+              count: links.filter(isUnverifiedScriptLink).length,
+            })}
+          </p>
+        </ConfirmationModal>
       )}
     </div>
   );
