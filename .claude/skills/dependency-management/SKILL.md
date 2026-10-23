@@ -15,6 +15,8 @@ A dependency change affects the whole monorepo, not just the workspace you're ed
 - **No breaking changes:** A dependency change must not break existing behavior. Check the library's changelog for breaking changes, then run the relevant unit, integration, and e2e tests before the change (for example `yarn vitest run` from the root and `yarn workspace @linkwarden/web e2e`). Run them again after the change and compare. Any new failure must be fixed before you're done.
 - **Bump major versions one at a time:** When an upgrade crosses more than one major version, go through each major in order (for example 3 to 4, then 4 to 5) instead of jumping straight to the latest. Follow that version's migration guide, apply its changes, and get the tests passing before moving on to the next major.
 - **Don't hide conflicts:** Don't add `resolutions` or ignore peer warnings to force an unsupported combination. If two frameworks really need different versions, keep both and explain why.
+- **Prefer alternatives over patches:** When a package needs a patch to work, first look for an actively maintained, widely used alternative library and switch to it instead. Only patch when no suitable alternative exists, and explain why.
+- **Check security:** Before adding or upgrading a package, check the version you're installing for known CVEs and security advisories (for example with `yarn npm audit` and the package's GitHub advisories). Don't install a version with an open advisory when a fixed one exists.
 - **Use Yarn 4:** Install with `yarn workspace @linkwarden/<name> add <pkg>@<version>`, then run `yarn` from the root. Never edit `yarn.lock` by hand, and commit it together with the manifest changes.
 
 ## Before You Finish
@@ -23,6 +25,8 @@ A dependency change affects the whole monorepo, not just the workspace you're ed
 - [ ] Versions match across workspaces, or the difference is explained.
 - [ ] Peer dependency ranges are satisfied, with no new warnings from `yarn`.
 - [ ] `yarn.lock` was updated by Yarn.
+- [ ] Looked for a maintained alternative before adding any patch.
+- [ ] Checked the new versions for known CVEs and security advisories.
 - [ ] Ran the relevant tests before and after the change, with no new failures.
 - [ ] Multi-major upgrades went one major version at a time, with tests passing at each step.
 - [ ] Type checks and builds pass in every affected workspace.
