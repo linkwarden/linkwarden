@@ -11,7 +11,7 @@ import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
-import { ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider } from "expo-router/react-navigation";
 import {
   lightTheme,
   darkTheme,
@@ -127,10 +127,7 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
       >
         <SheetProvider>
           <OfflineSyncProvider />
-          <StatusBar
-            style={colorScheme === "dark" ? "light" : "dark"}
-            backgroundColor={rawTheme[colorScheme as ThemeName]["base-100"]}
-          />
+          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           {!isLoading && (
             <ThemeProvider
               value={

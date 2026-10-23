@@ -1,5 +1,5 @@
 import { vars } from "nativewind";
-import { DarkTheme, DefaultTheme, Theme } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, Theme } from "expo-router/react-navigation";
 import { rawTheme, ThemeName } from "./colors";
 
 const hexToRgb = (hex: string) => {
