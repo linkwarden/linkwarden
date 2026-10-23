@@ -23,6 +23,8 @@
 
 <img src="./assets/linkwarden-hero.png" />
 
+[![Deploy to Railyard](https://app.railyard.run/deploy/badge)](https://app.railyard.run/deploy?repo=https://github.com/linkwarden/linkwarden)
+
 </div>
 
 ## Intro & motivation
