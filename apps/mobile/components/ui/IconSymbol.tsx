@@ -15,7 +15,7 @@ const MAPPING = {
   "chevron.right": "chevron-right",
 } as Partial<
   Record<
-    import("expo-symbols").SymbolViewProps["name"],
+    import("expo-symbols").SFSymbol,
     React.ComponentProps<typeof MaterialIcons>["name"]
   >
 >;

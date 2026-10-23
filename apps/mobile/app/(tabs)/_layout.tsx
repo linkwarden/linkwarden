@@ -1,10 +1,5 @@
 import { useRouter } from "expo-router";
-import {
-  NativeTabs,
-  Icon,
-  Label,
-  VectorIcon,
-} from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 import React, { useEffect } from "react";
 import { ActivityIndicator, Platform, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
@@ -78,28 +73,45 @@ export default function TabLayout() {
       minimizeBehavior="onScrollDown"
     >
       <NativeTabs.Trigger name="dashboard">
-        <Label>Dashboard</Label>
-        <Icon src={<VectorIcon family={Feather} name="home" />} />
+        <NativeTabs.Trigger.Label>Dashboard</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          renderingMode="template"
+          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="home" />}
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="links">
-        <Label>Links</Label>
-        <Icon src={<VectorIcon family={Feather} name="link" />} />
+        <NativeTabs.Trigger.Label>Links</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          renderingMode="template"
+          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="link" />}
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="collections">
-        <Label>Collections</Label>
-        <Icon src={<VectorIcon family={Feather} name="folder" />} />
+        <NativeTabs.Trigger.Label>Collections</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          renderingMode="template"
+          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="folder" />}
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="tags">
-        <Label>Tags</Label>
-        <Icon src={<VectorIcon family={Feather} name="hash" />} />
+        <NativeTabs.Trigger.Label>Tags</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          renderingMode="template"
+          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="hash" />}
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">
-        <Label>Settings</Label>
-        <Icon src={<VectorIcon family={Feather} name="settings" />} />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          renderingMode="template"
+          src={
+            <NativeTabs.Trigger.VectorIcon family={Feather} name="settings" />
+          }
+        />
       </NativeTabs.Trigger>
     </NativeTabs>
   );
