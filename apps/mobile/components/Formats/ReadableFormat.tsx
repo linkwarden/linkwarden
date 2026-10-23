@@ -22,6 +22,7 @@ import {
   READER_VIEW_DEFAULTS,
   readerViewCSS,
 } from "@linkwarden/lib/readerViewStyles";
+import { isDangerousLinkUrl } from "@linkwarden/lib/isDangerousLinkUrl";
 import {
   HIGHLIGHT_COLORS,
   HighlightColor,
@@ -596,9 +597,11 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
       <div id="readable-shell">
         <div class="rv-header-title">${escapeHtml(title)}</div>
         <div class="rv-header-meta">
-          <a href="${escapeHtml(link.url || "")}">${escapeHtml(
-            link.url || ""
-          )}</a>
+          <a${
+            isDangerousLinkUrl(link.url)
+              ? ""
+              : ` href="${escapeHtml(link.url || "")}"`
+          }>${escapeHtml(link.url || "")}</a>
         </div>
         <div class="rv-header-meta">${dateStr}</div>
         <hr class="rv-header-separator" />
