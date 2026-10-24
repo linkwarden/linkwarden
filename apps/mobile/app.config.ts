@@ -124,7 +124,7 @@ const config: ExpoConfig = {
     [
       "expo-navigation-bar",
       {
-        barStyle: "dark-content",
+        style: "dark",
       },
     ],
   ],
