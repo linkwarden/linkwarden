@@ -4,7 +4,7 @@ import {
   SheetDefinition,
 } from "react-native-actions-sheet";
 import SupportSheet from "./SupportSheet";
-import AddLinkSheet from "./AddLinkSheet";
+import AddLinkSheet, { NewLinkDraft } from "./AddLinkSheet";
 import EditLinkSheet from "./EditLinkSheet";
 import NewCollectionSheet from "./NewCollectionSheet";
 import AddTagSheet from "./AddTagSheet";
@@ -56,6 +56,17 @@ declare module "react-native-actions-sheet" {
       payload: {
         collection?: { id?: number; name?: string };
         tag?: { id?: number; name?: string };
+      };
+      routes: {
+        main: RouteDefinition<{
+          link: NewLinkDraft;
+        }>;
+        collections: RouteDefinition<{
+          link: NewLinkDraft;
+        }>;
+        tags: RouteDefinition<{
+          link: NewLinkDraft;
+        }>;
       };
     }>;
     "link-details-sheet": SheetDefinition<{
