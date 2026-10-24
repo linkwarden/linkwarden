@@ -94,6 +94,7 @@ const config: ExpoConfig = {
             { name: "GoogleUtilities", modular_headers: true },
             { name: "RecaptchaInterop", modular_headers: true },
           ],
+          enableSceneSupport: true,
         },
       },
     ],
@@ -123,7 +124,7 @@ const config: ExpoConfig = {
     [
       "expo-navigation-bar",
       {
-        barStyle: "dark-content",
+        style: "dark",
       },
     ],
   ],
