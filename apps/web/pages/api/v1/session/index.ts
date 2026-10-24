@@ -7,6 +7,11 @@ export default async function session(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === "false")
+    return res.status(400).json({
+      response: "Login with credentials is disabled.",
+    });
+
   const dataValidation = PostSessionSchema.safeParse(req.body);
 
   if (!dataValidation.success) {
