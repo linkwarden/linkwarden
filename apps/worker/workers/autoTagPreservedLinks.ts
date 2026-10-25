@@ -6,6 +6,26 @@ import getLinkBatchFairly from "../lib/getLinkBatchFairly";
 
 const AUTO_TAG_TAKE_COUNT = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
+// A link that keeps failing would otherwise be picked again on every round and
+// starve the batch, so we give up on it after this many tries.
+const MAX_AUTO_TAG_ATTEMPTS = 3;
+
+const failedAttempts = new Map<number, number>();
+
+const markAsTagged = (linkId: number) =>
+  prisma.link
+    .update({
+      where: { id: linkId },
+      data: { aiTagged: true },
+    })
+    .catch((error) => {
+      console.error(
+        "\x1b[34m%s\x1b[0m",
+        `Error marking link ${linkId} as auto-tagged:`,
+        error
+      );
+    });
+
 const hasAiTaggingProvider = () =>
   Boolean(
     process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
@@ -40,31 +60,38 @@ export async function autoTagPreservedLinks(interval = 10) {
             `Auto-tagging link ${link.url} for user ${link.collection.ownerId}.`
           );
 
-          await autoTagLink(link.collection.owner, link.id);
+          const result = await autoTagLink(link.collection.owner, link.id);
+
+          // Nothing to tag, so mark it as done to keep it out of the next batch.
+          if (result === "skipped") await markAsTagged(link.id);
+
+          failedAttempts.delete(link.id);
 
           console.log(
             "\x1b[34m%s\x1b[0m",
-            `Succeeded auto-tagging link ${link.url} for user ${link.collection.ownerId}.`
+            `${
+              result === "skipped" ? "Skipped" : "Succeeded"
+            } auto-tagging link ${link.url} for user ${link.collection.ownerId}.`
           );
         } catch (error: any) {
+          const attempts = (failedAttempts.get(link.id) ?? 0) + 1;
+          failedAttempts.set(link.id, attempts);
+
           console.error(
             "\x1b[34m%s\x1b[0m",
-            `Error auto-tagging link ${link.url} for user ${link.collection.ownerId}:`,
+            `Error auto-tagging link ${link.url} for user ${link.collection.ownerId} (attempt ${attempts} of ${MAX_AUTO_TAG_ATTEMPTS}):`,
             error
           );
-        } finally {
-          await prisma.link
-            .update({
-              where: { id: link.id },
-              data: { aiTagged: true },
-            })
-            .catch((error) => {
-              console.error(
-                "\x1b[34m%s\x1b[0m",
-                `Error marking link ${link.id} as auto-tagged:`,
-                error
-              );
-            });
+
+          if (attempts >= MAX_AUTO_TAG_ATTEMPTS) {
+            console.error(
+              "\x1b[34m%s\x1b[0m",
+              `Giving up on link ${link.id} after ${attempts} failed attempts, marking it as auto-tagged.`
+            );
+
+            failedAttempts.delete(link.id);
+            await markAsTagged(link.id);
+          }
         }
       }
     );
