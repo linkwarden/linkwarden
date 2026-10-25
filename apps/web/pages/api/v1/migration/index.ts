@@ -14,6 +14,11 @@ export const config = {
   },
 };
 
+export const getImportLimitMb = (): number => {
+  const configured = Number.parseFloat(process.env.IMPORT_LIMIT ?? "");
+  return Number.isFinite(configured) ? configured : 10;
+};
+
 const parseJsonStream = (
   req: NextApiRequest,
   limitMb: number
@@ -67,18 +72,14 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
     let request: MigrationRequest;
 
-    try {
-      const limitMb = process.env.IMPORT_LIMIT
-        ? parseInt(process.env.IMPORT_LIMIT, 10)
-        : 10;
+    const limitMb = getImportLimitMb();
 
+    try {
       request = await parseJsonStream(req, limitMb);
     } catch (error: any) {
       if (error.message === "Payload Too Large") {
         return res.status(413).json({
-          response: `Import file exceeds the ${
-            process.env.IMPORT_LIMIT || 10
-          }MB size limit.`,
+          response: `Import file exceeds the ${limitMb}MB size limit.`,
         });
       }
       return res
