@@ -223,6 +223,7 @@ export default async function updateUserById(
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
       preventDuplicateLinks: data.preventDuplicateLinks,
+      readingProgressEnabled: data.readingProgressEnabled,
       referredBy:
         !user?.referredBy && data.referredBy ? data.referredBy : undefined,
       password:
