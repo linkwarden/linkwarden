@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/components/CenteredForm";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import React, { useState, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { getLogins } from "./api/v1/logins";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
@@ -21,8 +21,15 @@ interface FormData {
   password: string;
 }
 
+// Set before an automatic SSO redirect and cleared on the next render of this
+// page. If it is still set we came back without a session, so the attempt
+// failed and we show the form instead of redirecting again.
+const SSO_ATTEMPT_COOKIE = "linkwarden_sso_auto_attempt";
+const SSO_BYPASS_PARAM = "nosso";
+
 export default function Login({
   availableLogins,
+  autoLoginProvider,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation();
 
@@ -31,6 +38,14 @@ export default function Login({
   const { data: config } = useConfig();
 
   const [submitLoader, setSubmitLoader] = useState(false);
+
+  useEffect(() => {
+    if (!autoLoginProvider) return;
+
+    signIn(autoLoginProvider, {
+      callbackUrl: (router.query.callbackUrl as string) || "/dashboard",
+    });
+  }, [autoLoginProvider, router.query.callbackUrl]);
 
   const [form, setForm] = useState<FormData>({
     username: "",
@@ -258,6 +273,22 @@ export default function Login({
     }
   }
 
+  if (autoLoginProvider) {
+    return (
+      <CenteredForm header={t("sign_in_to_linkwarden")}>
+        <div className="mx-auto flex flex-col gap-3 justify-center items-center max-w-md min-w-80 w-full">
+          <p className="text-center">{t("authenticating")}</p>
+          <Link
+            href={`/login?${SSO_BYPASS_PARAM}=1`}
+            className="text-sm text-gray-500 dark:text-gray-400 underline"
+          >
+            {t("sign_in_another_way")}
+          </Link>
+        </div>
+      </CenteredForm>
+    );
+  }
+
   return (
     <CenteredForm header={t("sign_in_to_linkwarden")}>
       <form onSubmit={loginUser}>
@@ -277,6 +308,28 @@ export default function Login({
 const getServerSideProps: GetServerSideProps = async (ctx) => {
   const availableLogins = getLogins();
 
+  // Skip the automatic redirect on ?nosso=1, after a failed sign-in, or if the
+  // previous attempt already bounced back here, so a broken provider falls
+  // back to the login form rather than looping.
+  const ssoAttempted = ctx.req.cookies?.[SSO_ATTEMPT_COOKIE] === "1";
+  const ssoBypassed =
+    ctx.query[SSO_BYPASS_PARAM] !== undefined || ctx.query.error !== undefined;
+
+  let autoLoginProvider: string | null =
+    !ssoAttempted && !ssoBypassed ? availableLogins.autoLoginProvider : null;
+
+  if (autoLoginProvider) {
+    ctx.res.setHeader(
+      "Set-Cookie",
+      `${SSO_ATTEMPT_COOKIE}=1; Path=/; Max-Age=120; SameSite=Lax; HttpOnly`
+    );
+  } else if (ssoAttempted) {
+    ctx.res.setHeader(
+      "Set-Cookie",
+      `${SSO_ATTEMPT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly`
+    );
+  }
+
   const acceptLanguageHeader = ctx.req.headers["accept-language"];
   const availableLanguages = i18n.locales;
 
@@ -293,6 +346,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
       return {
         props: {
           availableLogins,
+          autoLoginProvider: null,
           ...(await serverSideTranslations(user.locale ?? "en", ["common"])),
         },
       };
@@ -323,6 +377,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       availableLogins,
+      autoLoginProvider,
       ...(await serverSideTranslations(bestMatch ?? "en", ["common"])),
     },
   };
