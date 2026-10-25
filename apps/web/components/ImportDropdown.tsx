@@ -50,6 +50,11 @@ const ImportDropdown = ({}: Props) => {
             format: MigrationFormat.omnivore,
             label: t("from_omnivore"),
           },
+          {
+            id: "import-karakeep-file",
+            format: MigrationFormat.karakeep,
+            label: t("from_karakeep"),
+          },
         ].map((item) => (
           <DropdownMenuItem
             asChild
