@@ -85,6 +85,8 @@ export const UpdateUserSchema = () => {
     aiTaggingMethod: z.enum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
+    readingListCollections: z.array(z.number().int()).optional(),
+    readingListTags: z.array(z.string().trim().max(50)).max(20).optional(),
     locale: z.string().max(20).optional(),
     preventDuplicateLinks: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
@@ -143,6 +145,7 @@ export const PostLinkSchema = z.object({
         })
       )
       .optional() || [],
+  readingList: z.boolean().optional(),
 });
 
 export type PostLinkSchemaType = z.infer<typeof PostLinkSchema>;
@@ -328,4 +331,21 @@ export const UpdateDashboardLayoutSchema = z.array(
 
 export type UpdateDashboardLayoutSchemaType = z.infer<
   typeof UpdateDashboardLayoutSchema
+>;
+
+export const ReadingListUpdateSchema = z.object({
+  linkIds: z.array(z.number().int().positive()).min(1),
+  read: z.boolean(),
+});
+
+export type ReadingListUpdateSchemaType = z.infer<
+  typeof ReadingListUpdateSchema
+>;
+
+export const ReadingListRemoveSchema = z.object({
+  linkIds: z.array(z.number().int().positive()).min(1),
+});
+
+export type ReadingListRemoveSchemaType = z.infer<
+  typeof ReadingListRemoveSchema
 >;

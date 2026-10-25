@@ -26,6 +26,7 @@ import {
 } from "@linkwarden/lib/formatStats";
 import type toaster from "react-hot-toast";
 import { TFunction } from "next-i18next";
+import { invalidateReadingList } from "./readingList";
 
 export const PRESERVATION_POLL_INTERVAL = 5000;
 
@@ -43,6 +44,7 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
       collectionId: params.collectionId,
       tagId: params.tagId,
       pinnedOnly: params.pinnedOnly ?? undefined,
+      readingList: params.readingList,
       searchQueryString: params.searchQueryString,
     });
   }, [
@@ -50,6 +52,7 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
     params.collectionId,
     params.tagId,
     params.pinnedOnly,
+    params.readingList,
     params.searchQueryString,
   ]);
 
@@ -611,6 +614,7 @@ const useAddLink = ({
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      invalidateReadingList(queryClient);
     },
   });
 };
@@ -1131,6 +1135,7 @@ const useUploadFile = () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      invalidateReadingList(queryClient);
     },
   });
 };

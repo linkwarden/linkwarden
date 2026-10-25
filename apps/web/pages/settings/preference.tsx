@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import ReadingListSettings from "@/components/ReadingListSettings";
 import { NextPageWithLayout } from "../_app";
 
 const Page: NextPageWithLayout = () => {
@@ -710,6 +711,8 @@ const Page: NextPageWithLayout = () => {
             {t("save_changes")}
           </Button>
         </div>
+
+        <ReadingListSettings />
       </div>
     </>
   );
