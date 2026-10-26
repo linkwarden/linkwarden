@@ -2,6 +2,12 @@ name: Create and publish an edge container image
 
 on:
   workflow_dispatch:
+
+# Two runs at once would both read the same last rc and push the same tag.
+concurrency:
+  group: release-edge-container
+  cancel-in-progress: false
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-edge
@@ -27,6 +33,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Pick the next rc tag
+        id: tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(jq -r .version apps/web/package.json)
+          # Matched as one string, not with grep: grep passes a value with a
+          # newline in it as long as one line matches, and that newline would
+          # let the version add its own lines to $GITHUB_OUTPUT.
+          if [[ ! "$VERSION" =~ ^v[0-9]+(\.[0-9]+){2}$ ]]; then
+            echo "Bad or missing version in apps/web/package.json: '$VERSION'"
+            exit 1
+          fi
+          # Kept out of a pipe so a failed lookup stops the job instead of
+          # leaving jq with no tags and pushing rc1 over an existing image.
+          TAGS=$(skopeo list-tags --creds "$GITHUB_ACTOR:$GITHUB_TOKEN" "docker://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}")
+          LAST_RC=$(jq --arg prefix "$VERSION-rc" '[.Tags[] | select(startswith($prefix)) | ltrimstr($prefix) | select(test("^[0-9]+$")) | tonumber] | max // 0' <<< "$TAGS")
+          echo "Image tag: $VERSION-rc$((LAST_RC + 1))"
+          echo "tag=$VERSION-rc$((LAST_RC + 1))" >> "$GITHUB_OUTPUT"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
@@ -34,5 +60,5 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
