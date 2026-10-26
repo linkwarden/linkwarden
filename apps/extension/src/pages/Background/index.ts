@@ -1,23 +1,26 @@
 import {
   getBrowser,
   getCurrentTabInfo,
+  getStorageItem,
   hasAPI,
   isSafari,
+  setStorageItem,
   updateBadge,
 } from "../../@/lib/utils.ts";
 // import BookmarkTreeNode = chrome.bookmarks.BookmarkTreeNode;
 import { getConfig, isConfigured } from "../../@/lib/config.ts";
+import { scheduleTabBadge } from "../../@/lib/badge.ts";
 import {
   // deleteLinkFetch,
   // updateLinkFetch,
   postLinkFetch,
+  searchSavedLinks,
 } from "../../@/lib/actions/links.ts";
 import {
   bookmarkMetadata,
   // deleteBookmarkMetadata,
   // getBookmarkMetadataByBookmarkId,
   // getBookmarkMetadataByUrl,
-  getBookmarksMetadata,
   saveBookmarkMetadata,
 } from "../../@/lib/cache.ts";
 import OnClickData = chrome.contextMenus.OnClickData;
@@ -222,7 +225,7 @@ async function genericOnClick(
           !tab.url.startsWith("about:")
         ) {
           try {
-            if (new URL(tab.url))
+            if (new URL(tab.url)) {
               await postLinkFetch(
                 config.baseUrl,
                 {
@@ -230,12 +233,17 @@ async function genericOnClick(
                   name: tab.title || "",
                   description: tab.title || "",
                   collection: {
-                    name: config.defaultCollection,
+                    ...(typeof config.defaultCollectionId === "number"
+                      ? { id: config.defaultCollectionId }
+                      : {}),
+                    name: config.defaultCollection || "Unorganized",
                   },
                   tags: [],
                 },
                 config.apiKey
               );
+              await updateBadge(tab.id, true);
+            }
           } catch (error) {
             console.error(`Failed to save tab: ${tab.url}`, error);
           }
@@ -260,7 +268,10 @@ async function genericOnClick(
             {
               url: tab.url,
               collection: {
-                name: "Unorganized",
+                ...(typeof config.defaultCollectionId === "number"
+                  ? { id: config.defaultCollectionId }
+                  : {}),
+                name: config.defaultCollection || "Unorganized",
               },
               tags: [],
               name: tab.title,
@@ -274,6 +285,7 @@ async function genericOnClick(
           newLinkUrl.bookmarkId = tab.id?.toString();
 
           await saveBookmarkMetadata(newLinkUrl);
+          await updateBadge(tab.id, true);
         } catch (error) {
           console.error(error);
         }
@@ -298,24 +310,159 @@ browser.runtime.onInstalled.addListener(async function () {
     title: "Save all tabs to Linkwarden",
     contexts: ["page"],
   });
+
+  const { id: tabId, url } = await getCurrentTabInfo();
+  scheduleTabBadge(tabId, url);
 });
 
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
-  if (!changeInfo.url) return;
-  try {
-    await updateBadge(tabId, false);
-  } catch (error) {
-    console.error(`Error clearing the badge of tab ${tabId}:`, error);
-  }
+function onNavigation(details: {
+  tabId: number;
+  frameId: number;
+  url: string;
+}) {
+  if (details.frameId !== 0) return;
+  scheduleTabBadge(details.tabId, details.url);
+}
+
+// onActivated alone is not enough: it does not fire on same-tab navigation,
+// and when it does fire the tab URL is often still blank. Navigation events
+// plus a retry in scheduleTabBadge are what make the checkmark appear as soon
+// as you land on a saved page.
+browser.tabs.onActivated.addListener(({ tabId }) => {
+  scheduleTabBadge(tabId);
 });
+
+browser.tabs.onCreated.addListener((tab) => {
+  scheduleTabBadge(tab.id, tab.url);
+});
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!changeInfo.url && changeInfo.status !== "complete") return;
+  scheduleTabBadge(tabId, changeInfo.url ?? tab?.url);
+});
+
+if (hasAPI("webNavigation.onCommitted")) {
+  browser.webNavigation.onCommitted.addListener(onNavigation);
+}
+if (hasAPI("webNavigation.onCompleted")) {
+  browser.webNavigation.onCompleted.addListener(onNavigation);
+}
+if (hasAPI("webNavigation.onHistoryStateUpdated")) {
+  browser.webNavigation.onHistoryStateUpdated.addListener(onNavigation);
+}
+
+const OPEN_POPUP_MESSAGE = "lw-open-popup";
+const BOOKMARK_SHORTCUT_GRACE_MS = 1500;
+let bookmarkShortcutAt = 0;
+let openingPopup = false;
+
+async function openActionPopup() {
+  if (openingPopup) return;
+  openingPopup = true;
+  bookmarkShortcutAt = Date.now();
+
+  try {
+    const action = browser.action;
+    if (action?.openPopup) {
+      await action.openPopup();
+      return;
+    }
+  } catch {
+    // Chrome only treats some gestures as valid for openPopup.
+  } finally {
+    setTimeout(() => {
+      openingPopup = false;
+    }, 500);
+  }
+
+  try {
+    await browser.windows.create({
+      url: browser.runtime.getURL("index.html"),
+      type: "popup",
+      width: 420,
+      height: 640,
+      focused: true,
+    });
+  } catch (error) {
+    console.error("Failed to open Linkwarden popup:", error);
+  }
+}
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message?.type !== OPEN_POPUP_MESSAGE) return;
+  void (async () => {
+    const { overrideBookmarkShortcut } = await getConfig();
+    if (overrideBookmarkShortcut === false) return;
+    await openActionPopup();
+  })();
+});
+
+if (hasAPI("bookmarks.onCreated")) {
+  browser.bookmarks.onCreated.addListener((id, bookmark) => {
+    if (!bookmark.url) return;
+    if (Date.now() - bookmarkShortcutAt > BOOKMARK_SHORTCUT_GRACE_MS) return;
+    void browser.bookmarks.remove(id).catch(() => {});
+  });
+}
+
+if (hasAPI("runtime.onStartup")) {
+  browser.runtime.onStartup.addListener(() => {
+    void (async () => {
+      const { id: tabId, url } = await getCurrentTabInfo();
+      scheduleTabBadge(tabId, url);
+    })();
+  });
+}
+
+void (async () => {
+  try {
+    const [tab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (tab?.id) {
+      scheduleTabBadge(tab.id, tab.url);
+    }
+  } catch (error) {
+    console.error("Error updating badge on startup:", error);
+  }
+})();
 
 // Omnibox implementation (not available in Safari)
+
+function omniboxText(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+async function removeMirroredAddressBarFolder() {
+  if (hasAPI("alarms.clear")) {
+    try {
+      getBrowser().alarms.clear("lw-address-bar-sync");
+    } catch {
+      // Permission may already be gone.
+    }
+  }
+  if (!hasAPI("bookmarks.removeTree")) return;
+  const id = await getStorageItem("lw_address_bar_folder_id");
+  if (!id) return;
+  try {
+    await getBrowser().bookmarks.removeTree(id);
+  } catch {
+    // Already gone.
+  }
+  await setStorageItem("lw_address_bar_folder_id", "");
+}
+
+void removeMirroredAddressBarFolder();
 
 if (hasAPI("omnibox.onInputStarted")) {
   browser.omnibox.onInputStarted.addListener(async () => {
     const configured = await isConfigured();
     const description = configured
-      ? "Search links in linkwarden"
+      ? "Search your Linkwarden links"
       : "Please configure the extension first";
 
     browser.omnibox.setDefaultSuggestion({
@@ -329,24 +476,18 @@ if (hasAPI("omnibox.onInputStarted")) {
       suggest: (arg0: { content: string; description: string }[]) => void
     ) => {
       const configured = await isConfigured();
+      if (!configured) return;
 
-      if (!configured) {
-        return;
-      }
-
-      const currentBookmarks = await getBookmarksMetadata();
-
-      const searchedBookmarks = currentBookmarks.filter((bookmark) => {
-        return bookmark.name?.includes(text) || bookmark.url.includes(text);
-      });
-
-      const bookmarkSuggestions = searchedBookmarks.map((bookmark) => {
-        return {
-          content: bookmark.url,
-          description: bookmark.name || bookmark.url,
-        };
-      });
-      suggest(bookmarkSuggestions);
+      const { baseUrl, apiKey } = await getConfig();
+      const links = await searchSavedLinks(baseUrl, apiKey, text);
+      suggest(
+        links
+          .filter((link) => link.url)
+          .map((link) => ({
+            content: link.url as string,
+            description: omniboxText(link.name || (link.url as string)),
+          }))
+      );
     }
   );
 
@@ -359,7 +500,14 @@ if (hasAPI("omnibox.onInputStarted")) {
       }
 
       const isUrl = /^http(s)?:\/\//.test(content);
-      const url = isUrl ? content : `lk`;
+      let url = content;
+      if (!isUrl) {
+        const { baseUrl, apiKey } = await getConfig();
+        const links = await searchSavedLinks(baseUrl, apiKey, content);
+        const first = links.find((link) => link.url);
+        if (!first?.url) return;
+        url = first.url;
+      }
 
       // Edge doesn't allow updating the New Tab Page (tested with version 117).
       // Trying to do so will throw: "Error: Cannot update NTP tab."

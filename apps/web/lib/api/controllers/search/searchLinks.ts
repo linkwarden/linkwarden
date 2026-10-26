@@ -155,37 +155,87 @@ export default async function searchLinks({
   const searchConditions = [];
 
   if (query.searchQueryString) {
-    searchConditions.push({
-      name: {
-        contains: query.searchQueryString,
-        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-      },
-    });
+    const tokens = parseSearchTokens(query.searchQueryString);
+    const generalQuery = tokens
+      .filter((t) => t.field === "general")
+      .map((t) => t.value)
+      .join(" ");
+    const urlTokens = tokens.filter((t) => t.field === "url" && !t.isNegative);
 
-    searchConditions.push({
-      url: {
-        contains: query.searchQueryString,
-        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-      },
-    });
+    for (const token of urlTokens) {
+      searchConditions.push({
+        url: {
+          contains: token.value,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+    }
 
-    searchConditions.push({
-      description: {
-        contains: query.searchQueryString,
-        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-      },
-    });
+    if (generalQuery) {
+      searchConditions.push({
+        name: {
+          contains: generalQuery,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
 
-    searchConditions.push({
-      tags: {
-        some: {
-          name: {
-            contains: query.searchQueryString,
-            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+      searchConditions.push({
+        url: {
+          contains: generalQuery,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+
+      searchConditions.push({
+        description: {
+          contains: generalQuery,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+
+      searchConditions.push({
+        tags: {
+          some: {
+            name: {
+              contains: generalQuery,
+              mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+            },
           },
         },
-      },
-    });
+      });
+    } else if (!urlTokens.length) {
+      searchConditions.push({
+        name: {
+          contains: query.searchQueryString,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+
+      searchConditions.push({
+        url: {
+          contains: query.searchQueryString,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+
+      searchConditions.push({
+        description: {
+          contains: query.searchQueryString,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+
+      searchConditions.push({
+        tags: {
+          some: {
+            name: {
+              contains: query.searchQueryString,
+              mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+            },
+          },
+        },
+      });
+    }
   }
 
   const accessCondition = await resolveAccessCondition();

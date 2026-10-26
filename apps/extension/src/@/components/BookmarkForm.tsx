@@ -23,14 +23,21 @@ import {
   setStorageItem,
   updateBadge,
 } from "../lib/utils.ts";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { getConfig, isConfigured as getIsConfigured } from "../lib/config.ts";
-import { checkLinkExists, postLink } from "../lib/actions/links.ts";
+import { Collection, getCollections } from "../lib/actions/collections.ts";
+import {
+  deleteLinks,
+  fetchLinkById,
+  findSavedLink,
+  findSavedLinks,
+  postLink,
+  updateLink,
+} from "../lib/actions/links.ts";
 import { AxiosError } from "axios";
 import { toast } from "../../hooks/useToast.ts";
 import { Toaster } from "./ui/Toaster.tsx";
-import { getCollections } from "../lib/actions/collections.ts";
 import { getShouldUseTagSearch, getTags } from "../lib/actions/tags.ts";
 import { ExternalLink } from "lucide-react";
 import { Checkbox } from "./ui/CheckBox.tsx";
@@ -39,6 +46,27 @@ import { Label } from "./ui/Label.tsx";
 // The popup is torn down every time it loses focus, so remember whether the
 // user had the extra options expanded and bring them back that way.
 const MORE_OPTIONS_KEY = "lw_more_options_open";
+
+function resolveCollection(
+  collection: bookmarkFormValues["collection"],
+  collections: Collection[] | undefined
+): bookmarkFormValues["collection"] {
+  if (!collection) return collection;
+  if (collection.id != null && collection.ownerId != null) return collection;
+
+  const match = collections?.find(
+    (item) =>
+      (collection.id != null && item.id === collection.id) ||
+      item.name === collection.name
+  );
+  if (!match) return collection;
+
+  return {
+    id: match.id,
+    ownerId: match.ownerId,
+    name: match.name,
+  };
+}
 
 const BookmarkForm = () => {
   const [openOptions, setOpenOptions] = useState<boolean>(false);
@@ -49,10 +77,14 @@ const BookmarkForm = () => {
 
   const [isConfigured, setIsConfigured] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
+  const [savedLinkId, setSavedLinkId] = useState<number | null>(null);
+  const savedLinkIdRef = useRef<number | null>(null);
+  savedLinkIdRef.current = savedLinkId;
 
   const [config, setConfig] = useState<{
     baseUrl: string;
     defaultCollection: string;
+    defaultCollectionId?: number;
     apiKey: string;
     syncBookmarks: boolean;
   }>();
@@ -90,15 +122,45 @@ const BookmarkForm = () => {
 
   const { mutate: onSubmit, isPending } = useMutation({
     mutationFn: async (values: bookmarkFormValues) => {
+      const existingId = savedLinkIdRef.current;
+      let collection = values.collection;
+
+      if (
+        existingId != null &&
+        (collection?.id == null || collection.ownerId == null) &&
+        config?.baseUrl &&
+        config.apiKey
+      ) {
+        const list = (await getCollections(config.baseUrl, config.apiKey)).data
+          .response;
+        collection = resolveCollection(collection, list);
+      }
+
+      const payload = {
+        ...values,
+        collection,
+      };
+
+      if (existingId != null) {
+        await updateLink(
+          config?.baseUrl as string,
+          existingId,
+          uploadImage,
+          payload,
+          setState,
+          config?.apiKey as string
+        );
+        return "updated" as const;
+      }
+
       await postLink(
         config?.baseUrl as string,
         uploadImage,
-        values,
+        payload,
         setState,
         config?.apiKey as string
       );
-
-      return;
+      return "saved" as const;
     },
     onError: (error) => {
       console.error(error);
@@ -114,24 +176,71 @@ const BookmarkForm = () => {
         toast({
           title: "Error",
           description:
-            "There was an error while trying to save the link. Please try again.",
+            error instanceof Error
+              ? error.message
+              : "There was an error while trying to save the link. Please try again.",
           variant: "destructive",
         });
       }
       return;
     },
-    onSuccess: () => {
-      // Update badge to show link is saved
+    onSuccess: (result) => {
       updateBadge(tabInfo?.id, true);
+      setIsDuplicate(true);
       setTimeout(() => {
         window.close();
-        // I want to show some confirmation before it's closed...
       }, 3500);
       toast({
         title: "Success",
-        description: "Link saved successfully!",
+        description:
+          result === "updated"
+            ? "Link updated successfully!"
+            : "Link saved successfully!",
         variant: "success",
       });
+    },
+  });
+
+  const { mutate: onRemove, isPending: isRemoving } = useMutation({
+    mutationFn: async () => {
+      const c = await getConfig();
+      const tab = await getCurrentTabInfo();
+      const ids = new Set<number>();
+      if (savedLinkIdRef.current != null) ids.add(savedLinkIdRef.current);
+
+      const matches = await findSavedLinks(c.baseUrl, c.apiKey, tab.url);
+      if (Array.isArray(matches)) {
+        for (const link of matches) ids.add(link.id);
+      }
+
+      if (!c.baseUrl || !c.apiKey || ids.size === 0) {
+        throw new Error("Nothing to remove");
+      }
+
+      await deleteLinks(c.baseUrl, [...ids], c.apiKey, tab.url);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was an error while trying to remove the link. Please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      setIsDuplicate(false);
+      setSavedLinkId(null);
+      updateBadge(tabInfo?.id, false);
+      toast({
+        title: "Removed",
+        description: "Link removed successfully!",
+        variant: "success",
+      });
+      setTimeout(() => {
+        window.close();
+      }, 1500);
     },
   });
 
@@ -148,7 +257,10 @@ const BookmarkForm = () => {
       form.setValue("url", t.url ? t.url : "");
       form.setValue("name", t.title ? t.title : "");
       form.setValue("collection", {
-        name: c.defaultCollection,
+        ...(typeof c.defaultCollectionId === "number"
+          ? { id: c.defaultCollectionId }
+          : {}),
+        name: c.defaultCollection || "Unorganized",
       });
 
       const configured = await getIsConfigured();
@@ -156,9 +268,34 @@ const BookmarkForm = () => {
 
       if (!configured) return;
 
-      const duplicate = await checkLinkExists(c.baseUrl, c.apiKey, t.url);
-      setIsDuplicate(duplicate);
-      updateBadge(t.id, duplicate);
+      const found = await findSavedLink(c.baseUrl, c.apiKey, t.url);
+      if (found === null) return;
+      if (found === false) {
+        setIsDuplicate(false);
+        setSavedLinkId(null);
+        updateBadge(t.id, false);
+        return;
+      }
+      const saved = (await fetchLinkById(c.baseUrl, c.apiKey, found.id)) ?? found;
+      setIsDuplicate(true);
+      setSavedLinkId(saved.id);
+      updateBadge(t.id, true);
+      form.setValue("collection", {
+        id: saved.collection?.id,
+        ownerId: saved.collection?.ownerId,
+        name: saved.collection?.name || c.defaultCollection,
+      });
+      form.setValue(
+        "tags",
+        (saved.tags ?? [])
+          .filter((tag) => tag?.name)
+          .map((tag) => ({
+            ...(typeof tag.id === "number" ? { id: tag.id } : {}),
+            name: tag.name,
+          }))
+      );
+      form.setValue("name", saved.name || t.title || "");
+      form.setValue("description", saved.description || "");
     };
 
     setTabInformation();
@@ -205,6 +342,18 @@ const BookmarkForm = () => {
     },
     enabled: isConfigured,
   });
+
+  useEffect(() => {
+    if (!collections?.length) return;
+    const current = form.getValues("collection");
+    const resolved = resolveCollection(current, collections);
+    if (
+      resolved &&
+      (resolved.id !== current?.id || resolved.ownerId !== current?.ownerId)
+    ) {
+      form.setValue("collection", resolved);
+    }
+  }, [collections, form]);
 
   const { data: shouldUseTagSearch = false } = useQuery({
     queryKey: ["tag-search-support", config?.baseUrl, config?.apiKey],
@@ -383,9 +532,27 @@ const BookmarkForm = () => {
               {openOptions ? "Hide" : "More"} Options
             </Button>
 
-            <Button disabled={isPending} type="submit">
-              Save
-            </Button>
+            <div className="flex items-center gap-2">
+              {savedLinkId != null && (
+                <Button
+                  variant="destructive"
+                  type="button"
+                  disabled={isRemoving || isPending}
+                  onClick={() => onRemove()}
+                >
+                  {isRemoving ? "Removing..." : "Remove"}
+                </Button>
+              )}
+              <Button disabled={isPending || isRemoving} type="submit">
+                {isPending
+                  ? savedLinkId != null
+                    ? "Updating..."
+                    : "Saving..."
+                  : savedLinkId != null
+                    ? "Update"
+                    : "Save"}
+              </Button>
+            </div>
           </div>
 
           {isDuplicate && (

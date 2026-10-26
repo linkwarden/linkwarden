@@ -6,13 +6,19 @@ const DEFAULTS: configType = {
   apiKey: '',
   defaultCollection: 'Unorganized',
   syncBookmarks: false,
+  overrideBookmarkShortcut: true,
 };
 
 const CONFIG_KEY = 'linkwarden_config';
 
 export async function getConfig(): Promise<configType> {
   const config = await getStorageItem(CONFIG_KEY);
-  return config ? JSON.parse(config) : DEFAULTS;
+  if (!config) return { ...DEFAULTS };
+  try {
+    return { ...DEFAULTS, ...JSON.parse(config) };
+  } catch {
+    return { ...DEFAULTS };
+  }
 }
 
 export async function saveConfig(config: configType) {
@@ -30,13 +36,12 @@ export async function isConfigured() {
 }
 
 export async function clearConfig() {
+  const current = await getConfig();
   return await setStorageItem(
     CONFIG_KEY,
     JSON.stringify({
-      baseUrl: '',
-      apiKey: '',
-      defaultCollection: 'Unorganized',
-      syncBookmarks: false,
+      ...DEFAULTS,
+      overrideBookmarkShortcut: current.overrideBookmarkShortcut,
     })
   );
 }

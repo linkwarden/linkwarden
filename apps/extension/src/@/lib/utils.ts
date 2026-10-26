@@ -84,10 +84,28 @@ export async function updateBadge(
   const action = browser.action ?? browser.browserAction;
   if (!action) return;
 
+  const text = linkExists ? "✓" : "";
+  const background = "#4688F1";
+  const foreground = "#FFFFFF";
+
+  action.setBadgeText({ tabId, text });
   if (linkExists) {
-    action.setBadgeText({ tabId, text: "✓" });
-    action.setBadgeBackgroundColor({ tabId, color: "#98c0ff" });
-  } else {
-    action.setBadgeText({ tabId, text: "" });
+    action.setBadgeBackgroundColor({ tabId, color: background });
+    action.setBadgeTextColor?.({ tabId, color: foreground });
+  }
+
+  // Brave (and some Chromium builds) do not repaint a tab-scoped toolbar
+  // badge until the tab is deactivated and selected again. If this tab is
+  // showing, also set the window badge so the checkmark appears immediately.
+  try {
+    const tab = await browser.tabs.get(tabId);
+    if (!tab.active) return;
+    action.setBadgeText({ text });
+    if (linkExists) {
+      action.setBadgeBackgroundColor({ color: background });
+      action.setBadgeTextColor?.({ color: foreground });
+    }
+  } catch {
+    // Tab was closed.
   }
 }
