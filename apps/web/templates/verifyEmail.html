@@ -25,11 +25,6 @@
           padding-left: 10px !important;
           padding-right: 10px !important;
         }
-        .btn a {
-          font-size: 16px !important;
-          max-width: 100% !important;
-          width: 100% !important;
-        }
       }
 
       /* For Outlook */
@@ -93,7 +88,7 @@
               width: 0;
             "
           >
-            Please verify your email address by clicking the button below:
+            Your Linkwarden verification code is {{code}}
           </span>
 
           <a href="https://linkwarden.app" target="_blank">
@@ -155,8 +150,8 @@
           </table>
 
           <p style="font-weight: normal; margin: 0">
-            Just one small step left. Simply verify your email address, and
-            you’re all set!
+            Just one small step left. Enter this code where you signed up or
+            logged in, and you’re all set!
           </p>
 
           <!-- SPACER -->
@@ -173,62 +168,17 @@
             </tr>
           </table>
 
-          <table
-            role="presentation"
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            class="btn"
-            style="box-sizing: border-box; width: 100%; min-width: 100%"
-            width="100%"
+          <p
+            style="
+              font-size: 32px;
+              font-weight: bold;
+              letter-spacing: 8px;
+              margin: 0;
+              font-family: monospace;
+            "
           >
-            <tbody>
-              <tr>
-                <td align="left" style="vertical-align: top" valign="top">
-                  <table
-                    role="presentation"
-                    border="0"
-                    cellpadding="0"
-                    cellspacing="0"
-                  >
-                    <tbody>
-                      <tr>
-                        <td
-                          style="
-                            vertical-align: top;
-                            border-radius: 8px;
-                            text-align: center;
-                            background-color: #105f9c;
-                          "
-                          valign="top"
-                          align="center"
-                          bgcolor="#00335a"
-                        >
-                          <a
-                            href="{{url}}"
-                            target="_blank"
-                            style="
-                              border-radius: 8px;
-                              box-sizing: border-box;
-                              cursor: pointer;
-                              display: inline-block;
-                              font-weight: bold;
-                              margin: 0;
-                              padding: 10px 18px;
-                              text-decoration: none;
-                              color: #ffffff;
-                            "
-                          >
-                            Verify Email
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            {{code}}
+          </p>
 
           <!-- SPACER -->
           <table
@@ -268,28 +218,13 @@
               font-size: 12px;
               font-weight: normal;
               margin: 0;
-              margin-bottom: 5px;
+              margin-bottom: 16px;
               color: #868686;
             "
           >
-            If you’re having trouble clicking the button, click on the following
-            link:
+            This code expires in 20 minutes. If you didn’t try to sign up or log
+            in to Linkwarden, you can ignore this email.
           </p>
-
-          <a
-            style="
-              font-size: 10px;
-              font-weight: normal;
-              margin: 0;
-              margin-bottom: 16px;
-              word-break: break-all;
-              color: rgb(89, 89, 179);
-              text-decoration: underline;
-            "
-            href="{{url}}"
-          >
-            {{url}}
-          </a>
         </td>
         <td style="vertical-align: top" valign="top">&nbsp;</td>
       </tr>

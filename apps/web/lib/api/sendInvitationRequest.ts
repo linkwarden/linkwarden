@@ -41,7 +41,7 @@ export default async function sendInvitationRequest({
       identifier,
       url: `${
         process.env.NEXTAUTH_URL
-      }/callback/email?token=${token}&email=${encodeURIComponent(identifier)}`,
+      }/callback/invite?token=${token}&email=${encodeURIComponent(identifier)}`,
     }),
   });
   const failed = result.rejected.concat(result.pending).filter(Boolean);

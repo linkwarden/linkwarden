@@ -12,9 +12,9 @@ import { i18n } from "next-i18next.config";
 import { getToken } from "next-auth/jwt";
 import { prisma } from "@linkwarden/prisma";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
 import { useConfig } from "@linkwarden/router/config";
+import VerifyEmailCodeForm from "@/components/VerifyEmailCodeForm";
 
 interface FormData {
   username: string;
@@ -26,8 +26,6 @@ export default function Login({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation();
 
-  const router = useRouter();
-
   const { data: config } = useConfig();
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -36,6 +34,8 @@ export default function Login({
     username: "",
     password: "",
   });
+
+  const [verifyEmail, setVerifyEmail] = useState(false);
 
   async function loginUser(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,24 +55,23 @@ export default function Login({
 
       setSubmitLoader(false);
 
-      if (!res?.ok) {
-        toast.error(res?.error || t("invalid_credentials"));
-
-        if (res?.error === "Email not verified.") {
-          await signIn("email", {
-            email: form.username,
-            callbackUrl: "/",
-            redirect: false,
-          });
-
-          router.push(
-            `/confirmation?email=${encodeURIComponent(form.username)}`
-          );
-        }
-      }
+      // A verification code was emailed, ask for it while we still have the password
+      if (res?.error === "Email not verified.") setVerifyEmail(true);
+      else if (!res?.ok) toast.error(res?.error || t("invalid_credentials"));
     } else {
       toast.error(t("fill_all_fields"));
     }
+  }
+
+  async function verifyEmailCode(code: string) {
+    const res = await signIn("credentials", {
+      username: form.username,
+      password: form.password,
+      code,
+      redirect: false,
+    });
+
+    if (!res?.ok) toast.error(res?.error || t("invalid_credentials"));
   }
 
   async function loginUserButton(method: string) {
@@ -257,6 +256,11 @@ export default function Login({
       );
     }
   }
+
+  if (verifyEmail)
+    return (
+      <VerifyEmailCodeForm email={form.username} onVerify={verifyEmailCode} />
+    );
 
   return (
     <CenteredForm header={t("sign_in_to_linkwarden")}>

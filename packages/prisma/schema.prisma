@@ -106,6 +106,15 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model EmailVerificationCode {
+  identifier String   @unique
+  code       String
+  attempts   Int      @default(0)
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
 model PasswordResetToken {
   identifier String
   token      String   @unique

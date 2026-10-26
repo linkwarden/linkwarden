@@ -63,6 +63,14 @@ export default async function appleMobileAuth(
           providerAccountId: claims.sub,
         },
       });
+
+      // Apple confirmed the email, so drop any password set before the email
+      // was verified, since it may belong to someone else
+      if (!existingUser.emailVerified)
+        await prisma.user.update({
+          where: { id: existingUser.id },
+          data: { password: null, emailVerified: new Date() },
+        });
     }
   }
 

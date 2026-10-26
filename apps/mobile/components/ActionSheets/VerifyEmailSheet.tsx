@@ -1,27 +1,44 @@
 import { useEffect, useState } from "react";
-import { Dimensions, ScrollView, Text } from "react-native";
+import { Alert, Dimensions, ScrollView, Text } from "react-native";
 import ActionSheet, {
   SheetManager,
   SheetProps,
 } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
+import { isAtLeastInstanceVersion } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import SheetHeader from "./SheetHeader";
 
+const MIN_EMAIL_CODE_VERSION = "v2.16.4";
+
 export default function VerifyEmailSheet({
   payload,
 }: SheetProps<"verify-email-sheet">) {
-  const { auth, requestVerificationEmail } = useAuthStore();
+  const { auth, instanceInfo, signIn, requestVerificationEmail } =
+    useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [code, setCode] = useState("");
 
   const email = payload?.email ?? "";
   const instance = payload?.instance ?? "";
+  const password = payload?.password ?? "";
+
+  // The code is only accepted together with the password entered before this sheet
+  const supportsCode =
+    Boolean(password) &&
+    instanceInfo.instance === instance &&
+    isAtLeastInstanceVersion(
+      instanceInfo.config?.INSTANCE_VERSION,
+      MIN_EMAIL_CODE_VERSION
+    );
 
   const closeSheet = () => {
     SheetManager.hide("verify-email-sheet");
@@ -30,6 +47,15 @@ export default function VerifyEmailSheet({
   useEffect(() => {
     if (auth.status === "authenticated") closeSheet();
   }, [auth.status]);
+
+  const handleVerify = async () => {
+    if (code.length !== 6)
+      return Alert.alert("Error", "Please enter the 6-digit code.");
+
+    setIsVerifying(true);
+    await signIn(email, password, instance, undefined, code);
+    setIsVerifying(false);
+  };
 
   return (
     <ActionSheet
@@ -60,12 +86,40 @@ export default function VerifyEmailSheet({
         <Text className="text-base-content text-xl" numberOfLines={1}>
           {email}
         </Text>
-        <Text className="text-base-content text-base">
-          Please verify your email address to continue. Open the link we sent to
-          your inbox to verify and log in automatically.
-        </Text>
+        {supportsCode ? (
+          <>
+            <Text className="text-base-content text-base">
+              Please verify your email address to continue. Enter the 6-digit
+              code we sent to your inbox.
+            </Text>
+            <Input
+              className="w-full text-xl p-3 leading-tight h-12 text-center tracking-widest"
+              textAlignVertical="center"
+              placeholder="Verification code"
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={code}
+              onChangeText={(text) => setCode(text.replace(/\D/g, ""))}
+            />
+            <Button
+              variant="accent"
+              size="lg"
+              isLoading={isVerifying}
+              onPress={handleVerify}
+            >
+              <Text className="text-white text-xl">Verify</Text>
+            </Button>
+          </>
+        ) : (
+          <Text className="text-base-content text-base">
+            Please verify your email address to continue. Open the link we sent
+            to your inbox to verify and log in automatically.
+          </Text>
+        )}
         <Button
-          variant="accent"
+          variant={supportsCode ? "ghost" : "accent"}
           size="lg"
           isLoading={isLoading}
           onPress={async () => {
@@ -74,7 +128,13 @@ export default function VerifyEmailSheet({
             setIsLoading(false);
           }}
         >
-          <Text className="text-white text-xl">Resend Email</Text>
+          <Text
+            className={
+              supportsCode ? "text-primary text-base" : "text-white text-xl"
+            }
+          >
+            {supportsCode ? "Resend Code" : "Resend Email"}
+          </Text>
         </Button>
       </ScrollView>
     </ActionSheet>

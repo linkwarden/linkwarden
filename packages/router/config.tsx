@@ -18,7 +18,6 @@ export type Config = {
   DEMO_USERNAME: string | null;
   DEMO_PASSWORD: string | null;
   GOOGLE_ENABLED: boolean | null;
-  MOBILE_APP_REDIRECT_ENABLED: boolean | null;
 };
 
 const normalizeVersion = (version?: string | null) => {

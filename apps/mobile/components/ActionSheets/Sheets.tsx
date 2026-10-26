@@ -49,6 +49,7 @@ declare module "react-native-actions-sheet" {
       payload: {
         email: string;
         instance: string;
+        password?: string;
       };
     }>;
     "self-hosted-server-sheet": SheetDefinition;

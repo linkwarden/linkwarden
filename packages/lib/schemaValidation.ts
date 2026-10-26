@@ -119,6 +119,7 @@ export type UpdateUserPreferenceSchemaType = z.infer<
 export const PostSessionSchema = z.object({
   username: z.string().min(3).max(50),
   password: z.string().min(8),
+  code: z.string().trim().max(20).optional(),
   sessionName: z.string().trim().max(50).optional(),
 });
 

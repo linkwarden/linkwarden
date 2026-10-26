@@ -1,6 +1,5 @@
-import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
+import { sendEmailVerificationCode } from "@/lib/api/emailVerificationCode";
 import { prisma } from "@linkwarden/prisma";
-import { createHash, randomBytes } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const emailEnabled =
@@ -13,62 +12,27 @@ export default async function requestVerificationEmail(
   if (req.method !== "POST")
     return res.status(405).json({ response: "Method not allowed." });
 
-  if (
-    !emailEnabled ||
-    !process.env.NEXTAUTH_URL ||
-    !process.env.NEXTAUTH_SECRET
-  )
+  if (!emailEnabled || !process.env.NEXTAUTH_SECRET)
     return res.status(400).json({ response: "Email is not configured." });
 
-  const email =
+  // People can log in with their username too, so accept one here as well
+  const identifier =
     typeof req.body.email === "string"
       ? req.body.email.toLowerCase().trim()
       : "";
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = identifier
+    ? (await prisma.user.findUnique({ where: { email: identifier } })) ??
+      (await prisma.user.findUnique({ where: { username: identifier } }))
+    : null;
 
-  if (!user) return res.status(400).json({ response: "Invalid email." });
+  if (!user?.email) return res.status(400).json({ response: "Invalid email." });
 
   if (user.emailVerified)
     return res.status(400).json({ response: "Email is already verified." });
 
-  const recentVerificationRequestsCount = await prisma.verificationToken.count({
-    where: {
-      identifier: email,
-      createdAt: {
-        gt: new Date(new Date().getTime() - 1000 * 60 * 5),
-      },
-    },
-  });
+  // The code is only accepted together with the account's password
+  const result = await sendEmailVerificationCode(user.email);
 
-  if (recentVerificationRequestsCount >= 4)
-    return res
-      .status(429)
-      .json({ response: "Too many requests. Please try again later." });
-
-  const token = randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + 1200 * 1000);
-  const url = `${
-    process.env.NEXTAUTH_URL
-  }/callback/email?token=${token}&email=${encodeURIComponent(email)}`;
-
-  await Promise.all([
-    sendVerificationRequest({
-      identifier: email,
-      url,
-      from: process.env.EMAIL_FROM as string,
-      token,
-    }),
-    prisma.verificationToken.create({
-      data: {
-        identifier: email,
-        token: createHash("sha256")
-          .update(`${token}${process.env.NEXTAUTH_SECRET}`)
-          .digest("hex"),
-        expires,
-      },
-    }),
-  ]);
-
-  return res.status(200).json({ response: "Verification email sent." });
+  return res.status(result.status).json({ response: result.response });
 }

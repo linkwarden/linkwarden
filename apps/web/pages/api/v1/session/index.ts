@@ -22,15 +22,21 @@ export default async function session(
     });
   }
 
-  const { username, password, sessionName } = dataValidation.data;
+  const { username, password, code, sessionName } = dataValidation.data;
 
-  const result = await verifyByCredentials({ username, password });
+  const result = await verifyByCredentials({ username, password, code });
 
   if (result.status === "email_not_verified")
     return res.status(401).json({
       response: "Please verify your email address before logging in.",
       code: "EMAIL_NOT_VERIFIED",
       email: result.user.email,
+    });
+
+  if (result.status === "invalid_code")
+    return res.status(400).json({
+      response: result.response,
+      code: "INVALID_VERIFICATION_CODE",
     });
 
   if (result.status !== "success")

@@ -78,7 +78,8 @@ type AuthStore = {
     username: string,
     password: string,
     instance: string,
-    token?: string
+    token?: string,
+    code?: string
   ) => Promise<boolean>;
   signInWithApple: (instance: string) => Promise<void>;
   signInWithGoogle: (instance: string) => Promise<void>;
@@ -335,7 +336,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       return false;
     }
   },
-  signIn: async (username, password, instance, token) => {
+  signIn: async (username, password, instance, token, code) => {
     if (process.env.EXPO_PUBLIC_SHOW_LOGS === "true")
       console.log("Signing into", instance);
 
@@ -397,6 +398,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             body: JSON.stringify({
               username,
               password,
+              code,
               sessionName: getSessionName(),
             }),
             headers: { "Content-Type": "application/json" },
@@ -421,9 +423,12 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         } else if (data?.code === "EMAIL_NOT_VERIFIED") {
           await SheetManager.hide("login-sheet");
           SheetManager.show("verify-email-sheet", {
-            payload: { email: data?.email || username, instance },
+            payload: { email: data?.email || username, instance, password },
             context: "global",
           });
+          return false;
+        } else if (data?.code === "INVALID_VERIFICATION_CODE") {
+          Alert.alert("Error", data.response);
           return false;
         } else {
           Alert.alert("Error", "Invalid credentials");

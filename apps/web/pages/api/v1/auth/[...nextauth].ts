@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
-import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
+import verifyByCredentials from "@/lib/api/verifyByCredentials";
 import updateSeats from "@/lib/api/billing/updateSeats";
 import verifySubscription from "@/lib/api/billing/verifySubscription";
 import { parseAppleSignupName } from "@/lib/api/apple";
@@ -8,7 +8,6 @@ import { authProviders, isAuthProviderEnabled } from "@/lib/api/authProviders";
 import { ssoEmailVerified } from "@/lib/api/ssoEmailVerified";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
-import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Adapter } from "next-auth/adapters";
 import NextAuth from "next-auth/next";
@@ -62,76 +61,30 @@ if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
         console.log("User log in attempt...");
         if (!credentials) return null;
 
-        const { username, password } = credentials as {
+        const { username, password, code } = credentials as {
           username: string;
           password: string;
+          code?: string;
         };
 
-        const user = await prisma.user.findFirst({
-          where: emailEnabled
-            ? {
-                OR: [
-                  {
-                    username: username.toLowerCase(),
-                  },
-                  {
-                    email: username?.toLowerCase(),
-                  },
-                ],
-              }
-            : {
-                username: username.toLowerCase(),
-              },
-        });
+        const result = await verifyByCredentials({ username, password, code });
 
-        if (!user) throw Error("Invalid credentials.");
-        else if (!user?.emailVerified && emailEnabled) {
+        if (result.status === "email_not_verified")
           throw Error("Email not verified.");
-        }
+        else if (result.status === "invalid_code") throw Error(result.response);
+        else if (result.status !== "success")
+          throw Error("Invalid credentials.");
 
-        let passwordMatches: boolean = false;
-
-        if (user?.password) {
-          passwordMatches = bcrypt.compareSync(password, user.password);
-        }
-
-        if (passwordMatches && user?.password) {
-          return { id: user?.id };
-        } else throw Error("Invalid credentials.");
+        return { id: result.user.id };
       },
     })
   );
 }
 
+// Email verification uses a code entered with the password (see verifyByCredentials),
+// so the only email link provider left is for accepting invitations
 if (emailEnabled) {
   providers.push(
-    EmailProvider({
-      id: "email",
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-      maxAge: 1200,
-      async sendVerificationRequest({ identifier, url, provider, token }: any) {
-        const recentVerificationRequestsCount =
-          await prisma.verificationToken.count({
-            where: {
-              identifier,
-              createdAt: {
-                gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
-              },
-            },
-          });
-
-        if (recentVerificationRequestsCount >= 4)
-          throw Error("Too many requests. Please try again later.");
-
-        sendVerificationRequest({
-          identifier,
-          url,
-          from: provider.from as string,
-          token,
-        });
-      },
-    } as any),
     EmailProvider({
       id: "invite",
       server: process.env.EMAIL_SERVER,
@@ -206,7 +159,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     providers,
     pages: {
       signIn: "/login",
-      verifyRequest: "/confirmation",
     },
     cookies: {
       pkceCodeVerifier: {
@@ -222,6 +174,15 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, email, profile }) {
+        // An email link verifies the address and logs in, so it must never work for
+        // an unverified account with a password: whoever set it may not own the inbox
+        if (
+          account?.type === "email" &&
+          (user as User).password &&
+          !(user as User).emailVerified
+        )
+          return false;
+
         if (!(user as User).emailVerified && !email?.verificationRequest) {
           const parentSubscriptionId = (user as User).parentSubscriptionId;
 
@@ -306,6 +267,19 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                   session_state: account.session_state,
                 },
               });
+
+              // The provider confirmed the email, so drop any password set before
+              // the email was verified, since it may belong to someone else
+              if (account.type !== "email" && !findUser.emailVerified)
+                await prisma.user.update({
+                  where: {
+                    id: findUser.id,
+                  },
+                  data: {
+                    password: null,
+                    emailVerified: new Date(),
+                  },
+                });
             }
           }
         }

@@ -45,7 +45,5 @@ export const getEnvData = () => {
         process.env.NEXT_PUBLIC_DEMO_PASSWORD) ||
       null,
     GOOGLE_ENABLED: process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" || null,
-    MOBILE_APP_REDIRECT_ENABLED:
-      process.env.NEXT_PUBLIC_MOBILE_APP_REDIRECT_ENABLED === "true" || null,
   };
 };

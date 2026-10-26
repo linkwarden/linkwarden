@@ -46,7 +46,6 @@ export default function AuthRedirect({ children }: Props) {
     const routes = [
       { path: "/login", isProtected: false },
       { path: "/register", isProtected: false },
-      { path: "/confirmation", isProtected: false },
       { path: "/forgot", isProtected: false },
       { path: "/auth/reset-password", isProtected: false },
       { path: "/", isProtected: false },
