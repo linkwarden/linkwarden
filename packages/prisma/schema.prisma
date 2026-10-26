@@ -47,7 +47,6 @@ model User {
   highlights              Highlight[]
   collectionsJoined       UsersAndCollections[]
   collectionOrder         Int[]                 @default([])
-  whitelistedUsers        WhitelistedUser[]
   accessTokens            AccessToken[]
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
@@ -66,7 +65,6 @@ model User {
   archiveAsPDF            Boolean               @default(true)
   archiveAsReadable       Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
-  isPrivate               Boolean               @default(false)
   referredBy              String?
   dashboardSections       DashboardSection[]
   lastPickedAt            DateTime?
@@ -96,15 +94,6 @@ enum LinksRouteTo {
   MONOLITH
   SCREENSHOT
   DETAILS
-}
-
-model WhitelistedUser {
-  id        Int      @id @default(autoincrement())
-  username  String   @default("")
-  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model VerificationToken {

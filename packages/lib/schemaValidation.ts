@@ -86,7 +86,6 @@ export const UpdateUserSchema = () => {
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
-    isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.enum(LinksRouteTo).optional(),
