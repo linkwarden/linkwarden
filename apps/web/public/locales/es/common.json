@@ -88,7 +88,7 @@
   "billed_yearly": "Facturado anualmente",
   "total": "Total",
   "total_annual_desc": "Prueba gratuita de {{count}} días, luego ${{annualPrice}} al año",
-  "total_monthly_desc": "Prueba gratuita de {{count}} días, luego ${{annualPrice}} al mes",
+  "total_monthly_desc": "Prueba gratuita de {{count}} días, luego ${{monthlyPrice}} al mes",
   "plus_tax": "+ IVA si corresponde",
   "complete_subscription": "Completar suscripción",
   "sign_out": "Cerrar sesión",
