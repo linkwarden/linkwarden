@@ -1,0 +1,18 @@
+# Starts the app from a clean, signed-out state.
+# Pass METRO_URL to load the JS bundle from Metro in a development build.
+appId: app.linkwarden
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow:
+    when:
+      true: ${!!METRO_URL}
+    commands:
+      # Keep the dev menu and its floating button out of the way
+      - openLink: exp+linkwarden://expo-development-client/?url=${encodeURIComponent(METRO_URL)}&disableAutoLaunch=1&disableFab=1
+# Metro can take a while to build the first bundle
+- extendedWaitUntil:
+    visible:
+      id: "server-picker"
+    timeout: 120000

@@ -61,6 +61,8 @@ export default function Layout() {
         options={{
           headerRight: () => (
             <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="New Link"
               onPress={() => SheetManager.show("add-link-sheet")}
             >
               <Plus

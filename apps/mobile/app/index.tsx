@@ -265,42 +265,47 @@ export default function HomeScreen() {
 
               <View className="flex-row items-center justify-center gap-1 mt-5">
                 <Text className="text-neutral text-xs">Hosted on:</Text>
-                <DropdownMenu.Root>
-                  <DropdownMenu.Trigger asChild>
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Hosted on: ${serverName}`}
-                      className="flex-row items-center justify-center gap-1"
-                    >
-                      <Text className="text-primary text-xs">{serverName}</Text>
-                      <ChevronDown size={12} color={theme["primary"]} />
-                    </TouchableOpacity>
-                  </DropdownMenu.Trigger>
+                {/* The native menu button hides the trigger's own label and testID */}
+                <View testID="server-picker">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger asChild>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Hosted on: ${serverName}`}
+                        className="flex-row items-center justify-center gap-1"
+                      >
+                        <Text className="text-primary text-xs">
+                          {serverName}
+                        </Text>
+                        <ChevronDown size={12} color={theme["primary"]} />
+                      </TouchableOpacity>
+                    </DropdownMenu.Trigger>
 
-                  <DropdownMenu.Content>
-                    <DropdownMenu.Separator />
-                    {orderedServerOptions.map((option) => {
-                      const isActive =
-                        option.key === "cloud"
-                          ? isCloudInstance
-                          : !isCloudInstance;
+                    <DropdownMenu.Content>
+                      <DropdownMenu.Separator />
+                      {orderedServerOptions.map((option) => {
+                        const isActive =
+                          option.key === "cloud"
+                            ? isCloudInstance
+                            : !isCloudInstance;
 
-                      return (
-                        <DropdownMenu.CheckboxItem
-                          key={option.key}
-                          value={isActive}
-                          onValueChange={option.onSelect}
-                          className={option.className}
-                        >
-                          <DropdownMenu.ItemTitle>
-                            {option.title}
-                          </DropdownMenu.ItemTitle>
-                        </DropdownMenu.CheckboxItem>
-                      );
-                    })}
-                  </DropdownMenu.Content>
-                </DropdownMenu.Root>
+                        return (
+                          <DropdownMenu.CheckboxItem
+                            key={option.key}
+                            value={isActive}
+                            onValueChange={option.onSelect}
+                            className={option.className}
+                          >
+                            <DropdownMenu.ItemTitle>
+                              {option.title}
+                            </DropdownMenu.ItemTitle>
+                          </DropdownMenu.CheckboxItem>
+                        );
+                      })}
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Root>
+                </View>
               </View>
             </View>
           </SafeAreaView>

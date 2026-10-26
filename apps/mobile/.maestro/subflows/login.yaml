@@ -1,0 +1,44 @@
+# Points the app at E2E_BASE_URL and signs in as TEST_USERNAME.
+# The defaults match the seeded user from packages/prisma/seed.js.
+#
+# Sheets slide up after the keyboard opens, so each field is closed with
+# Enter and the sheet is given time to settle before the next tap.
+appId: app.linkwarden
+---
+- tapOn:
+    id: "server-picker"
+- tapOn: "Self-hosted"
+- tapOn:
+    id: "self-hosted-server-url"
+- inputText: ${E2E_BASE_URL || "http://localhost:3000"}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "self-hosted-server-submit"
+- extendedWaitUntil:
+    notVisible:
+      id: "self-hosted-server-url"
+    timeout: 30000
+# The server's sign-in buttons load in afterwards and push "Login" up
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn: "Login"
+- tapOn:
+    id: "login-username"
+- inputText: ${TEST_USERNAME || "user1"}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "login-password"
+- inputText: ${TEST_PASSWORD || "11111111"}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "login-submit"
+# iOS offers to save the password once the login sheet closes
+- tapOn:
+    text: "Not Now"
+    optional: true
+- extendedWaitUntil:
+    visible: "Dashboard"
+    timeout: 30000

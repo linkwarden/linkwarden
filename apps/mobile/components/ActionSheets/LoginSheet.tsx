@@ -114,6 +114,7 @@ export default function LoginSheet() {
         {method === "password" ? (
           <>
             <Input
+              testID="login-username"
               className="w-full text-xl p-3 leading-tight h-12"
               textAlignVertical="center"
               placeholder="Email or Username"
@@ -122,6 +123,7 @@ export default function LoginSheet() {
               onChangeText={(text) => setForm({ ...form, user: text })}
             />
             <Input
+              testID="login-password"
               className="w-full text-xl p-3 leading-tight h-12"
               textAlignVertical="center"
               placeholder="Password"
@@ -168,6 +170,7 @@ export default function LoginSheet() {
         </View>
 
         <Button
+          testID="login-submit"
           variant="accent"
           size="lg"
           isLoading={isLoading}

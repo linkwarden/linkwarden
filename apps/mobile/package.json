@@ -11,6 +11,7 @@
     "build:apk": "eas build -p android -e apk",
     "web": "expo start --web",
     "test": "jest --watchAll",
+    "e2e": "maestro test .maestro",
     "lint": "expo lint"
   },
   "jest": {

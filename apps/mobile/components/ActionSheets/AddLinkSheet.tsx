@@ -177,6 +177,7 @@ const Main = (props: SheetProps<"add-link-sheet">) => {
 
       <View className="px-8 pb-5">
         <Input
+          testID="new-link-url"
           placeholder="e.g. https://example.com"
           className="mb-4 bg-base-100"
           autoCapitalize="none"
@@ -186,6 +187,7 @@ const Main = (props: SheetProps<"add-link-sheet">) => {
 
         {showName ? (
           <Input
+            testID="new-link-name"
             autoFocus
             placeholder="Name"
             className="mb-4 bg-base-100"
@@ -300,6 +302,7 @@ const Main = (props: SheetProps<"add-link-sheet">) => {
         ) : null}
 
         <Button
+          testID="new-link-submit"
           onPress={saveLink}
           isLoading={addLink.isPending || updateFile.isPending}
           variant="primary"

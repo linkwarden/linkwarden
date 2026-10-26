@@ -140,6 +140,7 @@ export default function SelfHostedServerSheet() {
 
       <View className="px-8 pb-5 flex-col gap-4">
         <Input
+          testID="self-hosted-server-url"
           className="w-full text-xl p-3 leading-tight h-12"
           textAlignVertical="center"
           placeholder="https://example.com"
@@ -213,6 +214,7 @@ export default function SelfHostedServerSheet() {
         )}
 
         <Button
+          testID="self-hosted-server-submit"
           variant="accent"
           size="lg"
           isLoading={isLoading}
