@@ -22,6 +22,7 @@ import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import LinkFormats from "./LinkViews/LinkComponents/LinkFormats";
 import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
 import LinkPin from "./LinkViews/LinkComponents/LinkPin";
+import LinkReaderButton from "./LinkViews/LinkComponents/LinkReaderButton";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib/utils";
@@ -244,7 +245,12 @@ export function Card({ link, editMode, dashboardType }: Props) {
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
-        {!isPublicRoute && <LinkPin link={link} />}
+        {!isPublicRoute && (
+          <>
+            <LinkReaderButton link={link} />
+            <LinkPin link={link} />
+          </>
+        )}
       </div>
     </div>
   );

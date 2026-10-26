@@ -18,7 +18,9 @@ import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
+import LinkReaderButton from "./LinkReaderButton";
 import LinkFormats from "./LinkFormats";
+import LinkRead from "./LinkRead";
 import openLink from "@/lib/client/openLink";
 import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
@@ -148,6 +150,8 @@ function LinkCard({
               )}
 
               {show.link && <LinkTypeBadge link={link} />}
+
+              <LinkRead link={link} />
             </div>
 
             {(show.collection || show.date) && (
@@ -180,7 +184,12 @@ function LinkCard({
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
-        {!isPublicRoute && <LinkPin link={link} />}
+        {!isPublicRoute && (
+          <>
+            <LinkReaderButton link={link} />
+            <LinkPin link={link} />
+          </>
+        )}
       </div>
     </div>
   );
