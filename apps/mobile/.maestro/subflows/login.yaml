@@ -1,5 +1,6 @@
 # Points the app at E2E_BASE_URL and signs in as TEST_USERNAME.
-# The defaults match the seeded user from packages/prisma/seed.js.
+# The defaults match the seeded user from packages/prisma/seed.js, on a server
+# running on this machine (10.0.2.2 is the host's address from the Android emulator).
 #
 # Sheets slide up after the keyboard opens, so each field is closed with
 # Enter and the sheet is given time to settle before the next tap.
@@ -10,7 +11,7 @@ appId: app.linkwarden
 - tapOn: "Self-hosted"
 - tapOn:
     id: "self-hosted-server-url"
-- inputText: ${E2E_BASE_URL || "http://localhost:3000"}
+- inputText: '${E2E_BASE_URL || (maestro.platform == "android" ? "http://10.0.2.2:3000" : "http://localhost:3000")}'
 - pressKey: Enter
 - waitForAnimationToEnd
 - tapOn:

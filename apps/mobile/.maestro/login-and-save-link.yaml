@@ -5,10 +5,21 @@ name: Log in and save a link
 - runFlow: subflows/login.yaml
 - evalScript: ${output.linkName = "Maestro " + Date.now()}
 # The dashboard's stats also have a "Links" label, so look inside the tab bar
-- tapOn:
-    text: "Links"
-    childOf:
-      text: "Tab Bar"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "Links"
+          childOf:
+            text: "Tab Bar"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Links"
+          id: ".*navigation_bar_item_.*_label_view"
 - tapOn: "New Link"
 - tapOn:
     id: "new-link-url"

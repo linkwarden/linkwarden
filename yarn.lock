@@ -6083,7 +6083,7 @@ __metadata:
     jest: "npm:^29.2.1"
     jest-expo: "npm:~57.0.6"
     lucide-react-native: "npm:^0.536.0"
-    nativewind: "npm:^4.2.1"
+    nativewind: "npm:^4.2.7"
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
     react-native: "npm:0.86.3"
@@ -20332,16 +20332,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nativewind@npm:^4.2.1":
-  version: 4.2.2
-  resolution: "nativewind@npm:4.2.2"
+"nativewind@npm:^4.2.7":
+  version: 4.2.7
+  resolution: "nativewind@npm:4.2.7"
   dependencies:
     comment-json: "npm:^4.2.5"
     debug: "npm:^4.3.7"
-    react-native-css-interop: "npm:0.2.2"
+    react-native-css-interop: "npm:0.2.7"
   peerDependencies:
     tailwindcss: ">3.3.0"
-  checksum: 10c0/3af8fc1951b634d8349b7527788fc90ac240c28af8dacb5c30701c39cfa3b9a6ded1017c6d3bdafafbe041cbc0e8f4b4103d97ce4bcae1a1c1e122cac493d6f9
+  checksum: 10c0/6288f080b2470b8711575aa71accfa6b7bac3c530bc8663fe6b0be9e916b964249f320159a4c9b154c2bfe767ce60696ee5ed6f84d2dae1363ee9b62dfb0f9b2
   languageName: node
   linkType: hard
 
@@ -22213,9 +22213,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-css-interop@npm:0.2.2":
-  version: 0.2.2
-  resolution: "react-native-css-interop@npm:0.2.2"
+"react-native-css-interop@npm:0.2.7":
+  version: 0.2.7
+  resolution: "react-native-css-interop@npm:0.2.7"
   dependencies:
     "@babel/helper-module-imports": "npm:^7.22.15"
     "@babel/traverse": "npm:^7.23.0"
@@ -22233,7 +22233,7 @@ __metadata:
       optional: true
     react-native-svg:
       optional: true
-  checksum: 10c0/94fbbf0b0ecc7623be72c01272a966bc5d8a09c21f1c3979c20afad4eeea4ad91e5549b6a579aaa9bffe1163a4c82b6bc7a6f2ba18c9f7644a14a24fbdcb9b1b
+  checksum: 10c0/b8dd5fdb5a069ce0475fe734957a1c1177bde41fbc6a26c9263423c60e9fd3566b0202543101b9d068a310c91cae1266353e0c9b199cb0a266e48ffcf5147b90
   languageName: node
   linkType: hard
 

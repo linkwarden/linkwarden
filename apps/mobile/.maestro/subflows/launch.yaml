@@ -9,6 +9,14 @@ appId: app.linkwarden
     when:
       true: ${!!METRO_URL}
     commands:
+      # Android drops the link if it arrives before the dev launcher is up
+      - runFlow:
+          when:
+            platform: Android
+          commands:
+            - extendedWaitUntil:
+                visible: "Development Build"
+                timeout: 30000
       # Keep the dev menu and its floating button out of the way
       - openLink: exp+linkwarden://expo-development-client/?url=${encodeURIComponent(METRO_URL)}&disableAutoLaunch=1&disableFab=1
 # Metro can take a while to build the first bundle
@@ -16,3 +24,7 @@ appId: app.linkwarden
     visible:
       id: "server-picker"
     timeout: 120000
+# The screen fades in and the server's sign-in buttons load in after it, and
+# the server picker can miss taps until both are done
+- waitForAnimationToEnd:
+    timeout: 5000
