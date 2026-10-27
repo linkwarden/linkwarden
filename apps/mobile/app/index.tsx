@@ -62,8 +62,9 @@ export default function HomeScreen() {
   const hasGoogle = buttonAuths
     ? buttonAuths.some((button) => button.method === "google")
     : instance === cloudInstance;
-  const appleEnabled = Platform.OS === "ios" && hasApple && versionOk;
-  const googleEnabled = hasGoogle && versionOk;
+  const appleEnabled =
+    Platform.OS === "ios" && isCloudInstance && hasApple && versionOk;
+  const googleEnabled = isCloudInstance && hasGoogle && versionOk;
   const isCheckingOAuth =
     currentInstanceInfo?.status === "loading" && !buttonAuths;
 

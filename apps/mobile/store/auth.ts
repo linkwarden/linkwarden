@@ -451,6 +451,8 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
   signInWithApple: async (instance) => {
+    if (instance !== cloudInstance) return;
+
     if (!(await ensureCloudIsReachable(instance))) return;
 
     let credential: AppleAuthentication.AppleAuthenticationCredential;
@@ -517,6 +519,8 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
   signInWithGoogle: async (instance) => {
+    if (instance !== cloudInstance) return;
+
     if (!(await ensureCloudIsReachable(instance))) return;
 
     let idToken: string | null = null;
