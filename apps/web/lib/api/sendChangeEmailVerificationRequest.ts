@@ -12,20 +12,29 @@ export default async function sendChangeEmailVerificationRequest(
 ) {
   const token = randomBytes(32).toString("hex");
 
-  await prisma.$transaction(async () => {
-    await prisma.verificationToken.create({
-      data: {
-        identifier: oldEmail?.toLowerCase(),
-        token,
-        expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
-      },
-    });
-    await prisma.user.update({
+  await prisma.$transaction(async (tx) => {
+    // Updating the user first locks the row, so concurrent requests run one
+    // after another and each one sees the tokens the previous one created.
+    await tx.user.update({
       where: {
         email: oldEmail?.toLowerCase(),
       },
       data: {
         unverifiedNewEmail: newEmail?.toLowerCase(),
+      },
+    });
+    // Tokens from earlier requests were sent to a different address, so they
+    // must not be able to verify the new one.
+    await tx.verificationToken.deleteMany({
+      where: {
+        identifier: oldEmail?.toLowerCase(),
+      },
+    });
+    await tx.verificationToken.create({
+      data: {
+        identifier: oldEmail?.toLowerCase(),
+        token,
+        expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
       },
     });
   });
