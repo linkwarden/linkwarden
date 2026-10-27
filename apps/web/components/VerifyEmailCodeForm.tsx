@@ -39,20 +39,25 @@ export default function VerifyEmailCodeForm({ email, onVerify }: Props) {
 
     setSubmitLoader(true);
 
-    const response = await fetch("/api/v1/auth/request-verification-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const response = await fetch("/api/v1/auth/request-verification-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    const data = await response.json();
+      // A proxy in front of the server can answer with an HTML error page
+      const data = await response.json().catch(() => null);
 
-    setSubmitLoader(false);
-
-    if (response.ok) toast.success(t("verification_code_sent"));
-    else toast.error(data.response);
+      if (response.ok) toast.success(t("verification_code_sent"));
+      else toast.error(data?.response || t("verification_code_not_sent"));
+    } catch {
+      toast.error(t("verification_code_not_sent"));
+    } finally {
+      setSubmitLoader(false);
+    }
   }
 
   return (

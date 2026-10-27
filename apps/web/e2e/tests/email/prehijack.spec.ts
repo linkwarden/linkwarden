@@ -227,6 +227,10 @@ test.describe("OpenID Connect sign-in", { tag: "@prehijack" }, () => {
     "Needs E2E_OIDC_URL (support/oidc-provider.mjs)"
   );
 
+  // The e2e provider signs in whichever identity was set last, so these tests
+  // can't run in parallel with each other
+  test.describe.configure({ mode: "default" });
+
   const identity = (email: string, email_verified = true) => ({
     sub: randomUUID(),
     email,
@@ -361,8 +365,8 @@ test.describe("Code lockouts", { tag: "@prehijack" }, () => {
       ).ok()
     ).toBe(true);
 
-    // Dates the last code two minutes back, so only the attempt limit applies
-    await prisma.emailVerificationCode.update({
+    // Dates any stored code two minutes back, so only the attempt limit applies
+    await prisma.emailVerificationCode.updateMany({
       where: { identifier: email },
       data: { expires: new Date(Date.now() + 18 * 60 * 1000) },
     });

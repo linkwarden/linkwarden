@@ -58,6 +58,12 @@ export default async function resetPassword(
       },
     });
 
+    // The reset proves the inbox is theirs, so drop any wrong verification codes
+    // entered with the old password, which would keep new codes from being sent
+    await prisma.emailVerificationCode.deleteMany({
+      where: { identifier: email.toLowerCase() },
+    });
+
     await prisma.passwordResetToken.update({
       where: {
         token,

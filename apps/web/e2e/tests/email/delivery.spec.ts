@@ -45,6 +45,22 @@ test.describe("Undeliverable codes", { tag: "@email-delivery" }, () => {
     expect(typeof (await response.json()).response).toBe("string");
   });
 
+  test("A failed send doesn't start the resend cooldown", async () => {
+    const actor = await newActor();
+    const email = uniqueEmail("bounce-cooldown");
+    await register(actor, { email, password });
+
+    for (let i = 0; i < 2; i++) {
+      const response = await actor.post(
+        "/api/v1/auth/request-verification-email",
+        { data: { email } }
+      );
+      expect((await response.json()).response).toBe(
+        "The verification email couldn't be sent. Please try again later."
+      );
+    }
+  });
+
   test.describe("past the resend cooldown", () => {
     test.skip(
       !process.env.DATABASE_URL,
@@ -67,8 +83,8 @@ test.describe("Undeliverable codes", { tag: "@email-delivery" }, () => {
       await loginPage.submitLoginButton.click();
       await expect(page.getByTestId("verification-code-input")).toBeVisible();
 
-      // Dates the last send two minutes back, so the cooldown has passed
-      await prisma.emailVerificationCode.update({
+      // Dates any stored send two minutes back, so the cooldown has passed
+      await prisma.emailVerificationCode.updateMany({
         where: { identifier: email },
         data: { expires: new Date(Date.now() + 18 * 60 * 1000) },
       });

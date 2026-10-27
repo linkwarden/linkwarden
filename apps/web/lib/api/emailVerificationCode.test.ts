@@ -107,13 +107,13 @@ describe("emailVerificationCode", () => {
     expect(sendVerificationRequest).not.toHaveBeenCalled();
   });
 
-  it("resets the attempt count after a day", async () => {
+  it("resets the attempt count after an hour", async () => {
     vi.mocked(prisma.emailVerificationCode.findUnique).mockResolvedValue({
       identifier: user.email,
       code: "hash",
       attempts: 10,
       expires: new Date(Date.now() - minutes(1)),
-      createdAt: new Date(Date.now() - 25 * minutes(60)),
+      createdAt: new Date(Date.now() - minutes(61)),
       updatedAt: new Date(),
     });
 
@@ -123,6 +123,46 @@ describe("emailVerificationCode", () => {
     const { update } = vi.mocked(prisma.emailVerificationCode.upsert).mock
       .calls[0][0];
     expect(update).toMatchObject({ attempts: 0 });
+  });
+
+  it("puts back the last code when the email can't be sent", async () => {
+    const existing = {
+      identifier: user.email,
+      code: "previous-hash",
+      attempts: 2,
+      expires: new Date(Date.now() + minutes(5)),
+      createdAt: new Date(Date.now() - minutes(15)),
+      updatedAt: new Date(),
+    };
+    vi.mocked(prisma.emailVerificationCode.findUnique).mockResolvedValue(
+      existing
+    );
+    vi.mocked(sendVerificationRequest).mockRejectedValueOnce(
+      new Error("Email (victim@lab.test) could not be sent")
+    );
+
+    const result = await sendEmailVerificationCode(user.email);
+
+    expect(result.status).toBe(500);
+    // With the old expiry, the resend cooldown counts from the last real send
+    expect(prisma.emailVerificationCode.updateMany).toHaveBeenCalledWith({
+      where: { identifier: user.email },
+      data: { code: existing.code, expires: existing.expires },
+    });
+  });
+
+  it("doesn't keep a code it couldn't send to a new address", async () => {
+    vi.mocked(prisma.emailVerificationCode.findUnique).mockResolvedValue(null);
+    vi.mocked(sendVerificationRequest).mockRejectedValueOnce(
+      new Error("Email (victim@lab.test) could not be sent")
+    );
+
+    const result = await sendEmailVerificationCode(user.email);
+
+    expect(result.status).toBe(500);
+    expect(prisma.emailVerificationCode.deleteMany).toHaveBeenCalledWith({
+      where: { identifier: user.email },
+    });
   });
 
   it("verifies the email with the right code", async () => {

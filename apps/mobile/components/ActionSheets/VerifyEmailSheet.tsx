@@ -13,7 +13,8 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import SheetHeader from "./SheetHeader";
 
-const MIN_EMAIL_CODE_VERSION = "v2.16.4";
+const cloudInstance = "https://cloud.linkwarden.app";
+const MIN_EMAIL_CODE_VERSION = "v2.17.0";
 
 export default function VerifyEmailSheet({
   payload,
@@ -31,14 +32,16 @@ export default function VerifyEmailSheet({
   const instance = payload?.instance ?? "";
   const password = payload?.password ?? "";
 
-  // The code is only accepted together with the password entered before this sheet
+  // The code is only accepted together with the password entered before this
+  // sheet. The cloud always sends codes, self-hosted servers since v2.17.0.
   const supportsCode =
     Boolean(password) &&
-    instanceInfo.instance === instance &&
-    isAtLeastInstanceVersion(
-      instanceInfo.config?.INSTANCE_VERSION,
-      MIN_EMAIL_CODE_VERSION
-    );
+    (instance === cloudInstance ||
+      (instanceInfo.instance === instance &&
+        isAtLeastInstanceVersion(
+          instanceInfo.config?.INSTANCE_VERSION,
+          MIN_EMAIL_CODE_VERSION
+        )));
 
   const closeSheet = () => {
     SheetManager.hide("verify-email-sheet");

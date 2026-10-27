@@ -16,6 +16,7 @@
   "verify": "Verify",
   "verifying": "Verifying...",
   "resend_code": "Resend Code",
+  "verification_code_not_sent": "The verification email couldn't be sent. Please try again later.",
   "invalid_credentials": "Invalid credentials.",
   "fill_all_fields": "Please fill out all the fields.",
   "enter_credentials": "Enter your credentials",

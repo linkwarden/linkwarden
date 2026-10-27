@@ -41,5 +41,5 @@ export default async function sendVerificationRequest({
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
 function text({ code }: { code: string }) {
-  return `Your Linkwarden verification code is ${code}\n\nThis code expires in 20 minutes. If you didn't try to sign up or log in to Linkwarden, you can ignore this email.\n`;
+  return `Your Linkwarden verification code is ${code}\n\nLog in to Linkwarden on the web or in the mobile app and enter this code. If the app doesn't ask for a code, update it or use the web.\n\nThis code expires in 20 minutes. If you didn't try to sign up or log in to Linkwarden, you can ignore this email.\n`;
 }

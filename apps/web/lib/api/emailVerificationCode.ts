@@ -13,7 +13,7 @@ import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 const CODE_TTL = 20 * 60 * 1000; // 20 minutes
 const RESEND_COOLDOWN = 60 * 1000; // 1 minute
 
-const ATTEMPT_WINDOW = 24 * 3600 * 1000; // 1 day
+const ATTEMPT_WINDOW = 3600 * 1000; // 1 hour
 const MAX_ATTEMPTS = 10;
 
 const hashCode = (identifier: string, code: string) =>
@@ -59,7 +59,26 @@ export async function sendEmailVerificationCode(email: string) {
       : data,
   });
 
-  await sendVerificationRequest({ identifier, code });
+  try {
+    await sendVerificationRequest({ identifier, code });
+  } catch (error) {
+    console.error("Could not send verification code:", error);
+
+    // Nothing was sent, so restore the last code and its resend cooldown
+    if (existing)
+      await prisma.emailVerificationCode.updateMany({
+        where: { identifier },
+        data: { code: existing.code, expires: existing.expires },
+      });
+    else
+      await prisma.emailVerificationCode.deleteMany({ where: { identifier } });
+
+    return {
+      response:
+        "The verification email couldn't be sent. Please try again later.",
+      status: 500,
+    };
+  }
 
   return { response: "Verification code sent.", status: 200 };
 }
