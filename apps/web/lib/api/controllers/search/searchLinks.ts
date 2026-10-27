@@ -83,6 +83,17 @@ export default async function searchLinks({
 
     const meiliResp = await meiliClient.index("links").search(meiliQuery, {
       filter: meiliFilters,
+      // Documents also hold the collection owner's account details, so only
+      // match the query against the link's own fields.
+      attributesToSearchOn: [
+        "name",
+        "url",
+        "description",
+        "metaDescription",
+        "textContent",
+        "tags",
+        "collectionName",
+      ],
       attributesToRetrieve: ["id"],
       limit,
       offset,
