@@ -12,10 +12,9 @@ const UUID_REGEX =
 
 const isAuthorized = (req: NextApiRequest) => {
   const secret = process.env.APP_STORE_WEBHOOK_TOKEN;
-  if (!secret) return true;
-
   const token = req.query.token;
-  if (typeof token !== "string") return false;
+
+  if (!secret || typeof token !== "string") return false;
 
   const a = new TextEncoder().encode(token);
   const b = new TextEncoder().encode(secret);
@@ -47,7 +46,7 @@ export default async function appStoreWebhook(
         "This action is disabled because this is a read-only demo of Linkwarden.",
     });
 
-  if (!isAppStoreConfigured()) {
+  if (!isAppStoreConfigured() || !process.env.APP_STORE_WEBHOOK_TOKEN) {
     return res.status(400).json({
       response:
         "This action is disabled because App Store billing is not configured.",
