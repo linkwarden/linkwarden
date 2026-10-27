@@ -6,23 +6,7 @@
 # Enter and the sheet is given time to settle before the next tap.
 appId: app.linkwarden
 ---
-- tapOn:
-    id: "server-picker"
-- tapOn: "Self-hosted"
-- tapOn:
-    id: "self-hosted-server-url"
-- inputText: '${E2E_BASE_URL || (maestro.platform == "android" ? "http://10.0.2.2:3000" : "http://localhost:3000")}'
-- pressKey: Enter
-- waitForAnimationToEnd
-- tapOn:
-    id: "self-hosted-server-submit"
-- extendedWaitUntil:
-    notVisible:
-      id: "self-hosted-server-url"
-    timeout: 30000
-# The server's sign-in buttons load in afterwards and push "Login" up
-- waitForAnimationToEnd:
-    timeout: 5000
+- runFlow: self-hosted-server.yaml
 - tapOn: "Login"
 - tapOn:
     id: "login-username"

@@ -300,4 +300,85 @@ test.describe("OpenID Connect sign-in", { tag: "@prehijack" }, () => {
 
     await expectAttackerLockedOut(email);
   });
+
+  test("After OIDC hands a pre-registered email to its owner, they can set their own password", async () => {
+    const email = uniqueEmail("oidc-new-password");
+    await preRegister(email);
+
+    const victim = await newActor();
+    expect(await oidcSignIn(victim, identity(email))).toBeNull();
+    const me = (await currentUser(victim)).body.response;
+
+    // Linking dropped the stranger's password, so this creates one
+    const updated = await victim.put(`/api/v1/users/${me.id}`, {
+      data: {
+        name: me.name,
+        username: me.username,
+        email: me.email,
+        newPassword: victimPassword,
+      },
+    });
+    expect(updated.ok()).toBe(true);
+
+    expect(
+      await credentialsLogin(await newActor(), email, victimPassword)
+    ).toBeNull();
+    await expectAttackerLockedOut(email);
+  });
+});
+
+test.describe("Code lockouts", { tag: "@prehijack" }, () => {
+  test.skip(
+    !process.env.DATABASE_URL,
+    "Needs DATABASE_URL to skip the resend cooldown"
+  );
+
+  const prisma = new PrismaClient();
+  test.afterAll(() => prisma.$disconnect());
+
+  test("Wrong codes from whoever registered the address don't lock out the owner after a password reset", async () => {
+    const email = uniqueEmail("reset-lockout");
+    const attacker = await preRegister(email);
+
+    expect(await credentialsLogin(attacker, email, attackerPassword)).toBe(
+      "Email not verified."
+    );
+    const { code } = verificationFrom(await waitForMessage(email, 0));
+    const wrong = code === "000000" ? "000001" : "000000";
+    for (let i = 0; i < 10; i++)
+      await credentialsLogin(attacker, email, attackerPassword, wrong);
+
+    const victim = await newActor();
+    await victim.post("/api/v1/auth/forgot-password", { data: { email } });
+    const token = (await waitForMessage(email, 1)).match(
+      /reset-password\?token=([0-9a-f]+)/
+    )?.[1];
+    expect(
+      (
+        await victim.post("/api/v1/auth/reset-password", {
+          data: { token, password: victimPassword },
+        })
+      ).ok()
+    ).toBe(true);
+
+    // Dates the last code two minutes back, so only the attempt limit applies
+    await prisma.emailVerificationCode.update({
+      where: { identifier: email },
+      data: { expires: new Date(Date.now() + 18 * 60 * 1000) },
+    });
+
+    const before = messagesTo(email).length;
+    expect(await credentialsLogin(victim, email, victimPassword)).toBe(
+      "Email not verified."
+    );
+    expect(
+      await completeVerification(
+        victim,
+        email,
+        victimPassword,
+        await waitForMessage(email, before)
+      )
+    ).toBeNull();
+    await expectAttackerLockedOut(email);
+  });
 });

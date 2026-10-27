@@ -1,0 +1,17 @@
+# Taps Verify on the email code sheet until EXPECT shows up.
+# The sheet moves with the number pad, which has no Enter key to close it,
+# and iOS adds a one-time code bar above it, so a tap can land mid-move.
+appId: app.linkwarden
+---
+- retry:
+    maxRetries: 2
+    commands:
+      - waitForAnimationToEnd
+      - tapOn: "Verify"
+      # iOS offers to save the password once the app signs in
+      - tapOn:
+          text: "Not Now"
+          optional: true
+      - extendedWaitUntil:
+          visible: ${EXPECT}
+          timeout: 15000

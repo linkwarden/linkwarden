@@ -284,6 +284,9 @@ test.describe("Email verification codes", { tag: "@email-code" }, () => {
     page,
     loginPage,
   }) => {
+    // Waits out the one-minute resend cooldown, past the default timeout
+    test.slow();
+
     const email = uniqueEmail("by-username");
     const username = `user${Date.now()}`;
     await register(await newActor(), { email, password, username });

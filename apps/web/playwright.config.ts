@@ -49,6 +49,17 @@ export default defineConfig({
       testMatch: "public/*.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    // Needs an instance with email enabled and EMAIL_SERVER pointing at
+    // e2e/support/mail-sink.mjs (see e2e/support/accounts.ts)
+    ...(process.env.E2E_MAIL_DIR
+      ? [
+          {
+            name: "chromium email",
+            testMatch: "email/*.spec.ts",
+            use: { ...devices["Desktop Chrome"] },
+          },
+        ]
+      : []),
 
     /*
     {

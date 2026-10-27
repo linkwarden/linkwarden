@@ -1,0 +1,21 @@
+# Points the app at E2E_BASE_URL from the welcome screen, by default a server
+# running on this machine (10.0.2.2 is the host's address from the Android emulator).
+appId: app.linkwarden
+---
+- tapOn:
+    id: "server-picker"
+- tapOn: "Self-hosted"
+- tapOn:
+    id: "self-hosted-server-url"
+- inputText: '${E2E_BASE_URL || (maestro.platform == "android" ? "http://10.0.2.2:3000" : "http://localhost:3000")}'
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "self-hosted-server-submit"
+- extendedWaitUntil:
+    notVisible:
+      id: "self-hosted-server-url"
+    timeout: 30000
+# The server's sign-in buttons load in afterwards and push "Login" up
+- waitForAnimationToEnd:
+    timeout: 5000

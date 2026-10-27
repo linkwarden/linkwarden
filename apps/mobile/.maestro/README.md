@@ -60,6 +60,24 @@ Every flow starts from a fresh install: the app's data, and on iOS the simulator
 
 Pass them with `-e`, for example `yarn workspace @linkwarden/mobile e2e -e TEST_USERNAME=me -e TEST_PASSWORD=secret`. Don't set defaults in a flow's `env:` block: those take precedence over `-e`.
 
+## Email verification flows
+
+The flows in `email/` need a server with email enabled, so they aren't part of the default run. From the repo root, start the web e2e mail sink with an HTTP port, which the flows read the emailed codes from:
+
+```bash
+node apps/web/e2e/support/mail-sink.mjs 2525 /tmp/linkwarden-mail 2526
+```
+
+Point the server's `EMAIL_SERVER` at `smtp://127.0.0.1:2525` (with `EMAIL_FROM` and `NEXT_PUBLIC_EMAIL_PROVIDER=true` set), then run from `apps/mobile`:
+
+```bash
+maestro test .maestro/email --exclude-tags older-server -e E2E_BASE_URL=http://localhost:3000 -e MAIL_SINK_URL=http://127.0.0.1:2526
+```
+
+`older-server-link.yaml` checks that the app still finishes sign-up on servers from before email codes (v2.16 and older), which email a link instead. Run it on its own against such a server with `--include-tags older-server`.
+
+Each run creates new accounts with `@lab.test` addresses. These flows have only been run on iOS so far.
+
 ## Writing flows
 
 - Prefer `id:` selectors backed by a `testID` prop over visible text, so copy changes don't break flows. Icon-only buttons should get an `accessibilityLabel` instead, which screen readers use too.
