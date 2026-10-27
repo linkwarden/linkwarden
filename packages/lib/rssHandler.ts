@@ -10,6 +10,35 @@ export const rssHandler = async (
   feed: Parser.Output<any>
 ) => {
   try {
+    // Access is only checked when the subscription is created, and the
+    // subscriber may have been removed from the collection since, so check it
+    // again and drop the subscription if it's gone.
+    const canAddLinks = await prisma.collection.findFirst({
+      where: {
+        id: rssSubscription.collectionId,
+        OR: [
+          { ownerId: rssSubscription.ownerId },
+          {
+            members: {
+              some: { userId: rssSubscription.ownerId, canCreate: true },
+            },
+          },
+        ],
+      },
+      select: { id: true },
+    });
+
+    if (!canAddLinks) {
+      console.log(
+        "\x1b[34m%s\x1b[0m",
+        `User ${rssSubscription.ownerId} can no longer add links to collection ${rssSubscription.collectionId}. Deleting RSS subscription ${rssSubscription.name}.`
+      );
+      await prisma.rssSubscription.delete({
+        where: { id: rssSubscription.id },
+      });
+      return;
+    }
+
     const feedLastBuildDate = (feed as any).lastBuildDate as
       | string
       | Date
