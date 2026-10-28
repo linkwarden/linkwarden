@@ -38,7 +38,10 @@ describe("LinkwardenClient", () => {
   it("returns collections from the response envelope", async () => {
     mockFetchOnce({ response: [{ id: 1, name: "Reading list" }] });
 
-    const client = new LinkwardenClient({ baseUrl: "https://example.com", token: "t" });
+    const client = new LinkwardenClient({
+      baseUrl: "https://example.com",
+      token: "t",
+    });
     const collections = await client.getCollections();
 
     expect(collections).toEqual([{ id: 1, name: "Reading list" }]);
@@ -47,7 +50,10 @@ describe("LinkwardenClient", () => {
   it("throws with the response body when the API call fails", async () => {
     mockFetchOnce({ response: "Collection is not accessible." }, 401);
 
-    const client = new LinkwardenClient({ baseUrl: "https://example.com", token: "t" });
+    const client = new LinkwardenClient({
+      baseUrl: "https://example.com",
+      token: "t",
+    });
 
     await expect(client.getLink(1)).rejects.toThrow(/401/);
   });
@@ -55,8 +61,15 @@ describe("LinkwardenClient", () => {
   it("builds query params for searchLinks", async () => {
     mockFetchOnce({ data: { links: [], nextCursor: null } });
 
-    const client = new LinkwardenClient({ baseUrl: "https://example.com", token: "t" });
-    await client.searchLinks({ searchQueryString: "rust", collectionId: 3, pinnedOnly: true });
+    const client = new LinkwardenClient({
+      baseUrl: "https://example.com",
+      token: "t",
+    });
+    await client.searchLinks({
+      searchQueryString: "rust",
+      collectionId: 3,
+      pinnedOnly: true,
+    });
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/search?searchQueryString=rust&collectionId=3&pinnedOnly=true",

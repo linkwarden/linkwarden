@@ -31,13 +31,14 @@ export class LinkwardenClient {
   }
 
   async getCollections(): Promise<Collection[]> {
-    const { response } = await this.request<ApiEnvelope<Collection[]>>(
-      "/collections"
-    );
+    const { response } =
+      await this.request<ApiEnvelope<Collection[]>>("/collections");
     return response;
   }
 
-  async searchLinks(params: SearchLinksParams = {}): Promise<SearchLinksResponse["data"]> {
+  async searchLinks(
+    params: SearchLinksParams = {}
+  ): Promise<SearchLinksResponse["data"]> {
     const query = new URLSearchParams();
     if (params.searchQueryString)
       query.set("searchQueryString", params.searchQueryString);
