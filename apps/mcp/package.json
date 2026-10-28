@@ -1,0 +1,26 @@
+{
+  "name": "@linkwarden/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only Model Context Protocol server exposing a user's Linkwarden library to MCP-compatible AI agents",
+  "main": "dist/index.js",
+  "bin": {
+    "linkwarden-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx watch index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "html-entities": "^2.6.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.8.3"
+  }
+}
