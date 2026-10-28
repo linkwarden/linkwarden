@@ -47,7 +47,7 @@ export default function SearchBar({ placeholder, fullWidth }: Props) {
 
   useEffect(() => {
     router.query.q
-      ? setSearchQuery(decodeURIComponent(router.query.q as string))
+      ? setSearchQuery(router.query.q as string)
       : setSearchQuery("");
   }, [router.query.q]);
 

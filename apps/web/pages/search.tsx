@@ -33,7 +33,7 @@ const Page: NextPageWithLayout = () => {
 
   const { links, data } = useLinks({
     sort: sortBy,
-    searchQueryString: decodeURIComponent(router.query.q as string),
+    searchQueryString: router.query.q as string,
   });
 
   return (
@@ -51,9 +51,7 @@ const Page: NextPageWithLayout = () => {
         <PageHeader
           icon={"bi-search"}
           title={t("search_results")}
-          description={`${t("results_for")} "${decodeURIComponent(
-            router.query.q as string
-          )}"`}
+          description={`${t("results_for")} "${router.query.q as string}"`}
         />
       </LinkListOptions>
 

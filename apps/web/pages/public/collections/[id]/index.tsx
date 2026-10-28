@@ -62,9 +62,7 @@ export default function PublicCollections() {
 
   const { links, data } = usePublicLinks({
     sort: sortBy,
-    searchQueryString: router.query.q
-      ? decodeURIComponent(router.query.q as string)
-      : undefined,
+    searchQueryString: router.query.q ? (router.query.q as string) : undefined,
   });
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
