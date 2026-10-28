@@ -6,6 +6,10 @@ import verifySubscription from "@/lib/api/billing/verifySubscription";
 import { parseAppleSignupName } from "@/lib/api/apple";
 import { authProviders, isAuthProviderEnabled } from "@/lib/api/authProviders";
 import { ssoEmailVerified } from "@/lib/api/ssoEmailVerified";
+import {
+  isNewSsoUsersDisabled,
+  isRegistrationDisabled,
+} from "@/lib/api/registration";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
@@ -40,7 +44,6 @@ function sanitizeAccount(account: LinkAccountInput): LinkAccountInput {
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
-const newSsoUsersDisabled = process.env.DISABLE_NEW_SSO_USERS === "true";
 const adapter = PrismaAdapter(prisma);
 const linkAccount = adapter.linkAccount;
 
@@ -222,6 +225,18 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, email, profile }) {
+        // The email provider creates a user for any unknown address once the
+        // sign-in link is opened, so it has to respect disabled registration.
+        if (account?.provider === "email" && isRegistrationDisabled()) {
+          const existingUser = user.email
+            ? await prisma.user.findUnique({
+                where: { email: user.email.toLowerCase().trim() },
+              })
+            : null;
+
+          if (!existingUser) return false;
+        }
+
         if (!(user as User).emailVerified && !email?.verificationRequest) {
           const parentSubscriptionId = (user as User).parentSubscriptionId;
 
@@ -271,7 +286,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             },
           });
 
-          if (!existingUser && newSsoUsersDisabled) {
+          if (!existingUser && isNewSsoUsersDisabled()) {
             return false;
           }
 
