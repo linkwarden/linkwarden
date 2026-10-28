@@ -22,6 +22,11 @@ export function isRegistrationDisabled() {
   return parseBooleanEnv(process.env.NEXT_PUBLIC_DISABLE_REGISTRATION);
 }
 
+// Disabling registration also stops new users from signing up through SSO.
+// DISABLE_NEW_SSO_USERS on its own still allows regular registration.
 export function isNewSsoUsersDisabled() {
-  return parseBooleanEnv(process.env.DISABLE_NEW_SSO_USERS);
+  return (
+    isRegistrationDisabled() ||
+    parseBooleanEnv(process.env.DISABLE_NEW_SSO_USERS)
+  );
 }

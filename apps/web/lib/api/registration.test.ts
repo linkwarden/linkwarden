@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { isRegistrationDisabled, parseBooleanEnv } from "./registration";
+import {
+  isNewSsoUsersDisabled,
+  isRegistrationDisabled,
+  parseBooleanEnv,
+} from "./registration";
 
 describe("parseBooleanEnv", () => {
   it("accepts true", () => {
@@ -46,5 +50,41 @@ describe("isRegistrationDisabled", () => {
 
     process.env.NEXT_PUBLIC_DISABLE_REGISTRATION = '"true"';
     expect(isRegistrationDisabled()).toBe(true);
+  });
+});
+
+describe("isNewSsoUsersDisabled", () => {
+  const original = {
+    registration: process.env.NEXT_PUBLIC_DISABLE_REGISTRATION,
+    sso: process.env.DISABLE_NEW_SSO_USERS,
+  };
+
+  afterEach(() => {
+    for (const [key, value] of [
+      ["NEXT_PUBLIC_DISABLE_REGISTRATION", original.registration],
+      ["DISABLE_NEW_SSO_USERS", original.sso],
+    ] as const) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+
+  it("is enabled when nothing is set", () => {
+    delete process.env.NEXT_PUBLIC_DISABLE_REGISTRATION;
+    delete process.env.DISABLE_NEW_SSO_USERS;
+    expect(isNewSsoUsersDisabled()).toBe(false);
+  });
+
+  it("follows DISABLE_NEW_SSO_USERS", () => {
+    delete process.env.NEXT_PUBLIC_DISABLE_REGISTRATION;
+    process.env.DISABLE_NEW_SSO_USERS = "true";
+    expect(isNewSsoUsersDisabled()).toBe(true);
+    expect(isRegistrationDisabled()).toBe(false);
+  });
+
+  it("is disabled together with registration", () => {
+    process.env.NEXT_PUBLIC_DISABLE_REGISTRATION = "true";
+    delete process.env.DISABLE_NEW_SSO_USERS;
+    expect(isNewSsoUsersDisabled()).toBe(true);
   });
 });
