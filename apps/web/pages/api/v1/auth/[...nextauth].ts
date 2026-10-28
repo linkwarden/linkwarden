@@ -279,15 +279,27 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         }
 
         if (account?.provider !== "credentials") {
-          // registration via SSO can be separately disabled
-          const existingUser = await prisma.account.findFirst({
-            where: {
-              providerAccountId: account?.providerAccountId,
-            },
-          });
+          // Email sign-ins are handled above and never get an account row,
+          // so only SSO providers are checked here. Existing users may still
+          // sign in and get the provider linked below.
+          if (account?.type !== "email" && isNewSsoUsersDisabled()) {
+            const existingAccount = await prisma.account.findFirst({
+              where: {
+                provider: account?.provider,
+                providerAccountId: account?.providerAccountId,
+              },
+            });
 
-          if (!existingUser && isNewSsoUsersDisabled()) {
-            return false;
+            const existingUser =
+              !existingAccount && user.email
+                ? await prisma.user.findFirst({
+                    where: {
+                      email: { equals: user.email.trim(), mode: "insensitive" },
+                    },
+                  })
+                : null;
+
+            if (!existingAccount && !existingUser) return false;
           }
 
           // If user is already registered, link the provider
