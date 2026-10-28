@@ -3,6 +3,7 @@ import {
   getAuthProviderButtonName,
   isAuthProviderEnabled,
 } from "@/lib/api/authProviders";
+import { isRegistrationDisabled } from "@/lib/api/registration";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as process from "process";
 
@@ -37,10 +38,7 @@ export function getLogins() {
         : "false",
     emailEnabled:
       process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" ? "true" : "false",
-    registrationDisabled:
-      process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true"
-        ? "true"
-        : "false",
+    registrationDisabled: isRegistrationDisabled() ? "true" : "false",
     buttonAuths: buttonAuths,
   };
 }
