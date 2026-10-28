@@ -1,9 +1,9 @@
 import { verifyAppleIdentityToken } from "@/lib/api/apple";
 import createSession from "@/lib/api/controllers/session/createSession";
+import { isNewSsoUsersDisabled } from "@/lib/api/registration";
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const newSsoUsersDisabled = process.env.DISABLE_NEW_SSO_USERS === "true";
 const appleBundleId = process.env.APPLE_BUNDLE_ID || "app.linkwarden";
 
 export default async function appleMobileAuth(
@@ -67,7 +67,7 @@ export default async function appleMobileAuth(
   }
 
   if (!user) {
-    if (newSsoUsersDisabled)
+    if (isNewSsoUsersDisabled())
       return res.status(403).json({ response: "Sign ups are disabled." });
 
     const fullName = typeof name === "string" && name.trim() ? name.trim() : "";

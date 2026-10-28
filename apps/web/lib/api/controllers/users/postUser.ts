@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { PostUserSchema } from "@linkwarden/lib/schemaValidation";
 import isAuthenticatedRequest from "../../isAuthenticatedRequest";
+import { isRegistrationDisabled } from "../../registration";
 import { Subscription, User } from "@linkwarden/prisma/client";
 
 const emailEnabled =
@@ -22,7 +23,7 @@ export default async function postUser(
   const isAdmin =
     parentUser && parentUser.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
-  if (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" && !isAdmin) {
+  if (isRegistrationDisabled() && !isAdmin) {
     return { response: "Registration is disabled.", status: 400 };
   }
 
