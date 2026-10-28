@@ -6,7 +6,12 @@ import {
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { LinkwardenClient } from "./client.js";
-import type { Collection, Highlight, Link } from "./types.js";
+import {
+  collectionsToMarkdown,
+  highlightsToMarkdown,
+  linkToMarkdown,
+  linksToMarkdown,
+} from "./format.js";
 
 const baseUrl = process.env.LINKWARDEN_URL;
 const token = process.env.LINKWARDEN_TOKEN;
@@ -24,52 +29,6 @@ const server = new McpServer({
   name: "linkwarden",
   version: "0.1.0",
 });
-
-function collectionsToMarkdown(collections: Collection[]): string {
-  if (collections.length === 0) return "No collections found.";
-  return collections
-    .map(
-      (c) =>
-        `- **${c.name}** (id: ${c.id})${c.description ? ` — ${c.description}` : ""}`
-    )
-    .join("\n");
-}
-
-function linksToMarkdown(links: Link[]): string {
-  if (links.length === 0) return "No links found.";
-  return links
-    .map((l) => {
-      const tags = l.tags?.length
-        ? ` [${l.tags.map((t) => t.name).join(", ")}]`
-        : "";
-      return `- **${l.name || l.url}** (id: ${l.id})${tags}\n  ${l.url ?? ""}${l.description ? `\n  ${l.description}` : ""}`;
-    })
-    .join("\n");
-}
-
-function linkToMarkdown(link: Link): string {
-  const lines = [
-    `# ${link.name || link.url}`,
-    `URL: ${link.url ?? "n/a"}`,
-    `Collection: ${link.collection?.name ?? link.collectionId}`,
-  ];
-  if (link.tags?.length)
-    lines.push(`Tags: ${link.tags.map((t) => t.name).join(", ")}`);
-  if (link.description) lines.push(`\n${link.description}`);
-  if (link.textContent)
-    lines.push(`\n## Readable content\n\n${link.textContent}`);
-  return lines.join("\n");
-}
-
-function highlightsToMarkdown(highlights: Highlight[]): string {
-  if (highlights.length === 0) return "No highlights found for this link.";
-  return highlights
-    .map(
-      (h) =>
-        `- (${h.color}) "${h.text}"${h.comment ? `\n  Note: ${h.comment}` : ""}`
-    )
-    .join("\n");
-}
 
 server.registerResource(
   "collections",
@@ -179,7 +138,9 @@ server.registerTool(
       cursor,
     });
     const text = nextCursor
-      ? `${linksToMarkdown(links)}\n\n_More results available — pass cursor: ${nextCursor}_`
+      ? `${linksToMarkdown(
+          links
+        )}\n\n_More results available — pass cursor: ${nextCursor}_`
       : linksToMarkdown(links);
     return { content: [{ type: "text", text }] };
   }

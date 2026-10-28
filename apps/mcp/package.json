@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
+    "html-entities": "^2.6.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
