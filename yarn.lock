@@ -5961,6 +5961,7 @@ __metadata:
   resolution: "@linkwarden/extension@workspace:apps/extension"
   dependencies:
     "@hookform/resolvers": "npm:^5.9.1"
+    "@playwright/test": "npm:1.57.0"
     "@radix-ui/react-checkbox": "npm:^1.3.3"
     "@radix-ui/react-dialog": "npm:^1.1.23"
     "@radix-ui/react-dropdown-menu": "npm:^2.1.15"
@@ -5980,6 +5981,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@vitejs/plugin-react": "npm:^5.2.0"
+    "@webext-core/fake-browser": "npm:^2.0.1"
     autoprefixer: "npm:^10.4.14"
     axios: "npm:^1.18.0"
     class-variance-authority: "npm:^0.7.1"
@@ -11351,6 +11353,25 @@ __metadata:
     convert-source-map: "npm:^2.0.0"
     tinyrainbow: "npm:^3.0.3"
   checksum: 10c0/222afbdef4f680a554bb6c3d946a4a879a441ebfb8597295cb7554d295e0e2624f3d4c2920b5767bbb8961a9f8a16756270ffc84032f5ea432cdce080ccab050
+  languageName: node
+  linkType: hard
+
+"@webext-core/fake-browser@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@webext-core/fake-browser@npm:2.0.1"
+  dependencies:
+    "@wxt-dev/browser": "npm:*"
+    lodash.merge: "npm:^4.6.2"
+  checksum: 10c0/6a680511264738db9d4d5f6eba180ab687fac65762e7e6ea6795678d57ef772a97f15b96b9995635c8d4deeaab26333deea71986ac70b4b9ba0849e5c955beb4
+  languageName: node
+  linkType: hard
+
+"@wxt-dev/browser@npm:*":
+  version: 0.3.7
+  resolution: "@wxt-dev/browser@npm:0.3.7"
+  dependencies:
+    "@types/har-format": "npm:*"
+  checksum: 10c0/46d612e4d3225d3bad696c3d3d609950d159b125ac1cb7ebbe769c5ba18ffe75ee39262ebd0452b4a5693189383cdf020cd188bcb4bfa1535943f256d76fb7ff
   languageName: node
   linkType: hard
 

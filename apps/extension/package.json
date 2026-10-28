@@ -11,7 +11,9 @@
     "build": "tsc && vite build",
     "bump:build": "node scripts/bump-build.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint:firefox": "web-ext lint --source-dir dist",
+    "preview": "vite preview",
+    "e2e": "yarn build && playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -39,6 +41,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@playwright/test": "1.57.0",
     "@types/firefox-webext-browser": "^143.0.0",
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.0",
@@ -47,6 +50,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "@webext-core/fake-browser": "^2.0.1",
     "autoprefixer": "^10.4.14",
     "concurrently": "^9.1.2",
     "eslint": "8.46.0",
