@@ -35,7 +35,18 @@ const targets: Record<ManifestTarget, TargetOptions> = {
     browserSpecificSettings: {
       gecko: {
         id: "jordanlinkwarden@gmail.com",
-        strict_min_version: "121.0",
+        // data_collection_permissions needs Firefox 140, and Firefox 127 and
+        // older refuse to install a manifest that has it.
+        strict_min_version: "140.0",
+        // What goes to the user's Linkwarden instance: sign-in credentials,
+        // the tab's URL, and its title and optional screenshot.
+        data_collection_permissions: {
+          required: [
+            "authenticationInfo",
+            "browsingActivity",
+            "websiteContent",
+          ],
+        },
       },
     },
   },
