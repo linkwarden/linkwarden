@@ -85,28 +85,27 @@ test.describe("Search query", () => {
     );
   });
 
-  test("Searching from the search modal keeps +, & and #", async ({
+  test("Searching from the search modal keeps %, +, & and #", async ({
     page,
     request,
   }) => {
     const owner = await createUser(request, "searcher");
     const collection = await createCollection(request, owner);
-    await createNamedLink(request, owner, collection.id, "c++ & rust #1");
-    await createNamedLink(request, owner, collection.id, "c rust 1");
+    const query = "c++ & rust #1 at 100%";
+    await createNamedLink(request, owner, collection.id, query);
+    await createNamedLink(request, owner, collection.id, "c rust 1 at 100");
     await login(page, owner);
 
     await page.getByRole("button", { name: "Search for Links" }).click();
-    await page.getByPlaceholder("Search for Links").fill("c++ & rust #1");
+    await page.getByPlaceholder("Search for Links").fill(query);
     await page.getByPlaceholder("Search for Links").press("Enter");
 
-    await expect(page).toHaveURL(
-      "/search?q=" + encodeURIComponent("c++ & rust #1")
-    );
-    await expect(page.getByText('Results for "c++ & rust #1"')).toBeVisible();
+    await expect(page).toHaveURL("/search?q=" + encodeURIComponent(query));
+    await expect(page.getByText(`Results for "${query}"`)).toBeVisible();
+    await expect(page.getByText(query, { exact: true }).first()).toBeVisible();
     await expect(
-      page.getByText("c++ & rust #1", { exact: true }).first()
-    ).toBeVisible();
-    await expect(page.getByText("c rust 1", { exact: true })).toHaveCount(0);
+      page.getByText("c rust 1 at 100", { exact: true })
+    ).toHaveCount(0);
   });
 
   test("A public collection search uses the query as typed, % included", async ({
@@ -123,6 +122,24 @@ test.describe("Search query", () => {
     );
 
     await expect(page.getByPlaceholder("Search 2 Links")).toHaveValue("%41");
+    await expect(
+      page.getByText("Code %41 sample", { exact: true }).first()
+    ).toBeVisible();
+    await expect(page.getByText("Code A sample", { exact: true })).toHaveCount(
+      0
+    );
+
+    // Typing the same text into the search bar gets the same results.
+    await page.goto(`/public/collections/${collectionId}`);
+    await expect(
+      page.getByText("Code A sample", { exact: true }).first()
+    ).toBeVisible();
+    await page.getByPlaceholder("Search 2 Links").fill("%41");
+    await page.getByPlaceholder("Search 2 Links").press("Enter");
+
+    await expect(page).toHaveURL(
+      `/public/collections/${collectionId}?q=` + encodeURIComponent("%41")
+    );
     await expect(
       page.getByText("Code %41 sample", { exact: true }).first()
     ).toBeVisible();
