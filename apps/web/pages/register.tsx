@@ -158,7 +158,7 @@ export default function Register({
       data-testid="registration-form"
     >
       {availableLogins.registrationDisabled === "true" ? (
-        <div className="flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full">
+        <div className="flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto">
           <p>{t("registration_disabled_desc")}</p>
         </div>
       ) : (
