@@ -358,8 +358,12 @@ if (hasAPI("omnibox.onInputStarted")) {
         return;
       }
 
+      const { baseUrl } = await getConfig();
       const isUrl = /^http(s)?:\/\//.test(content);
-      const url = isUrl ? content : `lk`;
+      // Text that isn't a link opens the instance's search page for it.
+      const url = isUrl
+        ? content
+        : `${baseUrl}/search?q=` + encodeURIComponent(content);
 
       // Edge doesn't allow updating the New Tab Page (tested with version 117).
       // Trying to do so will throw: "Error: Cannot update NTP tab."
