@@ -42,7 +42,7 @@ describe("buildManifest", () => {
       type: "module",
     });
     expect(manifest.permissions).toContain("bookmarks");
-    expect(manifest.omnibox).toEqual({ keyword: "lk" });
+    expect(manifest.omnibox).toEqual({ keyword: "lw" });
   });
 
   it("gives Safari only its own settings", () => {

@@ -117,7 +117,7 @@ export function buildManifest(target: ManifestTarget) {
       extension_pages:
         "script-src 'self'; object-src 'self'; connect-src 'self' http: https:;",
     },
-    ...(options.omnibox ? { omnibox: { keyword: "lk" } } : {}),
+    ...(options.omnibox ? { omnibox: { keyword: "lw" } } : {}),
     commands: {
       _execute_action: {
         suggested_key: { default: "Ctrl+Shift+F", mac: "Command+Shift+Y" },

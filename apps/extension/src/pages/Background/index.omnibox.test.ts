@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// Covers what happens when the user presses Enter after the "lk" keyword.
+// Covers what happens when the user presses Enter after the "lw" keyword.
 
 function fakeEvent<Args extends unknown[]>() {
   const listeners: ((...args: Args) => unknown)[] = [];
