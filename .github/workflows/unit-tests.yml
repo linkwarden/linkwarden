@@ -1,0 +1,36 @@
+name: Unit tests
+
+on:
+  workflow_call:
+    inputs:
+      areas:
+        description: JSON list of the areas to run, one check each (see .github/scripts/test-areas.mjs).
+        type: string
+        required: true
+
+jobs:
+  unit:
+    name: ${{ matrix.area }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        area: ${{ fromJSON(inputs.areas) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up
+        uses: ./.github/actions/setup
+
+      - name: Generate the Prisma client
+        run: yarn prisma:generate
+
+      # No database here; tests that need one are *.integration.test.ts files.
+      - name: Run tests
+        env:
+          AREA: ${{ matrix.area }}
+          AREAS: ${{ inputs.areas }}
+        run: node .github/scripts/test-areas.mjs unit "$AREA" -- yarn vitest run
