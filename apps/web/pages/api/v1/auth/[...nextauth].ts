@@ -384,7 +384,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               data: { name: appleSignupName },
             });
           }
-        } else if (await isTokenRevoked(token)) {
+        } else if (
+          // A database error shouldn't sign anyone out, API requests still check once it's back
+          await isTokenRevoked(token).catch((error) => {
+            console.error("Could not check if the session was revoked:", error);
+            return false;
+          })
+        ) {
           // next-auth clears the session cookie when this throws
           throw new Error("Session revoked.");
         } else if (!token.sessionId) {

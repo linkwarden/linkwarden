@@ -14,16 +14,17 @@ const loadSetSessionCookie = async (nextAuthUrl: string) => {
 const writeCookie = async (nextAuthUrl: string) => {
   const { default: setSessionCookie, SESSION_MAX_AGE } =
     await loadSetSessionCookie(nextAuthUrl);
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string[]> = {};
 
   await setSessionCookie(
+    { cookies: {} } as any,
     {
-      setHeader: (name: string, value: string) => (headers[name] = value),
+      setHeader: (name: string, value: string[]) => (headers[name] = value),
     } as any,
     { id: 1, sub: 1, sessionId: "session-id", sessionVersion: 2 } as any
   );
 
-  return { cookie: headers["Set-Cookie"], SESSION_MAX_AGE };
+  return { cookie: headers["Set-Cookie"][0], SESSION_MAX_AGE };
 };
 
 describe("setSessionCookie", () => {
@@ -70,6 +71,7 @@ describe("setSessionCookie", () => {
     const headers: Record<string, string | string[]> = {};
 
     await setSessionCookie(
+      { cookies: {} } as any,
       {
         getHeader: (name: string) => headers[name],
         setHeader: (name: string, value: string | string[]) =>
@@ -89,6 +91,42 @@ describe("setSessionCookie", () => {
       expect(cookie.split("; ")[0].length).toBeLessThanOrEqual(4096);
   });
 
+  it("clears chunks of the old cookie that the new one doesn't replace", async () => {
+    const { default: setSessionCookie } = await loadSetSessionCookie(
+      "http://localhost:3000/api/v1/auth"
+    );
+    const headers: Record<string, string[]> = {};
+
+    await setSessionCookie(
+      {
+        cookies: {
+          "next-auth.session-token.0": "a",
+          "next-auth.session-token.1": "b",
+          "next-auth.csrf-token": "c",
+        },
+      } as any,
+      {
+        setHeader: (name: string, value: string[]) => (headers[name] = value),
+      } as any,
+      { id: 1, sub: 1 } as any
+    );
+
+    const cookies = Object.fromEntries(
+      headers["Set-Cookie"].map((cookie) => [
+        cookie.slice(0, cookie.indexOf("=")),
+        cookie,
+      ])
+    );
+    expect(Object.keys(cookies).sort()).toEqual([
+      "next-auth.session-token",
+      "next-auth.session-token.0",
+      "next-auth.session-token.1",
+    ]);
+    expect(cookies["next-auth.session-token.0"]).toContain("Max-Age=0");
+    expect(cookies["next-auth.session-token.1"]).toContain("Max-Age=0");
+    expect(cookies["next-auth.session-token"]).not.toContain("Max-Age=0");
+  });
+
   it.each([
     ["an http NEXTAUTH_URL", { NEXTAUTH_URL: "http://localhost:3000" }],
     ["an https NEXTAUTH_URL", { NEXTAUTH_URL: "https://example.com" }],
@@ -101,16 +139,17 @@ describe("setSessionCookie", () => {
       vi.resetModules();
       const { default: setSessionCookie } = await import("./setSessionCookie");
       const { getToken } = await import("next-auth/jwt");
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string[]> = {};
 
       await setSessionCookie(
+        { cookies: {} } as any,
         {
-          setHeader: (name: string, value: string) => (headers[name] = value),
+          setHeader: (name: string, value: string[]) => (headers[name] = value),
         } as any,
         { id: 1, sub: 1 } as any
       );
 
-      const [name, value] = headers["Set-Cookie"].split("; ")[0].split("=");
+      const [name, value] = headers["Set-Cookie"][0].split("; ")[0].split("=");
       const token = await getToken({
         req: { headers: {}, cookies: { [name]: value } } as any,
       });

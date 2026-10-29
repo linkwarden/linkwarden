@@ -103,7 +103,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
         },
       });
 
-      await setSessionCookie(res, { ...token, sessionVersion });
+      await setSessionCookie(req, res, { ...token, sessionVersion });
     }
 
     return res.status(updated.status).json({ response: updated.response });
