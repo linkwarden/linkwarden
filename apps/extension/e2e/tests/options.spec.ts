@@ -90,4 +90,81 @@ test.describe("Options page", () => {
       apiKey: "",
     });
   });
+
+  test("Signing out revokes the session a username and password sign-in created", async ({
+    page,
+    request,
+    background,
+    baseURL,
+  }) => {
+    const user = await createUser(request);
+
+    await page.getByLabel("URL").fill(baseURL!);
+    await page.getByLabel("Username or Email").fill(user.username);
+    await page.getByLabel("Password").fill(user.password);
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByText("Signed in to")).toBeVisible();
+    const session = { ...user, token: (await storedConfig(background)).apiKey };
+    expect(
+      (await request.get("/api/v1/users/me", { headers: auth(session) })).ok()
+    ).toBeTruthy();
+
+    await page.getByRole("button", { name: "Sign Out" }).click();
+    await expect(page.getByLabel("URL")).toBeVisible();
+
+    await expect
+      .poll(async () =>
+        (
+          await request.get("/api/v1/users/me", { headers: auth(session) })
+        ).status()
+      )
+      .toBe(401);
+    // The user's other sessions stay signed in
+    expect(
+      (await request.get("/api/v1/users/me", { headers: auth(user) })).status()
+    ).toBe(200);
+  });
+
+  test("Signing out leaves an API key working", async ({
+    page,
+    request,
+    baseURL,
+  }) => {
+    const user = await createUser(request);
+    const created = await request.post("/api/v1/tokens", {
+      headers: auth(user),
+      data: { name: "extension", expires: 4 },
+    });
+    expect(created.ok()).toBeTruthy();
+    const apiKey = {
+      ...user,
+      token: (await created.json()).response.secretKey,
+    };
+
+    await page.getByLabel("URL").fill(baseURL!);
+    await page.getByRole("button", { name: "Method" }).click();
+    await page.getByRole("option", { name: "API Key" }).click();
+    await page.getByLabel("API Key").fill(apiKey.token);
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByText("Signed in to")).toBeVisible();
+
+    // Older versions of the extension don't tell the server at all
+    const signOutRequest = page
+      .waitForResponse(
+        (res) =>
+          res.url().endsWith("/api/v1/session") &&
+          res.request().method() === "DELETE",
+        { timeout: 5000 }
+      )
+      .catch(() => null);
+    await page.getByRole("button", { name: "Sign Out" }).click();
+    await expect(page.getByLabel("URL")).toBeVisible();
+    await signOutRequest;
+
+    expect(
+      (
+        await request.get("/api/v1/users/me", { headers: auth(apiKey) })
+      ).status()
+    ).toBe(200);
+  });
 });

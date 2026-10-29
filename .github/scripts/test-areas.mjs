@@ -49,6 +49,7 @@ const suites = {
         "tests/public/archive-upload-permissions.spec.ts",
         "tests/public/collection-parents.spec.ts",
         "tests/public/link-update-permissions.spec.ts",
+        "tests/public/session-revocation.spec.ts",
       ],
       "Search and no-email": [
         "tests/public/no-email.spec.ts",
@@ -61,7 +62,7 @@ const suites = {
     files: (path) => path.endsWith(".spec.ts"),
     areas: {
       "Verification and codes": ["verification.spec.ts", "edge-cases.spec.ts"],
-      "Pre-hijacking and OIDC": ["prehijack.spec.ts"],
+      "Pre-hijacking and OIDC": ["prehijack.spec.ts", "session-revocation.spec.ts"],
       "Delivery and upgrades": ["delivery.spec.ts", "upgrade.spec.ts"],
     },
   },

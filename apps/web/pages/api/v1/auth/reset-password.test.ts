@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import handler from "./reset-password";
 import { prisma } from "@linkwarden/prisma";
+import revokeUserSessions from "@/lib/api/revokeUserSessions";
 
 vi.mock("@linkwarden/prisma", () => ({
   prisma: {
@@ -16,6 +17,10 @@ vi.mock("@linkwarden/prisma", () => ({
       deleteMany: vi.fn(),
     },
   },
+}));
+
+vi.mock("@/lib/api/revokeUserSessions", () => ({
+  default: vi.fn(),
 }));
 
 const createMockResponse = () => {
@@ -52,6 +57,7 @@ describe("/api/v1/auth/reset-password", () => {
     vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue({
       identifier: "Owner@Example.com",
     } as any);
+    vi.mocked(prisma.user.update).mockResolvedValue({ id: 9 } as any);
     const { res, state } = createMockResponse();
 
     await handler(request, res);
@@ -63,6 +69,19 @@ describe("/api/v1/auth/reset-password", () => {
     });
   });
 
+  it("signs the account out everywhere", async () => {
+    vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue({
+      identifier: "owner@example.com",
+    } as any);
+    vi.mocked(prisma.user.update).mockResolvedValue({ id: 9 } as any);
+    const { res, state } = createMockResponse();
+
+    await handler(request, res);
+
+    expect(state.statusCode).toBe(200);
+    expect(revokeUserSessions).toHaveBeenCalledWith(9);
+  });
+
   it("leaves verification attempts alone for an invalid token", async () => {
     vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue(null);
     const { res, state } = createMockResponse();
@@ -72,5 +91,6 @@ describe("/api/v1/auth/reset-password", () => {
     expect(state.statusCode).toBe(400);
     expect(prisma.user.update).not.toHaveBeenCalled();
     expect(prisma.emailVerificationCode.deleteMany).not.toHaveBeenCalled();
+    expect(revokeUserSessions).not.toHaveBeenCalled();
   });
 });

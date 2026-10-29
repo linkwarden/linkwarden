@@ -60,4 +60,61 @@ describe("setSessionCookie", () => {
     expect(cookie.startsWith("__Secure-next-auth.session-token=")).toBe(true);
     expect(cookie.split("; ")).toContain("Secure");
   });
+
+  // A browser ignores a cookie over 4096 bytes, which is why next-auth splits
+  // big sessions (e.g. with an Azure AD profile photo) into chunks
+  it("keeps every cookie it writes small enough for a browser", async () => {
+    const { default: setSessionCookie } = await loadSetSessionCookie(
+      "http://localhost:3000/api/v1/auth"
+    );
+    const headers: Record<string, string | string[]> = {};
+
+    await setSessionCookie(
+      {
+        getHeader: (name: string) => headers[name],
+        setHeader: (name: string, value: string | string[]) =>
+          (headers[name] = value),
+      } as any,
+      {
+        id: 1,
+        sub: 1,
+        picture: `data:image/jpeg;base64, ${"A".repeat(3000)}`,
+        sessionId: "session-id",
+        sessionVersion: 2,
+      } as any
+    );
+
+    const cookies = ([] as string[]).concat(headers["Set-Cookie"]);
+    for (const cookie of cookies)
+      expect(cookie.split("; ")[0].length).toBeLessThanOrEqual(4096);
+  });
+
+  it.each([
+    ["an http NEXTAUTH_URL", { NEXTAUTH_URL: "http://localhost:3000" }],
+    ["an https NEXTAUTH_URL", { NEXTAUTH_URL: "https://example.com" }],
+    ["no NEXTAUTH_URL on Vercel", { NEXTAUTH_URL: undefined, VERCEL: "1" }],
+  ])(
+    "writes the cookie getToken reads with %s",
+    async (_, env: Record<string, string | undefined>) => {
+      vi.stubEnv("NEXTAUTH_SECRET", SECRET);
+      for (const [name, value] of Object.entries(env)) vi.stubEnv(name, value);
+      vi.resetModules();
+      const { default: setSessionCookie } = await import("./setSessionCookie");
+      const { getToken } = await import("next-auth/jwt");
+      const headers: Record<string, string> = {};
+
+      await setSessionCookie(
+        {
+          setHeader: (name: string, value: string) => (headers[name] = value),
+        } as any,
+        { id: 1, sub: 1 } as any
+      );
+
+      const [name, value] = headers["Set-Cookie"].split("; ")[0].split("=");
+      const token = await getToken({
+        req: { headers: {}, cookies: { [name]: value } } as any,
+      });
+      expect(token?.id).toBe(1);
+    }
+  );
 });

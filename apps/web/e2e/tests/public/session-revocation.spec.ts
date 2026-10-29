@@ -138,6 +138,45 @@ test.describe(
       await otherBrowser.dispose();
     });
 
+    test("A copy of a signed out cookie opens the login page in another browser", async ({
+      page,
+      request,
+      browser,
+      baseURL,
+    }) => {
+      const user = await createUser(request, "copied-cookie");
+      await signIn(page, user.username);
+      const sessionCookies = (await page.context().cookies()).filter((cookie) =>
+        cookie.name.includes("next-auth.session-token")
+      );
+
+      await page
+        .locator('button[aria-haspopup="menu"]')
+        .filter({ hasText: "copied-cookie" })
+        .click();
+      await page.getByRole("menuitem", { name: "Logout" }).click();
+      await expect(page.getByTestId("login-form")).toBeVisible({
+        timeout: 15000,
+      });
+
+      const otherBrowser = await browser.newContext({ baseURL });
+      await otherBrowser.addCookies(sessionCookies);
+      const copy = await otherBrowser.newPage();
+      await copy.goto("/dashboard");
+
+      await expect(copy.getByTestId("login-form")).toBeVisible({
+        timeout: 15000,
+      });
+      await expect(copy).toHaveURL(/\/login/);
+      // The cookie is dropped too, so the login page doesn't bounce back
+      expect(
+        (await otherBrowser.cookies()).filter((cookie) =>
+          cookie.name.includes("next-auth.session-token")
+        )
+      ).toEqual([]);
+      await otherBrowser.close();
+    });
+
     test("Signing out of the app revokes its session token but not the user's API keys", async ({
       request,
     }) => {
