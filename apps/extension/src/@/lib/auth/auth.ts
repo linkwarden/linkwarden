@@ -60,6 +60,14 @@ export async function getSession(
   return session;
 }
 
+export async function revokeSession(url: string, token: string) {
+  return await axios.delete(`${url}/api/v1/session`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 export async function getSessionFetch(url: string) {
   const session = await fetch(`${url}/api/v1/auth/session`);
   const sessionJson = await session.json();

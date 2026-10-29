@@ -1,6 +1,7 @@
 import { NextApiRequest } from "next";
 import { prisma } from "@linkwarden/prisma";
 import getTokenFromRequest from "./getTokenFromRequest";
+import isTokenRevoked from "./isTokenRevoked";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -20,15 +21,7 @@ export default async function isAuthenticatedRequest({ req }: Props) {
     return null;
   }
 
-  // check if token is revoked
-  const revoked = await prisma.accessToken.findFirst({
-    where: {
-      token: token.jti,
-      revoked: true,
-    },
-  });
-
-  if (revoked) {
+  if (await isTokenRevoked(token)) {
     return null;
   }
 

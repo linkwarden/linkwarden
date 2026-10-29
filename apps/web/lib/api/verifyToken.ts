@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import { JWT } from "next-auth/jwt";
-import { prisma } from "@linkwarden/prisma";
 import getTokenFromRequest from "./getTokenFromRequest";
+import isTokenRevoked from "./isTokenRevoked";
 
 type Props = {
   req: NextApiRequest;
@@ -21,15 +21,7 @@ export default async function verifyToken({
     return "Your session has expired, please log in again.";
   }
 
-  // check if token is revoked
-  const revoked = await prisma.accessToken.findFirst({
-    where: {
-      token: token.jti,
-      revoked: true,
-    },
-  });
-
-  if (revoked) {
+  if (await isTokenRevoked(token)) {
     return "Your session has expired, please log in again.";
   }
 

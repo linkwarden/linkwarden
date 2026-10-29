@@ -3,6 +3,7 @@ import { AccountSettings } from "@linkwarden/types/global";
 import bcrypt from "bcrypt";
 import { removeFile, createFile, createFolder } from "@linkwarden/filesystem";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
+import revokeUserSessions from "@/lib/api/revokeUserSessions";
 import { i18n } from "next-i18next.config";
 import { UpdateUserSchema } from "@linkwarden/lib/schemaValidation";
 
@@ -240,6 +241,9 @@ export default async function updateUserById(
       },
     },
   });
+
+  // A changed password signs out every session and revokes every access token
+  if (data.newPassword && user?.password) await revokeUserSessions(userId);
 
   const {
     password,

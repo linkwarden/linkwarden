@@ -596,6 +596,14 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   signOut: async () => {
     const instance = await SecureStore.getItemAsync("INSTANCE");
     const nextInstance = cleanInstance(instance);
+    const session = await SecureStore.getItemAsync("TOKEN");
+
+    // Revoke the session on the server too, without holding up the sign out if it can't be reached
+    if (session)
+      fetch(`${nextInstance}/api/v1/session`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session}` },
+      }).catch(() => {});
 
     await SecureStore.deleteItemAsync("TOKEN");
 

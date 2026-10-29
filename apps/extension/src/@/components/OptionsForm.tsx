@@ -31,7 +31,7 @@ import { Toaster } from "./ui/Toaster.tsx";
 import { toast } from "../../hooks/useToast.ts";
 import { AxiosError } from "axios";
 import { clearBookmarksMetadata } from "../lib/cache.ts";
-import { getSession } from "../lib/auth/auth.ts";
+import { getSession, revokeSession } from "../lib/auth/auth.ts";
 import SelectInput, { SelectOption } from "./SelectInput.tsx";
 
 interface OptionsFormProps {
@@ -101,6 +101,11 @@ const OptionsForm = ({
       return;
     },
     onSuccess: async () => {
+      const { baseUrl, apiKey } = await getConfig();
+
+      // Revokes the token from a username/password sign in on the server, an API key is left as is
+      revokeSession(baseUrl, apiKey).catch(() => {});
+
       // Reset the form
       form.reset({
         baseUrl: "",
