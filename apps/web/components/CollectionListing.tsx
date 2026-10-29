@@ -463,17 +463,23 @@ const buildTreeFromCollections = (
     });
   }
 
-  function getTotalLinkCount(collectionId: number): number {
+  // `visited` stops a parent cycle from recursing until the stack overflows
+  function getTotalLinkCount(
+    collectionId: number,
+    visited = new Set<number>()
+  ): number {
     const collection = items[collectionId];
-    if (!collection) {
+    if (!collection || visited.has(collectionId)) {
       return 0;
     }
+
+    visited.add(collectionId);
 
     let totalLinkCount = (collection.data as any)._count?.links || 0;
 
     if (collection.hasChildren) {
       collection.children.forEach((childId) => {
-        totalLinkCount += getTotalLinkCount(childId as number);
+        totalLinkCount += getTotalLinkCount(childId as number, visited);
       });
     }
 
@@ -517,7 +523,9 @@ const buildTreeFromCollections = (
       if (Number(item) === activeCollectionId && collection.data.parentId) {
         // get all the parents of the active collection recursively until root and set isExpanded to true
         let parentId = collection.data.parentId || null;
-        while (parentId && items[parentId]) {
+        const visited = new Set<number>();
+        while (parentId && items[parentId] && !visited.has(parentId)) {
+          visited.add(parentId);
           items[parentId].isExpanded = true;
           parentId = items[parentId].data.parentId;
         }
@@ -533,12 +541,22 @@ const buildTreeFromCollections = (
     }
   });
 
+  // Every total is worked out before any is written back, since a total reads
+  // the link counts of the collections below it
+  const totalLinkCounts = new Map<number, number>();
+
   collections.forEach((collection) => {
     const collectionId = collection.id;
     if (items[collectionId as number] && collection.id) {
-      const linkCount = getTotalLinkCount(collectionId as number);
-      (items[collectionId as number].data as any)._count.links = linkCount;
+      totalLinkCounts.set(
+        collectionId as number,
+        getTotalLinkCount(collectionId as number)
+      );
     }
+  });
+
+  totalLinkCounts.forEach((linkCount, collectionId) => {
+    (items[collectionId].data as any)._count.links = linkCount;
   });
 
   const rootIds = collections

@@ -42,11 +42,12 @@ export async function createUser(
 export async function createCollection(
   request: APIRequestContext,
   user: TestUser,
-  name: string
+  name: string,
+  parentId?: number
 ) {
   const created = await request.post("/api/v1/collections", {
     headers: auth(user),
-    data: { name },
+    data: { name, parentId },
   });
   expect(created.ok()).toBeTruthy();
   const { response: collection } = await created.json();

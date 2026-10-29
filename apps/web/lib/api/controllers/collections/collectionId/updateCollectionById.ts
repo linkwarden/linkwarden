@@ -1,5 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import getPermission from "@/lib/api/getPermission";
+import getCollectionAncestorIds from "@/lib/api/getCollectionAncestorIds";
 import {
   UpdateCollectionSchema,
   UpdateCollectionSchemaType,
@@ -10,7 +11,9 @@ export default async function updateCollection(
   collectionId: number,
   body: UpdateCollectionSchemaType
 ) {
-  if (!collectionId)
+  // Prisma drops the fraction from an id, so 12.5 would update collection 12
+  // while the cycle check below still compares it as 12.5
+  if (!collectionId || !Number.isInteger(collectionId))
     return { response: "Please choose a valid collection.", status: 401 };
 
   const dataValidation = UpdateCollectionSchema.safeParse(body);
@@ -42,18 +45,30 @@ export default async function updateCollection(
         },
         select: {
           ownerId: true,
-          parentId: true,
         },
       });
 
       if (
         findParentCollection?.ownerId !== userId ||
-        typeof data.parentId !== "number" ||
-        findParentCollection?.parentId === data.parentId
+        typeof data.parentId !== "number"
       )
         return {
           response: "You are not authorized to create a sub-collection here.",
           status: 403,
+        };
+
+      // A move under this collection or one of its sub-collections would put it
+      // inside itself, and every walk up the tree would loop forever. Edits send
+      // the parent the collection already has, which isn't a move, so they skip
+      // this and still work on a collection saved in a cycle before.
+      if (
+        data.parentId !== collectionIsAccessible.parentId &&
+        (await getCollectionAncestorIds(data.parentId)).has(collectionId)
+      )
+        return {
+          response:
+            "A collection can't be moved into itself or one of its sub-collections.",
+          status: 400,
         };
     }
   }
@@ -81,15 +96,15 @@ export default async function updateCollection(
             select: { id: true, ownerId: true },
           });
 
-          if (children.length === 0) break;
+          // Only unseen children go on, or a parent cycle would loop here forever
+          frontier = [];
 
           for (const child of children) {
             if (seen.has(child.id)) continue;
             seen.add(child.id);
             result.push(child);
+            frontier.push(child.id);
           }
-
-          frontier = children.map((c) => c.id);
         }
 
         return result;

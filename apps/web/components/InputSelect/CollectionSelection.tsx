@@ -8,6 +8,7 @@ import {
 } from "react";
 import { styles } from "./styles";
 import { Option } from "@linkwarden/types/inputSelect";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import CreatableSelect from "react-select/creatable";
 import Select, { components, MenuListProps } from "react-select";
 import { useCollections } from "@linkwarden/router/collections";
@@ -99,30 +100,42 @@ export default function CollectionSelection({
     };
   }
 
-  const getParentNames = (parentId: number): string[] => {
-    const parentNames = [];
-    const parent = collections.find((e) => e.id === parentId);
+  // The names of a collection's parents, top level first. `visited` starts with
+  // the collection itself, so a parent cycle stops before coming back round.
+  const getParentNames = (
+    collection: CollectionIncludingMembersAndLinkCount,
+    collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>
+  ): string[] => {
+    const parentNames: string[] = [];
+    const visited = new Set<number>([collection.id as number]);
+    let parentId = collection.parentId;
 
-    if (parent) {
-      parentNames.push(parent.name);
-      if (parent.parentId) {
-        parentNames.push(...getParentNames(parent.parentId));
-      }
+    while (parentId && !visited.has(parentId)) {
+      const parent = collectionsById.get(parentId);
+      if (!parent) break;
+
+      visited.add(parentId);
+      parentNames.unshift(parent.name);
+      parentId = parent.parentId;
     }
 
-    // Have the top level parent at beginning
-    return parentNames.reverse();
+    return parentNames;
   };
 
   useEffect(() => {
+    // A map rather than find, which is quadratic over thousands of collections
+    const collectionsById = new Map(
+      collections.map((e) => [e.id as number, e])
+    );
+
     const formattedCollections = collections
       .map((e) => {
         return {
           value: e.id,
           label: e.name,
-          parentsLabel:
-            ((e.parentId && getParentNames(e.parentId).join(" > ") + " > ") ||
-              "") + e.name,
+          parentsLabel: [...getParentNames(e, collectionsById), e.name].join(
+            " > "
+          ),
           ownerId: e.ownerId,
           count: e._count,
           parentId: e.parentId,

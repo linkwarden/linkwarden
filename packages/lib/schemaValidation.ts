@@ -222,7 +222,7 @@ export const PostCollectionSchema = z.object({
   color: z.string().trim().max(50).optional(),
   icon: z.string().trim().max(50).optional(),
   iconWeight: z.string().trim().max(50).optional(),
-  parentId: z.number().optional(),
+  parentId: z.number().int().optional(),
 });
 
 export type PostCollectionSchemaType = z.infer<typeof PostCollectionSchema>;
@@ -235,7 +235,7 @@ export const UpdateCollectionSchema = z.object({
   isPublic: z.boolean().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
-  parentId: z.union([z.number(), z.literal("root")]).nullish(),
+  parentId: z.union([z.number().int(), z.literal("root")]).nullish(),
   members: z.array(
     z.object({
       userId: z.number(),

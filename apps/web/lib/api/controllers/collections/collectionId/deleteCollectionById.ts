@@ -1,5 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import getPermission from "@/lib/api/getPermission";
+import getCollectionAncestorIds from "@/lib/api/getCollectionAncestorIds";
 import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { removeFolder } from "@linkwarden/filesystem";
 import { meiliClient } from "@linkwarden/lib/meilisearchClient";
@@ -8,7 +9,9 @@ export default async function deleteCollection(
   userId: number,
   collectionId: number
 ) {
-  if (!collectionId)
+  // Prisma drops the fraction from an id, so 12.5 would delete collection 12
+  // while the cycle check below still compares it as 12.5
+  if (!collectionId || !Number.isInteger(collectionId))
     return { response: "Please choose a valid collection.", status: 401 };
 
   const collectionIsAccessible = await getPermission({
@@ -51,7 +54,23 @@ export default async function deleteCollection(
     return { response: "Collection is not accessible.", status: 401 };
   }
 
+  // If the collection is inside its own subtree (a parent cycle), deleting a
+  // subcollection would cascade to it before the steps below, so it's detached
+  // first. Only then, since these steps don't roll back, and a delete that fails
+  // partway should leave any other collection under its parent.
+  const isInParentCycle =
+    collectionIsAccessible.parentId !== null &&
+    (await getCollectionAncestorIds(collectionIsAccessible.parentId)).has(
+      collectionId
+    );
+
   const deletedCollection = await prisma.$transaction(async () => {
+    if (isInParentCycle)
+      await prisma.collection.update({
+        where: { id: collectionId },
+        data: { parentId: null },
+      });
+
     await deleteSubCollections(collectionId);
 
     await prisma.usersAndCollections.deleteMany({
@@ -103,13 +122,20 @@ export default async function deleteCollection(
   return { response: deletedCollection, status: 200 };
 }
 
-async function deleteSubCollections(collectionId: number) {
+async function deleteSubCollections(
+  collectionId: number,
+  visited = new Set<number>([collectionId])
+) {
   const subCollections = await prisma.collection.findMany({
     where: { parentId: collectionId },
   });
 
   for (const subCollection of subCollections) {
-    await deleteSubCollections(subCollection.id);
+    // A parent cycle would otherwise recurse forever
+    if (visited.has(subCollection.id)) continue;
+    visited.add(subCollection.id);
+
+    await deleteSubCollections(subCollection.id, visited);
 
     await prisma.usersAndCollections.deleteMany({
       where: {
