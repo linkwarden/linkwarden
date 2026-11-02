@@ -16,18 +16,22 @@ export default function ProfilePhoto({
   name,
   large,
 }: Props) {
-  const [image, setImage] = useState("");
+  const [photo, setPhoto] = useState({ src: "", loaded: false });
 
   useEffect(() => {
-    if (src && !src?.includes("base64") && !src.startsWith("http"))
-      setImage(`/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`);
-    else if (!src) setImage("");
-    else {
-      setImage(src);
-    }
+    const next =
+      src && !src.includes("base64") && !src.startsWith("http")
+        ? `/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`
+        : src || "";
+
+    // A different photo starts loading again; aliases of the same URL keep
+    // the current image and its loaded state.
+    setPhoto((previous) =>
+      previous.src === next ? previous : { src: next, loaded: false }
+    );
   }, [src]);
 
-  return !image ? (
+  return !photo.src ? (
     <div
       className={`avatar drop-shadow-md placeholder ${className || ""} ${
         large ? "w-28 h-28" : "w-8 h-8"
@@ -43,19 +47,36 @@ export default function ProfilePhoto({
     </div>
   ) : (
     <div
-      className={`avatar skeleton rounded-full drop-shadow-md ${
-        className || ""
-      } ${large ? "w-28 h-28" : "w-8 h-8"}`}
+      className={`avatar ${
+        photo.loaded ? "" : "skeleton"
+      } rounded-full drop-shadow-md ${className || ""} ${
+        large ? "w-28 h-28" : "w-8 h-8"
+      }`}
     >
       <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
         <Image
+          // A new photo gets a new <img>, so a load still finishing for the
+          // previous one can't count for it.
+          key={photo.src}
           alt=""
-          src={image}
+          src={photo.src}
           height={112}
           width={112}
           priority={priority}
           draggable={false}
-          onError={() => setImage("")}
+          // Also called for a photo the browser already has.
+          onLoad={() =>
+            setPhoto((previous) =>
+              previous.src === photo.src
+                ? { ...previous, loaded: true }
+                : previous
+            )
+          }
+          onError={() =>
+            setPhoto((previous) =>
+              previous.src === photo.src ? { src: "", loaded: false } : previous
+            )
+          }
           className="aspect-square rounded-full"
           unoptimized
         />
