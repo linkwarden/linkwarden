@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import oldestFirst from "@/lib/api/oldestFirst";
 
 type OmnivoreItem = {
   id: string;
@@ -63,7 +64,9 @@ export default async function importFromOmnivore(
         // read instead of asking the database for the top of the list.
         let collectionOrder = COLLECTION_ORDER_STEP;
 
-        for (const item of backup) {
+        for (const item of oldestFirst(backup, (item) =>
+          item.savedAt ? new Date(item.savedAt) : null
+        )) {
           try {
             new URL(item.url.trim());
           } catch (err) {

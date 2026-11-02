@@ -1,8 +1,9 @@
 import { prisma } from "@linkwarden/prisma";
-import { Backup } from "@linkwarden/types/global";
+import { Backup, LinksIncludingTags } from "@linkwarden/types/global";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import oldestFirst from "@/lib/api/oldestFirst";
 
 export default async function importFromLinkwarden(
   userId: number,
@@ -28,6 +29,10 @@ export default async function importFromLinkwarden(
   await prisma
     .$transaction(
       async () => {
+        // Collections are created in the order the backup lists them, links once
+        // all of them exist, so they can go in oldest first.
+        const links: { link: LinksIncludingTags; collectionId: number }[] = [];
+
         // Import collections
         for (const e of data.collections) {
           e.name = e.name.trim();
@@ -52,72 +57,90 @@ export default async function importFromLinkwarden(
 
           createFolder({ filePath: `archives/${newCollection.id}` });
 
-          // The collection was just created, so its links can be numbered as they
-          // are read instead of asking the database for the top of the list.
-          let collectionOrder = COLLECTION_ORDER_STEP;
-
-          // Import Links
           for (const link of e.links) {
-            if (link.url) {
-              try {
-                new URL(link.url.trim());
-              } catch (err) {
-                continue;
-              }
-            }
+            links.push({ link, collectionId: newCollection.id });
+          }
+        }
 
-            const newLink = await prisma.link.create({
-              data: {
-                url: link.url?.trim().slice(0, 2047),
-                name: link.name?.trim().slice(0, 254),
-                description: link.description?.trim().slice(0, 254),
-                importDate: new Date(link.importDate || link.createdAt),
-                collectionOrder,
-                collection: {
-                  connect: {
-                    id: newCollection.id,
-                  },
+        // The collections were just created, so their links can be numbered as
+        // they are read instead of asking the database for the top of the list.
+        const collectionOrders = new Map<number, number>();
+
+        // Import Links
+        for (const { link, collectionId } of oldestFirst(
+          links,
+          ({ link }) => new Date(link.importDate || link.createdAt)
+        )) {
+          if (link.url) {
+            try {
+              new URL(link.url.trim());
+            } catch (err) {
+              continue;
+            }
+          }
+
+          const collectionOrder =
+            (collectionOrders.get(collectionId) ?? 0) + COLLECTION_ORDER_STEP;
+
+          const newLink = await prisma.link.create({
+            data: {
+              url: link.url?.trim().slice(0, 2047),
+              name: link.name?.trim().slice(0, 254),
+              description: link.description?.trim().slice(0, 254),
+              importDate: new Date(link.importDate || link.createdAt),
+              collectionOrder,
+              collection: {
+                connect: {
+                  id: collectionId,
                 },
-                createdBy: {
-                  connect: {
-                    id: userId,
-                  },
+              },
+              createdBy: {
+                connect: {
+                  id: userId,
                 },
-                // Import Tags
-                tags: {
-                  connectOrCreate: link.tags.map((tag) => ({
+              },
+              // Import Tags
+              tags: {
+                connectOrCreate: link.tags.map((tag) => {
+                  // Looked up by the name it's created with, so names that
+                  // differ only by spaces around them find the same tag
+                  const name = tag.name?.trim().slice(0, 49);
+
+                  return {
                     where: {
                       name_ownerId: {
-                        name: tag.name?.slice(0, 49),
+                        name,
                         ownerId: userId,
                       },
                     },
                     create: {
-                      name: tag.name?.trim().slice(0, 49),
+                      name,
                       owner: {
                         connect: {
                           id: userId,
                         },
                       },
                     },
-                  })),
-                },
+                  };
+                }),
               },
-            });
-            collectionOrder += COLLECTION_ORDER_STEP;
+            },
+          });
+          collectionOrders.set(collectionId, collectionOrder);
 
-            // Import pinnedLinks
-            data?.pinnedLinks.forEach(async (pinnedLink) => {
-              if (pinnedLink.url === newLink.url) {
-                await prisma.link.update({
-                  where: {
-                    id: newLink.id,
-                  },
-                  data: {
-                    pinnedBy: { connect: { id: userId } },
-                  },
-                });
-              }
+          // Import pinnedLinks
+          if (
+            data?.pinnedLinks.some(
+              (pinnedLink) => pinnedLink.url === newLink.url
+            )
+          ) {
+            await prisma.link.update({
+              where: {
+                id: newLink.id,
+              },
+              data: {
+                pinnedBy: { connect: { id: userId } },
+              },
             });
           }
         }

@@ -41,7 +41,7 @@ jobs:
     uses: ./.github/workflows/e2e-tests.yml
     with:
       suite: e2e-web
-      areas: '["Login", "Permissions", "Search and no-email"]'
+      areas: '["Login", "Permissions", "Search and no-email", "Imports"]'
 
   e2e-email:
     name: E2E email

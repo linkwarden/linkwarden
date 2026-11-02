@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import oldestFirst from "@/lib/api/oldestFirst";
 
 type WallabagBackup = {
   is_archived: number;
@@ -70,7 +71,9 @@ export default async function importFromWallabag(
         // read instead of asking the database for the top of the list.
         let collectionOrder = COLLECTION_ORDER_STEP;
 
-        for (const link of backup) {
+        for (const link of oldestFirst(backup, (link) =>
+          link.created_at ? new Date(link.created_at) : null
+        )) {
           if (link.url) {
             try {
               new URL(link.url.trim());
@@ -87,7 +90,9 @@ export default async function importFromWallabag(
               url: link.url?.trim().slice(0, 2047),
               name: link.title?.trim().slice(0, 254) || "",
               textContent: link.content?.trim().slice(0, 2047) || "",
-              importDate: link.created_at || null,
+              // Wallabag writes the offset without a colon (+0200), which the
+              // database client refuses as a string
+              importDate: link.created_at ? new Date(link.created_at) : null,
               collectionOrder,
               collection: {
                 connect: {

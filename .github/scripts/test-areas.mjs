@@ -55,6 +55,7 @@ const suites = {
         "tests/public/no-email.spec.ts",
         "tests/public/search-query.spec.ts",
       ],
+      Imports: ["tests/public/import-order.spec.ts"],
     },
   },
   "e2e-email": {

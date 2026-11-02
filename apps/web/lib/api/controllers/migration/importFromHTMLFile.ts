@@ -5,13 +5,21 @@ import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
+import oldestFirst, { isStorableDate } from "@/lib/api/oldestFirst";
+
+type ImportedLink = {
+  url: string;
+  collectionId: number;
+  name?: string;
+  description?: string;
+  tags?: string[];
+  importDate?: Date;
+};
 
 export default async function importFromHTMLFile(
   userId: number,
   rawData: string
 ) {
-  // const importStartMs = Date.now();
-
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
 
@@ -36,10 +44,24 @@ export default async function importFromHTMLFile(
 
   const processedArray = processNodes(jsonData);
 
-  // sortBookmarksTreeByEffectiveDate(processedArray, importStartMs, "asc");
+  // Collections are created as the file is read, links once all of them are
+  // known, so they can go in oldest first.
+  const links: ImportedLink[] = [];
 
   for (const item of processedArray) {
-    await processBookmarks(userId, item as Element);
+    await processBookmarks(userId, item as Element, links);
+  }
+
+  for (const link of oldestFirst(links, (link) => link.importDate)) {
+    await createLink(
+      userId,
+      link.url,
+      link.collectionId,
+      link.name,
+      link.description,
+      link.tags,
+      link.importDate
+    );
   }
 
   return { response: "Success.", status: 200 };
@@ -48,6 +70,7 @@ export default async function importFromHTMLFile(
 async function processBookmarks(
   userId: number,
   data: Node,
+  links: ImportedLink[],
   parentCollectionId?: number
 ) {
   if (data.type === "element") {
@@ -81,6 +104,7 @@ async function processBookmarks(
         await processBookmarks(
           userId,
           item,
+          links,
           collectionId || parentCollectionId
         );
       } else if (item.type === "element" && item.tagName === "a") {
@@ -105,9 +129,7 @@ async function processBookmarks(
           (e) => e.key.toLowerCase() === "add_date"
         )?.value;
 
-        const linkDate = linkDateValue
-          ? new Date(Number(linkDateValue) * 1000)
-          : undefined;
+        const linkDate = dateFromAddDate(linkDateValue);
 
         let linkDesc =
           (
@@ -119,33 +141,31 @@ async function processBookmarks(
           )?.content || "";
 
         if (linkUrl && parentCollectionId) {
-          await createLink(
-            userId,
-            linkUrl,
-            parentCollectionId,
-            linkName,
-            linkDesc,
-            linkTags,
-            linkDate
-          );
+          links.push({
+            url: linkUrl,
+            collectionId: parentCollectionId,
+            name: linkName,
+            description: linkDesc,
+            tags: linkTags,
+            importDate: linkDate,
+          });
         } else if (linkUrl) {
           // create a collection named "Imports" and add the link to it
           const collectionId = await createCollection(userId, "Imports");
 
-          await createLink(
-            userId,
-            linkUrl,
+          links.push({
+            url: linkUrl,
             collectionId,
-            linkName,
-            linkDesc,
-            linkTags,
-            linkDate
-          );
+            name: linkName,
+            description: linkDesc,
+            tags: linkTags,
+            importDate: linkDate,
+          });
         }
 
-        await processBookmarks(userId, item, parentCollectionId);
+        await processBookmarks(userId, item, links, parentCollectionId);
       } else {
-        await processBookmarks(userId, item, parentCollectionId);
+        await processBookmarks(userId, item, links, parentCollectionId);
       }
     }
   }
@@ -217,13 +237,6 @@ const createLink = async (
   tags = tags?.map((tag) => tag.trim().slice(0, 49));
   name = name?.trim().slice(0, 254);
   description = description?.trim().slice(0, 254);
-
-  if (importDate) {
-    const dateString = importDate.toISOString();
-    if (dateString.length > 50) {
-      importDate = undefined;
-    }
-  }
 
   const collectionOrder = await nextCollectionOrder(collectionId);
 
@@ -305,4 +318,19 @@ function processNodes(nodes: Node[]) {
 
 function decodeEntities(encoded: string | undefined): string {
   return decodeHTML(encoded ?? "");
+}
+
+// ADD_DATE is in seconds, though some tools write milliseconds, which read as
+// seconds land past the year 9999. A value that's neither leaves the link without
+// a date, so it shows the moment it was imported.
+function dateFromAddDate(value: string | undefined) {
+  if (!value) return undefined;
+
+  const seconds = new Date(Number(value) * 1000);
+  if (isStorableDate(seconds)) return seconds;
+
+  const milliseconds = new Date(Number(value));
+  if (isStorableDate(milliseconds)) return milliseconds;
+
+  return undefined;
 }

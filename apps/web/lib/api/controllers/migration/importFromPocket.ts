@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import oldestFirst from "@/lib/api/oldestFirst";
 import Papa from "papaparse";
 
 type PocketBackup = {
@@ -59,7 +60,9 @@ export default async function importFromPocket(
         // read instead of asking the database for the top of the list.
         let collectionOrder = COLLECTION_ORDER_STEP;
 
-        for (const link of backup) {
+        for (const link of oldestFirst(backup, (link) =>
+          link.time_added ? new Date(Number(link.time_added) * 1000) : null
+        )) {
           if (link.url) {
             try {
               new URL(link.url.trim());
