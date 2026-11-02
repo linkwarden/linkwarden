@@ -421,6 +421,40 @@ describe.sequential("import files integration", () => {
         ["Too big", null],
       ]);
     });
+
+    it("stores ADD_DATEs in seconds as before, down to the first moment of year 0 and up to the last second of 9999", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromHTMLFile(
+        user.id,
+        `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<DL><p>
+<DT><H3>Dates</H3>
+<DL><p>
+<DT><A HREF="https://example.com/last" ADD_DATE="253402300799">Last second of 9999</A>
+<DT><A HREF="https://example.com/fraction" ADD_DATE="1600000000.75">Fraction</A>
+<DT><A HREF="https://example.com/padded" ADD_DATE=" 1500000000 ">Padded</A>
+<DT><A HREF="https://example.com/before-1970" ADD_DATE="-86400">Before 1970</A>
+<DT><A HREF="https://example.com/first" ADD_DATE="-62167219200">First moment of year 0</A>
+</DL><p>
+</DL><p>
+`
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        Object.fromEntries(
+          links.map((link) => [link.name, link.importDate?.toISOString()])
+        )
+      ).toEqual({
+        "Last second of 9999": "9999-12-31T23:59:59.000Z",
+        Fraction: "2020-09-13T12:26:40.750Z",
+        Padded: "2017-07-14T02:40:00.000Z",
+        "Before 1970": "1969-12-31T00:00:00.000Z",
+        "First moment of year 0": "0000-01-01T00:00:00.000Z",
+      });
+    });
   });
 
   describe("Linkwarden backups", () => {

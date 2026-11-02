@@ -113,6 +113,56 @@ describe("oldestFirst", () => {
   it("returns an empty list for no links", () => {
     expect(oldestFirst([], () => new Date())).toEqual([]);
   });
+
+  it("orders a large mix of every kind of date by date, then by the given order", () => {
+    const dates = [
+      undefined,
+      null,
+      new Date("not a date"),
+      new Date("+010000-01-01T00:00:00.000Z"),
+      new Date("-000001-12-31T23:59:59.999Z"),
+      new Date("0000-01-01T00:00:00.000Z"),
+      new Date("2020-01-01"),
+      new Date("2020-01-01"),
+      new Date(NOW.getTime() - 1),
+      new Date(NOW),
+      new Date(NOW.getTime() + 1),
+      new Date("9999-12-31T23:59:59.999Z"),
+    ];
+
+    // The same mix on every run, so a failure can be replayed
+    let seed = 7;
+    const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const items: Item[] = Array.from({ length: 3000 }, (_, i) => ({
+      name: String(i),
+      date: dates[Math.floor(random() * dates.length)],
+    }));
+
+    const sorted = byDate(items);
+
+    // Where each link belongs: as of now when undated, after everything when
+    // its date can't be stored
+    const placed = (item: Item) =>
+      !item.date
+        ? NOW.getTime()
+        : isStorableDate(item.date)
+          ? item.date.getTime()
+          : Infinity;
+
+    expect(names([...sorted].sort((a, b) => +a.name - +b.name))).toEqual(
+      names(items)
+    );
+    expect(
+      sorted.filter((item, i) => {
+        const previous = sorted[i - 1];
+        if (!previous) return false;
+        return (
+          placed(previous) > placed(item) ||
+          (placed(previous) === placed(item) && +previous.name > +item.name)
+        );
+      })
+    ).toEqual([]);
+  });
 });
 
 describe("isStorableDate", () => {

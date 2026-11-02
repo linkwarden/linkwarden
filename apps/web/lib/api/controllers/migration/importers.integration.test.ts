@@ -681,6 +681,45 @@ describe.sequential("importers integration", () => {
         },
       ]);
     });
+
+    it("stores dates with a colon in the offset the same as when they were passed on as text", async () => {
+      const user = await createTestUser();
+
+      // Shapes of RFC 3339 the database client took as text, which is how
+      // created_at was stored before it went through new Date()
+      const dates: Record<string, string> = {
+        "2016-08-18T19:16:42Z": "2016-08-18T19:16:42.000Z",
+        "2016-08-18T19:16:42+02:00": "2016-08-18T17:16:42.000Z",
+        "2016-08-18T19:16:42-00:00": "2016-08-18T19:16:42.000Z",
+        "2016-08-18T19:16:42.123+05:30": "2016-08-18T13:46:42.123Z",
+        "2016-08-18T19:16:42.123456Z": "2016-08-18T19:16:42.123Z",
+        "2016-08-18 19:16:42-01:00": "2016-08-18T20:16:42.000Z",
+        "2016-08-18t19:16:42z": "2016-08-18T19:16:42.000Z",
+      };
+      const createdAts = Object.keys(dates);
+
+      const result = await importFromWallabag(
+        user.id,
+        JSON.stringify(
+          createdAts.map((createdAt, i) => ({
+            id: i + 1,
+            url: `https://example.com/entry-${i + 1}`,
+            title: createdAt,
+            created_at: createdAt,
+            tags: [],
+          }))
+        )
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+
+      expect(
+        Object.fromEntries(
+          links.map((link) => [link.name, link.importDate?.toISOString()])
+        )
+      ).toEqual(dates);
+    });
   });
 
   describe("Omnivore", () => {
