@@ -52,6 +52,12 @@ const withNextPage = (
   showNextPage: boolean
 ): Slot[] => (showNextPage ? [...links, NEXT_PAGE] : links);
 
+// The placeholder is mounted a few rows before it scrolls into view and stays
+// up after a page fails to load. Shimmering, it repaints every frame, so it
+// only does while a page is actually loading.
+const placeholderSkeleton = (loading: boolean) =>
+  loading ? "skeleton" : "skeleton animate-none";
+
 // Rough heights until rows are measured (user1's links on a 1440px screen).
 const ESTIMATED_CARD_HEIGHT = 238;
 const ESTIMATED_MASONRY_CARD_HEIGHT = 170;
@@ -89,6 +95,7 @@ function CardView({
   toggleSelected,
   editMode,
   isLoading,
+  isFetchingNextPage,
   hasNextPage,
   placeHolderRef,
   canReorder,
@@ -102,6 +109,7 @@ function CardView({
   toggleSelected: (id: number) => void;
   editMode: boolean;
   isLoading: boolean;
+  isFetchingNextPage: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
   canReorder: boolean;
@@ -180,6 +188,8 @@ function CardView({
     [links, hasNextPage, isLoading]
   );
 
+  const skeleton = placeholderSkeleton(isLoading || isFetchingNextPage);
+
   // Read here rather than through isSelected so a row re-renders when its
   // link is selected: rows only render again when renderRow changes.
   const selectedIds = useLinkStore((state) => state.selectedIds);
@@ -209,11 +219,11 @@ function CardView({
                 className="flex flex-col gap-4"
                 ref={placeHolderRef}
               >
-                <div className="skeleton h-40 w-full"></div>
-                <div className="skeleton h-3 w-2/3"></div>
-                <div className="skeleton h-3 w-full"></div>
-                <div className="skeleton h-3 w-full"></div>
-                <div className="skeleton h-3 w-1/3"></div>
+                <div className={`${skeleton} h-40 w-full`}></div>
+                <div className={`${skeleton} h-3 w-2/3`}></div>
+                <div className={`${skeleton} h-3 w-full`}></div>
+                <div className={`${skeleton} h-3 w-full`}></div>
+                <div className={`${skeleton} h-3 w-1/3`}></div>
               </div>
             );
 
@@ -246,6 +256,7 @@ function CardView({
       columnCount,
       gridColClass,
       placeHolderRef,
+      skeleton,
       collectionsById,
       selectedIds,
       canReorder,
@@ -276,6 +287,7 @@ function MasonryView({
   toggleSelected,
   editMode,
   isLoading,
+  isFetchingNextPage,
   hasNextPage,
   placeHolderRef,
   canReorder,
@@ -290,6 +302,7 @@ function MasonryView({
   toggleSelected: (id: number) => void;
   editMode: boolean;
   isLoading: boolean;
+  isFetchingNextPage: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
   canReorder: boolean;
@@ -371,6 +384,8 @@ function MasonryView({
     [links, hasNextPage, isLoading]
   );
 
+  const skeleton = placeholderSkeleton(isLoading || isFetchingNextPage);
+
   // Read here rather than through isSelected so a row re-renders when its
   // link is selected: rows only render again when renderRow changes.
   const selectedIds = useLinkStore((state) => state.selectedIds);
@@ -392,11 +407,11 @@ function MasonryView({
       if (e === NEXT_PAGE)
         return (
           <div className="flex flex-col gap-4" ref={placeHolderRef}>
-            <div className="skeleton h-40 w-full"></div>
-            <div className="skeleton h-3 w-2/3"></div>
-            <div className="skeleton h-3 w-full"></div>
-            <div className="skeleton h-3 w-full"></div>
-            <div className="skeleton h-3 w-1/3"></div>
+            <div className={`${skeleton} h-40 w-full`}></div>
+            <div className={`${skeleton} h-3 w-2/3`}></div>
+            <div className={`${skeleton} h-3 w-full`}></div>
+            <div className={`${skeleton} h-3 w-full`}></div>
+            <div className={`${skeleton} h-3 w-1/3`}></div>
           </div>
         );
 
@@ -422,6 +437,7 @@ function MasonryView({
     },
     [
       placeHolderRef,
+      skeleton,
       collectionsById,
       selectedIds,
       canReorder,
@@ -574,6 +590,7 @@ function ListView({
   toggleSelected,
   editMode,
   isLoading,
+  isFetchingNextPage,
   hasNextPage,
   placeHolderRef,
   canReorder,
@@ -587,6 +604,7 @@ function ListView({
   toggleSelected: (id: number) => void;
   editMode: boolean;
   isLoading: boolean;
+  isFetchingNextPage: boolean;
   hasNextPage: boolean;
   placeHolderRef: any;
   canReorder: boolean;
@@ -595,6 +613,8 @@ function ListView({
     () => withNextPage(links, hasNextPage || isLoading),
     [links, hasNextPage, isLoading]
   );
+
+  const skeleton = placeholderSkeleton(isLoading || isFetchingNextPage);
 
   // Read here rather than through isSelected so a row re-renders when its
   // link is selected: rows only render again when renderRow changes.
@@ -620,11 +640,11 @@ function ListView({
       if (e === NEXT_PAGE)
         return (
           <div ref={placeHolderRef} className="flex gap-2 py-2 px-1">
-            <div className="skeleton h-12 w-12"></div>
+            <div className={`${skeleton} h-12 w-12`}></div>
             <div className="flex flex-col gap-3 w-full">
-              <div className="skeleton h-2 w-2/3"></div>
-              <div className="skeleton h-2 w-full"></div>
-              <div className="skeleton h-2 w-1/3"></div>
+              <div className={`${skeleton} h-2 w-2/3`}></div>
+              <div className={`${skeleton} h-2 w-full`}></div>
+              <div className={`${skeleton} h-2 w-1/3`}></div>
             </div>
           </div>
         );
@@ -652,6 +672,7 @@ function ListView({
     [
       slots,
       placeHolderRef,
+      skeleton,
       collectionsById,
       selectedIds,
       canReorder,
@@ -769,6 +790,7 @@ export default function Links({
         toggleSelected={toggleSelected}
         editMode={editMode || false}
         isLoading={useData?.isLoading}
+        isFetchingNextPage={useData?.isFetchingNextPage}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
         canReorder={canReorder}
@@ -786,6 +808,7 @@ export default function Links({
         toggleSelected={toggleSelected}
         editMode={editMode || false}
         isLoading={useData?.isLoading}
+        isFetchingNextPage={useData?.isFetchingNextPage}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
         canReorder={canReorder}
@@ -805,6 +828,7 @@ export default function Links({
         toggleSelected={toggleSelected}
         editMode={editMode || false}
         isLoading={useData?.isLoading}
+        isFetchingNextPage={useData?.isFetchingNextPage}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
         canReorder={canReorder}
