@@ -143,6 +143,42 @@ test.describe("Import order", () => {
     ).toEqual(["Not a number", "Milliseconds 2023", "Seconds 2021"]);
   });
 
+  test("A bookmarks file whose long title is cut through an emoji imports", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "emoji");
+    const folder = `e2e-emoji-${Date.now().toString(36)}`;
+
+    // Titles are cut to 254 characters, here between the two halves of the
+    // emoji, which is left out
+    const shortened = "Long title " + "x".repeat(242);
+
+    const html = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<DL><p>
+<DT><H3>${folder}</H3>
+<DL><p>
+<DT><A HREF="http://localhost/e2e-emoji" ADD_DATE="1677664800">${shortened}😀 and more</A>
+<DT><A HREF="http://localhost/e2e-plain" ADD_DATE="1614592800">Plain title</A>
+</DL><p>
+</DL><p>`;
+
+    await login(page, owner);
+    await importFile(page, "import-html-file", {
+      name: "bookmarks.html",
+      mimeType: "text/html",
+      content: html,
+    });
+
+    const collectionId = await collectionIdByName(request, owner, folder);
+    await page.goto(`/collections/${collectionId}`);
+
+    expect(await shownNames(page, [shortened, "Plain title"])).toEqual([
+      shortened,
+      "Plain title",
+    ]);
+  });
+
   test("A Linkwarden backup shows its links by date across collections", async ({
     page,
     request,

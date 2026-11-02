@@ -17,6 +17,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
 import { titleCase } from "@linkwarden/lib/utils";
+import { shortenText } from "@linkwarden/lib/shortenText";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>
@@ -158,12 +159,12 @@ export default async function autoTagLink(user: User, linkId: number) {
           connectOrCreate: tags.map((tag: string) => ({
             where: {
               name_ownerId: {
-                name: tag.trim().slice(0, 50),
+                name: shortenText(tag.trim(), 50),
                 ownerId: user.id,
               },
             },
             create: {
-              name: tag.trim().slice(0, 50),
+              name: shortenText(tag.trim(), 50),
               owner: {
                 connect: {
                   id: user.id,

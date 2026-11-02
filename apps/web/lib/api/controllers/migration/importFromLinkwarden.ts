@@ -3,6 +3,7 @@ import { Backup, LinksIncludingTags } from "@linkwarden/types/global";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import oldestFirst from "@/lib/api/oldestFirst";
 
 export default async function importFromLinkwarden(
@@ -44,9 +45,9 @@ export default async function importFromLinkwarden(
                   id: userId,
                 },
               },
-              name: e.name?.trim().slice(0, 254),
-              description: e.description?.trim().slice(0, 254),
-              color: e.color?.trim().slice(0, 50),
+              name: shortenText(e.name?.trim(), 254),
+              description: shortenText(e.description?.trim(), 254),
+              color: shortenText(e.color?.trim(), 50),
               createdBy: {
                 connect: {
                   id: userId,
@@ -84,9 +85,9 @@ export default async function importFromLinkwarden(
 
           const newLink = await prisma.link.create({
             data: {
-              url: link.url?.trim().slice(0, 2047),
-              name: link.name?.trim().slice(0, 254),
-              description: link.description?.trim().slice(0, 254),
+              url: shortenText(link.url?.trim(), 2047),
+              name: shortenText(link.name?.trim(), 254),
+              description: shortenText(link.description?.trim(), 254),
               importDate: new Date(link.importDate || link.createdAt),
               collectionOrder,
               collection: {
@@ -104,7 +105,7 @@ export default async function importFromLinkwarden(
                 connectOrCreate: link.tags.map((tag) => {
                   // Looked up by the name it's created with, so names that
                   // differ only by spaces around them find the same tag
-                  const name = tag.name?.trim().slice(0, 49);
+                  const name = shortenText(tag.name?.trim(), 49);
 
                   return {
                     where: {

@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import oldestFirst from "@/lib/api/oldestFirst";
 import Papa from "papaparse";
 
@@ -73,8 +74,8 @@ export default async function importFromPocket(
 
           await prisma.link.create({
             data: {
-              url: link.url?.slice(0, 2047).trim(),
-              name: link.title?.slice(0, 254).trim() || "",
+              url: shortenText(link.url, 2047)?.trim(),
+              name: shortenText(link.title, 254)?.trim() || "",
               importDate: link.time_added
                 ? new Date(Number(link.time_added) * 1000).toISOString()
                 : null,
@@ -89,12 +90,12 @@ export default async function importFromPocket(
                   ? link.tags.split("|").map((tag) => ({
                       where: {
                         name_ownerId: {
-                          name: tag?.slice(0, 50).trim() || "",
+                          name: shortenText(tag, 50)?.trim() || "",
                           ownerId: userId,
                         },
                       },
                       create: {
-                        name: tag?.slice(0, 50).trim() || "",
+                        name: shortenText(tag, 50)?.trim() || "",
                         ownerId: userId,
                       },
                     }))

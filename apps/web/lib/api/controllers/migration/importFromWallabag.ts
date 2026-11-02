@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import oldestFirst from "@/lib/api/oldestFirst";
 
 type WallabagBackup = {
@@ -87,9 +88,9 @@ export default async function importFromWallabag(
               pinnedBy: link.is_starred
                 ? { connect: { id: userId } }
                 : undefined,
-              url: link.url?.trim().slice(0, 2047),
-              name: link.title?.trim().slice(0, 254) || "",
-              textContent: link.content?.trim().slice(0, 2047) || "",
+              url: shortenText(link.url?.trim(), 2047),
+              name: shortenText(link.title?.trim(), 254) || "",
+              textContent: shortenText(link.content?.trim(), 2047) || "",
               // Wallabag writes the offset without a colon (+0200), which the
               // database client refuses as a string
               importDate: link.created_at ? new Date(link.created_at) : null,
@@ -110,12 +111,12 @@ export default async function importFromWallabag(
                       connectOrCreate: link.tags.map((tag) => ({
                         where: {
                           name_ownerId: {
-                            name: tag?.trim().slice(0, 49),
+                            name: shortenText(tag?.trim(), 49),
                             ownerId: userId,
                           },
                         },
                         create: {
-                          name: tag?.trim().slice(0, 49),
+                          name: shortenText(tag?.trim(), 49),
                           owner: {
                             connect: {
                               id: userId,

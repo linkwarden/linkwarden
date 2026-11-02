@@ -938,6 +938,221 @@ describe.sequential("import files integration", () => {
     });
   });
 
+  describe("text cut to fit", () => {
+    // Text that runs past `length` with an emoji across the cut. An emoji is
+    // two UTF-16 units, so a plain cut keeps half of it, which the database
+    // refuses. What's saved is the text before the emoji.
+    const pastLimit = (length: number, letter: string) =>
+      letter.repeat(length - 1) + "😀 and more";
+    const kept = (length: number, letter: string) => letter.repeat(length - 1);
+
+    const start = "https://example.com/";
+    const longUrl = start + "u".repeat(2047 - start.length - 1) + "😀/more";
+    const keptUrl = start + "u".repeat(2047 - start.length - 1);
+
+    it("saves a bookmark whose folder, address, title, description and tag are cut through an emoji", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromHTMLFile(
+        user.id,
+        `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<DL><p>
+<DT><H3>${pastLimit(254, "f")}</H3>
+<DL><p>
+<DT><A HREF="https://example.com/in-folder" ADD_DATE="1600000000">In folder</A>
+</DL><p>
+<DT><A HREF="${longUrl}" ADD_DATE="1700000000" TAGS="${pastLimit(
+          49,
+          "t"
+        )}">${pastLimit(254, "n")}</A>
+<DD>${pastLimit(254, "d")}
+</DL><p>
+`
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        links.map((link) => ({
+          collection: link.collection.name,
+          url: link.url,
+          name: link.name,
+          description: link.description,
+          tags: link.tags.map((tag) => tag.name),
+        }))
+      ).toEqual([
+        {
+          collection: kept(254, "f"),
+          url: "https://example.com/in-folder",
+          name: "In folder",
+          description: "",
+          tags: [],
+        },
+        {
+          collection: "Imports",
+          url: keptUrl,
+          name: kept(254, "n"),
+          description: kept(254, "d"),
+          tags: [kept(49, "t")],
+        },
+      ]);
+    });
+
+    it("restores a backup whose collection and link details are cut through an emoji", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromLinkwarden(
+        user.id,
+        JSON.stringify({
+          collections: [
+            {
+              name: pastLimit(254, "f"),
+              description: pastLimit(254, "c"),
+              color: pastLimit(50, "#"),
+              links: [
+                {
+                  url: longUrl,
+                  name: pastLimit(254, "n"),
+                  description: pastLimit(254, "d"),
+                  importDate: null,
+                  createdAt: "2024-01-01T00:00:00.000Z",
+                  tags: [{ name: pastLimit(49, "t") }],
+                },
+              ],
+            },
+          ],
+          pinnedLinks: [],
+        })
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        links.map((link) => ({
+          collection: [
+            link.collection.name,
+            link.collection.description,
+            link.collection.color,
+          ],
+          url: link.url,
+          name: link.name,
+          description: link.description,
+          tags: link.tags.map((tag) => tag.name),
+        }))
+      ).toEqual([
+        {
+          collection: [kept(254, "f"), kept(254, "c"), kept(50, "#")],
+          url: keptUrl,
+          name: kept(254, "n"),
+          description: kept(254, "d"),
+          tags: [kept(49, "t")],
+        },
+      ]);
+    });
+
+    it("saves a Wallabag entry whose address, title, content and tag are cut through an emoji", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromWallabag(
+        user.id,
+        JSON.stringify([
+          {
+            id: 1,
+            url: longUrl,
+            title: pastLimit(254, "n"),
+            content: pastLimit(2047, "c"),
+            created_at: "2024-01-01T10:00:00+0200",
+            tags: [pastLimit(49, "t")],
+          },
+        ])
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        links.map((link) => ({
+          url: link.url,
+          name: link.name,
+          textContent: link.textContent,
+          tags: link.tags.map((tag) => tag.name),
+        }))
+      ).toEqual([
+        {
+          url: keptUrl,
+          name: kept(254, "n"),
+          textContent: kept(2047, "c"),
+          tags: [kept(49, "t")],
+        },
+      ]);
+    });
+
+    it("saves an Omnivore item whose address, title, description and label are cut through an emoji", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromOmnivore(
+        user.id,
+        JSON.stringify([
+          {
+            url: longUrl,
+            title: pastLimit(254, "n"),
+            description: pastLimit(2047, "d"),
+            savedAt: "2024-01-01T10:00:00.000Z",
+            labels: [pastLimit(49, "t")],
+          },
+        ])
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        links.map((link) => ({
+          url: link.url,
+          name: link.name,
+          description: link.description,
+          tags: link.tags.map((tag) => tag.name),
+        }))
+      ).toEqual([
+        {
+          url: keptUrl,
+          name: kept(254, "n"),
+          description: kept(2047, "d"),
+          tags: [kept(49, "t")],
+        },
+      ]);
+    });
+
+    it("saves a Pocket row whose address, title and tag are cut through an emoji", async () => {
+      const user = await createTestUser();
+
+      const result = await importFromPocket(
+        user.id,
+        [
+          "title,url,time_added,cursor,tags,status",
+          `${pastLimit(254, "n")},${longUrl},1700000000,,${pastLimit(
+            50,
+            "t"
+          )},unread`,
+        ].join("\n")
+      );
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const links = await linksById(user.id);
+      expect(
+        links.map((link) => ({
+          url: link.url,
+          name: link.name,
+          tags: link.tags.map((tag) => tag.name),
+        }))
+      ).toEqual([
+        {
+          url: keptUrl,
+          name: kept(254, "n"),
+          tags: [kept(50, "t")],
+        },
+      ]);
+    });
+  });
+
   describe("other accounts", () => {
     it("never adds to another account's collections or tags, even a collection shared with the importer", async () => {
       const other = await createTestUser();

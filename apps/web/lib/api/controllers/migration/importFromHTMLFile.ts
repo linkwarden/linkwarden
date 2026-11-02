@@ -5,6 +5,7 @@ import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import oldestFirst, { isStorableDate } from "@/lib/api/oldestFirst";
 
 type ImportedLink = {
@@ -176,7 +177,7 @@ const createCollection = async (
   collectionName: string,
   parentId?: number
 ) => {
-  collectionName = collectionName.trim().slice(0, 254);
+  collectionName = shortenText(collectionName.trim(), 254);
 
   const findCollection = await prisma.collection.findFirst({
     where: {
@@ -227,16 +228,16 @@ const createLink = async (
   tags?: string[],
   importDate?: Date
 ) => {
-  url = url.trim().slice(0, 2047);
+  url = shortenText(url.trim(), 2047);
   try {
     new URL(url);
   } catch (e) {
     return;
   }
 
-  tags = tags?.map((tag) => tag.trim().slice(0, 49));
-  name = name?.trim().slice(0, 254);
-  description = description?.trim().slice(0, 254);
+  tags = tags?.map((tag) => shortenText(tag.trim(), 49));
+  name = shortenText(name?.trim(), 254);
+  description = shortenText(description?.trim(), 254);
 
   const collectionOrder = await nextCollectionOrder(collectionId);
 

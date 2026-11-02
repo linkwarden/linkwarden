@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 import { COLLECTION_ORDER_STEP } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import oldestFirst from "@/lib/api/oldestFirst";
 
 type OmnivoreItem = {
@@ -75,9 +76,9 @@ export default async function importFromOmnivore(
 
           await prisma.link.create({
             data: {
-              url: item.url?.trim().slice(0, 2047),
-              name: item.title?.trim().slice(0, 254) || "",
-              description: item.description?.trim().slice(0, 2047) || "",
+              url: shortenText(item.url?.trim(), 2047),
+              name: shortenText(item.title?.trim(), 254) || "",
+              description: shortenText(item.description?.trim(), 2047) || "",
               image: item.thumbnail || "",
               importDate: item.savedAt ? new Date(item.savedAt) : null,
               collectionOrder,
@@ -98,12 +99,12 @@ export default async function importFromOmnivore(
                       connectOrCreate: item.labels.map((label) => ({
                         where: {
                           name_ownerId: {
-                            name: label?.trim().slice(0, 49),
+                            name: shortenText(label?.trim(), 49),
                             ownerId: userId,
                           },
                         },
                         create: {
-                          name: label?.trim().slice(0, 49),
+                          name: shortenText(label?.trim(), 49),
                           owner: {
                             connect: {
                               id: userId,
