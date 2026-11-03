@@ -316,6 +316,44 @@ test.describe("Import order", () => {
     ).toEqual(["Pocket 2023", "Pocket 2022", "Pocket 2021"]);
   });
 
+  test("An import that stops partway says how many links it added", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "partway");
+    const suffix = Date.now().toString(36);
+
+    await login(page, owner);
+    await page.goto("/settings/account");
+    await page.getByRole("button", { name: /Import Links/ }).click();
+    // A time_added that isn't a number can't be stored, which stops the import
+    // once the other rows are in
+    await page.locator("#import-pocket-file").setInputFiles({
+      name: "pocket.csv",
+      mimeType: "text/csv",
+      buffer: Buffer.from(
+        [
+          "title,url,time_added,cursor,tags,status",
+          `Pocket new,http://localhost/e2e-partway-new-${suffix},1685700000,,,unread`,
+          `Pocket bad,http://localhost/e2e-partway-bad-${suffix},yesterday,,,unread`,
+          `Pocket old,http://localhost/e2e-partway-old-${suffix},1622600000,,,unread`,
+        ].join("\n")
+      ),
+    });
+
+    await expect(
+      page.getByText("The import stopped after adding 2 of 3 links.")
+    ).toBeVisible();
+
+    const collectionId = await collectionIdByName(request, owner, "Imports");
+    await page.goto(`/collections/${collectionId}`);
+
+    expect(await shownNames(page, ["Pocket new", "Pocket old"])).toEqual([
+      "Pocket new",
+      "Pocket old",
+    ]);
+  });
+
   test("An Omnivore export shows its links by date across its metadata files", async ({
     page,
     request,

@@ -772,7 +772,8 @@ describe.sequential("import files integration", () => {
   });
 
   // A value the database can't store stops an import at that link. Those links
-  // go last, so everything else in the file is saved before it stops.
+  // go last, so everything else in the file is saved before it stops, and the
+  // import answers with how many links it added.
   describe("dates an import can't store", () => {
     it("saves every other link of a Linkwarden backup before a link without dates stops it", async () => {
       const user = await createTestUser();
@@ -818,7 +819,10 @@ describe.sequential("import files integration", () => {
           pinnedLinks: [],
         })
       );
-      expect(result).toEqual({ response: "Success.", status: 200 });
+      expect(result).toEqual({
+        response: "The import stopped after adding 3 of 4 links.",
+        status: 500,
+      });
 
       expect((await linksById(user.id)).map((link) => link.name)).toEqual([
         "A old",
@@ -830,7 +834,7 @@ describe.sequential("import files integration", () => {
     it("saves every other row of a Pocket export before a time_added that isn't a number stops it", async () => {
       const user = await createTestUser();
 
-      await importFromPocket(
+      const result = await importFromPocket(
         user.id,
         [
           "title,url,time_added,cursor,tags,status",
@@ -840,6 +844,10 @@ describe.sequential("import files integration", () => {
           "Old,https://example.com/old,1400000000,,,unread",
         ].join("\n")
       );
+      expect(result).toEqual({
+        response: "The import stopped after adding 3 of 4 links.",
+        status: 500,
+      });
 
       expect((await linksById(user.id)).map((link) => link.name)).toEqual([
         "Old",
@@ -851,36 +859,38 @@ describe.sequential("import files integration", () => {
     it("saves every other item of an Omnivore export before a savedAt that isn't a date stops it", async () => {
       const user = await createTestUser();
 
-      await expect(
-        importFromOmnivore(
-          user.id,
-          JSON.stringify([
-            {
-              url: "https://example.com/new",
-              title: "New",
-              savedAt: "2024-01-01T00:00:00.000Z",
-              labels: [],
-            },
-            {
-              url: "https://example.com/bad",
-              title: "Bad",
-              savedAt: "soon",
-              labels: [],
-            },
-            {
-              url: "https://example.com/undated",
-              title: "Undated",
-              labels: [],
-            },
-            {
-              url: "https://example.com/old",
-              title: "Old",
-              savedAt: "2020-01-01T00:00:00.000Z",
-              labels: [],
-            },
-          ])
-        )
-      ).rejects.toThrow(/Provided Date object is invalid/);
+      const result = await importFromOmnivore(
+        user.id,
+        JSON.stringify([
+          {
+            url: "https://example.com/new",
+            title: "New",
+            savedAt: "2024-01-01T00:00:00.000Z",
+            labels: [],
+          },
+          {
+            url: "https://example.com/bad",
+            title: "Bad",
+            savedAt: "soon",
+            labels: [],
+          },
+          {
+            url: "https://example.com/undated",
+            title: "Undated",
+            labels: [],
+          },
+          {
+            url: "https://example.com/old",
+            title: "Old",
+            savedAt: "2020-01-01T00:00:00.000Z",
+            labels: [],
+          },
+        ])
+      );
+      expect(result).toEqual({
+        response: "The import stopped after adding 3 of 4 links.",
+        status: 500,
+      });
 
       expect((await linksById(user.id)).map((link) => link.name)).toEqual([
         "Old",
@@ -892,7 +902,7 @@ describe.sequential("import files integration", () => {
     it("saves every other entry of a Wallabag export before a created_at it can't read stops it", async () => {
       const user = await createTestUser();
 
-      await importFromWallabag(
+      const result = await importFromWallabag(
         user.id,
         JSON.stringify([
           {
@@ -924,6 +934,10 @@ describe.sequential("import files integration", () => {
           },
         ])
       );
+      expect(result).toEqual({
+        response: "The import stopped after adding 3 of 4 links.",
+        status: 500,
+      });
 
       expect(
         (await linksById(user.id)).map((link) => [
