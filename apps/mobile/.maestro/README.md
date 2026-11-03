@@ -19,7 +19,7 @@ End-to-end tests for the mobile app use [Maestro](https://docs.maestro.dev). Eac
 
 ```bash
 cd apps/mobile/ios
-SENTRY_DISABLE_AUTO_UPLOAD=true xcodebuild -workspace Linkwarden.xcworkspace -scheme Linkwarden -configuration Release -sdk iphonesimulator -derivedDataPath build/e2e build
+xcodebuild -workspace Linkwarden.xcworkspace -scheme Linkwarden -configuration Release -sdk iphonesimulator -derivedDataPath build/e2e build
 xcrun simctl install booted build/e2e/Build/Products/Release-iphonesimulator/Linkwarden.app
 ```
 
@@ -31,7 +31,7 @@ Gradle needs Java 17, for example `export JAVA_HOME=/opt/homebrew/opt/openjdk@17
 
 ```bash
 cd apps/mobile/android
-SENTRY_DISABLE_AUTO_UPLOAD=true ./gradlew app:createBundleReleaseJsAndAssets --rerun app:assembleRelease -PreactNativeArchitectures=arm64-v8a
+./gradlew app:createBundleReleaseJsAndAssets --rerun app:assembleRelease -PreactNativeArchitectures=arm64-v8a
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 

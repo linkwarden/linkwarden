@@ -114,14 +114,6 @@ const config: ExpoConfig = {
     "expo-web-browser",
     "expo-apple-authentication",
     [
-      "@sentry/react-native/expo",
-      {
-        url: "https://sentry.io/",
-        project: "react-native",
-        organization: "linkwarden",
-      },
-    ],
-    [
       "expo-navigation-bar",
       {
         style: "dark",
