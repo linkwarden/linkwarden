@@ -173,4 +173,29 @@ describe.sequential("archiveHandler integration", () => {
       expect(saved.textContent).toMatch(/😀$/);
     }
   });
+
+  // Number() of an unset or empty TEXT_CONTENT_LIMIT is NaN or 0, which must
+  // mean no limit: a cut at NaN or 0 would save no reader text at all
+  it.each([
+    { setting: "not set", value: undefined },
+    { setting: "empty", value: "" },
+    { setting: "0", value: "0" },
+    { setting: "not a number", value: "lots" },
+  ])(
+    "keeps all of the reader text when TEXT_CONTENT_LIMIT is $setting",
+    async ({ value }) => {
+      if (value !== undefined) vi.stubEnv("TEXT_CONTENT_LIMIT", value);
+      const words = Array.from({ length: 400 }, (_, i) => `word${i}`).join(" ");
+      const article = `<html><head><title>Long</title></head><body><article><h1>Long</h1><p>${words} 😀</p></article></body></html>`;
+      const link = await createTestLink({ readable: true });
+
+      await archiveHandler(link, browserShowing(article));
+
+      const saved = await prisma.link.findUniqueOrThrow({
+        where: { id: link.id },
+      });
+      expect(saved.textContent).toContain(words);
+      expect(saved.textContent).toMatch(/😀\s*$/);
+    }
+  );
 });
