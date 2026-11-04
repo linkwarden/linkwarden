@@ -1,0 +1,41 @@
+appId: app.linkwarden
+name: Say to wait after too many wrong passwords
+---
+- evalScript: ${output.username = "maestro-retries-" + Date.now()}
+- runScript:
+    file: scripts/create-account.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${output.username}
+      EMAIL: ${output.username + "@lab.test"}
+      PASSWORD: "maestro-password"
+- assertTrue: ${output.created == 201}
+- runFlow: subflows/launch.yaml
+- runFlow: subflows/self-hosted-server.yaml
+- tapOn: "Login"
+- tapOn:
+    id: "login-username"
+- inputText: ${output.username}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "login-password"
+- inputText: "maestro-password"
+- pressKey: Enter
+- waitForAnimationToEnd
+# Right before signing in, since the wait is over 25 seconds after the last one
+- runScript:
+    file: scripts/fail-logins.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${output.username}
+      COUNT: "15"
+- assertTrue: ${output.failedLogins == 15}
+- tapOn:
+    id: "login-submit"
+# The right password still has to wait
+- extendedWaitUntil:
+    visible: "Too many incorrect passwords\\. Please try again in \\d+ seconds?\\."
+    timeout: 20000
+- tapOn: "OK"
+- assertNotVisible: "Dashboard"

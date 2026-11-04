@@ -99,9 +99,13 @@ test.describe("Email verification edge cases", { tag: "@email-code" }, () => {
     expect(errors.filter((e) => e === "Invalid or expired code.")).toHaveLength(
       10
     );
+    // Password attempts are counted before they're checked, so with more than
+    // 15 in flight at once some can be refused before reaching the code
     expect(
       errors.filter(
-        (e) => e === "Too many incorrect codes. Please try again later."
+        (e) =>
+          e === "Too many incorrect codes. Please try again later." ||
+          /^Too many incorrect passwords\. /.test(e)
       )
     ).toHaveLength(15);
 

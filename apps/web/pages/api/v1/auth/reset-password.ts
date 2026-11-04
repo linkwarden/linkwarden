@@ -56,6 +56,9 @@ export default async function resetPassword(
       },
       data: {
         password: hashedPassword,
+        // A new password starts with no wrong attempts
+        passwordRetries: 0,
+        passwordRetryAt: null,
       },
     });
 

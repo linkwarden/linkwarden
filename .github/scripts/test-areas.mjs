@@ -44,7 +44,10 @@ const suites = {
     files: (path) =>
       path.endsWith(".spec.ts") && !path.startsWith("tests/email/"),
     areas: {
-      Login: ["tests/public/login.spec.ts"],
+      Login: [
+        "tests/public/login.spec.ts",
+        "tests/public/password-retries.spec.ts",
+      ],
       Permissions: [
         "tests/public/archive-upload-permissions.spec.ts",
         "tests/public/collection-parents.spec.ts",

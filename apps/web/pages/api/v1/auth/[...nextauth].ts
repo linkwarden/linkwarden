@@ -74,7 +74,11 @@ if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
 
         if (result.status === "email_not_verified")
           throw Error("Email not verified.");
-        else if (result.status === "invalid_code") throw Error(result.response);
+        else if (
+          result.status === "invalid_code" ||
+          result.status === "too_many_attempts"
+        )
+          throw Error(result.response);
         else if (result.status !== "success")
           throw Error("Invalid credentials.");
 

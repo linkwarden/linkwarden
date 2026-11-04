@@ -15,9 +15,14 @@ const createMockResponse = () => {
   const state = {
     statusCode: 200,
     jsonBody: undefined as any,
+    headers: {} as Record<string, string>,
   };
 
   const res = {
+    setHeader(name: string, value: string) {
+      state.headers[name] = value;
+      return res;
+    },
     status(code: number) {
       state.statusCode = code;
       return res;
@@ -147,6 +152,25 @@ describe("/api/v1/session", () => {
     expect(state.jsonBody).toEqual({
       response: "Invalid or expired code.",
       code: "INVALID_VERIFICATION_CODE",
+    });
+    expect(createSession).not.toHaveBeenCalled();
+  });
+
+  it("asks to wait with a 429 and Retry-After after too many wrong passwords", async () => {
+    vi.mocked(verifyByCredentials).mockResolvedValue({
+      status: "too_many_attempts",
+      response: "Too many incorrect passwords. Please try again in 7 seconds.",
+      retryAfter: 7,
+    });
+    const { res, state } = createMockResponse();
+
+    await handler(request({ username: "user", password: "Passw0rd!" }), res);
+
+    expect(state.statusCode).toBe(429);
+    expect(state.headers["Retry-After"]).toBe("7");
+    expect(state.jsonBody).toEqual({
+      response: "Too many incorrect passwords. Please try again in 7 seconds.",
+      code: "TOO_MANY_ATTEMPTS",
     });
     expect(createSession).not.toHaveBeenCalled();
   });

@@ -167,7 +167,13 @@ const OptionsForm = ({
     onError: (error) => {
       // Handle errors appropriately
       if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
+        if (error.response?.data?.code === "TOO_MANY_ATTEMPTS") {
+          toast({
+            title: "Error",
+            description: error.response.data.response,
+            variant: "destructive",
+          });
+        } else if (error.response?.status === 401) {
           toast({
             title: "Error",
             description: "Invalid credentials or API Key",

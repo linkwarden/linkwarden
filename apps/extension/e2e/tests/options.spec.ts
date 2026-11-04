@@ -72,6 +72,35 @@ test.describe("Options page", () => {
     expect(await storedConfig(background)).toBeNull();
   });
 
+  test("Says to wait after too many wrong passwords", async ({
+    page,
+    request,
+    background,
+    baseURL,
+  }) => {
+    const user = await createUser(request);
+
+    for (let i = 0; i < 15; i++) {
+      const response = await request.post("/api/v1/session", {
+        data: { username: user.username, password: `wrong-password-${i}` },
+      });
+      expect(response.status()).toBe(400);
+    }
+
+    await page.getByLabel("URL").fill(baseURL!);
+    await page.getByLabel("Username or Email").fill(user.username);
+    await page.getByLabel("Password").fill(user.password);
+    await page.getByRole("button", { name: "Save" }).click();
+
+    await expect(
+      page.getByText(
+        /^Too many incorrect passwords\. Please try again in \d+ seconds?\.$/
+      )
+    ).toBeVisible();
+    await expect(page.getByText("Signed in to")).toBeHidden();
+    expect(await storedConfig(background)).toBeNull();
+  });
+
   test("Signing out forgets the instance", async ({
     page,
     request,

@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { User } from "@linkwarden/prisma/client";
-import bcrypt from "bcrypt";
+import checkPassword from "@/lib/api/checkPassword";
 import {
   sendEmailVerificationCode,
   verifyEmailWithCode,
@@ -16,7 +16,8 @@ export type VerifyCredentialsResult =
   | { status: "success"; user: User }
   | { status: "invalid_credentials" }
   | { status: "email_not_verified"; user: User }
-  | { status: "invalid_code"; response: string };
+  | { status: "invalid_code"; response: string }
+  | { status: "too_many_attempts"; response: string; retryAfter: number };
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -51,9 +52,11 @@ export default async function verifyByCredentials({
     return { status: "invalid_credentials" };
   }
 
-  const passwordMatches = bcrypt.compareSync(password, user.password);
+  const passwordCheck = await checkPassword(user.id, user.password, password);
 
-  if (!passwordMatches) {
+  if (passwordCheck.status === "too_many_attempts") return passwordCheck;
+
+  if (passwordCheck.status === "incorrect") {
     return { status: "invalid_credentials" };
   }
 

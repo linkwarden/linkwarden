@@ -82,6 +82,25 @@ describe("/api/v1/auth/reset-password", () => {
     expect(revokeUserSessions).toHaveBeenCalledWith(9);
   });
 
+  it("starts the wrong password count over", async () => {
+    vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue({
+      identifier: "owner@example.com",
+    } as any);
+    vi.mocked(prisma.user.update).mockResolvedValue({ id: 9 } as any);
+    const { res, state } = createMockResponse();
+
+    await handler(request, res);
+
+    expect(state.statusCode).toBe(200);
+    expect(prisma.user.update).toHaveBeenCalledWith({
+      where: { email: "owner@example.com" },
+      data: expect.objectContaining({
+        passwordRetries: 0,
+        passwordRetryAt: null,
+      }),
+    });
+  });
+
   it("leaves verification attempts alone for an invalid token", async () => {
     vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue(null);
     const { res, state } = createMockResponse();

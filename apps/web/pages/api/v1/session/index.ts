@@ -52,6 +52,14 @@ export default async function session(
       code: "INVALID_VERIFICATION_CODE",
     });
 
+  if (result.status === "too_many_attempts") {
+    res.setHeader("Retry-After", String(result.retryAfter));
+    return res.status(429).json({
+      response: result.response,
+      code: "TOO_MANY_ATTEMPTS",
+    });
+  }
+
   if (result.status !== "success")
     return res.status(400).json({
       response:

@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import bcrypt from "bcrypt";
+import checkPassword from "@/lib/api/checkPassword";
 import { removeFolder, removeFile } from "@linkwarden/filesystem";
 import { DeleteUserBody } from "@linkwarden/types/global";
 import updateSeats from "@/lib/api/billing/updateSeats";
@@ -48,12 +48,19 @@ export default async function deleteUserById(
       // own account without re-entering their password.
       if (!bypassPassword) {
         if (user.password) {
-          const isPasswordValid = bcrypt.compareSync(
-            body.password,
-            user.password
+          const passwordCheck = await checkPassword(
+            user.id,
+            user.password,
+            body.password
           );
 
-          if (!isPasswordValid) {
+          if (passwordCheck.status === "too_many_attempts")
+            return {
+              response: passwordCheck.response,
+              status: 429,
+            };
+
+          if (passwordCheck.status === "incorrect") {
             return {
               response: "Invalid credentials.",
               status: 401,

@@ -427,7 +427,10 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             context: "global",
           });
           return false;
-        } else if (data?.code === "INVALID_VERIFICATION_CODE") {
+        } else if (
+          data?.code === "INVALID_VERIFICATION_CODE" ||
+          data?.code === "TOO_MANY_ATTEMPTS"
+        ) {
           Alert.alert("Error", data.response);
           return false;
         } else {
