@@ -529,6 +529,93 @@ describe.skipIf(!process.env.DATABASE_URL)(
       });
     });
 
+    // The demo's password is shown on its login page, so the limit would only
+    // let anyone keep every visitor from signing in
+    describe("on a demo instance", () => {
+      const startDemo = (username: string) => {
+        vi.stubEnv("NEXT_PUBLIC_DEMO", "true");
+        vi.stubEnv("NEXT_PUBLIC_DEMO_USERNAME", username);
+        vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", PASSWORD);
+      };
+
+      afterEach(() => {
+        vi.stubEnv("NEXT_PUBLIC_DEMO", "false");
+        vi.stubEnv("NEXT_PUBLIC_DEMO_USERNAME", "");
+        vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "");
+      });
+
+      it("the demo account signs in after any number of wrong passwords, without counting them", async () => {
+        const demo = await createUser("demo");
+        startDemo(demo.username!);
+
+        for (let i = 0; i < 10; i++)
+          expect(
+            webLoginError(await webLogin(demo.username!, `wrong-web-${i}`))
+          ).toBe("Invalid credentials.");
+        await failApiLogins(demo.username!, 10);
+
+        // What the "Login as demo user" button sends
+        const result = await webLogin(demo.username!, PASSWORD);
+        expect(webLoginError(result)).toBeNull();
+        expect(hasSessionCookie(result.setCookies)).toBe(true);
+        expect((await apiLogin(demo.username!, PASSWORD)).status).toBe(200);
+        expect(
+          await prisma.user.findUniqueOrThrow({
+            where: { id: demo.id },
+            select: { passwordRetries: true, passwordRetryAt: true },
+          })
+        ).toEqual({ passwordRetries: 0, passwordRetryAt: null });
+      });
+
+      it("the demo account signs in even if it was locked before the update", async () => {
+        const demo = await createUser("demo-locked");
+        await prisma.user.update({
+          where: { id: demo.id },
+          data: { passwordRetries: 40, passwordRetryAt: new Date() },
+        });
+        startDemo(demo.username!);
+
+        expect(webLoginError(await webLogin(demo.username!, PASSWORD))).toBe(
+          null
+        );
+      });
+
+      it("the demo username matches in any case, like the login does", async () => {
+        const demo = await createUser("demo-case");
+        startDemo(demo.username!.toUpperCase());
+        await failApiLogins(demo.username!, 15);
+
+        expect((await apiLogin(demo.username!, PASSWORD)).status).toBe(200);
+      });
+
+      it("the web login refuses the demo account without a password field like any wrong password", async () => {
+        const demo = await createUser("demo-no-password");
+        startDemo(demo.username!);
+
+        expect(webLoginError(await webLogin(demo.username!))).toBe(
+          "Invalid credentials."
+        );
+      });
+
+      it("other accounts on the demo instance keep the limit", async () => {
+        const demo = await createUser("demo-owner");
+        const other = await createUser("demo-admin");
+        startDemo(demo.username!);
+        await failApiLogins(other.username!, 15);
+
+        expect((await apiLogin(other.username!, PASSWORD)).status).toBe(429);
+      });
+
+      it("an account named like the demo keeps the limit when demo mode is off", async () => {
+        const user = await createUser("not-demo");
+        startDemo(user.username!);
+        vi.stubEnv("NEXT_PUBLIC_DEMO", "false");
+        await failApiLogins(user.username!, 15);
+
+        expect((await apiLogin(user.username!, PASSWORD)).status).toBe(429);
+      });
+    });
+
     describe("with email enabled", () => {
       afterEach(() => {
         vi.stubEnv("EMAIL_FROM", "");

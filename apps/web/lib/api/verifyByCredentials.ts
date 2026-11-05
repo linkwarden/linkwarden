@@ -1,6 +1,8 @@
 import { prisma } from "@linkwarden/prisma";
 import { User } from "@linkwarden/prisma/client";
-import checkPassword from "@/lib/api/checkPassword";
+import bcrypt from "bcrypt";
+import checkPassword, { PasswordCheck } from "@/lib/api/checkPassword";
+import isDemoMode from "@/lib/api/isDemoMode";
 import {
   sendEmailVerificationCode,
   verifyEmailWithCode,
@@ -52,7 +54,23 @@ export default async function verifyByCredentials({
     return { status: "invalid_credentials" };
   }
 
-  const passwordCheck = await checkPassword(user.id, user.password, password);
+  // The demo's password is shown on its login page, so limiting wrong
+  // passwords there would only let anyone keep visitors from signing in
+  const demoUsername = process.env.NEXT_PUBLIC_DEMO_USERNAME;
+  const isDemoUser =
+    isDemoMode() &&
+    !!demoUsername &&
+    user.username === demoUsername.toLowerCase();
+
+  let passwordCheck: PasswordCheck;
+
+  if (isDemoUser) {
+    // bcrypt throws when the request has no password field
+    const correct = !!password && bcrypt.compareSync(password, user.password);
+    passwordCheck = { status: correct ? "correct" : "incorrect" };
+  } else {
+    passwordCheck = await checkPassword(user.id, user.password, password);
+  }
 
   if (passwordCheck.status === "too_many_attempts") return passwordCheck;
 

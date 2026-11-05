@@ -124,22 +124,31 @@ export default function Login({
                     </a>
                   </div>
                   <Button
+                    type="button"
                     variant="primary"
                     size="full"
+                    disabled={submitLoader}
                     onClick={async () => {
+                      setSubmitLoader(true);
+
                       const load = toast.loading(t("authenticating"));
 
                       setForm({
                         username: config?.DEMO_USERNAME as string,
                         password: config?.DEMO_PASSWORD as string,
                       });
-                      await signIn("credentials", {
+                      const res = await signIn("credentials", {
                         username: config?.DEMO_USERNAME,
                         password: config?.DEMO_PASSWORD,
                         redirect: false,
                       });
 
                       toast.dismiss(load);
+
+                      setSubmitLoader(false);
+
+                      if (!res?.ok)
+                        toast.error(res?.error || t("invalid_credentials"));
                     }}
                   >
                     {t("demo_button")}
