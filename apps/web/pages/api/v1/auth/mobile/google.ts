@@ -1,5 +1,6 @@
 import { verifyGoogleIdentityToken } from "@/lib/api/google";
 import createSession from "@/lib/api/controllers/session/createSession";
+import captureEvent from "@/lib/api/captureEvent";
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -113,6 +114,13 @@ export default async function googleMobileAuth(
           },
         },
       },
+    });
+
+    captureEvent({
+      req,
+      user,
+      event: "signed_up",
+      properties: { method: "google" },
     });
   }
 

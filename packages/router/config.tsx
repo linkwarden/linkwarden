@@ -18,6 +18,8 @@ export type Config = {
   DEMO_USERNAME: string | null;
   DEMO_PASSWORD: string | null;
   GOOGLE_ENABLED: boolean | null;
+  POSTHOG_KEY: string | null;
+  POSTHOG_HOST: string | null;
 };
 
 const normalizeVersion = (version?: string | null) => {

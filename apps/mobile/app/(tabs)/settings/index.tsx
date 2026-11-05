@@ -1,5 +1,6 @@
 import useAuthStore from "@/store/auth";
-import { useUser } from "@linkwarden/router/user";
+import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 import {
   View,
   Text,
@@ -28,6 +29,7 @@ import {
   Mail,
   Moon,
   RefreshCw,
+  ShieldCheck,
   Smartphone,
   Sun,
   Trash2,
@@ -45,9 +47,13 @@ import useDataStore from "@/store/data";
 import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 
+const cloudInstance = "https://cloud.linkwarden.app";
+
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
   const { data: user } = useUser(auth);
+  const { data: config } = useConfig(auth);
+  const updateUserPreference = useUpdateUserPreference(auth);
   const { colorScheme, setColorScheme } = useColorScheme();
   const { data, updateData } = useDataStore();
   const [override, setOverride] = useState<"light" | "dark" | "system">(
@@ -379,6 +385,49 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {auth.instance === cloudInstance && config?.POSTHOG_KEY ? (
+          <View>
+            <Text className="mb-4 mx-4 text-neutral">Privacy</Text>
+            <View className="bg-base-200 rounded-xl flex-col">
+              <View className="py-3 px-4">
+                <View className="flex-row gap-2 items-center justify-between">
+                  <View className="flex-row items-center gap-2">
+                    <ShieldCheck
+                      size={20}
+                      color={rawTheme[colorScheme as ThemeName].neutral}
+                    />
+                    <Text className="text-base-content">
+                      Share usage analytics
+                    </Text>
+                  </View>
+                  <Switch
+                    value={user?.shareUsageAnalytics ?? true}
+                    disabled={updateUserPreference.isPending}
+                    onValueChange={(value) =>
+                      updateUserPreference.mutate(
+                        { shareUsageAnalytics: value },
+                        {
+                          onError: (error) =>
+                            Alert.alert("Error", error.message),
+                        }
+                      )
+                    }
+                    trackColor={{
+                      true: rawTheme[colorScheme as ThemeName].primary,
+                    }}
+                    thumbColor={rawTheme[colorScheme as ThemeName]["base-100"]}
+                  />
+                </View>
+                <Text className="text-sm text-neutral mt-2 ml-7">
+                  Helps us see which features get used, like how many links are
+                  added each day. The contents of your links, collections, and
+                  tags are never included.
+                </Text>
+              </View>
+            </View>
+          </View>
+        ) : null}
 
         <View>
           <Text className="mb-4 mx-4 text-neutral">Contact Us</Text>

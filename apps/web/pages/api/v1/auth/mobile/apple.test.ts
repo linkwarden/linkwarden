@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@linkwarden/prisma";
 import { verifyAppleIdentityToken } from "@/lib/api/apple";
 import createSession from "@/lib/api/controllers/session/createSession";
+import captureEvent from "@/lib/api/captureEvent";
 import handler from "./apple";
 
 vi.mock("@linkwarden/prisma", () => ({
@@ -23,6 +24,10 @@ vi.mock("@/lib/api/apple", () => ({
 }));
 
 vi.mock("@/lib/api/controllers/session/createSession", () => ({
+  default: vi.fn(),
+}));
+
+vi.mock("@/lib/api/captureEvent", () => ({
   default: vi.fn(),
 }));
 
@@ -145,5 +150,36 @@ describe("/api/v1/auth/mobile/apple", () => {
         data: expect.objectContaining({ email: undefined }),
       })
     );
+  });
+
+  it("records a sign up only when it creates the account", async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
+    vi.mocked(prisma.user.create).mockResolvedValue({
+      id: 9,
+      shareUsageAnalytics: true,
+    } as any);
+    const req = request();
+
+    await handler(req, createMockResponse().res);
+
+    expect(captureEvent).toHaveBeenCalledTimes(1);
+    expect(captureEvent).toHaveBeenCalledWith({
+      req,
+      user: { id: 9, shareUsageAnalytics: true },
+      event: "signed_up",
+      properties: { method: "apple" },
+    });
+
+    vi.mocked(captureEvent).mockClear();
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      id: 5,
+      email: "victim@lab.test",
+      emailVerified: new Date(),
+      accounts: [],
+    } as any);
+
+    await handler(request(), createMockResponse().res);
+
+    expect(captureEvent).not.toHaveBeenCalled();
   });
 });

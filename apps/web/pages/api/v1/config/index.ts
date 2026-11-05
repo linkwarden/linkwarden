@@ -45,5 +45,18 @@ export const getEnvData = () => {
         process.env.NEXT_PUBLIC_DEMO_PASSWORD) ||
       null,
     GOOGLE_ENABLED: process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" || null,
+    ...getPostHogConfig(),
   };
+};
+
+// Usage analytics are only set up on Linkwarden Cloud. The browser gets the
+// key from this route, so the variables aren't NEXT_PUBLIC_*, which Next
+// would bake into the build, and are read when the server runs instead.
+const getPostHogConfig = () => {
+  const key = process.env.POSTHOG_KEY;
+  const host = process.env.POSTHOG_HOST;
+
+  if (!key || !host) return { POSTHOG_KEY: null, POSTHOG_HOST: null };
+
+  return { POSTHOG_KEY: key, POSTHOG_HOST: host };
 };

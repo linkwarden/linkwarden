@@ -28,6 +28,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
 import OfflineSyncProvider from "@/components/OfflineSyncProvider";
+import Analytics from "@/components/Analytics";
 import { installCustomHeaders } from "@/lib/customHeaders";
 
 installCustomHeaders();
@@ -120,6 +121,7 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
       >
         <SheetProvider>
           <OfflineSyncProvider />
+          <Analytics />
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           {!isLoading && (
             <ThemeProvider

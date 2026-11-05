@@ -57,6 +57,7 @@ const suites = {
       "Search and no-email": [
         "tests/public/no-email.spec.ts",
         "tests/public/search-query.spec.ts",
+        "tests/public/usage-analytics.spec.ts",
       ],
       Imports: ["tests/public/import-order.spec.ts"],
     },

@@ -3,6 +3,7 @@ import paymentCheckout from "@/lib/api/paymentCheckout";
 import { Plan } from "@linkwarden/types/global";
 import { prisma } from "@linkwarden/prisma";
 import getTokenFromRequest from "@/lib/api/getTokenFromRequest";
+import captureEvent from "@/lib/api/captureEvent";
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -18,10 +19,11 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
   if (!token?.id) return res.status(404).json({ response: "Token invalid." });
 
-  const email = (await prisma.user.findUnique({ where: { id: token.id } }))
-    ?.email;
+  const user = await prisma.user.findUnique({ where: { id: token.id } });
+  const email = user?.email;
 
-  if (!email) return res.status(404).json({ response: "User not found." });
+  if (!user || !email)
+    return res.status(404).json({ response: "User not found." });
 
   let PRICE_ID = MONTHLY_PRICE_ID;
 
@@ -32,6 +34,18 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === "GET") {
     const users = await paymentCheckout(email as string, PRICE_ID);
+
+    // Users who already subscribed are sent back to the dashboard instead
+    if (users.status === 200 && users.response !== "/dashboard")
+      captureEvent({
+        req,
+        user,
+        event: "subscription_checkout_started",
+        properties: {
+          plan: PRICE_ID === YEARLY_PRICE_ID ? "yearly" : "monthly",
+        },
+      });
+
     return res.status(users.status).json({ response: users.response });
   }
 }

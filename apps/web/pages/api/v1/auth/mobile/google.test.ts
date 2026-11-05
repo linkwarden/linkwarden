@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@linkwarden/prisma";
 import { verifyGoogleIdentityToken } from "@/lib/api/google";
 import createSession from "@/lib/api/controllers/session/createSession";
+import captureEvent from "@/lib/api/captureEvent";
 import handler from "./google";
 
 vi.mock("@linkwarden/prisma", () => ({
@@ -23,6 +24,10 @@ vi.mock("@/lib/api/google", () => ({
 }));
 
 vi.mock("@/lib/api/controllers/session/createSession", () => ({
+  default: vi.fn(),
+}));
+
+vi.mock("@/lib/api/captureEvent", () => ({
   default: vi.fn(),
 }));
 
@@ -108,5 +113,24 @@ describe("/api/v1/auth/mobile/google", () => {
     expect(prisma.account.create).toHaveBeenCalled();
     expect(prisma.user.update).not.toHaveBeenCalled();
     expect(createSession).toHaveBeenCalledWith(5, "phone");
+    expect(captureEvent).not.toHaveBeenCalled();
+  });
+
+  it("records a sign up when it creates the account", async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
+    vi.mocked(prisma.user.create).mockResolvedValue({
+      id: 9,
+      shareUsageAnalytics: true,
+    } as any);
+
+    await handler(request, createMockResponse().res);
+
+    expect(captureEvent).toHaveBeenCalledTimes(1);
+    expect(captureEvent).toHaveBeenCalledWith({
+      req: request,
+      user: { id: 9, shareUsageAnalytics: true },
+      event: "signed_up",
+      properties: { method: "google" },
+    });
   });
 });

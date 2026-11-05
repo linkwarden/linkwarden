@@ -710,6 +710,41 @@ const Page: NextPageWithLayout = () => {
             {t("save_changes")}
           </Button>
         </div>
+
+        {config?.POSTHOG_KEY && (
+          <div>
+            <div className="flex items-center gap-2">
+              <i className="bi-shield-check text-primary text-2xl"></i>
+              <p className="capitalize text-3xl font-thin inline">
+                {t("privacy")}
+              </p>
+            </div>
+
+            <Separator className="my-3" />
+
+            <Checkbox
+              label={t("share_usage_analytics")}
+              state={account.shareUsageAnalytics ?? true}
+              disabled={updateUserPreference.isPending}
+              onClick={() =>
+                updateUserPreference.mutate(
+                  // Matches the checkbox, which shows on while the account
+                  // is still loading
+                  {
+                    shareUsageAnalytics: !(account.shareUsageAnalytics ?? true),
+                  },
+                  {
+                    onSuccess: () => toast.success(t("settings_applied")),
+                    onError: (error) => toast.error(error.message),
+                  }
+                )
+              }
+            />
+            <p className="text-neutral text-sm">
+              {t("share_usage_analytics_desc")}
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

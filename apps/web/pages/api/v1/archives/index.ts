@@ -13,6 +13,7 @@ import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 import { ArchivedFormat } from "@linkwarden/types/global";
 import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
+import captureEvent from "@/lib/api/captureEvent";
 
 export const config = {
   api: {
@@ -239,6 +240,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
       // Clean up temporary file
       fs.unlinkSync(files.file[0].filepath);
+
+      captureEvent({
+        req,
+        user,
+        event: "link_created",
+        properties: { type: isPDF ? "pdf" : isImage ? "image" : "webpage" },
+      });
 
       return res.status(200).json({ response: updateLink });
     } catch (error: any) {

@@ -34,4 +34,32 @@ describe("getEnvData", () => {
       REQUIRE_CC: true,
     });
   });
+
+  it("returns the PostHog key and host when both are set", () => {
+    vi.stubEnv("POSTHOG_KEY", "phc_test");
+    vi.stubEnv("POSTHOG_HOST", "https://eu.i.posthog.com");
+
+    expect(getEnvData()).toMatchObject({
+      POSTHOG_KEY: "phc_test",
+      POSTHOG_HOST: "https://eu.i.posthog.com",
+    });
+  });
+
+  it("returns no PostHog config unless both the key and host are set", () => {
+    vi.stubEnv("POSTHOG_KEY", "phc_test");
+    vi.stubEnv("POSTHOG_HOST", "");
+
+    expect(getEnvData()).toMatchObject({
+      POSTHOG_KEY: null,
+      POSTHOG_HOST: null,
+    });
+
+    vi.stubEnv("POSTHOG_KEY", "");
+    vi.stubEnv("POSTHOG_HOST", "https://eu.i.posthog.com");
+
+    expect(getEnvData()).toMatchObject({
+      POSTHOG_KEY: null,
+      POSTHOG_HOST: null,
+    });
+  });
 });

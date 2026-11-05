@@ -569,5 +569,8 @@
   "sign_in_to_linkwarden": "Welcome back!",
   "or": "Or",
   "continue_with_apple": "Continue with Apple",
-  "continue_with_google": "Continue with Google"
+  "continue_with_google": "Continue with Google",
+  "privacy": "Privacy",
+  "share_usage_analytics": "Share usage analytics",
+  "share_usage_analytics_desc": "Helps us see which features get used, like how many links are added each day. The contents of your links, collections, and tags are never included."
 }

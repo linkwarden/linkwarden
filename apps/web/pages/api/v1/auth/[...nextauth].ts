@@ -8,6 +8,7 @@ import { authProviders, isAuthProviderEnabled } from "@/lib/api/authProviders";
 import { ssoEmailVerified } from "@/lib/api/ssoEmailVerified";
 import isTokenRevoked from "@/lib/api/isTokenRevoked";
 import { SESSION_MAX_AGE } from "@/lib/api/setSessionCookie";
+import captureEvent from "@/lib/api/captureEvent";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import crypto from "crypto";
@@ -428,6 +429,15 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       },
     },
     events: {
+      async createUser({ user }) {
+        captureEvent({
+          req,
+          // The adapter returns the full database row
+          user: user as unknown as User,
+          event: "signed_up",
+          properties: { method: "sso" },
+        });
+      },
       async signOut({ token }) {
         // Web sessions aren't stored, so a signed out one is kept as a revoked token
         if (token?.sessionId)

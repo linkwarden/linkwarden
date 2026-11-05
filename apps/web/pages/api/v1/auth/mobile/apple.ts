@@ -1,5 +1,6 @@
 import { verifyAppleIdentityToken } from "@/lib/api/apple";
 import createSession from "@/lib/api/controllers/session/createSession";
+import captureEvent from "@/lib/api/captureEvent";
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -103,6 +104,13 @@ export default async function appleMobileAuth(
           },
         },
       },
+    });
+
+    captureEvent({
+      req,
+      user,
+      event: "signed_up",
+      properties: { method: "apple" },
     });
   }
 
