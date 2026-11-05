@@ -1,0 +1,32 @@
+appId: app.linkwarden
+name: Shows no usage analytics setting while signed in to a self-hosted server
+---
+# Usage analytics only run on Linkwarden Cloud, so this holds even when the
+# server has POSTHOG_KEY and POSTHOG_HOST set
+- runFlow: subflows/launch.yaml
+- runFlow: subflows/login.yaml
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "Settings"
+          childOf:
+            text: "Tab Bar"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Settings"
+          id: ".*navigation_bar_item_.*_label_view"
+# The Privacy section would sit right above Contact Us
+- scrollUntilVisible:
+    element: "Contact Us"
+    centerElement: true
+- assertVisible: "Contact Us"
+- assertVisible: "Offline Storage"
+- assertNotVisible: "Share usage analytics"
+- scrollUntilVisible:
+    element: "Delete Account"
+- assertNotVisible: "Share usage analytics"

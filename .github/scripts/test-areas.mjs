@@ -28,6 +28,7 @@ const suites = {
     areas: {
       Web: ["apps/web/"],
       Extension: ["apps/extension/"],
+      Mobile: ["apps/mobile/"],
       "Worker and packages": ["apps/worker/", "packages/"],
     },
   },
@@ -58,6 +59,7 @@ const suites = {
         "tests/public/no-email.spec.ts",
         "tests/public/search-query.spec.ts",
         "tests/public/usage-analytics.spec.ts",
+        "tests/public/usage-analytics-privacy.spec.ts",
       ],
       Imports: ["tests/public/import-order.spec.ts"],
     },

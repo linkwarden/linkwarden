@@ -27,7 +27,7 @@ jobs:
     name: Unit
     uses: ./.github/workflows/unit-tests.yml
     with:
-      areas: '["Web", "Extension", "Worker and packages"]'
+      areas: '["Web", "Extension", "Mobile", "Worker and packages"]'
 
   integration:
     name: Integration
