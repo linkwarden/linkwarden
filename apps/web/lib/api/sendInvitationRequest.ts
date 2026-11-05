@@ -44,7 +44,7 @@ export default async function sendInvitationRequest({
       }/callback/invite?token=${token}&email=${encodeURIComponent(identifier)}`,
     }),
   });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
+  const failed = result.rejected.concat(result.pending ?? []).filter(Boolean);
   if (failed.length) {
     throw new Error(`Email (${failed.join(", ")}) could not be sent`);
   }
