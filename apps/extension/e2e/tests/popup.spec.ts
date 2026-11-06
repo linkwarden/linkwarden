@@ -34,9 +34,9 @@ test.describe("Popup", () => {
       name: "An article worth keeping",
       collection: { name: "Unorganized" },
     });
-    expect(await badgeOf(background, await tabIdOf(background, target))).toBe(
-      "✓"
-    );
+    // The badge is set after the save response, so poll for it
+    const tabId = await tabIdOf(background, target);
+    await expect.poll(() => badgeOf(background, tabId)).toBe("✓");
   });
 
   test("Saves into the chosen collection with a custom name", async ({

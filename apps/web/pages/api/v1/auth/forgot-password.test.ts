@@ -70,6 +70,23 @@ describe("/api/v1/auth/forgot-password", () => {
     expect(unknown.state.jsonBody).toEqual(known.state.jsonBody);
   });
 
+  // Open: emails are stored lowercased and the login form lowercases what's
+  // typed, but this route looks the address up exactly as typed, so a
+  // mixed-case spelling finds nobody and the page still says the email was sent.
+  it.fails("finds the account however the email is capitalized", async () => {
+    vi.mocked(prisma.user.findFirst).mockResolvedValue(null as any);
+    await handler(
+      { method: "POST", body: { email: "Known@Example.com" } } as any,
+      createMockResponse().res
+    );
+
+    expect(prisma.user.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ email: "known@example.com" }),
+      })
+    );
+  });
+
   it("sends a reset email only when the account exists", async () => {
     vi.mocked(prisma.user.findFirst).mockResolvedValue({
       email: "known@example.com",
