@@ -47,6 +47,7 @@ const suites = {
     areas: {
       Login: [
         "tests/public/login.spec.ts",
+        "tests/public/password-change-notice.spec.ts",
         "tests/public/password-retries.spec.ts",
       ],
       Permissions: [
