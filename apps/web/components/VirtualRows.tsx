@@ -9,10 +9,18 @@ import {
 } from "react";
 import {
   defaultRangeExtractor,
+  elementScroll,
+  observeElementOffset,
+  observeElementRect,
+  observeWindowOffset,
+  observeWindowRect,
   useVirtualizer,
   VirtualItem,
+  Virtualizer,
+  windowScroll,
 } from "@tanstack/react-virtual";
 import { cn } from "@linkwarden/lib/utils";
+import { getScrollParent, isWindow } from "@/lib/client/scrollParent";
 
 // Shared by every virtualized list (links, tags, collections, the collection
 // picker), so they can be tuned in one place.
@@ -31,13 +39,35 @@ export const FADE_IN_AHEAD_ROWS = 2;
 
 // MainLayout and the sidebar scroll inner elements rather than the window, and
 // a dropdown menu scrolls itself.
-const getScrollParent = (element: HTMLElement) => {
-  for (let el = element.parentElement; el; el = el.parentElement) {
-    const { overflowY } = getComputedStyle(el);
-    if (overflowY === "auto" || overflowY === "scroll") return el;
-  }
-  return document.documentElement;
-};
+// The virtualizer is told how to follow its scroller when the list mounts, so
+// these pick the window's or an element's way depending on which it got.
+type ListVirtualizer = Virtualizer<HTMLElement, Element>;
+type WindowVirtualizer = Virtualizer<Window, Element>;
+
+const observeScrollerRect = (
+  instance: ListVirtualizer,
+  cb: Parameters<typeof observeElementRect>[1]
+) =>
+  isWindow(instance.scrollElement)
+    ? observeWindowRect(instance as unknown as WindowVirtualizer, cb)
+    : observeElementRect(instance, cb);
+
+const observeScrollerOffset = (
+  instance: ListVirtualizer,
+  cb: Parameters<typeof observeElementOffset>[1]
+) =>
+  isWindow(instance.scrollElement)
+    ? observeWindowOffset(instance as unknown as WindowVirtualizer, cb)
+    : observeElementOffset(instance, cb);
+
+const scrollScrollerTo = (
+  offset: number,
+  options: Parameters<typeof elementScroll>[1],
+  instance: ListVirtualizer
+) =>
+  isWindow(instance.scrollElement)
+    ? windowScroll(offset, options, instance as unknown as WindowVirtualizer)
+    : elementScroll(offset, options, instance);
 
 // Columns for a grid whose column count follows breakpoints: the count of the
 // first query that matches, else `fallback`. `queries` must be a constant
@@ -99,7 +129,9 @@ export function useVirtualRows({
   group,
 }: VirtualRowsOptions) {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
+  const [scrollElement, setScrollElement] = useState<
+    HTMLElement | Window | null
+  >(null);
   const [scrollMargin, setScrollMargin] = useState(0);
 
   useLayoutEffect(() => {
@@ -113,17 +145,19 @@ export function useVirtualRows({
     // as well as the scroller.
     const measure = () =>
       setScrollMargin(
-        list.getBoundingClientRect().top -
-          scroller.getBoundingClientRect().top +
-          scroller.scrollTop
+        isWindow(scroller)
+          ? list.getBoundingClientRect().top + window.scrollY
+          : list.getBoundingClientRect().top -
+              scroller.getBoundingClientRect().top +
+              scroller.scrollTop
       );
 
     measure();
 
+    const content = isWindow(scroller) ? document.body : scroller;
     const observer = new ResizeObserver(measure);
-    observer.observe(scroller);
-    if (scroller.firstElementChild)
-      observer.observe(scroller.firstElementChild);
+    observer.observe(content);
+    if (content.firstElementChild) observer.observe(content.firstElementChild);
     return () => observer.disconnect();
   }, [list]);
 
@@ -131,7 +165,12 @@ export function useVirtualRows({
 
   const virtualizer = useVirtualizer({
     count,
-    getScrollElement: () => scrollElement,
+    // The window goes through the same virtualizer as an element, with the
+    // window's observers below
+    getScrollElement: () => scrollElement as HTMLElement | null,
+    observeElementRect: observeScrollerRect,
+    observeElementOffset: observeScrollerOffset,
+    scrollToFn: scrollScrollerTo,
     getItemKey,
     estimateSize,
     gap,
