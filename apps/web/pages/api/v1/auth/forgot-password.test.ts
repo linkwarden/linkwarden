@@ -70,21 +70,62 @@ describe("/api/v1/auth/forgot-password", () => {
     expect(unknown.state.jsonBody).toEqual(known.state.jsonBody);
   });
 
-  // Open: emails are stored lowercased and the login form lowercases what's
-  // typed, but this route looks the address up exactly as typed, so a
-  // mixed-case spelling finds nobody and the page still says the email was sent.
-  it.fails("finds the account however the email is capitalized", async () => {
-    vi.mocked(prisma.user.findFirst).mockResolvedValue(null as any);
+  // Emails are stored lowercased and the login form lowercases what's typed
+  it("finds the account however the email is capitalized", async () => {
+    vi.mocked(prisma.user.findFirst).mockImplementation((async (args: any) =>
+      args.where.email === "known@example.com"
+        ? { email: "known@example.com", name: "Known" }
+        : null) as any);
+    await handler(
+      { method: "POST", body: { email: " Known@Example.com " } } as any,
+      createMockResponse().res
+    );
+
+    expect(sendPasswordResetRequest).toHaveBeenCalledWith(
+      "known@example.com",
+      "Known"
+    );
+  });
+
+  it("prefers the account spelled exactly as typed", async () => {
+    vi.mocked(prisma.user.findFirst).mockImplementation((async (args: any) =>
+      args.where.email === "Known@Example.com"
+        ? { email: "Known@Example.com", name: "Capitals" }
+        : args.where.email === "known@example.com"
+          ? { email: "known@example.com", name: "Lowercase" }
+          : null) as any);
     await handler(
       { method: "POST", body: { email: "Known@Example.com" } } as any,
       createMockResponse().res
     );
 
-    expect(prisma.user.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({ email: "known@example.com" }),
-      })
+    expect(sendPasswordResetRequest).toHaveBeenCalledTimes(1);
+    expect(sendPasswordResetRequest).toHaveBeenCalledWith(
+      "Known@Example.com",
+      "Capitals"
     );
+  });
+
+  it("limits requests for every spelling of the email together", async () => {
+    vi.mocked(prisma.passwordResetToken.count).mockResolvedValue(3 as any);
+    const { res, state } = createMockResponse();
+    await handler(
+      { method: "POST", body: { email: "Known@Example.com" } } as any,
+      res
+    );
+
+    expect(state.statusCode).toBe(400);
+    expect(prisma.passwordResetToken.count).toHaveBeenCalledWith({
+      where: expect.objectContaining({
+        identifier: {
+          in: expect.arrayContaining([
+            "Known@Example.com",
+            "known@example.com",
+          ]),
+        },
+      }),
+    });
+    expect(sendPasswordResetRequest).not.toHaveBeenCalled();
   });
 
   it("sends a reset email only when the account exists", async () => {

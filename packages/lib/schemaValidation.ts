@@ -14,7 +14,7 @@ import { z } from "zod";
 // });
 
 export const ForgotPasswordSchema = z.object({
-  email: z.string().email(),
+  email: z.string().trim().email(),
 });
 
 export const ResetPasswordSchema = z.object({

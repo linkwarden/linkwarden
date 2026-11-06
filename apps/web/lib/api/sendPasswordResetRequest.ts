@@ -13,7 +13,8 @@ export default async function sendPasswordResetRequest(
 
   await prisma.passwordResetToken.create({
     data: {
-      identifier: email?.toLowerCase(),
+      // The account's email as stored, which the reset looks the account up by
+      identifier: email,
       token,
       expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
     },

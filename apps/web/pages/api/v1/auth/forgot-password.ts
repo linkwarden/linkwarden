@@ -25,10 +25,13 @@ export default async function forgotPassword(
     }
 
     const { email } = dataValidation.data;
+    const lowercaseEmail = email.toLowerCase();
 
+    // Reset tokens are stored under the account's email, which is lowercase
+    // unless an SSO provider created the account with capitals
     const recentPasswordRequestsCount = await prisma.passwordResetToken.count({
       where: {
-        identifier: email,
+        identifier: { in: Array.from(new Set([email, lowercaseEmail])) },
         createdAt: {
           gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
         },
@@ -42,11 +45,14 @@ export default async function forgotPassword(
       });
     }
 
-    const user = await prisma.user.findFirst({
-      where: {
-        email,
-      },
-    });
+    // Emails are stored lowercase, so the email is found however it's
+    // capitalized. One stored with capitals is found when typed exactly that
+    // way, which also wins if two accounts' emails only differ in case.
+    const user =
+      (await prisma.user.findFirst({ where: { email } })) ??
+      (email !== lowercaseEmail
+        ? await prisma.user.findFirst({ where: { email: lowercaseEmail } })
+        : null);
 
     if (user && user.email) {
       sendPasswordResetRequest(user.email, user.name || "Linkwarden User");

@@ -49,10 +49,24 @@ export default async function resetPassword(
 
     const email = verifyToken.identifier;
 
+    // The account may have been deleted, or its email changed, since
+    const account = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: { id: true },
+    });
+
+    if (!account) {
+      return res.status(400).json({
+        response: "Invalid token.",
+      });
+    }
+
     // Update password
     const user = await prisma.user.update({
       where: {
-        email,
+        id: account.id,
       },
       data: {
         password: hashedPassword,

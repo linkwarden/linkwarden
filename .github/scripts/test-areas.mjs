@@ -72,7 +72,11 @@ const suites = {
     areas: {
       "Verification and codes": ["verification.spec.ts", "edge-cases.spec.ts"],
       "Pre-hijacking and OIDC": ["prehijack.spec.ts", "session-revocation.spec.ts"],
-      "Delivery and upgrades": ["delivery.spec.ts", "upgrade.spec.ts"],
+      "Delivery and upgrades": [
+        "delivery.spec.ts",
+        "password-reset.spec.ts",
+        "upgrade.spec.ts",
+      ],
     },
   },
   // apps/extension/playwright.config.ts keeps Playwright's default testMatch

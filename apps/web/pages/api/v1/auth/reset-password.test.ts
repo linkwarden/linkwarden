@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import handler from "./reset-password";
 import { prisma } from "@linkwarden/prisma";
 import revokeUserSessions from "@/lib/api/revokeUserSessions";
@@ -6,6 +6,7 @@ import revokeUserSessions from "@/lib/api/revokeUserSessions";
 vi.mock("@linkwarden/prisma", () => ({
   prisma: {
     user: {
+      findUnique: vi.fn(),
       update: vi.fn(),
     },
     passwordResetToken: {
@@ -49,8 +50,45 @@ const request = {
 } as any;
 
 describe("/api/v1/auth/reset-password", () => {
+  beforeEach(() => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({ id: 9 } as any);
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("finds the account by the email the reset link was sent to", async () => {
+    vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue({
+      identifier: "Owner@Example.com",
+    } as any);
+    vi.mocked(prisma.user.update).mockResolvedValue({ id: 9 } as any);
+    const { res, state } = createMockResponse();
+
+    await handler(request, res);
+
+    expect(state.statusCode).toBe(200);
+    expect(prisma.user.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { email: "Owner@Example.com" } })
+    );
+    expect(prisma.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 9 } })
+    );
+  });
+
+  it("refuses a reset link whose account is gone", async () => {
+    vi.mocked(prisma.passwordResetToken.findFirst).mockResolvedValue({
+      identifier: "owner@example.com",
+    } as any);
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
+    const { res, state } = createMockResponse();
+
+    await handler(request, res);
+
+    expect(state.statusCode).toBe(400);
+    expect(prisma.user.update).not.toHaveBeenCalled();
+    expect(revokeUserSessions).not.toHaveBeenCalled();
+    expect(prisma.emailVerificationCode.deleteMany).not.toHaveBeenCalled();
   });
 
   it("clears failed email verification attempts along with the password", async () => {
@@ -93,7 +131,7 @@ describe("/api/v1/auth/reset-password", () => {
 
     expect(state.statusCode).toBe(200);
     expect(prisma.user.update).toHaveBeenCalledWith({
-      where: { email: "owner@example.com" },
+      where: { id: 9 },
       data: expect.objectContaining({
         passwordRetries: 0,
         passwordRetryAt: null,
