@@ -115,7 +115,15 @@ export default async function updateUserById(
       ["oauth", "oidc"].includes(account.type)
     ) || false;
 
-  if (user && user.email && data.email && data.email !== user.email) {
+  // The email arrives lowercased, but an older account's can be stored with
+  // capitals, so one sent back the way it was loaded is unchanged too
+  if (
+    user &&
+    user.email &&
+    data.email &&
+    data.email !== user.email &&
+    body.email !== user.email
+  ) {
     if (!data.password) {
       return {
         response: "Invalid password.",

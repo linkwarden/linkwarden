@@ -145,6 +145,24 @@ describe("/api/v1/auth/verify-email", () => {
     expect(db.tokens).toHaveLength(0);
   });
 
+  it("changes the email of an account stored with capitals", async () => {
+    // Older accounts can have their email stored with capitals
+    db.users[0].email = "Owner@Example.com";
+
+    await sendChangeEmailVerificationRequest(
+      "Owner@Example.com",
+      controlled,
+      "User"
+    );
+
+    const state = await verify(tokenSentTo(controlled));
+
+    expect(state.statusCode).toBe(200);
+    expect(db.users[0].email).toBe(controlled);
+    expect(db.users[0].unverifiedNewEmail).toBeNull();
+    expect(db.tokens).toHaveLength(0);
+  });
+
   it("rejects an unknown token", async () => {
     await sendChangeEmailVerificationRequest(owner, controlled, "User");
 

@@ -12,12 +12,14 @@ export default async function sendChangeEmailVerificationRequest(
 ) {
   const token = randomBytes(32).toString("hex");
 
+  // `oldEmail` is the account's email as stored, which can have capitals on an
+  // older account. The verification finds the account by the token's identifier.
   await prisma.$transaction(async (tx) => {
     // Updating the user first locks the row, so concurrent requests run one
     // after another and each one sees the tokens the previous one created.
     await tx.user.update({
       where: {
-        email: oldEmail?.toLowerCase(),
+        email: oldEmail,
       },
       data: {
         unverifiedNewEmail: newEmail?.toLowerCase(),
@@ -27,12 +29,12 @@ export default async function sendChangeEmailVerificationRequest(
     // must not be able to verify the new one.
     await tx.verificationToken.deleteMany({
       where: {
-        identifier: oldEmail?.toLowerCase(),
+        identifier: oldEmail,
       },
     });
     await tx.verificationToken.create({
       data: {
-        identifier: oldEmail?.toLowerCase(),
+        identifier: oldEmail,
         token,
         expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
       },

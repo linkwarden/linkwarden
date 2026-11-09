@@ -70,7 +70,11 @@ const suites = {
     dir: "apps/web/e2e/tests/email/",
     files: (path) => path.endsWith(".spec.ts"),
     areas: {
-      "Verification and codes": ["verification.spec.ts", "edge-cases.spec.ts"],
+      "Verification and codes": [
+        "verification.spec.ts",
+        "edge-cases.spec.ts",
+        "email-change.spec.ts",
+      ],
       "Pre-hijacking and OIDC": ["prehijack.spec.ts", "session-revocation.spec.ts"],
       "Delivery and upgrades": [
         "delivery.spec.ts",

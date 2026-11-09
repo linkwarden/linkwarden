@@ -37,7 +37,9 @@ describe("sendChangeEmailVerificationRequest", () => {
     vi.clearAllMocks();
   });
 
-  it("issues a token for the old email and mails it to the new email", async () => {
+  it("issues a token for the old email as stored and mails it to the new email", async () => {
+    // An older account's email can be stored with capitals, and the
+    // verification finds the account by the token's identifier
     await sendChangeEmailVerificationRequest(
       "Old@Example.com",
       "New@Example.com",
@@ -47,10 +49,13 @@ describe("sendChangeEmailVerificationRequest", () => {
     const { data } = vi.mocked(prisma.verificationToken.create).mock
       .calls[0][0] as any;
 
-    expect(data.identifier).toBe("old@example.com");
+    expect(data.identifier).toBe("Old@Example.com");
     expect(prisma.user.update).toHaveBeenCalledWith({
-      where: { email: "old@example.com" },
+      where: { email: "Old@Example.com" },
       data: { unverifiedNewEmail: "new@example.com" },
+    });
+    expect(prisma.verificationToken.deleteMany).toHaveBeenCalledWith({
+      where: { identifier: "Old@Example.com" },
     });
 
     const mail = vi.mocked(transporter.sendMail).mock.calls[0][0] as any;
