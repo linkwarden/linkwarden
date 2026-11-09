@@ -110,7 +110,12 @@ test.describe(
         expect(response.status()).toBe(400);
       }
 
+      // The form only submits once the account has loaded
+      const accountLoaded = page.waitForResponse(
+        (res) => res.url().includes(`/api/v1/users/${user.id}`) && res.ok()
+      );
       await page.goto("/settings/password");
+      await accountLoaded;
       const passwordInputs = page.locator('input[type="password"]');
       await passwordInputs.nth(0).fill(password);
       await passwordInputs.nth(1).fill("new-password");
