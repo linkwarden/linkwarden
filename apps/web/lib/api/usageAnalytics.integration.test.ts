@@ -25,10 +25,15 @@ vi.mock("posthog-node", () => ({
   }),
 }));
 
-// Keeps the routes from creating archive folders on disk
+// Keeps the routes from writing archives and folders to disk
 vi.mock("@linkwarden/filesystem", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@linkwarden/filesystem")>()),
   createFolder: vi.fn(),
+  createFile: vi.fn(),
+}));
+
+vi.mock("@linkwarden/lib/generatePreview", () => ({
+  generatePreview: vi.fn(),
 }));
 
 vi.mock("@/lib/api/paymentCheckout", () => ({ default: paymentCheckout }));
@@ -48,6 +53,7 @@ let collectionsRoute: typeof import("@/pages/api/v1/collections").default;
 let preferenceRoute: typeof import("@/pages/api/v1/users/[id]/preference").default;
 let migrationRoute: typeof import("@/pages/api/v1/migration").default;
 let paymentRoute: typeof import("@/pages/api/v1/payment").default;
+let archivesRoute: typeof import("@/pages/api/v1/archives").default;
 let createSession: typeof import("./controllers/session/createSession").default;
 
 const createdUserIds: number[] = [];
@@ -164,6 +170,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
         .default;
       migrationRoute = (await import("@/pages/api/v1/migration")).default;
       paymentRoute = (await import("@/pages/api/v1/payment")).default;
+      archivesRoute = (await import("@/pages/api/v1/archives")).default;
       createSession = (await import("./controllers/session/createSession"))
         .default;
     });
@@ -225,6 +232,140 @@ describe.skipIf(!process.env.DATABASE_URL)(
           body: { username: user.username, password: "password-123" },
         });
         expect(taken.status).toBe(400);
+
+        expect(capture).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("POST /api/v1/archives", () => {
+      // The upload route answers after its handler returns, once the form
+      // is parsed
+      const upload = (
+        session: Request,
+        format: number,
+        filename: string,
+        mimeType: string,
+        content: Buffer
+      ) =>
+        new Promise<{ status: number; body: any }>((resolve, reject) => {
+          const boundary = `----linkwarden${crypto.randomUUID()}`;
+          const body = Buffer.concat([
+            Buffer.from(
+              `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${filename}"\r\nContent-Type: ${mimeType}\r\n\r\n`
+            ),
+            content,
+            Buffer.from(`\r\n--${boundary}--\r\n`),
+          ]);
+          const state = { status: 200, body: undefined as any };
+          const res: any = {
+            status(code: number) {
+              state.status = code;
+              return res;
+            },
+            setHeader: () => res,
+            json(json: any) {
+              state.body = json;
+              resolve(state);
+              return res;
+            },
+          };
+
+          Promise.resolve(
+            archivesRoute(
+              Object.assign(Readable.from([body]), {
+                method: "POST",
+                query: { format: String(format) },
+                cookies: session.cookies ?? {},
+                headers: {
+                  ...session.headers,
+                  "content-type": `multipart/form-data; boundary=${boundary}`,
+                  "content-length": String(body.length),
+                },
+              }) as any,
+              res
+            )
+          ).catch(reject);
+        });
+
+      const pdf = Buffer.from("%PDF-1.4\nuploaded secret\n%%EOF\n");
+      // A 1x1 PNG
+      const png = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        "base64"
+      );
+      const html = Buffer.from(
+        "<html><head><title>Uploaded secret page</title></head></html>"
+      );
+
+      it("records an uploaded file as a link of its type, but not the file", async () => {
+        const user = await createUser();
+        const session = await signedIn(user.id);
+
+        expect(
+          (await upload(session, 2, "secret.pdf", "application/pdf", pdf))
+            .status
+        ).toBe(200);
+        expect(
+          (await upload(session, 0, "secret.png", "image/png", png)).status
+        ).toBe(200);
+        expect(
+          (await upload(session, 4, "secret.html", "text/html", html)).status
+        ).toBe(200);
+
+        expect(events()).toEqual(
+          ["pdf", "image", "webpage"].map((type) => ({
+            distinctId: String(user.id),
+            event: "link_created",
+            properties: { type, platform: "web" },
+          }))
+        );
+        expectNoUserContent("secret.pdf", "uploaded secret", "Uploaded secret");
+      });
+
+      it("knows an upload came from the mobile app", async () => {
+        const user = await createUser();
+
+        const uploaded = await upload(
+          await signedInOnPhone(user.id),
+          2,
+          "doc.pdf",
+          "application/pdf",
+          pdf
+        );
+        expect(uploaded.status).toBe(200);
+
+        expect(events()[0].properties).toEqual({
+          type: "pdf",
+          platform: "mobile",
+        });
+      });
+
+      it("records nothing for an upload that was rejected", async () => {
+        const user = await createUser();
+
+        const rejected = await upload(
+          await signedIn(user.id),
+          2,
+          "not-a.pdf",
+          "text/plain",
+          Buffer.from("plain text")
+        );
+        expect(rejected.status).toBe(400);
+
+        expect(capture).not.toHaveBeenCalled();
+      });
+
+      it("records nothing for a user who turned usage analytics off", async () => {
+        const user = await createUser(false);
+
+        const uploaded = await upload(
+          await signedIn(user.id),
+          2,
+          "doc.pdf",
+          "application/pdf",
+          pdf
+        );
+        expect(uploaded.status).toBe(200);
 
         expect(capture).not.toHaveBeenCalled();
       });

@@ -1,5 +1,10 @@
 import { gunzipSync } from "zlib";
-import { BrowserContext, Page, Request } from "@playwright/test";
+import {
+  APIRequestContext,
+  BrowserContext,
+  Page,
+  Request,
+} from "@playwright/test";
 import { expect, test } from "../../index";
 import { auth, createCollection, createUser, TestUser } from "@/e2e/data/api";
 
@@ -311,4 +316,121 @@ test.describe("Usage analytics", () => {
 
     await expect(page.getByLabel("Share usage analytics")).toHaveCount(0);
   });
+
+  test("Counts visitors of a public collection without its id or name", async ({
+    page,
+    context,
+    request,
+  }) => {
+    const owner = await createUser(request, "analytics-public");
+    const collection = await makePublic(
+      request,
+      owner,
+      await createCollection(request, owner)
+    );
+    const analytics = await withAnalytics(page);
+
+    const pageViews = () =>
+      analytics
+        .events()
+        .filter((e) => e.event === "$pageview")
+        .map((e) => new URL(e.properties.$current_url).pathname);
+
+    // Not signed in
+    await page.goto(`/public/collections/${collection.id}?q=e2e-public-search`);
+    await expect.poll(pageViews).toContain("/public/collections/[id]");
+
+    const sent = JSON.stringify(analytics.events());
+    expect(sent).not.toContain(`/collections/${collection.id}`);
+    expect(sent).not.toContain(collection.name);
+    expect(sent).not.toContain("e2e-public-search");
+    for (const { properties } of analytics.events())
+      expect(properties).not.toHaveProperty("title");
+
+    await nothingStored(context, page);
+  });
+
+  test("Keeps working when an ad blocker blocks PostHog", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "analytics-blocked");
+    const collection = await createCollection(request, owner);
+    await withAnalytics(page);
+
+    // Registered last, so it runs before the fake PostHog host
+    let blocked = 0;
+    await page.route(`${POSTHOG_HOST}/**`, async (route) => {
+      blocked++;
+      await route.abort("blockedbyclient");
+    });
+
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+
+    await login(page, owner);
+    await page.goto(`/collections/${collection.id}`);
+    await page.waitForLoadState("networkidle");
+    await page.goto("/settings/preference");
+    await expect(page.getByLabel("Share usage analytics")).toBeChecked();
+
+    expect(blocked).toBeGreaterThan(0);
+    expect(errors).toEqual([]);
+  });
+
+  test("Counts page views again once a user turns usage analytics back on", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "analytics-back-on");
+    const off = await request.put(`/api/v1/users/${owner.id}/preference`, {
+      headers: auth(owner),
+      data: { shareUsageAnalytics: false },
+    });
+    expect(off.ok()).toBeTruthy();
+
+    const analytics = await withAnalytics(page);
+    const pageViews = () =>
+      analytics
+        .events()
+        .filter((e) => e.event === "$pageview")
+        .map((e) => new URL(e.properties.$current_url).pathname);
+
+    await login(page, owner);
+    await page.goto("/settings/preference");
+    const setting = page.getByLabel("Share usage analytics");
+    await expect(setting).not.toBeChecked();
+    await page.waitForTimeout(3000);
+
+    // Only the sign in page counts, since nobody was signed in yet
+    expect(pageViews()).toEqual(["/login"]);
+    expect(
+      analytics
+        .events()
+        .filter((e) => new URL(e.properties.$current_url).pathname !== "/login")
+    ).toEqual([]);
+
+    await setting.click();
+    await expect(page.getByTestId("toast-message")).toHaveText(
+      "Settings Applied!"
+    );
+    await expect(setting).toBeChecked();
+
+    await expect.poll(pageViews).toContain("/settings/preference");
+  });
 });
+
+async function makePublic(
+  request: APIRequestContext,
+  owner: TestUser,
+  collection: { id: number }
+) {
+  const name = `e2e-public-${Date.now().toString(36)}`;
+  const updated = await request.put(`/api/v1/collections/${collection.id}`, {
+    headers: auth(owner),
+    data: { id: collection.id, name, isPublic: true, members: [] },
+  });
+  expect(updated.ok()).toBeTruthy();
+
+  return { id: collection.id, name };
+}
