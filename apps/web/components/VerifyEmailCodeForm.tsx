@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import TextInput from "@/components/TextInput";
 import CenteredForm from "@/components/CenteredForm";
+import VerificationCodeInput from "@/components/VerificationCodeInput";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "next-i18next";
@@ -71,16 +71,12 @@ export default function VerifyEmailCodeForm({ email, onVerify }: Props) {
             <p className="text-center tracking-widest break-all">{email}</p>
           )}
 
-          <TextInput
+          <VerificationCodeInput
             autoFocus
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={6}
             placeholder={t("verification_code")}
             value={code}
-            className="bg-base-100 text-center tracking-widest"
             data-testid="verification-code-input"
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+            onChange={setCode}
           />
 
           <Button

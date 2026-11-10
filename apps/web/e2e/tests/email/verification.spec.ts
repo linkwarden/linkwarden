@@ -1,4 +1,6 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "../../index";
+import type { LoginPage } from "../../fixtures/login-page";
 import {
   completeVerification,
   completeVerificationInPage,
@@ -302,5 +304,96 @@ test.describe("Email verification codes", { tag: "@email-code" }, () => {
     await page.getByRole("button", { name: "Resend Code" }).click();
     await expect(page.getByText("Verification code sent.")).toBeVisible();
     await waitForMessage(email, 1);
+  });
+});
+
+test.describe("The web code field", { tag: "@email-code" }, () => {
+  test.beforeEach(({ context }) =>
+    context.grantPermissions(["clipboard-read", "clipboard-write"])
+  );
+
+  // Logs in with an unverified account and returns the emailed code
+  async function openCodeScreen(loginPage: LoginPage, name: string) {
+    const email = uniqueEmail(name);
+    await register(await newActor(), { email, password });
+
+    await loginPage.goto();
+    await loginPage.usernameInput.fill(email);
+    await loginPage.passwordInput.fill(password);
+    await loginPage.submitLoginButton.click();
+    const { code } = verificationFrom(await waitForMessage(email, 0));
+
+    return code as string;
+  }
+
+  async function paste(page: Page, text: string) {
+    await page.evaluate((value) => navigator.clipboard.writeText(value), text);
+    await page.keyboard.press("ControlOrMeta+V");
+  }
+
+  test("The code can be typed key by key and sent with Enter", async ({
+    page,
+    loginPage,
+    dashboardPage,
+  }) => {
+    const code = await openCodeScreen(loginPage, "typed-code");
+    const input = page.getByRole("textbox", { name: "Verification code" });
+
+    await expect(input).toBeFocused();
+    await page.keyboard.type(`${code}7a`);
+    await expect(input).toHaveValue(code);
+
+    await page.keyboard.press("Enter");
+    await expect(dashboardPage.container).toBeVisible();
+  });
+
+  test("A code pasted with spaces and a line break around it signs in", async ({
+    page,
+    loginPage,
+    dashboardPage,
+  }) => {
+    const code = await openCodeScreen(loginPage, "pasted-code");
+    const input = page.getByTestId("verification-code-input");
+
+    await paste(page, ` ${code.slice(0, 3)} ${code.slice(3)}\n`);
+    await expect(input).toHaveValue(code);
+
+    await page.getByTestId("verify-email-button").click();
+    await expect(dashboardPage.container).toBeVisible();
+  });
+
+  test("A pasted code replaces digits typed before it", async ({
+    page,
+    loginPage,
+    dashboardPage,
+  }) => {
+    const code = await openCodeScreen(loginPage, "paste-over");
+    const input = page.getByTestId("verification-code-input");
+
+    await page.keyboard.type("98");
+    await paste(page, code);
+    await expect(input).toHaveValue(code);
+
+    await page.getByTestId("verify-email-button").click();
+    await expect(dashboardPage.container).toBeVisible();
+  });
+
+  test("A code can be selected, cut and pasted back", async ({
+    page,
+    loginPage,
+  }) => {
+    const code = await openCodeScreen(loginPage, "cut-paste");
+    const input = page.getByTestId("verification-code-input");
+
+    await page.keyboard.type(code);
+    await page.keyboard.press("ControlOrMeta+A");
+    await page.keyboard.press("ControlOrMeta+X");
+    await expect(input).toHaveValue("");
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+      code
+    );
+
+    await page.keyboard.press("ControlOrMeta+V");
+    await expect(input).toHaveValue(code);
   });
 });

@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { isAtLeastInstanceVersion } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import VerificationCodeInput from "@/components/ui/VerificationCodeInput";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import SheetHeader from "./SheetHeader";
@@ -95,16 +95,10 @@ export default function VerifyEmailSheet({
               Please verify your email address to continue. Enter the 6-digit
               code we sent to your inbox.
             </Text>
-            <Input
-              className="w-full text-xl p-3 leading-tight h-12 text-center tracking-widest"
-              textAlignVertical="center"
+            <VerificationCodeInput
               placeholder="Verification code"
-              keyboardType="number-pad"
-              textContentType="oneTimeCode"
-              autoComplete="one-time-code"
-              maxLength={6}
               value={code}
-              onChangeText={(text) => setCode(text.replace(/\D/g, ""))}
+              onChangeText={setCode}
             />
             <Button
               variant="accent"
