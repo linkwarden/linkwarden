@@ -31,7 +31,13 @@ name: Delete a sub-collection and keep its parent
       - tapOn:
           text: "Collections"
           id: ".*navigation_bar_item_.*_label_view"
-# A collection row reads as one element that starts with its name
+# A collection row reads as one element that starts with its name. Once the
+# account has a collection order (the web app saves one), new collections are
+# listed after the others, often below the bottom of the screen. Centering
+# keeps the row out from under the floating tab bar
+- scrollUntilVisible:
+    element: "${output.childName}.*"
+    centerElement: true
 - longPressOn: "${output.childName}.*"
 - tapOn: "Delete"
 # Then the confirmation dialog's button
