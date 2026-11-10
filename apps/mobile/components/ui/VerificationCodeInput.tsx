@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Text, TextInput, TextInputProps, View } from "react-native";
+import {
+  Animated,
+  Platform,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import { useColorScheme } from "nativewind";
 import { cn } from "@linkwarden/lib/utils";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -120,7 +127,10 @@ export default function VerificationCodeInput({
         keyboardType="number-pad"
         textContentType="oneTimeCode"
         autoComplete="one-time-code"
-        caretHidden
+        // Hiding the caret on Android also stops a long-press on the empty
+        // field from offering Paste, so there it's only made transparent
+        caretHidden={Platform.OS === "ios"}
+        cursorColor="transparent"
         // A transparent color draws the selection handles in black on iOS
         selectionColor={theme.primary}
         placeholderTextColor="transparent"
