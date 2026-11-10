@@ -98,6 +98,14 @@ const Page: NextPageWithLayout = () => {
           type="password"
         />
 
+        {/* Only replacing a password revokes the sessions, not creating a first one */}
+        {account?.hasPassword && (
+          <p className="mt-3 flex gap-2 text-sm text-neutral">
+            <i className="bi-info-circle" />
+            <span>{t("password_change_signs_out")}</span>
+          </p>
+        )}
+
         <Button
           onClick={submit}
           disabled={

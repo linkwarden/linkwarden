@@ -92,7 +92,8 @@ jobs:
   aab:
     name: Build AAB (production) & submit
     if: ${{ inputs.aab != 'Skip' }}
-    runs-on: ubuntu-latest
+    # Not ubuntu-latest: Playwright 1.57 (apps/web postinstall) can't install on Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/mobile
@@ -154,7 +155,8 @@ jobs:
   apk:
     name: Build APK (production) & release
     if: ${{ inputs.apk != 'Skip' }}
-    runs-on: ubuntu-latest
+    # Not ubuntu-latest: Playwright 1.57 (apps/web postinstall) can't install on Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/mobile

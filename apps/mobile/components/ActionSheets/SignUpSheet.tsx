@@ -119,7 +119,7 @@ export default function SignUpSheet() {
     if (emailSignUp) {
       await closeSheet();
       SheetManager.show("verify-email-sheet", {
-        payload: { email, instance },
+        payload: { email, instance, password: form.password },
         context: "global",
       });
     } else {

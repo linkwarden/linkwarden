@@ -32,6 +32,7 @@ export default async function updateUserPreference(
       readableLineHeight: data.readableLineHeight,
       readableLineWidth: data.readableLineWidth,
       dismissedAnnouncementId: data.dismissedAnnouncementId,
+      shareUsageAnalytics: data.shareUsageAnalytics,
     },
     include: {
       subscriptions: true,

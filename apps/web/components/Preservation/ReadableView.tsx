@@ -25,6 +25,8 @@ import {
 } from "@linkwarden/router/highlights";
 import { Highlight } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
+import { handleLinkAnchorClick } from "@/lib/client/openLink";
+import DangerousLinkWarningModal from "@/components/ModalContent/DangerousLinkWarningModal";
 import { Caveat } from "next/font/google";
 import { Bentham } from "next/font/google";
 import { Separator } from "../ui/separator";
@@ -61,6 +63,7 @@ export default function ReadableView({ link }: Props) {
   const [linkContent, setLinkContent] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [scriptWarningUrl, setScriptWarningUrl] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchLinkContent() {
@@ -445,6 +448,11 @@ export default function ReadableView({ link }: Props) {
             href={link?.url || ""}
             title={link?.url}
             target="_blank"
+            onClick={(e) =>
+              handleLinkAnchorClick(e, link, user, (url) =>
+                setScriptWarningUrl(url)
+              )
+            }
             className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
           >
             <i className="bi-link-45deg" />
@@ -616,6 +624,12 @@ export default function ReadableView({ link }: Props) {
           </div>
         )}
       </div>
+      {scriptWarningUrl && (
+        <DangerousLinkWarningModal
+          onClose={() => setScriptWarningUrl(null)}
+          url={scriptWarningUrl}
+        />
+      )}
     </>
   );
 }

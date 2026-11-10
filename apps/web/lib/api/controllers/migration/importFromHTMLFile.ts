@@ -4,13 +4,23 @@ import { JSDOM } from "jsdom";
 import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
+import { shortenText } from "@linkwarden/lib/shortenText";
+import oldestFirst, { isStorableDate } from "@/lib/api/oldestFirst";
+
+type ImportedLink = {
+  url: string;
+  collectionId: number;
+  name?: string;
+  description?: string;
+  tags?: string[];
+  importDate?: Date;
+};
 
 export default async function importFromHTMLFile(
   userId: number,
   rawData: string
 ) {
-  // const importStartMs = Date.now();
-
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
 
@@ -35,10 +45,24 @@ export default async function importFromHTMLFile(
 
   const processedArray = processNodes(jsonData);
 
-  // sortBookmarksTreeByEffectiveDate(processedArray, importStartMs, "asc");
+  // Collections are created as the file is read, links once all of them are
+  // known, so they can go in oldest first.
+  const links: ImportedLink[] = [];
 
   for (const item of processedArray) {
-    await processBookmarks(userId, item as Element);
+    await processBookmarks(userId, item as Element, links);
+  }
+
+  for (const link of oldestFirst(links, (link) => link.importDate)) {
+    await createLink(
+      userId,
+      link.url,
+      link.collectionId,
+      link.name,
+      link.description,
+      link.tags,
+      link.importDate
+    );
   }
 
   return { response: "Success.", status: 200 };
@@ -47,6 +71,7 @@ export default async function importFromHTMLFile(
 async function processBookmarks(
   userId: number,
   data: Node,
+  links: ImportedLink[],
   parentCollectionId?: number
 ) {
   if (data.type === "element") {
@@ -80,6 +105,7 @@ async function processBookmarks(
         await processBookmarks(
           userId,
           item,
+          links,
           collectionId || parentCollectionId
         );
       } else if (item.type === "element" && item.tagName === "a") {
@@ -104,9 +130,7 @@ async function processBookmarks(
           (e) => e.key.toLowerCase() === "add_date"
         )?.value;
 
-        const linkDate = linkDateValue
-          ? new Date(Number(linkDateValue) * 1000)
-          : undefined;
+        const linkDate = dateFromAddDate(linkDateValue);
 
         let linkDesc =
           (
@@ -118,33 +142,31 @@ async function processBookmarks(
           )?.content || "";
 
         if (linkUrl && parentCollectionId) {
-          await createLink(
-            userId,
-            linkUrl,
-            parentCollectionId,
-            linkName,
-            linkDesc,
-            linkTags,
-            linkDate
-          );
+          links.push({
+            url: linkUrl,
+            collectionId: parentCollectionId,
+            name: linkName,
+            description: linkDesc,
+            tags: linkTags,
+            importDate: linkDate,
+          });
         } else if (linkUrl) {
           // create a collection named "Imports" and add the link to it
           const collectionId = await createCollection(userId, "Imports");
 
-          await createLink(
-            userId,
-            linkUrl,
+          links.push({
+            url: linkUrl,
             collectionId,
-            linkName,
-            linkDesc,
-            linkTags,
-            linkDate
-          );
+            name: linkName,
+            description: linkDesc,
+            tags: linkTags,
+            importDate: linkDate,
+          });
         }
 
-        await processBookmarks(userId, item, parentCollectionId);
+        await processBookmarks(userId, item, links, parentCollectionId);
       } else {
-        await processBookmarks(userId, item, parentCollectionId);
+        await processBookmarks(userId, item, links, parentCollectionId);
       }
     }
   }
@@ -155,7 +177,7 @@ const createCollection = async (
   collectionName: string,
   parentId?: number
 ) => {
-  collectionName = collectionName.trim().slice(0, 254);
+  collectionName = shortenText(collectionName.trim(), 254);
 
   const findCollection = await prisma.collection.findFirst({
     where: {
@@ -206,23 +228,18 @@ const createLink = async (
   tags?: string[],
   importDate?: Date
 ) => {
-  url = url.trim().slice(0, 2047);
+  url = shortenText(url.trim(), 2047);
   try {
     new URL(url);
   } catch (e) {
     return;
   }
 
-  tags = tags?.map((tag) => tag.trim().slice(0, 49));
-  name = name?.trim().slice(0, 254);
-  description = description?.trim().slice(0, 254);
+  tags = tags?.map((tag) => shortenText(tag.trim(), 49));
+  name = shortenText(name?.trim(), 254);
+  description = shortenText(description?.trim(), 254);
 
-  if (importDate) {
-    const dateString = importDate.toISOString();
-    if (dateString.length > 50) {
-      importDate = undefined;
-    }
-  }
+  const collectionOrder = await nextCollectionOrder(collectionId);
 
   await prisma.link.create({
     data: {
@@ -230,6 +247,7 @@ const createLink = async (
       url,
       description,
       collectionId,
+      collectionOrder,
       createdById: userId,
       tags:
         tags && tags[0]
@@ -303,86 +321,17 @@ function decodeEntities(encoded: string | undefined): string {
   return decodeHTML(encoded ?? "");
 }
 
-/**
- * Sort <DT> entries inside each <DL> by "effective date":
- * - If an entry has ADD_DATE (on <A> or <H3>), use that.
- * - Otherwise, use importStartMs as the createdAt fallback for ordering.
- *
- * This ensures auto-increment IDs are created in the same chronological order
- * as (importDate ?? createdAt), satisfying your test.
- */
-// function sortBookmarksTreeByEffectiveDate(
-//   nodes: Node[],
-//   importStartMs: number,
-//   direction: "asc" | "desc" = "asc"
-// ) {
-//   const dir = direction === "asc" ? 1 : -1;
+// ADD_DATE is in seconds, though some tools write milliseconds, which read as
+// seconds land past the year 9999. A value that's neither leaves the link without
+// a date, so it shows the moment it was imported.
+function dateFromAddDate(value: string | undefined) {
+  if (!value) return undefined;
 
-//   const getAttrCaseInsensitive = (el: Element, key: string) =>
-//     el.attributes?.find((a) => a.key.toLowerCase() === key.toLowerCase())
-//       ?.value;
+  const seconds = new Date(Number(value) * 1000);
+  if (isStorableDate(seconds)) return seconds;
 
-//   const getAddDateMsFromDT = (dt: Element): number | null => {
-//     // Links: <A ADD_DATE="...">
-//     const aEl = dt.children.find(
-//       (c) => c.type === "element" && c.tagName === "a"
-//     ) as Element | undefined;
+  const milliseconds = new Date(Number(value));
+  if (isStorableDate(milliseconds)) return milliseconds;
 
-//     // Folders: <H3 ADD_DATE="...">
-//     const h3El = dt.children.find(
-//       (c) => c.type === "element" && c.tagName === "h3"
-//     ) as Element | undefined;
-
-//     const raw =
-//       (aEl && getAttrCaseInsensitive(aEl, "add_date")) ||
-//       (h3El && getAttrCaseInsensitive(h3El, "add_date"));
-
-//     if (!raw) return null;
-
-//     const seconds = Number(raw);
-//     if (!Number.isFinite(seconds)) return null;
-
-//     return seconds * 1000;
-//   };
-
-//   const stableSort = <T>(arr: T[], cmp: (a: T, b: T) => number): T[] =>
-//     arr
-//       .map((v, i) => ({ v, i }))
-//       .sort((a, b) => cmp(a.v, b.v) || a.i - b.i)
-//       .map((x) => x.v);
-
-//   const sortDLChildren = (dl: Element) => {
-//     const dtChildren: Element[] = [];
-//     const otherChildren: Node[] = [];
-
-//     for (const child of dl.children) {
-//       if (child.type === "element" && child.tagName === "dt") {
-//         dtChildren.push(child as Element);
-//       } else {
-//         otherChildren.push(child);
-//       }
-//     }
-
-//     const sortedDTs = stableSort(dtChildren, (a, b) => {
-//       const aMs = getAddDateMsFromDT(a) ?? importStartMs;
-//       const bMs = getAddDateMsFromDT(b) ?? importStartMs;
-//       return (aMs - bMs) * dir;
-//     });
-
-//     dl.children = [...sortedDTs, ...otherChildren];
-//   };
-
-//   const walk = (node: Node) => {
-//     if (node.type !== "element") return;
-
-//     if (node.tagName === "dl") {
-//       sortDLChildren(node);
-//     }
-
-//     if (node.children?.length) {
-//       node.children.forEach(walk);
-//     }
-//   };
-
-//   nodes.forEach(walk);
-// }
+  return undefined;
+}

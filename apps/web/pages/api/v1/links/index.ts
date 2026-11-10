@@ -5,6 +5,8 @@ import { LinkRequestQuery } from "@linkwarden/types/global";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
 import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";
+import captureEvent from "@/lib/api/captureEvent";
+import { Link } from "@linkwarden/prisma/client";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -37,6 +39,15 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       });
 
     const newlink = await postLink(req.body, user.id);
+
+    if (newlink.status === 200)
+      captureEvent({
+        req,
+        user,
+        event: "link_created",
+        properties: { type: (newlink.response as Link).type },
+      });
+
     return res.status(newlink.status).json({
       response: newlink.response,
     });

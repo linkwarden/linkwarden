@@ -1,7 +1,6 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React from "react";
 import { Sort } from "@linkwarden/types/global";
 import { TFunction } from "i18next";
-import useLocalSettingsStore from "@/store/localSettings";
 import { resetInfiniteQueryPagination } from "@linkwarden/router/lib";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -15,21 +14,29 @@ import { Button } from "./ui/button";
 
 type Props = {
   sortBy: Sort;
-  setSort: Dispatch<SetStateAction<Sort>>;
+  setSort: (sort: Sort) => void;
   t: TFunction<"translation", undefined>;
+  /**
+   * Whether the list being sorted is a single collection, which is the only place a
+   * hand-made order means anything.
+   */
+  allowCustomOrder?: boolean;
 };
 
-export default function SortDropdown({ sortBy, setSort, t }: Props) {
-  const { updateSettings } = useLocalSettingsStore();
+export default function SortDropdown({
+  sortBy,
+  setSort,
+  t,
+  allowCustomOrder,
+}: Props) {
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    updateSettings({ sortBy });
-  }, [sortBy]);
 
   const handleValueChange = (value: string) => {
     resetInfiniteQueryPagination(queryClient, ["links"]);
-    setSort(value as unknown as Sort);
+    // The radio group hands back a string. It has to become a number again here, or
+    // the state typed as Sort holds "4" and every `sortBy === Sort.X` comparison a
+    // page makes is false until the next reload reads it back out of localStorage.
+    setSort(Number(value) as Sort);
   };
 
   return (
@@ -45,6 +52,12 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
           value={sortBy.toString()}
           onValueChange={handleValueChange}
         >
+          {allowCustomOrder && (
+            <DropdownMenuRadioItem value={Sort.Custom.toString()}>
+              {t("custom_order")}
+            </DropdownMenuRadioItem>
+          )}
+
           <DropdownMenuRadioItem value={Sort.DateNewestFirst.toString()}>
             {t("date_newest_first")}
           </DropdownMenuRadioItem>

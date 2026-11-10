@@ -22,6 +22,7 @@ import {
   READER_VIEW_DEFAULTS,
   readerViewCSS,
 } from "@linkwarden/lib/readerViewStyles";
+import { isDangerousLinkUrl } from "@linkwarden/lib/isDangerousLinkUrl";
 import {
   HIGHLIGHT_COLORS,
   HighlightColor,
@@ -107,6 +108,15 @@ function escapeForInjectedScript(value: unknown) {
     .replace(/</g, "\\u003c")
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function isSelectionInfo(value: unknown): value is SelectionInfo {
@@ -585,13 +595,13 @@ const ReadableFormat = forwardRef<ReadableFormatRef, Props>(
     </head>
     <body>
       <div id="readable-shell">
-        <div class="rv-header-title">${title
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")}</div>
+        <div class="rv-header-title">${escapeHtml(title)}</div>
         <div class="rv-header-meta">
-          <a href="${(link.url || "").replace(/"/g, "&quot;")}">${
-            link.url || ""
-          }</a>
+          <a${
+            isDangerousLinkUrl(link.url)
+              ? ""
+              : ` href="${escapeHtml(link.url || "")}"`
+          }>${escapeHtml(link.url || "")}</a>
         </div>
         <div class="rv-header-meta">${dateStr}</div>
         <hr class="rv-header-separator" />

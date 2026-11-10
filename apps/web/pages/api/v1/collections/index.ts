@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getCollections from "@/lib/api/controllers/collections/getCollections";
 import postCollection from "@/lib/api/controllers/collections/postCollection";
 import verifyUser from "@/lib/api/verifyUser";
+import captureEvent from "@/lib/api/captureEvent";
+import { Collection } from "@linkwarden/prisma/client";
 
 export default async function collections(
   req: NextApiRequest,
@@ -23,6 +25,19 @@ export default async function collections(
       });
 
     const newCollection = await postCollection(req.body, user.id);
+
+    if (newCollection.status === 200)
+      captureEvent({
+        req,
+        user,
+        event: "collection_created",
+        properties: {
+          is_subcollection: Boolean(
+            (newCollection.response as Collection).parentId
+          ),
+        },
+      });
+
     return res
       .status(newCollection.status)
       .json({ response: newCollection.response });

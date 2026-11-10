@@ -28,10 +28,11 @@ type Props = {
   viewMode: ViewMode;
   setViewMode: Dispatch<SetStateAction<ViewMode>>;
   sortBy: Sort;
-  setSortBy: Dispatch<SetStateAction<Sort>>;
+  setSortBy: (sort: Sort) => void;
   editMode?: boolean;
   setEditMode?: (mode: boolean) => void;
   links: LinkIncludingShortenedCollectionAndTags[];
+  allowCustomOrder?: boolean;
 };
 
 const LinkListOptions = ({
@@ -44,6 +45,7 @@ const LinkListOptions = ({
   editMode,
   setEditMode,
   links,
+  allowCustomOrder,
 }: Props) => {
   const { selectedIds, setSelected, clearSelected, selectionCount } =
     useLinkStore();
@@ -145,6 +147,7 @@ const LinkListOptions = ({
                 setSortBy(value);
               }}
               t={t}
+              allowCustomOrder={allowCustomOrder}
             />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>

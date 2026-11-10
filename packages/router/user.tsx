@@ -90,17 +90,26 @@ const useUpdateUser = () => {
   });
 };
 
-const useUpdateUserPreference = () => {
+const useUpdateUserPreference = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const { data: session } = auth ? { data: null } : useSession();
 
   return useMutation({
     mutationFn: async (preference: UpdateUserPreferenceSchemaType) => {
+      const userId = auth
+        ? queryClient.getQueryData<GetUserByIdResponse>(["user"])?.id
+        : (session?.user as any)?.id;
+
       const response = await fetch(
-        `/api/v1/users/${(session?.user as any)?.id}/preference`,
+        (auth ? auth.instance : "") + `/api/v1/users/${userId}/preference`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
           body: JSON.stringify(preference),
         }
       );
@@ -120,18 +129,63 @@ const useUpdateUserPreference = () => {
         };
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["user"], data);
-      document
-        .querySelector("html")
-        ?.setAttribute("data-theme", resolveTheme(data.theme) || "dark");
+      // Merged, since this response leaves out fields like hasPassword
+      queryClient.setQueryData(["user"], (oldData: any) => ({
+        ...oldData,
+        ...data,
+      }));
+
+      if (!auth)
+        document
+          .querySelector("html")
+          ?.setAttribute("data-theme", resolveTheme(data.theme) || "dark");
     },
     onMutate: async (user) => {
       await queryClient.cancelQueries({ queryKey: ["user"] });
+
+      const previousShareUsageAnalytics = queryClient.getQueryData<any>([
+        "user",
+      ])?.shareUsageAnalytics;
+
       queryClient.setQueryData(["user"], (oldData: any) => {
         return { ...oldData, ...user };
       });
+
+      return { previousShareUsageAnalytics };
+    },
+    // A failed save of "Share usage analytics" shows the value the server
+    // still has, so the setting never looks off while the account still
+    // shares. Other preferences, like the theme, keep the new value for the
+    // session, which is all a read-only demo instance can do.
+    onError: (error, user, context) => {
+      if (user.shareUsageAnalytics === undefined) return;
+
+      queryClient.setQueryData(["user"], (oldData: any) => ({
+        ...oldData,
+        shareUsageAnalytics: context?.previousShareUsageAnalytics,
+      }));
     },
   });
 };
 
-export { useUser, useUpdateUser, useUpdateUserPreference };
+// Another user's public profile, e.g. the owner of a collection shared with you.
+const usePublicUser = (id?: number) => {
+  return useQuery({
+    queryKey: ["publicUser", id],
+    queryFn: async (): Promise<
+      Pick<User, "id" | "name" | "username" | "image">
+    > => {
+      const response = await fetch(`/api/v1/public/users/${id}`);
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    enabled: !!id,
+    staleTime: Infinity,
+  });
+};
+
+export { useUser, useUpdateUser, useUpdateUserPreference, usePublicUser };

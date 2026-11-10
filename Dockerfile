@@ -2,7 +2,7 @@
 # Stage 1: Monolith Builder
 # ==============================================================================
 FROM docker.io/rust:1.96-bookworm AS monolith-builder
-ARG MONOLITH_VERSION=2.10.1
+ARG MONOLITH_VERSION=2.11.7
 RUN set -eux && cargo install --locked monolith@${MONOLITH_VERSION}
 
 # ==============================================================================

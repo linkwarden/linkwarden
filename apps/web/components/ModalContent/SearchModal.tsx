@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { toast } from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/button";
@@ -89,11 +88,7 @@ export default function SearchModal({ onClose }: { onClose: () => void }) {
           autoFocus
           placeholder={t("search_for_links")}
           value={searchQuery}
-          onChange={(e) => {
-            e.target.value.includes("%") &&
-              toast.error(t("search_query_invalid_symbol"));
-            setSearchQuery(e.target.value.replace("%", ""));
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit(searchQuery)}
           className="w-full bg-transparent outline-none text-lg"
         />

@@ -1,0 +1,54 @@
+appId: app.linkwarden
+name: Log in with a username and verify the email with a code
+---
+- evalScript: ${output.username = "maestro" + Date.now()}
+- evalScript: ${output.email = output.username + "@lab.test"}
+- runScript:
+    file: ../scripts/create-account.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${output.username}
+      EMAIL: ${output.email}
+      PASSWORD: ${TEST_PASSWORD || "E2ePassw0rd!"}
+- assertTrue: ${output.created == 201}
+- runFlow: ../subflows/launch.yaml
+- runFlow: ../subflows/self-hosted-server.yaml
+- tapOn: "Login"
+- tapOn:
+    id: "login-username"
+- inputText: ${output.username}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "login-password"
+- inputText: ${TEST_PASSWORD || "E2ePassw0rd!"}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: "login-submit"
+- tapOn:
+    text: "Not Now"
+    optional: true
+# The server answers with the account's email, which the code is checked against
+- extendedWaitUntil:
+    visible: ${output.email}
+    timeout: 30000
+- assertVisible: "Verification code"
+# Logging in just sent a code, so a resend is refused for a minute
+- tapOn: "Resend Code"
+- extendedWaitUntil:
+    visible: "Please wait a minute before requesting a new code."
+    timeout: 15000
+- tapOn: "OK"
+- runScript:
+    file: ../scripts/verification-email.js
+    env:
+      MAIL_SINK_URL: ${MAIL_SINK_URL}
+      EMAIL: ${output.email}
+- assertTrue: ${output.code.length == 6}
+- tapOn: "Verification code"
+- inputText: ${output.code}
+- runFlow:
+    file: ../subflows/verify-code.yaml
+    env:
+      EXPECT: "Dashboard"

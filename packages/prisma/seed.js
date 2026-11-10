@@ -4,6 +4,8 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
+const COLLECTION_ORDER_STEP = 65536;
+
 async function main() {
   const saltRounds = 10;
   const defaultPassword = "11111111";
@@ -208,37 +210,57 @@ async function main() {
         name: "Health and Wellness",
         description: "Latest articles on health and wellness.",
         ownerId: user1.id,
-        color: "#ff1100",
+        color: "#ef4444",
+        icon: "Barbell",
+        iconWeight: "duotone",
       },
       {
         name: "Research and Studies",
         description: "Latest articles on research and studies.",
         ownerId: user1.id,
-        color: "#000dff",
+        color: "#818cf8",
+        icon: "Student",
+        iconWeight: "duotone",
       },
       {
         name: "Technology",
         description: "Latest articles on technology.",
         ownerId: user1.id,
-        color: "#0080ff",
+        color: "#3b82f6",
+        icon: "Devices",
+        iconWeight: "duotone",
       },
       {
         name: "Personal Finance",
         description: "Latest articles on personal finance.",
         ownerId: user1.id,
-        color: "#00ff40",
+        color: "#22c55e",
+        icon: "Money",
+        iconWeight: "duotone",
       },
       {
         name: "Productivity",
         description: "Latest articles on productivity.",
         ownerId: user1.id,
-        color: "#ff00f7",
+        color: "#e879f9",
+        icon: "ChartLineUp",
+        iconWeight: "duotone",
       },
       {
         name: "Recipes",
         description: "Latest recipes.",
         ownerId: user1.id,
-        color: "#eeff00",
+        color: "#facc15",
+        icon: "Cookie",
+        iconWeight: "duotone",
+      },
+      {
+        name: "Japan Trip",
+        description: "Two weeks, Tokyo to Hiroshima.",
+        ownerId: user1.id,
+        color: "#f472b6",
+        icon: "AirplaneTilt",
+        iconWeight: "duotone",
       },
     ];
 
@@ -368,13 +390,16 @@ async function main() {
       },
     ];
 
-    for (const link of projectAlphaLinks) {
+    for (let i = 0; i < projectAlphaLinks.length; i++) {
+      const link = projectAlphaLinks[i];
+
       await prisma.link.create({
         data: {
           name: link.name,
           url: link.url,
           collectionId: projectAlphaCollection.id,
           createdById: user2.id,
+          collectionOrder: COLLECTION_ORDER_STEP * (i + 1),
         },
       });
     }
@@ -396,7 +421,9 @@ async function main() {
         });
       }
 
-      for (const link of links) {
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+
         await prisma.link.create({
           data: {
             name: link.name,
@@ -418,6 +445,7 @@ async function main() {
             },
             collectionId: collection.id,
             createdById: user1.id,
+            collectionOrder: COLLECTION_ORDER_STEP * (i + 1),
           },
         });
       }
@@ -1246,6 +1274,78 @@ const linksAndCollections = {
         "Quick Indian-inspired curry with chickpeas, spinach, and coconut milk served over basmati rice.",
       url: "https://www.bbcgoodfood.com/recipes/chickpea-spinach-curry",
       tags: [{ name: "cooking" }, { name: "recipe" }],
+    },
+  ],
+  "Japan Trip": [
+    {
+      name: "Fushimi Inari Shrine",
+      url: "https://www.japan-guide.com/e/e3915.html",
+      tags: [{ name: "kyoto" }, { name: "temples" }],
+    },
+    {
+      name: "Mount Fuji",
+      url: "https://en.wikipedia.org/wiki/Mount_Fuji",
+      tags: [{ name: "hiking" }],
+    },
+    {
+      name: "The best things to do in Tokyo",
+      url: "https://www.timeout.com/tokyo",
+      tags: [{ name: "tokyo" }],
+    },
+    {
+      name: "Nara Park",
+      url: "https://en.wikipedia.org/wiki/Nara_Park",
+      tags: [{ name: "nara" }],
+    },
+    {
+      name: "Sensō-ji, Asakusa",
+      url: "https://en.wikipedia.org/wiki/Sens%C5%8D-ji",
+      tags: [{ name: "tokyo" }, { name: "temples" }],
+    },
+    {
+      name: "Arashiyama and Sagano",
+      url: "https://www.japan-guide.com/e/e3912.html",
+      tags: [{ name: "kyoto" }],
+    },
+    {
+      name: "Itsukushima Shrine",
+      url: "https://en.wikipedia.org/wiki/Itsukushima_Shrine",
+      tags: [{ name: "hiroshima" }, { name: "temples" }],
+    },
+    {
+      name: "Hakone travel guide",
+      url: "https://en.wikivoyage.org/wiki/Hakone",
+      tags: [{ name: "onsen" }],
+    },
+    {
+      name: "Kinkaku-ji, the Golden Pavilion",
+      url: "https://en.wikipedia.org/wiki/Kinkaku-ji",
+      tags: [{ name: "kyoto" }, { name: "temples" }],
+    },
+    {
+      name: "Shibuya Crossing",
+      url: "https://en.wikipedia.org/wiki/Shibuya_Crossing",
+      tags: [{ name: "tokyo" }],
+    },
+    {
+      name: "Osaka Castle",
+      url: "https://www.japan-guide.com/e/e4000.html",
+      tags: [{ name: "osaka" }],
+    },
+    {
+      name: "Best of Kyoto",
+      url: "https://www.japan.travel/en/destinations/kansai/kyoto/",
+      tags: [{ name: "kyoto" }],
+    },
+    {
+      name: "Dōtonbori food street",
+      url: "https://en.wikipedia.org/wiki/D%C5%8Dtonbori",
+      tags: [{ name: "osaka" }, { name: "food" }],
+    },
+    {
+      name: "Meiji Shrine",
+      url: "https://en.wikipedia.org/wiki/Meiji_Shrine",
+      tags: [{ name: "tokyo" }, { name: "temples" }],
     },
   ],
 };

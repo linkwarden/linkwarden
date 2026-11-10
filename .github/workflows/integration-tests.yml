@@ -1,0 +1,55 @@
+name: Integration tests
+
+on:
+  workflow_call:
+    inputs:
+      areas:
+        description: JSON list of the areas to run, one check each (see .github/scripts/test-areas.mjs).
+        type: string
+        required: true
+
+jobs:
+  integration:
+    name: ${{ matrix.area }}
+    # Not ubuntu-latest: Playwright 1.57 (apps/web postinstall) can't install on Ubuntu 26.04.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        area: ${{ fromJSON(inputs.areas) }}
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: linkwarden
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/linkwarden
+      NEXTAUTH_SECRET: very_sensitive_secret
+      NEXTAUTH_URL: http://127.0.0.1:3000/api/v1/auth
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up
+        uses: ./.github/actions/setup
+
+      - name: Set up the database
+        run: |
+          yarn prisma:generate
+          yarn prisma:deploy
+
+      - name: Run tests
+        env:
+          AREA: ${{ matrix.area }}
+          AREAS: ${{ inputs.areas }}
+        run: node .github/scripts/test-areas.mjs integration "$AREA" -- yarn vitest run

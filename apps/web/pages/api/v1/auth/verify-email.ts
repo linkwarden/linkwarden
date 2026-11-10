@@ -77,6 +77,22 @@ export default async function verifyEmail(
       });
     }
 
+    // Use up the token now that the pending email has been read. A newer email
+    // change request deletes this token, so if one landed in the meantime,
+    // newEmail may not be the address this token was sent to.
+    const consumedToken = await prisma.verificationToken.deleteMany({
+      where: {
+        token,
+        identifier: oldEmail,
+      },
+    });
+
+    if (consumedToken.count === 0) {
+      return res.status(400).json({
+        response: "Invalid token.",
+      });
+    }
+
     // Remove SSO provider
     await prisma.account.deleteMany({
       where: {
@@ -105,12 +121,6 @@ export default async function verifyEmail(
     }
 
     // Clean up existing tokens
-    await prisma.verificationToken.delete({
-      where: {
-        token,
-      },
-    });
-
     await prisma.verificationToken.deleteMany({
       where: {
         identifier: oldEmail,

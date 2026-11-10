@@ -7,6 +7,7 @@ import {
   UpdateLinkSchema,
   UpdateLinkSchemaType,
 } from "@linkwarden/lib/schemaValidation";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
 
 export default async function updateLinkById(
   userId: number,
@@ -79,14 +80,19 @@ export default async function updateLinkById(
       ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
       : true;
 
-  if (!targetCollectionMatchesData)
+  if (!targetCollectionIsAccessible || !targetCollectionMatchesData)
     return {
       response: "Target collection does not match the data.",
       status: 401,
     };
 
+  // Use the owners from the database, not data.collection.ownerId from the request.
+  const ownsSourceAndTarget =
+    collectionIsAccessible?.ownerId === userId &&
+    targetCollectionIsAccessible.ownerId === userId;
+
   const unauthorizedSwitchCollection =
-    !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;
+    !ownsSourceAndTarget && collectionIsAccessible?.id !== data.collection.id;
 
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
   if (unauthorizedSwitchCollection)
@@ -121,12 +127,12 @@ export default async function updateLinkById(
       where: {
         name_ownerId: {
           name: tag.name,
-          ownerId: data.collection.ownerId,
+          ownerId: targetCollectionIsAccessible.ownerId,
         },
       },
       create: {
         name: tag.name,
-        owner: { connect: { id: data.collection.ownerId } },
+        owner: { connect: { id: targetCollectionIsAccessible.ownerId } },
       },
     }));
 
@@ -143,12 +149,22 @@ export default async function updateLinkById(
         status: 401,
       };
 
+    const isMovingCollection =
+      collectionIsAccessible?.id !== data.collection.id;
+
+    // The order a link had in its old collection means nothing in the new one, so a
+    // moved link goes to the top of where it lands.
+    const collectionOrder = isMovingCollection
+      ? await nextCollectionOrder(data.collection.id)
+      : undefined;
+
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
         name: data.name || "",
+        collectionOrder,
         url: data.url,
         description: data.description || "",
         icon: data.icon,
@@ -192,7 +208,7 @@ export default async function updateLinkById(
       },
     });
 
-    if (collectionIsAccessible?.id !== data.collection.id) {
+    if (isMovingCollection) {
       await moveFiles(linkId, collectionIsAccessible?.id, data.collection.id);
     }
 

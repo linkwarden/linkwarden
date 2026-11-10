@@ -6,6 +6,7 @@ import { prisma } from "@linkwarden/prisma";
 import verifySubscription from "@/lib/api/billing/verifySubscription";
 import { isStoreBillingConfigured } from "@/lib/api/billing/syncStoreSubscription";
 import verifyToken from "@/lib/api/verifyToken";
+import setSessionCookie from "@/lib/api/setSessionCookie";
 
 const BILLING_ENABLED =
   Boolean(process.env.STRIPE_SECRET_KEY) || isStoreBillingConfigured();
@@ -86,6 +87,25 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       });
 
     const updated = await updateUserById(userId, req.body);
+
+    // Changing the password revokes this web session too, so give it a new cookie to stay signed in
+    if (
+      updated.status === 200 &&
+      req.body.newPassword &&
+      !req.headers.authorization?.startsWith("Bearer ")
+    ) {
+      const { sessionVersion } = await prisma.user.findUniqueOrThrow({
+        where: {
+          id: userId,
+        },
+        select: {
+          sessionVersion: true,
+        },
+      });
+
+      await setSessionCookie(req, res, { ...token, sessionVersion });
+    }
+
     return res.status(updated.status).json({ response: updated.response });
   } else if (req.method === "DELETE") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")

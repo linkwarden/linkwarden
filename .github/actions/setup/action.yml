@@ -1,0 +1,25 @@
+name: Set up
+description: Installs Node and the workspace dependencies.
+
+inputs:
+  browsers:
+    description: Also install Playwright's Chromium and its system packages (apps/web postinstall), which only the e2e jobs use.
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: 20
+
+    - name: Enable corepack (Yarn 4)
+      shell: bash
+      run: corepack enable
+
+    - name: Install dependencies
+      shell: bash
+      env:
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: ${{ inputs.browsers == 'true' && '0' || '1' }}
+      run: yarn install --immutable

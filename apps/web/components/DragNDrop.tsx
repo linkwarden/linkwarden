@@ -20,6 +20,7 @@ import { customCollisionDetectionAlgorithm } from "@/lib/utils";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@linkwarden/router/user";
+import { useLinkReorderHandler } from "@/lib/client/linkReorder";
 
 interface DragNDropProps {
   children: React.ReactNode;
@@ -57,6 +58,7 @@ export default function DragNDrop({
   const pinLink = usePinLink();
   const { data: user } = useUser();
   const queryClient = useQueryClient();
+  const reorderHandler = useLinkReorderHandler();
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
@@ -100,6 +102,18 @@ export default function DragNDrop({
     const targetId = String(over.id);
 
     const isFromRecentSection = active.data.current?.dashboardType === "recent";
+
+    // DROP ON ANOTHER LINK, which is a reorder inside the collection being listed.
+    // Only a page that registered a handler can do anything with it.
+    if (overData?.type === "link") {
+      const overLinkId = overData.linkId as number | undefined;
+
+      if (overLinkId && overLinkId !== activeLink.id) {
+        reorderHandler?.current?.(activeLink.id as number, overLinkId);
+      }
+
+      return;
+    }
 
     const mutateWithToast = async (
       updatedLink: LinkIncludingShortenedCollectionAndTags,

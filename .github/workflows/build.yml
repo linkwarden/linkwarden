@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  web:
+    name: Web app
+    # Not ubuntu-latest: Playwright 1.57 (apps/web postinstall) can't install on Ubuntu 26.04.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      NEXTAUTH_SECRET: very_sensitive_secret
+      NEXTAUTH_URL: http://127.0.0.1:3000/api/v1/auth
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: |
+          yarn prisma:generate
+          yarn web:build
+
+      # The e2e jobs start Linkwarden from this build.
+      - name: Upload build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: web-build
+          path: |
+            apps/web/.next
+            !apps/web/.next/cache
+          include-hidden-files: true
+          retention-days: 1

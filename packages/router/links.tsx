@@ -62,6 +62,8 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
   return {
     links,
     data: query,
+    // Handed out so a page that reorders the list can address this exact cache entry.
+    queryString,
   };
 };
 
@@ -230,6 +232,60 @@ const upsertLinkInDashboardData = (
     links: updatedLinks,
     collectionLinks,
   };
+};
+
+/**
+ * Moves one link within a cached list so the card stays where it was dropped instead
+ * of snapping back until the server answers. `beforeId` is the link it should end up
+ * directly below, or undefined for the top of the list. The pages are flattened,
+ * reordered and cut back into their original lengths, so the infinite query keeps the
+ * page boundaries and cursors it already has.
+ */
+const moveLinkInInfiniteData = (
+  oldData: any,
+  linkId: number,
+  beforeId?: number
+) => {
+  if (!oldData?.pages?.length) return oldData;
+
+  const pageLengths = oldData.pages.map(
+    (page: any) => page?.links?.length ?? 0
+  );
+  const links = oldData.pages.flatMap((page: any) => page?.links ?? []);
+
+  const moved = links.find(
+    (link: LinkIncludingShortenedCollectionAndTags) => link.id === linkId
+  );
+
+  if (!moved) return oldData;
+
+  const remaining = links.filter(
+    (link: LinkIncludingShortenedCollectionAndTags) => link.id !== linkId
+  );
+
+  const insertAt =
+    beforeId === undefined
+      ? 0
+      : remaining.findIndex(
+          (link: LinkIncludingShortenedCollectionAndTags) =>
+            link.id === beforeId
+        ) + 1;
+
+  // The link it was dropped under isn't in the cache, so there is nothing to place
+  // this one against. Handing back the same object tells the caller the move was
+  // never shown, and it refetches instead.
+  if (insertAt === 0 && beforeId !== undefined) return oldData;
+
+  remaining.splice(insertAt, 0, moved);
+
+  let taken = 0;
+  const pages = oldData.pages.map((page: any, index: number) => {
+    const slice = remaining.slice(taken, taken + pageLengths[index]);
+    taken += pageLengths[index];
+    return { ...page, links: slice };
+  });
+
+  return { ...oldData, pages };
 };
 
 const removeLinkFromInfiniteData = (oldData: any, linkId: number) => {
@@ -913,6 +969,64 @@ const useGetLink = ({
   );
 };
 
+const useReorderLink = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      linkId: number;
+      beforeId?: number;
+      queryParams: string;
+    }) => {
+      const response = await fetch(`/api/v1/links/${payload.linkId}/order`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ beforeId: payload.beforeId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    onMutate: async (payload) => {
+      const queryKey = ["links", { params: payload.queryParams }];
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousLinks = queryClient.getQueryData(queryKey);
+      const movedLinks = moveLinkInInfiniteData(
+        previousLinks,
+        payload.linkId,
+        payload.beforeId
+      );
+
+      queryClient.setQueryData(queryKey, movedLinks);
+
+      return {
+        queryKey,
+        previousLinks,
+        showedTheMove: movedLinks !== previousLinks,
+      };
+    },
+    onError: (_error, _payload, context) => {
+      if (!context) return;
+      queryClient.setQueryData(context.queryKey, context.previousLinks);
+    },
+    onSettled: (_data, error, _payload, context) => {
+      // A successful move is not invalidated: the server put the link exactly where
+      // the cache already shows it, and refetching would throw away the pages the
+      // reader has scrolled through. The exception is a cache that didn't hold the
+      // link the drop was aimed at, so it never showed the move at all.
+      if (error || !context || context.showedTheMove) return;
+      queryClient.invalidateQueries({ queryKey: context.queryKey });
+    },
+  });
+};
+
 const useBulkDeleteLinks = () => {
   const queryClient = useQueryClient();
 
@@ -1202,6 +1316,7 @@ export {
   useAddLink,
   useUpdateLink,
   useDeleteLink,
+  useReorderLink,
   useBulkDeleteLinks,
   useUploadFile,
   useGetLink,

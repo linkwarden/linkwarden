@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - qacomet/**
+  pull_request:
+  workflow_dispatch:
+
+# A new push to a pull request cancels the run still going for the previous one.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+# Each area is a check of its own. .github/scripts/test-areas.mjs says which
+# test files an area runs, and its list of areas has to match the one here.
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
+  unit:
+    name: Unit
+    uses: ./.github/workflows/unit-tests.yml
+    with:
+      areas: '["Web", "Extension", "Mobile", "Worker and packages"]'
+
+  integration:
+    name: Integration
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      areas: '["Database"]'
+
+  e2e-web:
+    name: E2E web
+    needs: build
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      suite: e2e-web
+      areas: '["Login", "Permissions", "Search and no-email", "Imports"]'
+
+  e2e-email:
+    name: E2E email
+    needs: build
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      suite: e2e-email
+      areas: '["Verification and codes", "Pre-hijacking and OIDC", "Delivery and upgrades"]'
+
+  e2e-extension:
+    name: E2E extension
+    needs: build
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      suite: e2e-extension
+      areas: '["Popup", "Options"]'
+
+  # The only check branch protection needs to require.
+  required:
+    name: Required
+    if: ${{ !cancelled() }}
+    needs: [build, unit, integration, e2e-web, e2e-email, e2e-extension]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check that every job passed
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
+        run: exit 1

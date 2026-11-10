@@ -11,7 +11,13 @@ import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
-import { lightTheme, darkTheme } from "../lib/theme";
+import { ThemeProvider } from "expo-router/react-navigation";
+import {
+  lightTheme,
+  darkTheme,
+  lightNavigationTheme,
+  darkNavigationTheme,
+} from "../lib/theme";
 import { View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
@@ -21,19 +27,13 @@ import useReaderStore from "@/store/reader";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { queryClient } from "@/lib/queryClient";
 import { StatusBar } from "expo-status-bar";
-import * as Sentry from "@sentry/react-native";
 import OfflineSyncProvider from "@/components/OfflineSyncProvider";
+import Analytics from "@/components/Analytics";
 import { installCustomHeaders } from "@/lib/customHeaders";
 
 installCustomHeaders();
 
-Sentry.init({
-  dsn: "https://00d7eed9e810cbbf91a7ed3547e37100@o4510998442475520.ingest.us.sentry.io/4511033679609856",
-  sendDefaultPii: false,
-  enableLogs: true,
-});
-
-export default Sentry.wrap(function RootLayout() {
+export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
   const { updateData, setData, data } = useDataStore();
@@ -109,7 +109,7 @@ export default Sentry.wrap(function RootLayout() {
       <RootComponent isLoading={isLoading} />
     </PersistQueryClientProvider>
   );
-});
+}
 
 const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
   const { colorScheme } = useColorScheme();
@@ -121,42 +121,48 @@ const RootComponent = ({ isLoading }: { isLoading: boolean }) => {
       >
         <SheetProvider>
           <OfflineSyncProvider />
-          <StatusBar
-            style={colorScheme === "dark" ? "light" : "dark"}
-            backgroundColor={rawTheme[colorScheme as ThemeName]["base-100"]}
-          />
+          <Analytics />
+          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           {!isLoading && (
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                },
-              }}
+            <ThemeProvider
+              value={
+                colorScheme === "dark"
+                  ? darkNavigationTheme
+                  : lightNavigationTheme
+              }
             >
-              {/* <Stack.Screen name="(tabs)" /> */}
-              <Stack.Screen
-                name="links/[id]"
-                options={{
-                  headerShown: true,
-                  headerBackTitle: "Back",
-                  headerTitle: "",
-                  headerTintColor: colorScheme === "dark" ? "white" : "black",
-                  headerStyle: {
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: {
                     backgroundColor:
-                      colorScheme === "dark"
-                        ? rawTheme["dark"]["base-100"]
-                        : "white",
+                      rawTheme[colorScheme as ThemeName]["base-100"],
                   },
                 }}
-              />
-              <Stack.Screen name="index" />
-              <Stack.Screen name="subscribe" />
-              <Stack.Screen name="incoming" />
-              <Stack.Screen name="verify-email" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
+              >
+                {/* <Stack.Screen name="(tabs)" /> */}
+                <Stack.Screen
+                  name="links/[id]"
+                  options={{
+                    headerShown: true,
+                    headerBackTitle: "Back",
+                    headerTitle: "",
+                    headerTintColor: colorScheme === "dark" ? "white" : "black",
+                    headerStyle: {
+                      backgroundColor:
+                        colorScheme === "dark"
+                          ? rawTheme["dark"]["base-100"]
+                          : "white",
+                    },
+                  }}
+                />
+                <Stack.Screen name="index" />
+                <Stack.Screen name="subscribe" />
+                <Stack.Screen name="incoming" />
+                <Stack.Screen name="verify-email" />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </ThemeProvider>
           )}
         </SheetProvider>
       </View>

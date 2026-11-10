@@ -20,5 +20,7 @@ declare module "next-auth/jwt" {
     iat: number;
     exp: number;
     jti: string;
+    sessionId?: string;
+    sessionVersion?: number;
   }
 }

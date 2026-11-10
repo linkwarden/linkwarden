@@ -25,8 +25,11 @@ function buildFullPath(
 ): string {
   const paths: string[] = [collection.name];
   let currentParent = collection.parent;
+  // Stop at a collection already visited, so a parent cycle can't loop forever
+  const visited = new Set<number>([collection.id]);
 
-  while (currentParent) {
+  while (currentParent && !visited.has(currentParent.id)) {
+    visited.add(currentParent.id);
     paths.unshift(currentParent.name);
     const parentCollection = collectionsMap.get(currentParent.id);
     currentParent = parentCollection?.parent || null;

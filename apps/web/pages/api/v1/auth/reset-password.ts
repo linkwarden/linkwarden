@@ -2,6 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { ResetPasswordSchema } from "@linkwarden/lib/schemaValidation";
+import revokeUserSessions from "@/lib/api/revokeUserSessions";
 
 export default async function resetPassword(
   req: NextApiRequest,
@@ -48,14 +49,39 @@ export default async function resetPassword(
 
     const email = verifyToken.identifier;
 
-    // Update password
-    await prisma.user.update({
+    // The account may have been deleted, or its email changed, since
+    const account = await prisma.user.findUnique({
       where: {
         email,
       },
+      select: { id: true },
+    });
+
+    if (!account) {
+      return res.status(400).json({
+        response: "Invalid token.",
+      });
+    }
+
+    // Update password
+    const user = await prisma.user.update({
+      where: {
+        id: account.id,
+      },
       data: {
         password: hashedPassword,
+        // A new password starts with no wrong attempts
+        passwordRetries: 0,
+        passwordRetryAt: null,
       },
+    });
+
+    await revokeUserSessions(user.id);
+
+    // The reset proves the inbox is theirs, so drop any wrong verification codes
+    // entered with the old password, which would keep new codes from being sent
+    await prisma.emailVerificationCode.deleteMany({
+      where: { identifier: email.toLowerCase() },
     });
 
     await prisma.passwordResetToken.update({

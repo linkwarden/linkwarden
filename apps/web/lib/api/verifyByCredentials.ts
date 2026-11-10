@@ -1,16 +1,25 @@
 import { prisma } from "@linkwarden/prisma";
 import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
+import checkPassword, { PasswordCheck } from "@/lib/api/checkPassword";
+import isDemoMode from "@/lib/api/isDemoMode";
+import {
+  sendEmailVerificationCode,
+  verifyEmailWithCode,
+} from "@/lib/api/emailVerificationCode";
 
 type Props = {
   username: string;
   password: string;
+  code?: string;
 };
 
 export type VerifyCredentialsResult =
   | { status: "success"; user: User }
   | { status: "invalid_credentials" }
-  | { status: "email_not_verified"; user: User };
+  | { status: "email_not_verified"; user: User }
+  | { status: "invalid_code"; response: string }
+  | { status: "too_many_attempts"; response: string; retryAfter: number };
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -18,6 +27,7 @@ const emailEnabled =
 export default async function verifyByCredentials({
   username,
   password,
+  code,
 }: Props): Promise<VerifyCredentialsResult> {
   const user = await prisma.user.findFirst({
     where: emailEnabled
@@ -44,14 +54,44 @@ export default async function verifyByCredentials({
     return { status: "invalid_credentials" };
   }
 
-  const passwordMatches = bcrypt.compareSync(password, user.password);
+  // The demo's password is shown on its login page, so limiting wrong
+  // passwords there would only let anyone keep visitors from signing in
+  const demoUsername = process.env.NEXT_PUBLIC_DEMO_USERNAME;
+  const isDemoUser =
+    isDemoMode() &&
+    !!demoUsername &&
+    user.username === demoUsername.toLowerCase();
 
-  if (!passwordMatches) {
+  let passwordCheck: PasswordCheck;
+
+  if (isDemoUser) {
+    // bcrypt throws when the request has no password field
+    const correct = !!password && bcrypt.compareSync(password, user.password);
+    passwordCheck = { status: correct ? "correct" : "incorrect" };
+  } else {
+    passwordCheck = await checkPassword(user.id, user.password, password);
+  }
+
+  if (passwordCheck.status === "too_many_attempts") return passwordCheck;
+
+  if (passwordCheck.status === "incorrect") {
     return { status: "invalid_credentials" };
   }
 
   if (emailEnabled && !user.emailVerified) {
-    return { status: "email_not_verified", user };
+    // The email is only verified with the password and the emailed code together
+    if (!code) {
+      if (user.email)
+        await sendEmailVerificationCode(user.email).catch((e) =>
+          console.error("Could not send verification code:", e)
+        );
+
+      return { status: "email_not_verified", user };
+    }
+
+    const error = await verifyEmailWithCode(user, code);
+
+    if (error) return { status: "invalid_code", response: error };
   }
 
   return { status: "success", user };

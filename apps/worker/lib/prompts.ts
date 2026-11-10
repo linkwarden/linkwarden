@@ -1,4 +1,23 @@
-export const generateTagsPrompt = (text: string) => `
+// Replaces the `{{text}}` and `{{tags}}` placeholders inside a prompt defined
+// through an environment variable. If `{{text}}` is missing, the content is
+// appended to the end of the prompt so the model always receives it.
+const customPrompt = (
+  template: string | undefined,
+  text: string,
+  tags: string[] = []
+) => {
+  if (!template?.trim()) return undefined;
+
+  const prompt = template.replace(/\{\{\s*tags\s*\}\}/g, tags.join(", "));
+
+  return /\{\{\s*text\s*\}\}/.test(prompt)
+    ? prompt.replace(/\{\{\s*text\s*\}\}/g, text)
+    : `${prompt}\n\nText: ${text}\n\nTags:`;
+};
+
+export const generateTagsPrompt = (text: string) =>
+  customPrompt(process.env.AI_GENERATE_TAGS_PROMPT, text) ??
+  `
 You are an expert Bookmark Manager AI. Analyze this webpage content and generate 3-5 categorical tags.
 
 STRICT RULES:
@@ -19,7 +38,9 @@ Text: ${text}
 
 Tags:`;
 
-export const predefinedTagsPrompt = (text: string, tags: string[]) => `
+export const predefinedTagsPrompt = (text: string, tags: string[]) =>
+  customPrompt(process.env.AI_PREDEFINED_TAGS_PROMPT, text, tags) ??
+  `
 You are an expert Bookmark Manager AI. Match this webpage content to the most relevant predefined tags.
 
 PREDEFINED TAGS: ${tags.join(", ")}
@@ -36,7 +57,9 @@ Text: ${text}
 
 Tags:`;
 
-export const existingTagsPrompt = (text: string, tags: string[]) => `
+export const existingTagsPrompt = (text: string, tags: string[]) =>
+  customPrompt(process.env.AI_EXISTING_TAGS_PROMPT, text, tags) ??
+  `
 You are an expert Bookmark Manager AI. Match this webpage content to the most relevant existing tags.
 
 EXISTING TAGS (sorted by usage): ${tags.join(", ")}

@@ -16,6 +16,7 @@ import { useTranslation } from "next-i18next";
 import { useConfig } from "@linkwarden/router/config";
 import { Separator } from "@/components/ui/separator";
 import Checkbox from "@/components/Checkbox";
+import VerifyEmailCodeForm from "@/components/VerifyEmailCodeForm";
 
 type FormData = {
   name: string;
@@ -41,6 +42,8 @@ export default function Register({
     password: "",
     acceptPromotionalEmails: false,
   });
+
+  const [verifyEmail, setVerifyEmail] = useState(false);
 
   async function registerUser(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,15 +83,15 @@ export default function Register({
 
         if (response.ok) {
           if (form.email && config?.EMAIL_PROVIDER) {
-            await signIn("email", {
-              email: form.email,
-              callbackUrl: "/",
+            // Logging in emails a verification code, which is then entered
+            // together with this password
+            await signIn("credentials", {
+              username: form.email,
+              password: form.password,
               redirect: false,
             });
 
-            router.push(
-              "/confirmation?email=" + encodeURIComponent(form.email)
-            );
+            setVerifyEmail(true);
           } else if (!config?.EMAIL_PROVIDER) router.push("/login");
 
           toast.success(t("account_created"));
@@ -99,6 +102,17 @@ export default function Register({
         toast.error(t("fill_all_fields"));
       }
     }
+  }
+
+  async function verifyEmailCode(code: string) {
+    const res = await signIn("credentials", {
+      username: form.email,
+      password: form.password,
+      code,
+      redirect: false,
+    });
+
+    if (!res?.ok) toast.error(res?.error || t("invalid_credentials"));
   }
 
   async function loginUserButton(method: string) {
@@ -144,6 +158,11 @@ export default function Register({
     });
     return Buttons;
   }
+
+  if (verifyEmail && form.email)
+    return (
+      <VerifyEmailCodeForm email={form.email} onVerify={verifyEmailCode} />
+    );
 
   return (
     <CenteredForm

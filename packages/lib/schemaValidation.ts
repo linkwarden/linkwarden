@@ -14,7 +14,7 @@ import { z } from "zod";
 // });
 
 export const ForgotPasswordSchema = z.object({
-  email: z.string().email(),
+  email: z.string().trim().email(),
 });
 
 export const ResetPasswordSchema = z.object({
@@ -100,6 +100,7 @@ export const UpdateUserPreferenceSchema = z.object({
   readableLineHeight: z.string().trim().max(100).optional(),
   readableLineWidth: z.string().trim().max(100).optional(),
   dismissedAnnouncementId: z.string().trim().max(100).optional(),
+  shareUsageAnalytics: z.boolean().optional(),
   // archiveAsScreenshot: z.boolean().optional(),
   // archiveAsMonolith: z.boolean().optional(),
   // archiveAsPDF: z.boolean().optional(),
@@ -119,6 +120,7 @@ export type UpdateUserPreferenceSchemaType = z.infer<
 export const PostSessionSchema = z.object({
   username: z.string().min(3).max(50),
   password: z.string().min(8),
+  code: z.string().trim().max(20).optional(),
   sessionName: z.string().trim().max(50).optional(),
 });
 
@@ -178,6 +180,14 @@ export const UpdateLinkSchema = z.object({
 
 export type UpdateLinkSchemaType = z.infer<typeof UpdateLinkSchema>;
 
+export const UpdateLinkOrderSchema = z.object({
+  // The link the moved one should end up directly below. Left out, the moved link
+  // goes to the top of its collection.
+  beforeId: z.number().optional(),
+});
+
+export type UpdateLinkOrderSchemaType = z.infer<typeof UpdateLinkOrderSchema>;
+
 const ACCEPTED_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -213,7 +223,7 @@ export const PostCollectionSchema = z.object({
   color: z.string().trim().max(50).optional(),
   icon: z.string().trim().max(50).optional(),
   iconWeight: z.string().trim().max(50).optional(),
-  parentId: z.number().optional(),
+  parentId: z.number().int().optional(),
 });
 
 export type PostCollectionSchemaType = z.infer<typeof PostCollectionSchema>;
@@ -226,7 +236,7 @@ export const UpdateCollectionSchema = z.object({
   isPublic: z.boolean().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
-  parentId: z.union([z.number(), z.literal("root")]).nullish(),
+  parentId: z.union([z.number().int(), z.literal("root")]).nullish(),
   members: z.array(
     z.object({
       userId: z.number(),

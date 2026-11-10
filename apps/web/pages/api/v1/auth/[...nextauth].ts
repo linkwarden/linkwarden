@@ -1,14 +1,17 @@
 import { prisma } from "@linkwarden/prisma";
 import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
-import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
+import verifyByCredentials from "@/lib/api/verifyByCredentials";
 import updateSeats from "@/lib/api/billing/updateSeats";
 import verifySubscription from "@/lib/api/billing/verifySubscription";
 import { parseAppleSignupName } from "@/lib/api/apple";
 import { authProviders, isAuthProviderEnabled } from "@/lib/api/authProviders";
 import { ssoEmailVerified } from "@/lib/api/ssoEmailVerified";
+import isTokenRevoked from "@/lib/api/isTokenRevoked";
+import { SESSION_MAX_AGE } from "@/lib/api/setSessionCookie";
+import captureEvent from "@/lib/api/captureEvent";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
-import bcrypt from "bcrypt";
+import crypto from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Adapter } from "next-auth/adapters";
 import NextAuth from "next-auth/next";
@@ -62,76 +65,34 @@ if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
         console.log("User log in attempt...");
         if (!credentials) return null;
 
-        const { username, password } = credentials as {
+        const { username, password, code } = credentials as {
           username: string;
           password: string;
+          code?: string;
         };
 
-        const user = await prisma.user.findFirst({
-          where: emailEnabled
-            ? {
-                OR: [
-                  {
-                    username: username.toLowerCase(),
-                  },
-                  {
-                    email: username?.toLowerCase(),
-                  },
-                ],
-              }
-            : {
-                username: username.toLowerCase(),
-              },
-        });
+        const result = await verifyByCredentials({ username, password, code });
 
-        if (!user) throw Error("Invalid credentials.");
-        else if (!user?.emailVerified && emailEnabled) {
+        if (result.status === "email_not_verified")
           throw Error("Email not verified.");
-        }
+        else if (
+          result.status === "invalid_code" ||
+          result.status === "too_many_attempts"
+        )
+          throw Error(result.response);
+        else if (result.status !== "success")
+          throw Error("Invalid credentials.");
 
-        let passwordMatches: boolean = false;
-
-        if (user?.password) {
-          passwordMatches = bcrypt.compareSync(password, user.password);
-        }
-
-        if (passwordMatches && user?.password) {
-          return { id: user?.id };
-        } else throw Error("Invalid credentials.");
+        return { id: result.user.id };
       },
     })
   );
 }
 
+// Email verification uses a code entered with the password (see verifyByCredentials),
+// so the only email link provider left is for accepting invitations
 if (emailEnabled) {
   providers.push(
-    EmailProvider({
-      id: "email",
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-      maxAge: 1200,
-      async sendVerificationRequest({ identifier, url, provider, token }: any) {
-        const recentVerificationRequestsCount =
-          await prisma.verificationToken.count({
-            where: {
-              identifier,
-              createdAt: {
-                gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
-              },
-            },
-          });
-
-        if (recentVerificationRequestsCount >= 4)
-          throw Error("Too many requests. Please try again later.");
-
-        sendVerificationRequest({
-          identifier,
-          url,
-          from: provider.from as string,
-          token,
-        });
-      },
-    } as any),
     EmailProvider({
       id: "invite",
       server: process.env.EMAIL_SERVER,
@@ -201,12 +162,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     adapter: adapter as Adapter,
     session: {
       strategy: "jwt",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: SESSION_MAX_AGE,
     },
     providers,
     pages: {
       signIn: "/login",
-      verifyRequest: "/confirmation",
     },
     cookies: {
       pkceCodeVerifier: {
@@ -222,6 +182,15 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, email, profile }) {
+        // An email link verifies the address and logs in, so it must never work for
+        // an unverified account with a password: whoever set it may not own the inbox
+        if (
+          account?.type === "email" &&
+          (user as User).password &&
+          !(user as User).emailVerified
+        )
+          return false;
+
         if (!(user as User).emailVerified && !email?.verificationRequest) {
           const parentSubscriptionId = (user as User).parentSubscriptionId;
 
@@ -306,6 +275,19 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
                   session_state: account.session_state,
                 },
               });
+
+              // The provider confirmed the email, so drop any password set before
+              // the email was verified, since it may belong to someone else
+              if (account.type !== "email" && !findUser.emailVerified)
+                await prisma.user.update({
+                  where: {
+                    id: findUser.id,
+                  },
+                  data: {
+                    password: null,
+                    emailVerified: new Date(),
+                  },
+                });
             }
           }
         }
@@ -314,8 +296,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       },
       async jwt({ token, trigger, user }) {
         token.sub = token.sub ? Number(token.sub) : undefined;
-        if (trigger === "signIn" || trigger === "signUp")
+        if (trigger === "signIn" || trigger === "signUp") {
           token.id = user?.id as number;
+          // Stays the same across refreshes, so signing out can revoke every copy of this session
+          token.sessionId = crypto.randomUUID();
+        }
 
         if (trigger === "signUp") {
           const userExists = await prisma.user.findUnique({
@@ -326,6 +311,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               accounts: true,
             },
           });
+
+          token.sessionVersion = userExists?.sessionVersion;
 
           // Verify SSO user email
           if (userExists && userExists.accounts.length > 0) {
@@ -384,6 +371,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             },
           });
 
+          token.sessionVersion = user?.sessionVersion;
+
           if (user && !user.username) {
             const autoGeneratedUsername =
               "user" + Math.round(Math.random() * 1000000000);
@@ -400,6 +389,18 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               data: { name: appleSignupName },
             });
           }
+        } else if (
+          // A database error shouldn't sign anyone out, API requests still check once it's back
+          await isTokenRevoked(token).catch((error) => {
+            console.error("Could not check if the session was revoked:", error);
+            return false;
+          })
+        ) {
+          // next-auth clears the session cookie when this throws
+          throw new Error("Session revoked.");
+        } else if (!token.sessionId) {
+          // Sessions from before session IDs existed get one on their next refresh
+          token.sessionId = crypto.randomUUID();
         }
 
         return token;
@@ -425,6 +426,37 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         }
 
         return session;
+      },
+    },
+    events: {
+      async createUser({ user }) {
+        captureEvent({
+          req,
+          // The adapter returns the full database row
+          user: user as unknown as User,
+          event: "signed_up",
+          properties: { method: "sso" },
+        });
+      },
+      async signOut({ token }) {
+        // Web sessions aren't stored, so a signed out one is kept as a revoked token
+        if (token?.sessionId)
+          await prisma.accessToken.upsert({
+            where: {
+              token: token.sessionId,
+            },
+            update: {
+              revoked: true,
+            },
+            create: {
+              name: "Web Session",
+              userId: token.id,
+              token: token.sessionId,
+              isSession: true,
+              revoked: true,
+              expires: new Date(token.exp * 1000),
+            },
+          });
       },
     },
   });

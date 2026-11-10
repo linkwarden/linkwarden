@@ -83,6 +83,10 @@ export default function ResetPassword() {
                   }
                 />
               </div>
+              <p className="flex gap-2 text-sm text-neutral">
+                <i className="bi-info-circle" />
+                <span>{t("password_reset_signs_out")}</span>
+              </p>
               <Button
                 type="submit"
                 variant="accent"

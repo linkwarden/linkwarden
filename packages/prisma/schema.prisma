@@ -69,7 +69,11 @@ model User {
   dashboardSections       DashboardSection[]
   lastPickedAt            DateTime?
   acceptPromotionalEmails Boolean               @default(false)
+  shareUsageAnalytics     Boolean               @default(true)
   trialEndEmailSent       Boolean               @default(false)
+  sessionVersion          Int                   @default(0)
+  passwordRetries         Int                   @default(0)
+  passwordRetryAt         DateTime?
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }
@@ -104,6 +108,15 @@ model VerificationToken {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@unique([identifier, token])
+}
+
+model EmailVerificationCode {
+  identifier String   @unique
+  code       String
+  attempts   Int      @default(0)
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model PasswordResetToken {
@@ -165,6 +178,7 @@ model Link {
   createdById     Int?
   collection      Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId    Int
+  collectionOrder Float
   tags            Tag[]
   icon            String?
   iconWeight      String?
@@ -186,6 +200,7 @@ model Link {
   updatedAt       DateTime    @default(now()) @updatedAt
 
   @@index([collectionId])
+  @@index([collectionId, collectionOrder, id])
 }
 
 model Tag {

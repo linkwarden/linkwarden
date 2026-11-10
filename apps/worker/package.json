@@ -20,9 +20,9 @@
     "@mozilla/readability": "^0.6.0",
     "@openrouter/ai-sdk-provider": "1.5.4",
     "ai": "^5.0.113",
-    "axios": "^1.18.0",
-    "dompurify": "^3.4.13",
-    "handlebars": "^4.7.9",
+    "axios": "^1.20.0",
+    "dompurify": "^3.4.17",
+    "handlebars": "^4.7.10",
     "https-proxy-agent": "^7.0.6",
     "jsdom": "^22.1.0",
     "meilisearch": "^0.48.2",
@@ -32,10 +32,10 @@
     "rss-parser": "^3.13.0",
     "socks-proxy-agent": "^8.0.2",
     "tsx": "^4.19.3",
-    "zod": "^4.1.13"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "1.57.0",
     "@types/node": "^22.14.1",
     "nodemon": "^3.1.9",
     "typescript": "^5.8.3"

@@ -78,7 +78,8 @@ type AuthStore = {
     username: string,
     password: string,
     instance: string,
-    token?: string
+    token?: string,
+    code?: string
   ) => Promise<boolean>;
   signInWithApple: (instance: string) => Promise<void>;
   signInWithGoogle: (instance: string) => Promise<void>;
@@ -335,7 +336,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       return false;
     }
   },
-  signIn: async (username, password, instance, token) => {
+  signIn: async (username, password, instance, token, code) => {
     if (process.env.EXPO_PUBLIC_SHOW_LOGS === "true")
       console.log("Signing into", instance);
 
@@ -397,6 +398,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             body: JSON.stringify({
               username,
               password,
+              code,
               sessionName: getSessionName(),
             }),
             headers: { "Content-Type": "application/json" },
@@ -421,9 +423,15 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         } else if (data?.code === "EMAIL_NOT_VERIFIED") {
           await SheetManager.hide("login-sheet");
           SheetManager.show("verify-email-sheet", {
-            payload: { email: data?.email || username, instance },
+            payload: { email: data?.email || username, instance, password },
             context: "global",
           });
+          return false;
+        } else if (
+          data?.code === "INVALID_VERIFICATION_CODE" ||
+          data?.code === "TOO_MANY_ATTEMPTS"
+        ) {
+          Alert.alert("Error", data.response);
           return false;
         } else {
           Alert.alert("Error", "Invalid credentials");
@@ -446,6 +454,8 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
   signInWithApple: async (instance) => {
+    if (instance !== cloudInstance) return;
+
     if (!(await ensureCloudIsReachable(instance))) return;
 
     let credential: AppleAuthentication.AppleAuthenticationCredential;
@@ -512,6 +522,8 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
   signInWithGoogle: async (instance) => {
+    if (instance !== cloudInstance) return;
+
     if (!(await ensureCloudIsReachable(instance))) return;
 
     let idToken: string | null = null;
@@ -587,6 +599,14 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   signOut: async () => {
     const instance = await SecureStore.getItemAsync("INSTANCE");
     const nextInstance = cleanInstance(instance);
+    const session = await SecureStore.getItemAsync("TOKEN");
+
+    // Revoke the session on the server too, without holding up the sign out if it can't be reached
+    if (session)
+      fetch(`${nextInstance}/api/v1/session`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session}` },
+      }).catch(() => {});
 
     await SecureStore.deleteItemAsync("TOKEN");
 

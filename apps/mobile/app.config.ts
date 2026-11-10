@@ -3,7 +3,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Linkwarden",
   slug: "linkwarden",
-  version: "1.4.3",
+  version: "1.4.5",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "linkwarden",
@@ -94,6 +94,7 @@ const config: ExpoConfig = {
             { name: "GoogleUtilities", modular_headers: true },
             { name: "RecaptchaInterop", modular_headers: true },
           ],
+          enableSceneSupport: true,
         },
       },
     ],
@@ -113,17 +114,9 @@ const config: ExpoConfig = {
     "expo-web-browser",
     "expo-apple-authentication",
     [
-      "@sentry/react-native/expo",
-      {
-        url: "https://sentry.io/",
-        project: "react-native",
-        organization: "linkwarden",
-      },
-    ],
-    [
       "expo-navigation-bar",
       {
-        barStyle: "dark-content",
+        style: "dark",
       },
     ],
   ],

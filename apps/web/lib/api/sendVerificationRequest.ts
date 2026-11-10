@@ -5,16 +5,12 @@ import transporter from "@linkwarden/lib/transporter";
 
 type Params = {
   identifier: string;
-  url: string;
-  from: string;
-  token: string;
+  code: string;
 };
 
 export default async function sendVerificationRequest({
   identifier,
-  url,
-  from,
-  token,
+  code,
 }: Params) {
   const emailsDir = path.resolve(process.cwd(), "templates");
 
@@ -25,29 +21,25 @@ export default async function sendVerificationRequest({
 
   const emailTemplate = Handlebars.compile(templateFile);
 
-  const { host } = new URL(url);
-  const verifyUrl = `${
-    process.env.BASE_URL
-  }/auth/verify?token=${token}&email=${encodeURIComponent(identifier)}`;
   const result = await transporter.sendMail({
     to: identifier,
     from: {
       name: "Linkwarden",
-      address: from as string,
+      address: process.env.EMAIL_FROM as string,
     },
-    subject: `Please verify your email address`,
-    text: text({ url: verifyUrl, host }),
+    subject: `Your Linkwarden verification code: ${code}`,
+    text: text({ code }),
     html: emailTemplate({
-      url: verifyUrl,
+      code,
     }),
   });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
+  const failed = result.rejected.concat(result.pending ?? []).filter(Boolean);
   if (failed.length) {
     throw new Error(`Email (${failed.join(", ")}) could not be sent`);
   }
 }
 
 /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
-function text({ url, host }: { url: string; host: string }) {
-  return `Sign in to ${host}\n${url}\n\n`;
+function text({ code }: { code: string }) {
+  return `Your Linkwarden verification code is ${code}\n\nLog in to Linkwarden on the web or in the mobile app and enter this code. If the app doesn't ask for a code, update it or use the web.\n\nThis code expires in 20 minutes. If you didn't try to sign up or log in to Linkwarden, you can ignore this email.\n`;
 }

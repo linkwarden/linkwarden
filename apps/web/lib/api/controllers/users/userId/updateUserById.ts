@@ -3,6 +3,8 @@ import { AccountSettings } from "@linkwarden/types/global";
 import bcrypt from "bcrypt";
 import { removeFile, createFile, createFolder } from "@linkwarden/filesystem";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
+import revokeUserSessions from "@/lib/api/revokeUserSessions";
+import checkPassword from "@/lib/api/checkPassword";
 import { i18n } from "next-i18next.config";
 import { UpdateUserSchema } from "@linkwarden/lib/schemaValidation";
 
@@ -113,7 +115,15 @@ export default async function updateUserById(
       ["oauth", "oidc"].includes(account.type)
     ) || false;
 
-  if (user && user.email && data.email && data.email !== user.email) {
+  // The email arrives lowercased, but an older account's can be stored with
+  // capitals, so one sent back the way it was loaded is unchanged too
+  if (
+    user &&
+    user.email &&
+    data.email &&
+    data.email !== user.email &&
+    body.email !== user.email
+  ) {
     if (!data.password) {
       return {
         response: "Invalid password.",
@@ -130,9 +140,19 @@ export default async function updateUserById(
       };
     }
 
-    const passwordMatch = bcrypt.compareSync(data.password, user.password);
+    const passwordCheck = await checkPassword(
+      user.id,
+      user.password,
+      data.password
+    );
 
-    if (!passwordMatch) {
+    if (passwordCheck.status === "too_many_attempts")
+      return {
+        response: passwordCheck.response,
+        status: 429,
+      };
+
+    if (passwordCheck.status === "incorrect") {
       return {
         response: "Password is incorrect.",
         status: 400,
@@ -162,21 +182,30 @@ export default async function updateUserById(
           "User has no password. Please create one from the password settings page.",
         status: 400,
       };
-    else if (
-      !isCreatingPassword &&
-      user?.password &&
-      data.oldPassword &&
-      !bcrypt.compareSync(data.oldPassword, user.password)
-    )
-      return {
-        response: "Old password is incorrect.",
-        status: 400,
-      };
-    else if (!isCreatingPassword && data.newPassword === data.oldPassword)
-      return {
-        response: "New password must be different from the old password.",
-        status: 400,
-      };
+
+    if (!isCreatingPassword && user?.password && data.oldPassword) {
+      const passwordCheck = await checkPassword(
+        user.id,
+        user.password,
+        data.oldPassword
+      );
+
+      if (passwordCheck.status === "too_many_attempts")
+        return {
+          response: passwordCheck.response,
+          status: 429,
+        };
+      else if (passwordCheck.status === "incorrect")
+        return {
+          response: "Old password is incorrect.",
+          status: 400,
+        };
+      else if (data.newPassword === data.oldPassword)
+        return {
+          response: "New password must be different from the old password.",
+          status: 400,
+        };
+    }
   }
 
   // Other settings / Apply changes
@@ -189,6 +218,9 @@ export default async function updateUserById(
       response: "Password is required.",
       status: 400,
     };
+
+  const setsPassword =
+    isInvited || (data.newPassword && data.newPassword !== "");
 
   const saltRounds = 10;
   const newHashedPassword = bcrypt.hashSync(
@@ -225,10 +257,10 @@ export default async function updateUserById(
       preventDuplicateLinks: data.preventDuplicateLinks,
       referredBy:
         !user?.referredBy && data.referredBy ? data.referredBy : undefined,
-      password:
-        isInvited || (data.newPassword && data.newPassword !== "")
-          ? newHashedPassword
-          : undefined,
+      password: setsPassword ? newHashedPassword : undefined,
+      // A new password starts with no wrong attempts
+      passwordRetries: setsPassword ? 0 : undefined,
+      passwordRetryAt: setsPassword ? null : undefined,
     },
     include: {
       subscriptions: true,
@@ -240,6 +272,9 @@ export default async function updateUserById(
       },
     },
   });
+
+  // A changed password signs out every session and revokes every access token
+  if (data.newPassword && user?.password) await revokeUserSessions(userId);
 
   const {
     password,

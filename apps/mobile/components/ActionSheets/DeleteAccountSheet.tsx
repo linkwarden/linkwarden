@@ -179,10 +179,12 @@ export default function DeleteAccountSheet() {
         )}
 
         <View className="border border-neutral-content p-2 rounded-md mt-5 mb-2">
-          <Text className="italic font-semibold mb-2">
+          <Text className="italic font-semibold mb-2 text-base-content">
             Optional (but it really helps us improve!)
           </Text>
-          <Text className="mb-2">Reason for cancellation</Text>
+          <Text className="mb-2 text-base-content">
+            Reason for cancellation
+          </Text>
           <View className="flex-row flex-wrap gap-2">
             {FEEDBACK_OPTIONS.map((option) => {
               const isSelected = feedback === option.value;

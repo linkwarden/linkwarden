@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { toast } from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
 
@@ -47,7 +46,7 @@ export default function SearchBar({ placeholder, fullWidth }: Props) {
 
   useEffect(() => {
     router.query.q
-      ? setSearchQuery(decodeURIComponent(router.query.q as string))
+      ? setSearchQuery(router.query.q as string)
       : setSearchQuery("");
   }, [router.query.q]);
 
@@ -86,9 +85,7 @@ export default function SearchBar({ placeholder, fullWidth }: Props) {
           setShowSuggestions(false);
         }}
         onChange={(e) => {
-          e.target.value.includes("%") &&
-            toast.error(t("search_query_invalid_symbol"));
-          setSearchQuery(e.target.value.replace("%", ""));
+          setSearchQuery(e.target.value);
           setShowSuggestions(false);
         }}
         onKeyDown={(e) => {

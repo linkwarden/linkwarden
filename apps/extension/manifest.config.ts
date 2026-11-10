@@ -35,7 +35,18 @@ const targets: Record<ManifestTarget, TargetOptions> = {
     browserSpecificSettings: {
       gecko: {
         id: "jordanlinkwarden@gmail.com",
-        strict_min_version: "121.0",
+        // data_collection_permissions needs Firefox 140, and Firefox 127 and
+        // older refuse to install a manifest that has it.
+        strict_min_version: "140.0",
+        // What goes to the user's Linkwarden instance: sign-in credentials,
+        // the tab's URL, and its title and optional screenshot.
+        data_collection_permissions: {
+          required: [
+            "authenticationInfo",
+            "browsingActivity",
+            "websiteContent",
+          ],
+        },
       },
     },
   },
@@ -56,7 +67,7 @@ const targets: Record<ManifestTarget, TargetOptions> = {
  * into `version.xcconfig`, which the Xcode project reads as its base
  * configuration. Bump it here and nowhere else.
  */
-export const version = "1.5.6";
+export const version = "1.5.7";
 
 const icons = {
   "16": "16.png",
@@ -106,7 +117,7 @@ export function buildManifest(target: ManifestTarget) {
       extension_pages:
         "script-src 'self'; object-src 'self'; connect-src 'self' http: https:;",
     },
-    ...(options.omnibox ? { omnibox: { keyword: "lk" } } : {}),
+    ...(options.omnibox ? { omnibox: { keyword: "lw" } } : {}),
     commands: {
       _execute_action: {
         suggested_key: { default: "Ctrl+Shift+F", mac: "Command+Shift+Y" },

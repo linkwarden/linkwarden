@@ -28,7 +28,12 @@ export default async function getCollectionRootOwnerAndMembers(
   let currentId: number | null = parentId;
   let rootOwnerId: number | null = null;
 
-  while (currentId) {
+  // Stop at a collection already visited, so a parent cycle can't loop forever
+  const visited = new Set<number>();
+
+  while (currentId && !visited.has(currentId)) {
+    visited.add(currentId);
+
     const col: {
       parentId: number | null;
       ownerId: number;

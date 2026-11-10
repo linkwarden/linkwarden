@@ -1,11 +1,16 @@
 import { useLinks } from "@linkwarden/router/links";
-import { View, Platform, TouchableOpacity } from "react-native";
+import {
+  View,
+  Platform,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+} from "react-native";
 import { Plus } from "lucide-react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import { useCollections } from "@linkwarden/router/collections";
 import Links from "@/components/Links";
@@ -19,6 +24,7 @@ export default function LinksScreen() {
   }>();
 
   const navigation = useNavigation();
+  const router = useRouter();
   const collections = useCollections(auth);
   const { colorScheme } = useColorScheme();
   const isIOS26Plus =
@@ -43,10 +49,19 @@ export default function LinksScreen() {
       headerTitle: title,
       headerSearchBarOptions: {
         placeholder: `Search ${title}`,
+        autoCapitalize: "none",
         ...(isIOS26Plus && {
           allowToolbarIntegration: false,
           placement: "integratedButton",
+          // Without this, iOS 27 drops the large title's padding while searching
+          hideNavigationBar: false,
         }),
+        onChangeText: (e: NativeSyntheticEvent<{ text: string }>) => {
+          router.setParams({
+            search: encodeURIComponent(e.nativeEvent.text),
+          });
+        },
+        headerIconColor: colorScheme === "dark" ? "white" : "black",
       },
       headerRight:
         section === "pinned-links"
@@ -76,7 +91,7 @@ export default function LinksScreen() {
               </TouchableOpacity>
             ),
     });
-  }, [title, navigation, section, collectionId, colorScheme]);
+  }, [title, navigation, router, section, collectionId, colorScheme]);
 
   const { links, data } = useLinks(
     {

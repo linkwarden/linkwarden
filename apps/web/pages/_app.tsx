@@ -14,6 +14,7 @@ import { appWithTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextPage } from "next";
+import Analytics from "@/components/Analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         refetchOnWindowFocus={false}
         basePath="/api/v1/auth"
       >
+        <Analytics />
         <Head>
           <title>Linkwarden</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />

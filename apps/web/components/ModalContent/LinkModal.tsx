@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUser } from "@linkwarden/router/user";
+import { handleLinkAnchorClick } from "@/lib/client/openLink";
 
 type Props = {
   onClose: Function;
   onDelete: Function;
   onUpdateArchive: Function;
   onPin: Function;
+  onOpenScriptLink: (url: string) => void;
   link: LinkIncludingShortenedCollectionAndTags;
   activeMode?: "view" | "edit";
 };
@@ -32,10 +35,20 @@ export default function LinkModal({
   onDelete,
   onUpdateArchive,
   onPin,
+  onOpenScriptLink,
   link,
   activeMode,
 }: Props) {
   const { t } = useTranslation();
+
+  const { data: user } = useUser();
+
+  const openScriptWarning = (url: string) => {
+    setTimeout(() => (document.body.style.pointerEvents = ""), 0);
+
+    onOpenScriptLink(url);
+    onClose();
+  };
 
   const permissions = usePermissions(link.collection.id as number);
 
@@ -163,6 +176,9 @@ export default function LinkModal({
               <Link
                 href={link.url}
                 target="_blank"
+                onClick={(e) =>
+                  handleLinkAnchorClick(e, link, user, openScriptWarning)
+                }
                 className="bi-box-arrow-up-right text-base-content opacity-50 hover:opacity-100 select-none z-10"
               ></Link>
             </Button>
@@ -182,6 +198,7 @@ export default function LinkModal({
             onUpdateArchive();
             onClose();
           }}
+          onOpenScriptLink={openScriptWarning}
         />
       </div>
     </Drawer>

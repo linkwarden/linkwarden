@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { lookup as dnsLookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
@@ -190,6 +191,31 @@ function extractIPv4FromMappedIPv6(address: string) {
   return parseIPv4(ipv4Candidate) === null ? null : ipv4Candidate;
 }
 
+// IPv6 forms that carry an IPv4 destination. The embedded address is checked
+// against the IPv4 blocklist, so public destinations (e.g. on DNS64/NAT64
+// networks) keep working while private ones can't be reached through them.
+function extractIPv4FromEmbeddingIPv6(ipv6: number[]) {
+  const toIPv4 = (high: number, low: number) => high * 65536 + low;
+  const isZero = (segments: number[]) => segments.every((s) => s === 0);
+
+  // ::ffff:0:0/96 (IPv4-mapped) in its hex form, e.g. ::ffff:7f00:1
+  if (isZero(ipv6.slice(0, 5)) && ipv6[5] === 0xffff)
+    return toIPv4(ipv6[6], ipv6[7]);
+
+  // 64:ff9b::/96 (NAT64 well-known prefix, RFC 6052)
+  if (ipv6[0] === 0x64 && ipv6[1] === 0xff9b && isZero(ipv6.slice(2, 6)))
+    return toIPv4(ipv6[6], ipv6[7]);
+
+  // 2002::/16 (6to4, RFC 3056)
+  if (ipv6[0] === 0x2002) return toIPv4(ipv6[1], ipv6[2]);
+
+  // 2001::/32 (Teredo, RFC 4380), which stores the client address inverted
+  if (ipv6[0] === 0x2001 && ipv6[1] === 0)
+    return toIPv4(ipv6[6] ^ 0xffff, ipv6[7] ^ 0xffff);
+
+  return null;
+}
+
 export function isHostnameBlockedForServerSideFetch(hostname: string) {
   const normalized = normalizeHostname(hostname);
 
@@ -216,6 +242,13 @@ export function isIpAddressBlockedForServerSideFetch(address: string) {
 
   const ipv6 = parseIPv6(address);
   if (ipv6 === null) return true;
+
+  const embeddedIPv4 = extractIPv4FromEmbeddingIPv6(ipv6);
+  if (embeddedIPv4 !== null) {
+    return IPV4_BLOCKED_RANGES.some(
+      ({ network, mask }) => (embeddedIPv4 & mask) === (network & mask)
+    );
+  }
 
   return IPV6_BLOCKED_RANGES.some(({ network, prefix }) =>
     ipv6MatchesPrefix(ipv6, network, prefix)

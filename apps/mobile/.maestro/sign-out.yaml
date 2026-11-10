@@ -1,0 +1,56 @@
+appId: app.linkwarden
+name: Sign out and revoke the app's session on the server
+---
+- evalScript: ${output.since = Date.now() - 5000}
+- runFlow: subflows/launch.yaml
+- runFlow: subflows/login.yaml
+- runScript:
+    file: scripts/app-sessions.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${TEST_USERNAME || "user1"}
+      PASSWORD: ${TEST_PASSWORD || "11111111"}
+      SINCE: ${output.since}
+- assertTrue: ${output.appSessions == 1}
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "Settings"
+          childOf:
+            text: "Tab Bar"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Settings"
+          id: ".*navigation_bar_item_.*_label_view"
+- scrollUntilVisible:
+    element: "Sign Out"
+- tapOn: "Sign Out"
+# The alert's title and the row behind it say "Sign Out" too
+- extendedWaitUntil:
+    visible: "Are you sure you want to sign out?"
+    timeout: 10000
+- tapOn:
+    text: "Sign Out"
+    rightOf: "Cancel"
+    below: "Are you sure you want to sign out?"
+- extendedWaitUntil:
+    visible:
+      id: "server-picker"
+    timeout: 30000
+# The app doesn't wait for the server before showing the welcome screen
+- retry:
+    maxRetries: 3
+    commands:
+      - runScript:
+          file: scripts/app-sessions.js
+          env:
+            BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+            USERNAME: ${TEST_USERNAME || "user1"}
+            PASSWORD: ${TEST_PASSWORD || "11111111"}
+            SINCE: ${output.since}
+      - assertTrue: ${output.appSessions == 0}

@@ -3,12 +3,42 @@ import { hasPassedLimit } from "./verifyCapacity";
 import { prisma } from "@linkwarden/prisma";
 import Parser from "rss-parser";
 import { assertUrlIsSafeForServerSideFetch } from "./ssrf";
+import { COLLECTION_ORDER_STEP, nextCollectionOrder } from "./linkOrder";
 
 export const rssHandler = async (
   rssSubscription: RssSubscription,
   feed: Parser.Output<any>
 ) => {
   try {
+    // Access is only checked when the subscription is created, and the
+    // subscriber may have been removed from the collection since, so check it
+    // again and drop the subscription if it's gone.
+    const canAddLinks = await prisma.collection.findFirst({
+      where: {
+        id: rssSubscription.collectionId,
+        OR: [
+          { ownerId: rssSubscription.ownerId },
+          {
+            members: {
+              some: { userId: rssSubscription.ownerId, canCreate: true },
+            },
+          },
+        ],
+      },
+      select: { id: true },
+    });
+
+    if (!canAddLinks) {
+      console.log(
+        "\x1b[34m%s\x1b[0m",
+        `User ${rssSubscription.ownerId} can no longer add links to collection ${rssSubscription.collectionId}. Deleting RSS subscription ${rssSubscription.name}.`
+      );
+      await prisma.rssSubscription.delete({
+        where: { id: rssSubscription.id },
+      });
+      return;
+    }
+
     const feedLastBuildDate = (feed as any).lastBuildDate as
       | string
       | Date
@@ -53,9 +83,14 @@ export const rssHandler = async (
         return;
       }
 
+      // One lookup for the whole batch: the links are created concurrently, so
+      // asking for the top of the list inside each one would hand them all the
+      // same order.
+      const baseOrder = await nextCollectionOrder(rssSubscription.collectionId);
+
       // Create all links concurrently
       await Promise.all(
-        newItems.map(async (item) => {
+        newItems.map(async (item, index) => {
           if (!item.link) return null;
 
           try {
@@ -69,6 +104,7 @@ export const rssHandler = async (
               name: item.title,
               url: item.link,
               type: "url",
+              collectionOrder: baseOrder + index * COLLECTION_ORDER_STEP,
               createdBy: {
                 connect: {
                   id: rssSubscription.ownerId,

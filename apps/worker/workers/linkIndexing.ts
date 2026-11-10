@@ -145,7 +145,9 @@ export async function startIndexing(interval = 10) {
       include: {
         collection: {
           include: {
-            owner: true,
+            owner: {
+              omit: { password: true },
+            },
             members: {
               select: { userId: true },
             },

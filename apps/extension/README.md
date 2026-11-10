@@ -65,6 +65,32 @@ yarn dev:chrome
 yarn dev:firefox
 ```
 
+## Testing
+
+Unit tests use Vitest, with [`@webext-core/fake-browser`](https://webext-core.aklinker1.io/fake-browser/installation) standing in for the browser APIs. They sit next to the code as `*.test.ts` and run from the repository root:
+
+```
+yarn vitest run apps/extension
+```
+
+End-to-end tests use Playwright and load the built extension into Playwright's own Chromium. Playwright can't load extensions into Firefox or Safari. The tests need a running Linkwarden instance with registration open, and they create their own accounts on it:
+
+```
+yarn playwright install chromium
+E2E_BASE_URL=http://127.0.0.1:3000 yarn e2e
+```
+
+`yarn e2e` builds `dist/` first. Playwright can't open the toolbar popup, so the tests open the popup page in a tab and point its active-tab lookup at the page under test.
+
+For Firefox, check the build with Mozilla's linter:
+
+```
+yarn build
+yarn lint:firefox
+```
+
+Safari has no automated tests, so check changes there by hand (see below).
+
 ## Safari
 
 ```

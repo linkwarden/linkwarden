@@ -5,7 +5,6 @@ import { createFile, createFolder } from "@linkwarden/filesystem";
 import { generatePreview } from "@linkwarden/lib/generatePreview";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
-import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
@@ -13,6 +12,8 @@ import setCollection from "@/lib/api/setCollection";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 import { ArchivedFormat } from "@linkwarden/types/global";
+import { nextCollectionOrder } from "@linkwarden/lib/linkOrder";
+import captureEvent from "@/lib/api/captureEvent";
 
 export const config = {
   api: {
@@ -173,9 +174,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             )
           : {};
 
+      const collectionOrder = await nextCollectionOrder(collection.id);
+
       const link = await prisma.link.create({
         data: {
           name: title,
+          collectionOrder,
           createdBy: {
             connect: {
               id: user.id,
@@ -236,6 +240,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
       // Clean up temporary file
       fs.unlinkSync(files.file[0].filepath);
+
+      captureEvent({
+        req,
+        user,
+        event: "link_created",
+        properties: { type: isPDF ? "pdf" : isImage ? "image" : "webpage" },
+      });
 
       return res.status(200).json({ response: updateLink });
     } catch (error: any) {

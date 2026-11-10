@@ -1,0 +1,58 @@
+appId: app.linkwarden
+name: Delete a sub-collection and keep its parent
+---
+- evalScript: ${output.parentName = "Maestro parent " + Date.now()}
+- evalScript: ${output.childName = "Maestro child " + Date.now()}
+- runScript:
+    file: scripts/collections.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${TEST_USERNAME || "user1"}
+      PASSWORD: ${TEST_PASSWORD || "11111111"}
+      ACTION: create
+      PARENT: ${output.parentName}
+      CHILD: ${output.childName}
+- assertTrue: ${!!output.childId}
+- runFlow: subflows/launch.yaml
+- runFlow: subflows/login.yaml
+# The dashboard also has a "Collections" label, so look inside the tab bar
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "Collections"
+          childOf:
+            text: "Tab Bar"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Collections"
+          id: ".*navigation_bar_item_.*_label_view"
+# A collection row reads as one element that starts with its name. Once the
+# account has a collection order (the web app saves one), new collections are
+# listed after the others, often below the bottom of the screen. Centering
+# keeps the row out from under the floating tab bar
+- scrollUntilVisible:
+    element: "${output.childName}.*"
+    centerElement: true
+- longPressOn: "${output.childName}.*"
+- tapOn: "Delete"
+# Then the confirmation dialog's button
+- tapOn: "Delete"
+- extendedWaitUntil:
+    notVisible: "${output.childName}.*"
+    timeout: 15000
+- assertVisible: "${output.parentName}.*"
+- runScript:
+    file: scripts/collections.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${TEST_USERNAME || "user1"}
+      PASSWORD: ${TEST_PASSWORD || "11111111"}
+      ACTION: check
+      PARENT_ID: ${output.parentId}
+      CHILD_ID: ${output.childId}
+- assertTrue: ${output.childGone && output.parentKept}

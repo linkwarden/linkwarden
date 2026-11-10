@@ -1,4 +1,3 @@
-import { Sort } from "@linkwarden/types/global";
 import { create } from "zustand";
 
 type LocalSettings = {
@@ -16,7 +15,6 @@ type LocalSettings = {
     date: boolean;
   };
   columns: number;
-  sortBy?: Sort;
 };
 
 type LocalSettingsStore = {
@@ -41,10 +39,9 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       date: true,
     },
     columns: 0,
-    sortBy: Sort.DateNewestFirst,
   },
   updateSettings: (newSettings) => {
-    const { viewMode, color, sortBy, show, columns } = newSettings;
+    const { viewMode, color, show, columns } = newSettings;
 
     if (
       viewMode !== undefined &&
@@ -56,10 +53,6 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     if (color !== undefined) {
       localStorage.setItem("color", color);
       document.documentElement.style.setProperty("--p", `var(${color})`);
-    }
-
-    if (sortBy !== undefined) {
-      localStorage.setItem("sortBy", sortBy.toString());
     }
 
     if (columns !== undefined) {
@@ -114,7 +107,6 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
         color,
         show,
         columns,
-        sortBy: useLocalSettingsStore.getState().settings.sortBy,
       },
     });
 

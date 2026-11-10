@@ -12,6 +12,7 @@ import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
+import { shortenText } from "@linkwarden/lib/shortenText";
 import { ArchivalSettings } from "@linkwarden/types/global";
 import { getDefaultContextOptions } from "./browser";
 import {
@@ -161,8 +162,7 @@ export default async function archiveHandler(
           await prisma.link.update({
             where: { id: link.id },
             data: {
-              metaDescription:
-                metaDescription?.trim().slice(0, 500) ?? undefined,
+              metaDescription: shortenText(metaDescription?.trim(), 500),
             },
           });
 

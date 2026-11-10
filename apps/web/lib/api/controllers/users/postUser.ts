@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { PostUserSchema } from "@linkwarden/lib/schemaValidation";
 import isAuthenticatedRequest from "../../isAuthenticatedRequest";
+import captureEvent from "../../captureEvent";
 import { Subscription, User } from "@linkwarden/prisma/client";
 
 const emailEnabled =
@@ -153,6 +154,18 @@ export default async function postUser(
           }
         : undefined,
     });
+
+    // An invite counts for the member who sent it, and accounts an admin
+    // creates aren't sign ups
+    if (invite && parentUser)
+      captureEvent({ req, user: parentUser, event: "member_invited" });
+    else if (!parentUser)
+      captureEvent({
+        req,
+        user: user as User,
+        event: "signed_up",
+        properties: { method: "credentials" },
+      });
 
     const { password: pass, ...userWithoutPassword } = user as User;
     return { response: userWithoutPassword, status: 201 };

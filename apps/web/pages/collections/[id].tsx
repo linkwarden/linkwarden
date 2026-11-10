@@ -6,7 +6,7 @@ import {
   ViewMode,
 } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -17,12 +17,17 @@ import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
+import ConfirmationModal from "@/components/ConfirmationModal";
+import { isDangerousLinkUrl } from "@linkwarden/lib/isDangerousLinkUrl";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useLinks } from "@linkwarden/router/links";
+import { useLinks, useReorderLink } from "@linkwarden/router/links";
+import { arrayMove } from "@dnd-kit/sortable";
+import toast from "react-hot-toast";
+import { useRegisterLinkReorder } from "@/lib/client/linkReorder";
 import Links from "@/components/LinkViews/Links";
 import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
@@ -38,6 +43,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NextPageWithLayout } from "../_app";
+import useLinkSort from "@/hooks/useLinkSort";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -45,14 +51,28 @@ const Page: NextPageWithLayout = () => {
 
   const { data: collections = [] } = useCollections();
 
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
+  const [sortBy, setSortBy] = useLinkSort(true);
 
-  const { links, data } = useLinks({
+  const {
+    links: fetchedLinks,
+    data,
+    queryString,
+  } = useLinks({
     sort: sortBy,
     collectionId: Number(router.query.id),
   });
+
+  // dnd-kit ends a drag in the render that handles the drop, which puts every card
+  // the drag pushed aside back in its old place. The cache only passes the new order
+  // on a task later, so the cards would slide back and then jump to where they were
+  // dropped. The dropped order is shown from that first render instead, until the
+  // cache has it too.
+  const [drop, setDrop] = useState<{
+    from: LinkIncludingShortenedCollectionAndTags[];
+    to: LinkIncludingShortenedCollectionAndTags[];
+  }>();
+
+  const links = drop?.from === fetchedLinks ? drop.to : fetchedLinks;
 
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
@@ -103,7 +123,39 @@ const Page: NextPageWithLayout = () => {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+  const [openAllWarning, setOpenAllWarning] = useState(false);
   const [editMode, setEditMode] = useState(false);
+
+  // A script-scheme link (javascript:/data:/vbscript:) that the current viewer
+  // did not create is a stored-XSS risk; "Open all Links" warns once before
+  // including those in the batch. The link's own author is never warned.
+  const isUnverifiedScriptLink = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) =>
+    isDangerousLinkUrl(link.url) &&
+    !(!!user?.id && user.id === link.createdById);
+
+  const openAllLinks = () => {
+    let blocked = false;
+
+    for (const link of links) {
+      if (!link.url) continue;
+
+      const openedWindow = window.open(link.url, "_blank");
+
+      if (openedWindow) {
+        (openedWindow as { blur: () => void }).blur();
+      } else {
+        blocked = true;
+      }
+    }
+
+    window.focus();
+
+    if (blocked) {
+      alert(t("popups_blocked_open_all_links"));
+    }
+  };
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -112,6 +164,45 @@ const Page: NextPageWithLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>(
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
+
+  const reorderLink = useReorderLink();
+
+  const canReorder =
+    sortBy === Sort.Custom &&
+    !editMode &&
+    (permissions === true || !!permissions?.canUpdate);
+
+  // dnd-kit reports which link was dragged and which one it was let go over. Settling
+  // the list first and then reading off the neighbour above the link's new home gives
+  // the same answer for a drag in either direction, which is all the route wants.
+  const handleReorder = useCallback(
+    (draggedLinkId: number, droppedOnLinkId: number) => {
+      const from = links.findIndex((e) => e.id === draggedLinkId);
+      const to = links.findIndex((e) => e.id === droppedOnLinkId);
+
+      if (from === -1 || to === -1 || from === to) return;
+
+      const settled = arrayMove(links, from, to);
+      const landedAt = settled.findIndex((e) => e.id === draggedLinkId);
+
+      setDrop({ from: fetchedLinks, to: settled });
+
+      reorderLink.mutate(
+        {
+          linkId: draggedLinkId,
+          beforeId:
+            landedAt > 0 ? (settled[landedAt - 1].id as number) : undefined,
+          queryParams: queryString,
+        },
+        // The card springs back on a failure, which on its own looks like a glitch.
+        { onError: (error) => toast.error(error.message) }
+      );
+    },
+    // mutate is stable, so the handler only changes when the list does.
+    [links, fetchedLinks, queryString, reorderLink.mutate]
+  );
+
+  useRegisterLinkReorder(canReorder ? handleReorder : null);
 
   return (
     <div
@@ -167,24 +258,10 @@ const Page: NextPageWithLayout = () => {
             >
               <DropdownMenuItem
                 onClick={() => {
-                  let blocked = false;
-
-                  for (const link of links) {
-                    if (!link.url) continue;
-
-                    const openedWindow = window.open(link.url, "_blank");
-
-                    if (openedWindow) {
-                      (openedWindow as { blur: () => void }).blur();
-                    } else {
-                      blocked = true;
-                    }
-                  }
-
-                  window.focus();
-
-                  if (blocked) {
-                    alert(t("popups_blocked_open_all_links"));
+                  if (links.some(isUnverifiedScriptLink)) {
+                    setOpenAllWarning(true);
+                  } else {
+                    openAllLinks();
                   }
                 }}
               >
@@ -346,6 +423,7 @@ const Page: NextPageWithLayout = () => {
             : undefined
         }
         links={links}
+        allowCustomOrder
       >
         {collections.some((e) => e.parentId === activeCollection?.id) ? (
           <PageHeader
@@ -380,6 +458,7 @@ const Page: NextPageWithLayout = () => {
         links={links}
         layout={viewMode}
         useData={data}
+        reorderable={canReorder}
       />
       {!data.isLoading && links && !links[0] && <NoLinksFound />}
       {activeCollection && (
@@ -409,6 +488,20 @@ const Page: NextPageWithLayout = () => {
             />
           )}
         </>
+      )}
+
+      {openAllWarning && (
+        <ConfirmationModal
+          toggleModal={() => setOpenAllWarning(false)}
+          title={t("open_all_script_links_warning_title")}
+          onConfirmed={() => openAllLinks()}
+        >
+          <p className="text-sm">
+            {t("open_all_script_links_warning_desc", {
+              count: links.filter(isUnverifiedScriptLink).length,
+            })}
+          </p>
+        </ConfirmationModal>
       )}
     </div>
   );

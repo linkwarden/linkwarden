@@ -104,9 +104,14 @@ export default function LinkScreen() {
       });
   }, [link, user]);
 
+  const archiveUrl =
+    user?.id && link?.id && format
+      ? `${auth.instance}/api/v1/archives/${link.id}?format=${format}`
+      : null;
+
   useEffect(() => {
-    if (user?.id && link?.id && format) {
-      setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
+    if (archiveUrl) {
+      setUrl(archiveUrl);
     } else if (!url) {
       if (link?.url) {
         setUrl(link.url);
@@ -370,7 +375,8 @@ export default function LinkScreen() {
             uri: url,
             headers: {
               ...customHeadersFor(url),
-              ...(format || link?.type !== "url"
+              // Never send the session to the link's original (external) URL
+              ...(url === archiveUrl
                 ? { Authorization: `Bearer ${auth.session}` }
                 : {}),
             },

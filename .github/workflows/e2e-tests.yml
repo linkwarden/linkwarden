@@ -1,0 +1,121 @@
+name: E2E tests
+
+on:
+  workflow_call:
+    inputs:
+      suite:
+        description: e2e-web, e2e-email or e2e-extension (see .github/scripts/test-areas.mjs).
+        type: string
+        required: true
+      areas:
+        description: JSON list of the suite's areas to run, one check each.
+        type: string
+        required: true
+
+jobs:
+  e2e:
+    name: ${{ matrix.area }}
+    # Not ubuntu-latest: Playwright 1.57 (apps/web postinstall) can't install on Ubuntu 26.04.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        area: ${{ fromJSON(inputs.areas) }}
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: linkwarden
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/linkwarden
+      NEXTAUTH_SECRET: very_sensitive_secret
+      NEXTAUTH_URL: http://127.0.0.1:3000/api/v1/auth
+      E2E_BASE_URL: http://127.0.0.1:3000
+      TEST_USERNAME: test-user
+      TEST_PASSWORD: password
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          browsers: true
+
+      - name: Download the build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: web-build
+          path: apps/web/.next
+
+      - name: Set up the database
+        run: |
+          yarn prisma:generate
+          yarn prisma:deploy
+
+      - name: Start the mail sink and OpenID Connect provider
+        if: inputs.suite == 'e2e-email'
+        run: |
+          mkdir -p logs "$RUNNER_TEMP/mail"
+          node apps/web/e2e/support/mail-sink.mjs 2525 "$RUNNER_TEMP/mail" > logs/mail-sink.log 2>&1 &
+          node apps/web/e2e/support/oidc-provider.mjs 3999 > logs/oidc-provider.log 2>&1 &
+          # Read by the server (started next) and by the tests
+          {
+            echo "E2E_MAIL_DIR=$RUNNER_TEMP/mail"
+            echo "E2E_OIDC_URL=http://127.0.0.1:3999"
+            echo "EMAIL_FROM=e2e@lab.test"
+            echo "EMAIL_SERVER=smtp://127.0.0.1:2525"
+            echo "NEXT_PUBLIC_EMAIL_PROVIDER=true"
+            echo "NEXT_PUBLIC_OIDC_ENABLED=true"
+            echo "OIDC_CLIENT_ID=linkwarden-e2e"
+            echo "OIDC_CLIENT_SECRET=linkwarden-e2e-secret"
+            echo "OIDC_WELLKNOWN_URL=http://127.0.0.1:3999/.well-known/openid-configuration"
+          } >> "$GITHUB_ENV"
+
+      - name: Start Linkwarden
+        run: |
+          mkdir -p logs
+          yarn web:start > logs/server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -sf -o /dev/null "$E2E_BASE_URL/api/v1/config"; then exit 0; fi
+            sleep 1
+          done
+          echo "Linkwarden didn't respond within 60 seconds:"
+          cat logs/server.log
+          exit 1
+
+      - name: Run tests
+        env:
+          SUITE: ${{ inputs.suite }}
+          AREA: ${{ matrix.area }}
+          AREAS: ${{ inputs.areas }}
+        # Not the web e2e script: its "e2e" filter matches every test file, and
+        # Playwright runs a file when any filter matches it.
+        run: |
+          case "$SUITE" in
+            e2e-web) e2e=(yarn workspace @linkwarden/web playwright test) ;;
+            e2e-email) e2e=(yarn workspace @linkwarden/web playwright test --project="chromium email") ;;
+            e2e-extension) e2e=(yarn workspace @linkwarden/extension e2e) ;;
+          esac
+          node .github/scripts/test-areas.mjs "$SUITE" "$AREA" -- "${e2e[@]}" --reporter=list,html
+
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ inputs.suite }} ${{ matrix.area }}
+          path: |
+            apps/*/playwright-report
+            apps/*/test-results
+            logs
+          retention-days: 30

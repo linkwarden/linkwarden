@@ -35,11 +35,16 @@ export default async function searchLinks({
     return [{ collectionId: { in: accessibleCollectionIds } }];
   };
 
-  let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
-  else if (query.sort === Sort.NameAZ) order = { name: "asc" };
-  else if (query.sort === Sort.NameZA) order = { name: "desc" };
+  let order: Order[] = [{ id: "desc" }];
+  if (query.sort === Sort.DateNewestFirst) order = [{ id: "desc" }];
+  else if (query.sort === Sort.DateOldestFirst) order = [{ id: "asc" }];
+  else if (query.sort === Sort.NameAZ) order = [{ name: "asc" }];
+  else if (query.sort === Sort.NameZA) order = [{ name: "desc" }];
+  // A link's order only places it against the others in its own collection, so the
+  // custom order means something only when one collection is being listed. Anything
+  // wider falls through to newest first.
+  else if (query.sort === Sort.Custom && query.collectionId)
+    order = [{ collectionOrder: "desc" }, { id: "desc" }];
 
   const tagCondition = [];
   if (query.tagId) {
@@ -78,6 +83,17 @@ export default async function searchLinks({
 
     const meiliResp = await meiliClient.index("links").search(meiliQuery, {
       filter: meiliFilters,
+      // Documents also hold the collection owner's account details, so only
+      // match the query against the link's own fields.
+      attributesToSearchOn: [
+        "name",
+        "url",
+        "description",
+        "metaDescription",
+        "textContent",
+        "tags",
+        "collectionName",
+      ],
       attributesToRetrieve: ["id"],
       limit,
       offset,

@@ -10,13 +10,31 @@ export const config = {
   },
 };
 
-const buffer = (req: NextApiRequest) => {
-  return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
+// Matches the default body size limit of Next.js API routes
+const MAX_BODY_SIZE = 1024 * 1024;
 
-    req.on("data", (chunk: Buffer) => {
+const buffer = (req: NextApiRequest, limitBytes: number) => {
+  return new Promise<Buffer>((resolve, reject) => {
+    if (Number(req.headers["content-length"]) > limitBytes) {
+      return reject(new Error("Payload Too Large"));
+    }
+
+    const chunks: Buffer[] = [];
+    let totalLength = 0;
+
+    const onData = (chunk: Buffer) => {
+      totalLength += chunk.length;
+
+      if (totalLength > limitBytes) {
+        req.off("data", onData);
+        req.pause();
+        return reject(new Error("Payload Too Large"));
+      }
+
       chunks.push(chunk);
-    });
+    };
+
+    req.on("data", onData);
 
     req.on("end", () => {
       resolve(Buffer.concat(chunks as any));
@@ -51,8 +69,19 @@ export default async function webhook(
 
   const signature = req.headers["stripe-signature"] as any;
 
+  let body: Buffer;
+
   try {
-    const body = await buffer(req);
+    body = await buffer(req, MAX_BODY_SIZE);
+  } catch (err: any) {
+    if (err.message === "Payload Too Large") {
+      res.setHeader("Connection", "close");
+      return res.status(413).send("Payload too large.");
+    }
+    return res.status(400).send("Invalid request body.");
+  }
+
+  try {
     event = stripe.webhooks.constructEvent(body, signature, endpointSecret);
   } catch (err) {
     console.error(err);
