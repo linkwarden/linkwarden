@@ -49,6 +49,8 @@ yarn workspace @linkwarden/mobile e2e
 
 If more than one simulator or emulator is running, pick one with `--device`, for example `maestro --device emulator-5554 test .maestro` from `apps/mobile` (`adb devices` and `xcrun simctl list devices booted` list the ids). Open `maestro studio` to inspect the screen and try selectors.
 
+On the iPhone Duo simulator, run the flows with the device folded. Maestro 2.12 still measures the cover display while the Duo is unfolded, so its taps land in the wrong place there.
+
 Every flow starts from a fresh install: the app's data, and on iOS the simulator's keychain, are cleared on launch. `login-and-save-link` adds a link named `Maestro <timestamp>` to the test account on each run.
 
 | Variable        | Default                                                         | Purpose                                   |
@@ -83,6 +85,6 @@ Each run creates new accounts with `@lab.test` addresses. These flows have only 
 - Prefer `id:` selectors backed by a `testID` prop over visible text, so copy changes don't break flows. Icon-only buttons should get an `accessibilityLabel` instead, which screen readers use too.
 - When a step needs a different selector per platform, wrap each version in `runFlow` with `when: platform: iOS` or `when: platform: Android`. In scripts, `maestro.platform` is `"ios"` or `"android"`.
 - zeego menu triggers render inside a native button that hides the trigger's own label and `testID` on iOS, so put the `testID` on a `View` around `DropdownMenu.Root` (see `server-picker` in `app/index.tsx`).
-- Native tab bars don't expose a tab's `testID` to Maestro (iOS 26 and later drop it, and Android keeps it in a view tag). Match the tab's label instead: inside `text: "Tab Bar"` on iOS, and with `id: ".*navigation_bar_item_.*_label_view"` on Android.
+- Native tab bars don't expose a tab's `testID` to Maestro (iOS 26 and later drop it, and Android keeps it in a view tag). Match the tab's label instead: inside `text: "Tab Bar|Toolbar"` on iOS, and with `id: ".*navigation_bar_item_.*_label_view"` on Android. iPhone Duo moves the tabs into a bar along the side of the screen, which Maestro sees as one of several elements named `Toolbar`, so also ask for the one that has the tabs with `containsDescendants` (see `login-and-save-link.yaml`).
 - Action sheets slide up after the keyboard opens, and Maestro can tap where a field used to be. Close each field with `pressKey: Enter` and `waitForAnimationToEnd` before the next tap.
 - A link row is one accessibility element whose text is `<name>, <host>, <collection>, <date>` on both platforms, so match it with a regex such as `"${output.linkName},.*"`.

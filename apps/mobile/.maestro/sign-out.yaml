@@ -19,7 +19,9 @@ name: Sign out and revoke the app's session on the server
       - tapOn:
           text: "Settings"
           childOf:
-            text: "Tab Bar"
+            text: "Tab Bar|Toolbar"
+            containsDescendants:
+              - text: "Dashboard"
 - runFlow:
     when:
       platform: Android

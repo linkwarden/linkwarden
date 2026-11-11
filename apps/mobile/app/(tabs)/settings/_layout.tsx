@@ -1,10 +1,12 @@
 import { Stack, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { useSideInsets } from "@/lib/sideInsets";
 import { Platform, View } from "react-native";
 
 export default function Layout() {
   const { colorScheme } = useColorScheme();
+  const sideInsets = useSideInsets();
   const router = useRouter();
   const isIOS26Plus =
     Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
@@ -14,6 +16,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
+        contentStyle: sideInsets,
         headerTitle: "Settings",
         headerLargeTitle: true,
         headerTintColor: colorScheme === "dark" ? "white" : "black",

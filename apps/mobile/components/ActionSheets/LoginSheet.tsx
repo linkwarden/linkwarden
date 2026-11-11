@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  Dimensions,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -24,6 +24,7 @@ export default function LoginSheet() {
   const { auth, signIn, instanceInfo, fetchInstanceInfo } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const theme = rawTheme[colorScheme as ThemeName];
   const [method, setMethod] = useState<"password" | "token">("password");
   const [isLoading, setIsLoading] = useState(false);
@@ -107,7 +108,7 @@ export default function LoginSheet() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         style={{
-          maxHeight: Dimensions.get("window").height * 0.78,
+          maxHeight: height * 0.78,
         }}
         contentContainerClassName="px-8 pb-5 flex-col gap-4"
       >

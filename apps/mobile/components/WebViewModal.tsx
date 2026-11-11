@@ -59,6 +59,8 @@ export default function WebViewModal({
         style={{
           flex: 1,
           paddingTop: insets.top,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
           paddingBottom: Platform.OS === "android" ? insets.bottom : undefined,
         }}
         className="bg-base-100"

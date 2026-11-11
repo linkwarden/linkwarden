@@ -1,0 +1,72 @@
+diff --git a/node_modules/react-native-screens/ios/tabs/host/RNSTabBarController.mm b/node_modules/react-native-screens/ios/tabs/host/RNSTabBarController.mm
+index 481a9e6..a7c6b34 100644
+--- a/node_modules/react-native-screens/ios/tabs/host/RNSTabBarController.mm
++++ b/node_modules/react-native-screens/ios/tabs/host/RNSTabBarController.mm
+@@ -177,6 +177,22 @@ static void rns_pushViewController(__unsafe_unretained id self,
+ 
+ #pragma mark - UIKit callbacks
+ 
++- (void)viewWillTransitionToSize:(CGSize)size
++       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
++{
++  [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
++
++  // After the scene changes size UIKit can leave the tab bar laid out for the previous size until something asks
++  // for another layout pass: an iPhone Duo that was just unfolded shows its side tab bar in the wrong place.
++  __weak __typeof(self) weakSelf = self;
++  [coordinator
++      animateAlongsideTransition:nil
++                      completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
++                        [weakSelf.view setNeedsLayout];
++                        [weakSelf.tabBar setNeedsLayout];
++                      }];
++}
++
+ - (void)didMoveToParentViewController:(UIViewController *)parent
+ {
+   [super didMoveToParentViewController:parent];
+diff --git a/node_modules/react-native-screens/ios/tabs/host/RNSTabsHostComponentView.mm b/node_modules/react-native-screens/ios/tabs/host/RNSTabsHostComponentView.mm
+index 8b61f5b..3be62bb 100644
+--- a/node_modules/react-native-screens/ios/tabs/host/RNSTabsHostComponentView.mm
++++ b/node_modules/react-native-screens/ios/tabs/host/RNSTabsHostComponentView.mm
+@@ -48,6 +48,7 @@ namespace react = facebook::react;
+   BOOL _hasModifiedTabsScreensInCurrentTransaction;
+   BOOL _hasModifiedBottomAccessoryInCurrentTransation;
+   BOOL _needsTabBarAppearanceUpdate;
++  CGSize _lastLayoutSize;
+ 
+   RNSTabsNavigationStateUpdateRequest *_Nullable _navStateRequest;
+ 
+@@ -123,9 +124,32 @@ namespace react = facebook::react;
+ 
+ #pragma mark - UIView methods
+ 
++- (void)layoutSubviews
++{
++  [super layoutSubviews];
++
++  if (CGSizeEqualToSize(self.bounds.size, _lastLayoutSize)) {
++    return;
++  }
++  _lastLayoutSize = self.bounds.size;
++
++  // React resizes the host on its own schedule, which can be after UIKit's last layout pass for a size change
++  // (see -[RNSTabBarController viewWillTransitionToSize:withTransitionCoordinator:]). Ask for another pass
++  // once this one is over.
++  RNSTabBarController *controller = _controller;
++  dispatch_async(dispatch_get_main_queue(), ^{
++    [controller.view setNeedsLayout];
++    [controller.tabBar setNeedsLayout];
++  });
++}
++
+ - (void)didMoveToWindow
+ {
+   if (self.window != nil && _controller.parentViewController == nil) {
++    // Size the view to the host before attaching: the tabs were installed at the main screen's size and UIKit
++    // doesn't rebuild the tab bar on a later resize (iPhone Duo side rail).
++    // See https://github.com/software-mansion/react-native-screens/issues/4989.
++    _controller.view.frame = self.bounds;
+     BOOL mountResult = [RNSContainerHelpers addChildViewController:_controller
+                                           toViewControllerManaging:self.reactSuperview
+                                                  withContainerView:self];

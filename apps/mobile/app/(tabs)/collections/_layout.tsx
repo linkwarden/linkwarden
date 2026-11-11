@@ -2,12 +2,14 @@ import { Stack, useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { useSideInsets } from "@/lib/sideInsets";
 import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 
 export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
+  const sideInsets = useSideInsets();
 
   const isIOS26Plus =
     Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
@@ -15,6 +17,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
+        contentStyle: sideInsets,
         headerTitle: "Collections",
         headerLargeTitle: true,
         headerTintColor: colorScheme === "dark" ? "white" : "black",

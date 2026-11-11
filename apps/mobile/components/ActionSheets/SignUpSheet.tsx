@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Dimensions,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -43,6 +43,7 @@ export default function SignUpSheet() {
   const { auth, instanceInfo, signUp } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const theme = rawTheme[colorScheme as ThemeName];
   const [isLoading, setIsLoading] = useState(false);
   const [acceptPromotionalEmails, setAcceptPromotionalEmails] = useState(false);
@@ -150,7 +151,7 @@ export default function SignUpSheet() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         style={{
-          maxHeight: Dimensions.get("window").height * 0.78,
+          maxHeight: height * 0.78,
         }}
         contentContainerClassName="px-8 pb-5 flex-col gap-3"
       >

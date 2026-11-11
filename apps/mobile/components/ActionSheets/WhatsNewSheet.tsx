@@ -1,4 +1,10 @@
-import { Dimensions, Linking, ScrollView, Text, View } from "react-native";
+import {
+  Linking,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,6 +21,7 @@ export default function WhatsNewSheet() {
   const { colorScheme } = useColorScheme();
   const theme = rawTheme[colorScheme as ThemeName];
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
 
   const closeSheet = () => {
     SheetManager.hide("whats-new-sheet");
@@ -45,7 +52,7 @@ export default function WhatsNewSheet() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
-          maxHeight: Dimensions.get("window").height * 0.7,
+          maxHeight: height * 0.7,
         }}
         contentContainerClassName="px-8 pb-5 flex-col gap-5"
       >

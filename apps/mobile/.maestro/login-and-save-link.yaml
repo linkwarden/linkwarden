@@ -12,7 +12,9 @@ name: Log in and save a link
       - tapOn:
           text: "Links"
           childOf:
-            text: "Tab Bar"
+            text: "Tab Bar|Toolbar"
+            containsDescendants:
+              - text: "Dashboard"
 - runFlow:
     when:
       platform: Android

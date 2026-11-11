@@ -469,7 +469,10 @@ export default function SubscribeScreen() {
   };
 
   return (
-    <View className="flex-1 bg-zinc-100 dark:bg-zinc-900">
+    <View
+      className="flex-1 bg-zinc-100 dark:bg-zinc-900"
+      style={{ paddingLeft: insets.left, paddingRight: insets.right }}
+    >
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -713,7 +716,7 @@ export default function SubscribeScreen() {
         accessibilityRole="button"
         accessibilityLabel="Need help?"
         className="absolute right-4 items-center justify-center rounded-full"
-        style={{ top: insets.top + 4 }}
+        style={{ top: insets.top + 4, marginRight: insets.right }}
         onPress={() => SheetManager.show("support-sheet")}
       >
         <CircleHelp size={25} color={theme["base-content"]} />

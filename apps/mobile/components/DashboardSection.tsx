@@ -13,6 +13,7 @@ import {
 } from "lucide-react-native";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import LinkListing from "@/components/LinkListing";
+import EdgeFade from "@/components/ui/EdgeFade";
 import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
 
@@ -118,22 +119,25 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
 
           {dashboardData.isLoading ||
           (links.length > 0 && !dashboardData.isLoading) ? (
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              directionalLockEnabled
-              data={links || []}
-              refreshing={dashboardData.isLoading}
-              initialNumToRender={2}
-              keyExtractor={(item) => item.id?.toString() || ""}
-              renderItem={({ item }) => (
-                <RenderItem item={item} key={item.id?.toString()} />
-              )}
-              ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-              contentContainerStyle={{
-                paddingHorizontal: 20,
-              }}
-            />
+            <View>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                directionalLockEnabled
+                data={links || []}
+                refreshing={dashboardData.isLoading}
+                initialNumToRender={2}
+                keyExtractor={(item) => item.id?.toString() || ""}
+                renderItem={({ item }) => (
+                  <RenderItem item={item} key={item.id?.toString()} />
+                )}
+                ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                contentContainerStyle={{
+                  paddingHorizontal: 20,
+                }}
+              />
+              <EdgeFade />
+            </View>
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
               <Clock8
@@ -185,21 +189,26 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
 
           {dashboardData.isLoading ||
           links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0]) || []}
-              refreshing={dashboardData.isLoading}
-              initialNumToRender={2}
-              keyExtractor={(item) => item.id?.toString() || ""}
-              renderItem={({ item }) => (
-                <RenderItem item={item} key={item.id?.toString()} />
-              )}
-              ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-              contentContainerStyle={{
-                paddingHorizontal: 20,
-              }}
-            />
+            <View>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={
+                  links.filter((e: any) => e.pinnedBy && e.pinnedBy[0]) || []
+                }
+                refreshing={dashboardData.isLoading}
+                initialNumToRender={2}
+                keyExtractor={(item) => item.id?.toString() || ""}
+                renderItem={({ item }) => (
+                  <RenderItem item={item} key={item.id?.toString()} />
+                )}
+                ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                contentContainerStyle={{
+                  paddingHorizontal: 20,
+                }}
+              />
+              <EdgeFade />
+            </View>
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
               <Pin
@@ -250,21 +259,24 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
           </View>
 
           {dashboardData.isLoading || collectionLinks.length > 0 ? (
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={collectionLinks || []}
-              refreshing={dashboardData.isLoading}
-              initialNumToRender={2}
-              keyExtractor={(item) => item.id?.toString() || ""}
-              renderItem={({ item }) => (
-                <RenderItem item={item} key={item.id?.toString()} />
-              )}
-              ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-              contentContainerStyle={{
-                paddingHorizontal: 20,
-              }}
-            />
+            <View>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={collectionLinks || []}
+                refreshing={dashboardData.isLoading}
+                initialNumToRender={2}
+                keyExtractor={(item) => item.id?.toString() || ""}
+                renderItem={({ item }) => (
+                  <RenderItem item={item} key={item.id?.toString()} />
+                )}
+                ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                contentContainerStyle={{
+                  paddingHorizontal: 20,
+                }}
+              />
+              <EdgeFade />
+            </View>
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
               <Text className="text-center text-xl text-neutral">

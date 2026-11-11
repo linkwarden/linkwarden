@@ -23,7 +23,9 @@ name: Delete a sub-collection and keep its parent
       - tapOn:
           text: "Collections"
           childOf:
-            text: "Tab Bar"
+            text: "Tab Bar|Toolbar"
+            containsDescendants:
+              - text: "Dashboard"
 - runFlow:
     when:
       platform: Android

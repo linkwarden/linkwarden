@@ -1,4 +1,5 @@
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { useSideInsets } from "@/lib/sideInsets";
 import { Stack, useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
@@ -9,6 +10,7 @@ import * as DropdownMenu from "zeego/dropdown-menu";
 export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
+  const sideInsets = useSideInsets();
 
   const isIOS26Plus =
     Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
@@ -16,6 +18,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
+        contentStyle: sideInsets,
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,

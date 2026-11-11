@@ -12,7 +12,9 @@ name: Shows no usage analytics setting while signed in to a self-hosted server
       - tapOn:
           text: "Settings"
           childOf:
-            text: "Tab Bar"
+            text: "Tab Bar|Toolbar"
+            containsDescendants:
+              - text: "Dashboard"
 - runFlow:
     when:
       platform: Android
