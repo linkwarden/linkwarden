@@ -33,6 +33,20 @@ import { installCustomHeaders } from "@/lib/customHeaders";
 
 installCustomHeaders();
 
+function extractSharedUrl(
+  webUrl?: string | null,
+  text?: string | null
+): string | null {
+  if (webUrl && webUrl.trim()) {
+    return webUrl.trim();
+  }
+  if (text && text.trim()) {
+    const match = text.match(/https?:\/\/[^\s]+/i);
+    return match ? match[0] : text.trim();
+  }
+  return null;
+}
+
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
@@ -52,44 +66,59 @@ export default function RootLayout() {
     setReader();
   }, []);
 
+  // 1. Capture incoming share intent immediately, regardless of cache hydration state
+  useEffect(() => {
+    if (!hasShareIntent) return;
+
+    const extractedUrl = extractSharedUrl(
+      shareIntent?.webUrl,
+      shareIntent?.text
+    );
+
+    if (extractedUrl) {
+      updateData({
+        shareIntent: {
+          hasShareIntent: true,
+          url: extractedUrl,
+        },
+      });
+    }
+
+    resetShareIntent();
+  }, [hasShareIntent, shareIntent?.webUrl, shareIntent?.text]);
+
+  // 2. Navigate to /incoming once router and persisted queries are ready
   useEffect(() => {
     if (!rootNavState?.key || isLoading) return;
 
-    if (hasShareIntent) {
-      if (shareIntent.webUrl) {
-        updateData({
-          shareIntent: {
-            hasShareIntent: true,
-            url: shareIntent.webUrl,
-          },
-        });
-      }
+    const hasPendingShare = Boolean(data?.shareIntent?.hasShareIntent);
+    const isDataUrlRoute = typeof pathname === "string" && pathname.startsWith("/dataUrl=");
+    let timer: NodeJS.Timeout;
 
-      resetShareIntent();
-    }
-
-    const needsRewrite =
-      ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
-        hasShareIntent) &&
-      pathname !== "/incoming";
-
-    if (needsRewrite) {
+    if ((hasPendingShare || isDataUrlRoute) && pathname !== "/incoming") {
       if (!redirectingToIncoming.current) {
         redirectingToIncoming.current = true;
         router.replace("/incoming");
+
+        timer = setTimeout(() => {
+          redirectingToIncoming.current = false;
+        }, 1000);
       }
-    } else if (pathname === "/incoming") {
+    } else if (pathname === "/incoming" || !hasPendingShare) {
       redirectingToIncoming.current = false;
     }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [
     rootNavState?.key,
-    hasShareIntent,
-    pathname,
-    shareIntent?.webUrl,
-    data.shareIntent,
     isLoading,
+    pathname,
+    data?.shareIntent?.hasShareIntent,
+    router,
   ]);
-
+  
   return (
     <PersistQueryClientProvider
       client={queryClient}
