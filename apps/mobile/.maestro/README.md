@@ -62,6 +62,8 @@ Every flow starts from a fresh install: the app's data, and on iOS the simulator
 
 Pass them with `-e`, for example `yarn workspace @linkwarden/mobile e2e -e TEST_USERNAME=me -e TEST_PASSWORD=secret`. Don't set defaults in a flow's `env:` block: those take precedence over `-e`.
 
+`share-from-browser` only does something on Android. It shares two `example.com` pages from Chrome's menu to the app, first after `killApp` (which kills the app the way Android does in the background, keeping its task) and then after `stopApp`, and adds both links to the test account. It then kills and reopens the app and checks through the API that the second link, which started the app, wasn't saved again. Chrome has to be installed and past its first-run screens.
+
 ## Email verification flows
 
 The flows in `email/` need a server with email enabled, so they aren't part of the default run. From the repo root, start the web e2e mail sink with an HTTP port, which the flows read the emailed codes from:

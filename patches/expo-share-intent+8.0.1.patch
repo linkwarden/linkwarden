@@ -1,0 +1,65 @@
+diff --git a/node_modules/expo-share-intent/android/build.gradle b/node_modules/expo-share-intent/android/build.gradle
+index eb97833..485d636 100644
+--- a/node_modules/expo-share-intent/android/build.gradle
++++ b/node_modules/expo-share-intent/android/build.gradle
+@@ -16,3 +16,7 @@ android {
+     abortOnError false
+   }
+ }
++
++dependencies {
++  implementation "androidx.activity:activity:1.11.0"
++}
+diff --git a/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt b/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
+index ff5b100..2aac88f 100644
+--- a/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
++++ b/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentModule.kt
+@@ -197,6 +197,9 @@ class ExpoShareIntentModule : Module() {
+         }
+ 
+         OnNewIntent {
++            // handled right away, so drop the copy the activity listener kept for later
++            ExpoShareIntentSingleton.intent = null
++            ExpoShareIntentSingleton.isPending = false
+             handleShareIntent(it)
+         }
+ 
+diff --git a/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt b/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt
+index db573ec..d35a8ad 100644
+--- a/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt
++++ b/node_modules/expo-share-intent/android/src/main/java/expo/modules/shareintent/ExpoShareIntentReactActivityLifecycleListener.kt
+@@ -7,6 +7,7 @@ import android.content.pm.ShortcutManager
+ import android.os.Build
+ import android.os.Bundle
+ import android.util.Log
++import androidx.activity.ComponentActivity
+ import expo.modules.core.interfaces.ReactActivityLifecycleListener
+ 
+ 
+@@ -14,8 +15,24 @@ class ExpoShareIntentReactActivityLifecycleListener(activityContext: Context) :
+ 
+     override fun onCreate(activity: Activity?, savedInstanceState: Bundle?) {
+         // only store when the new intent is not empty
+-        if (activity?.intent?.type != null) {
+-            ExpoShareIntentSingleton.intent = activity?.intent
++        storePendingIntent(activity?.intent)
++
++        // When Android kills the app in the background but keeps its task, a share recreates the
++        // activity with its old intent and delivers the share through onNewIntent. While the app is
++        // still loading, Expo only passes that intent on to the activity itself, so catch it there.
++        (activity as? ComponentActivity)?.addOnNewIntentListener { storePendingIntent(it) }
++    }
++
++    // Once the app has loaded, Expo calls this before React Native, which drops the intent if React
++    // isn't running yet. If it is running, the module's OnNewIntent handles it and clears this copy.
++    override fun onNewIntent(intent: Intent?): Boolean {
++        storePendingIntent(intent)
++        return false
++    }
++
++    private fun storePendingIntent(intent: Intent?) {
++        if (intent?.type != null) {
++            ExpoShareIntentSingleton.intent = intent
+             ExpoShareIntentSingleton.isPending = true
+         }
+     }

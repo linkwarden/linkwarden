@@ -1,0 +1,15 @@
+# Opens a unique page in Chrome and shares it to Linkwarden from Chrome's menu.
+appId: app.linkwarden
+---
+- evalScript: ${output.sharedUrl = "https://example.com/?maestro-share=" + Date.now()}
+- openLink:
+    link: ${output.sharedUrl}
+    browser: true
+- tapOn:
+    id: "com.android.chrome:id/menu_button"
+- tapOn:
+    id: "com.android.chrome:id/share_menu_id"
+- tapOn: "Linkwarden"
+- extendedWaitUntil:
+    visible: "Link Saved!"
+    timeout: 30000

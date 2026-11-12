@@ -1,0 +1,36 @@
+appId: app.linkwarden
+name: Save links shared from Chrome while the app isn't running
+# Android only. killApp kills the app the way Android does in the background,
+# which keeps its task, so the share has to bring that task back.
+# stopApp leaves nothing running, so the share starts the app from scratch.
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - runFlow: subflows/launch.yaml
+      - runFlow: subflows/login.yaml
+      - pressKey: Home
+      - killApp
+      - runFlow: subflows/share-from-chrome.yaml
+      - pressKey: Home
+      - stopApp
+      - runFlow: subflows/share-from-chrome.yaml
+      # That share started the app, and Android restores the app with it after
+      # killing it in the background. Opening the app again mustn't save it twice.
+      - pressKey: Home
+      - killApp
+      - launchApp:
+          stopApp: false
+      - extendedWaitUntil:
+          visible: "Link Saved!"
+          timeout: 8000
+          optional: true
+      - runScript:
+          file: scripts/links.js
+          env:
+            BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+            USERNAME: ${TEST_USERNAME || "user1"}
+            PASSWORD: ${TEST_PASSWORD || "11111111"}
+            URL: ${output.sharedUrl}
+      - assertTrue: ${output.savedCount == 1}

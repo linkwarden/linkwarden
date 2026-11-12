@@ -30,6 +30,7 @@ import { StatusBar } from "expo-status-bar";
 import OfflineSyncProvider from "@/components/OfflineSyncProvider";
 import Analytics from "@/components/Analytics";
 import { installCustomHeaders } from "@/lib/customHeaders";
+import { shouldOpenIncoming } from "@/lib/shareRedirect";
 
 installCustomHeaders();
 
@@ -44,7 +45,8 @@ export default function RootLayout() {
 
   const { setAuth } = useAuthStore();
   const rootNavState = useRootNavigationState();
-  const redirectingToIncoming = useRef(false);
+  const redirectedToIncomingFrom = useRef<string | null>(null);
+  const incomingShownFor = useRef<string | null>(null);
 
   useEffect(() => {
     setAuth();
@@ -68,18 +70,23 @@ export default function RootLayout() {
       resetShareIntent();
     }
 
-    const needsRewrite =
-      ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
-        hasShareIntent) &&
-      pathname !== "/incoming";
+    if (pathname === "/incoming") {
+      redirectedToIncomingFrom.current = null;
+      incomingShownFor.current = data.shareIntent.url;
+      return;
+    }
 
-    if (needsRewrite) {
-      if (!redirectingToIncoming.current) {
-        redirectingToIncoming.current = true;
-        router.replace("/incoming");
-      }
-    } else if (pathname === "/incoming") {
-      redirectingToIncoming.current = false;
+    if (
+      shouldOpenIncoming({
+        pathname,
+        hasShareIntent,
+        sharedUrl: data.shareIntent.url,
+        incomingShownFor: incomingShownFor.current,
+        redirectedFrom: redirectedToIncomingFrom.current,
+      })
+    ) {
+      redirectedToIncomingFrom.current = pathname;
+      router.replace("/incoming");
     }
   }, [
     rootNavState?.key,

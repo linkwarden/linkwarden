@@ -110,6 +110,7 @@ const config: ExpoConfig = {
     "./plugins/with-daynight-transparent-nav",
     "./plugins/with-network-security-config",
     "./plugins/with-gradle-memory",
+    "./plugins/with-ignore-restored-share",
     "expo-font",
     "expo-web-browser",
     "expo-apple-authentication",
