@@ -156,4 +156,18 @@ describe("s3Client", () => {
       [...objects.keys()].filter((k) => k.startsWith("archives/3/"))
     ).toEqual([]);
   });
+
+  it("leaves folders whose names start with the deleted folder's name", async () => {
+    objects.set("archives/4/4.html", Buffer.from("html"));
+    objects.set("archives/40/40.html", Buffer.from("html"));
+    objects.set("archives/preview/4/4.jpeg", Buffer.from("jpeg"));
+    objects.set("archives/preview/40/40.jpeg", Buffer.from("jpeg"));
+
+    await fsHelpers.removeFolder({ filePath: "archives/4" });
+    await fsHelpers.removeFolder({ filePath: "archives/preview/4" });
+
+    expect(
+      [...objects.keys()].filter((k) => /^archives\/(preview\/)?40?\//.test(k))
+    ).toEqual(["archives/40/40.html", "archives/preview/40/40.jpeg"]);
+  });
 });

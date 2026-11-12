@@ -11,7 +11,10 @@ async function emptyS3Directory(bucket: string, dir: string) {
   if (s3Client) {
     const listParams = {
       Bucket: bucket,
-      Prefix: dir,
+      // S3 matches prefixes as plain strings, so "archives/1" would also match
+      // "archives/10/" and "archives/100/". Ending it with exactly one slash
+      // keeps the listing inside the folder.
+      Prefix: dir.replace(/\/+$/, "") + "/",
     };
 
     const deleteParams: DeleteObjectsCommandInput = {
