@@ -36,13 +36,20 @@ jobs:
   ios:
     name: Build iOS (production) & submit
     if: ${{ inputs.ios != 'Skip' }}
-    runs-on: macos-26
+    # Not macos-26: its newest Xcode is 26.6, and iPhone Duo support needs the iOS 27.1 SDK.
+    runs-on: xcode-27
     defaults:
       run:
         working-directory: apps/mobile
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Pinned so a new default Xcode on the image doesn't change the SDK unnoticed.
+      - name: Select Xcode 27.1
+        run: |
+          sudo xcode-select -s /Applications/Xcode_27.1.app
+          xcodebuild -version
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
