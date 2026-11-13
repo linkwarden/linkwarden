@@ -64,6 +64,8 @@ Pass them with `-e`, for example `yarn workspace @linkwarden/mobile e2e -e TEST_
 
 `share-from-browser` only does something on Android. It shares two `example.com` pages from Chrome's menu to the app, first after `killApp` (which kills the app the way Android does in the background, keeping its task) and then after `stopApp`, and adds both links to the test account. It then kills and reopens the app and checks through the API that the second link, which started the app, wasn't saved again. Chrome has to be installed and past its first-run screens.
 
+`reader-menu` only checks something on the iPhone Duo, where the reader's buttons move into the side bar and its menu becomes a native "More" menu. It picks Delete from that menu, cancels, and checks that the reopened menu has no checkmark next to Delete. On other devices it opens the link and stops. It adds a link named `Maestro menu <timestamp>` to the test account and deletes it at the end.
+
 ## Email verification flows
 
 The flows in `email/` need a server with email enabled, so they aren't part of the default run. From the repo root, start the web e2e mail sink with an HTTP port, which the flows read the emailed codes from:

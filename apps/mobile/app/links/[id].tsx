@@ -370,6 +370,9 @@ export default function LinkScreen() {
         icon: { type: "sfSymbol", name: "ellipsis" },
         tintColor: theme["base-content"],
         menu: {
+          // Without this the menu becomes a single-selection menu, and iOS
+          // puts a checkmark next to whichever action was tapped last
+          multiselectable: true,
           items: menuActions.map((action) => ({
             type: "action" as const,
             label: action.label,
