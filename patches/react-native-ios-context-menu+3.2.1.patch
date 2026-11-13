@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-ios-context-menu/ios/RNIContextMenu/RNIMenuActionItem.swift b/node_modules/react-native-ios-context-menu/ios/RNIContextMenu/RNIMenuActionItem.swift
+index 63fae48..3e4ad9b 100644
+--- a/node_modules/react-native-ios-context-menu/ios/RNIContextMenu/RNIMenuActionItem.swift
++++ b/node_modules/react-native-ios-context-menu/ios/RNIContextMenu/RNIMenuActionItem.swift
+@@ -182,7 +182,7 @@ extension RNIMenuActionItem {
+     );
+     
+     #if swift(>=5.5)
+-    if #available(iOS 15.0, *) {
++    if #available(iOS 16.0, *) {
+       action.subtitle =
+            self.actionSubtitle
+         ?? self.fallbackActionSubtitle;
