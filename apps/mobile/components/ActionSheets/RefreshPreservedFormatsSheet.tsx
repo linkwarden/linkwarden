@@ -7,6 +7,7 @@ import ActionSheet, {
 } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useUpdateArchive } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -21,6 +22,7 @@ export default function RefreshPreservedFormatsSheet(
   const { colorScheme } = useColorScheme();
   const theme = rawTheme[colorScheme as ThemeName];
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   const { auth } = useAuthStore();
 
@@ -54,7 +56,7 @@ export default function RefreshPreservedFormatsSheet(
       ref={actionSheetRef}
       gestureEnabled
       indicatorStyle={{ display: "none" }}
-      containerStyle={{ backgroundColor: theme["base-100"] }}
+      containerStyle={{ backgroundColor: theme["base-100"], ...sideInsets }}
       safeAreaInsets={insets}
     >
       <SheetHeader

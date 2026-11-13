@@ -66,6 +66,8 @@ Pass them with `-e`, for example `yarn workspace @linkwarden/mobile e2e -e TEST_
 
 `reader-menu` only checks something on the iPhone Duo, where the reader's buttons move into the side bar and its menu becomes a native "More" menu. It picks Delete from that menu, cancels, and checks that the reopened menu has no checkmark next to Delete. On other devices it opens the link and stops. It adds a link named `Maestro menu <timestamp>` to the test account and deletes it at the end.
 
+`close-sheet` opens the Edit Link sheet, which reaches the top of the screen, closes it with its close button, and checks that the link list takes a long press again. On the iPhone Duo's cover display, a close button left under the status area along the right edge opens Control Center instead. The flow adds a link named `Maestro sheet <timestamp>` and deletes it at the end.
+
 ## Email verification flows
 
 The flows in `email/` need a server with email enabled, so they aren't part of the default run. From the repo root, start the web e2e mail sink with an HTTP port, which the flows read the emailed codes from:

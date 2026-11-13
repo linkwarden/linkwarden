@@ -8,6 +8,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useUpsertTags } from "@linkwarden/router/tags";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import SheetHeader from "./SheetHeader";
 
 export default function AddTagSheet() {
@@ -18,6 +19,7 @@ export default function AddTagSheet() {
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   const closeSheet = () => {
     actionSheetRef.current?.hide();
@@ -33,6 +35,7 @@ export default function AddTagSheet() {
       }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
       onClose={() => {

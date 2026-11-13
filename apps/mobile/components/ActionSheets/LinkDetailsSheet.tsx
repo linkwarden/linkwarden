@@ -16,6 +16,7 @@ import { decode } from "html-entities";
 import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import {
   CalendarDays,
   ChevronRight,
@@ -75,6 +76,7 @@ export default function LinkDetailsSheet(
   const { data } = useDataStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const { height } = useWindowDimensions();
   const router = useRouter();
   const theme = rawTheme[colorScheme as ThemeName];
@@ -169,6 +171,7 @@ export default function LinkDetailsSheet(
       }}
       containerStyle={{
         backgroundColor: theme["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

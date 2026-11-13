@@ -6,6 +6,7 @@ import { useColorScheme } from "nativewind";
 import * as Clipboard from "expo-clipboard";
 import { Button } from "../ui/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import SheetHeader from "./SheetHeader";
 
 export default function SupportSheet() {
@@ -19,6 +20,7 @@ export default function SupportSheet() {
   }
 
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   const closeSheet = () => {
     SheetManager.hide("support-sheet");
@@ -32,6 +34,7 @@ export default function SupportSheet() {
       }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

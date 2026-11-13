@@ -8,6 +8,7 @@ import { Trash2 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import useAuthStore from "@/store/auth";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -65,6 +66,7 @@ export default function ReadableHighlightSheet(
   const [draft, setDraft] = useState<ReadableHighlightDraft | null>(null);
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const theme = rawTheme[colorScheme as ThemeName];
 
   useEffect(() => {
@@ -137,6 +139,7 @@ export default function ReadableHighlightSheet(
       }}
       containerStyle={{
         backgroundColor: theme["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
       onClose={() => {

@@ -8,6 +8,7 @@ import {
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import {
   WHATS_NEW_ITEMS,
@@ -21,6 +22,7 @@ export default function WhatsNewSheet() {
   const { colorScheme } = useColorScheme();
   const theme = rawTheme[colorScheme as ThemeName];
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const { height } = useWindowDimensions();
 
   const closeSheet = () => {
@@ -39,6 +41,7 @@ export default function WhatsNewSheet() {
       }}
       containerStyle={{
         backgroundColor: theme["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

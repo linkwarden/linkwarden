@@ -32,6 +32,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { seedFormatCache } from "@/lib/cache";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import SheetHeader from "./SheetHeader";
 
 const MIN_TAG_SEARCH_VERSION = "2.14.1";
@@ -618,6 +619,7 @@ export default function AddLinkSheet() {
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   return (
     <ActionSheet
@@ -629,6 +631,7 @@ export default function AddLinkSheet() {
       initialRoute="main"
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     />

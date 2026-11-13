@@ -14,6 +14,7 @@ import ActionSheet, {
 import { Trash2 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { Highlight } from "@linkwarden/prisma/client";
 import {
   useGetLinkHighlights,
@@ -50,6 +51,7 @@ export default function ReadableHighlightsSheet(
   const { auth } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const { data, isLoading } = useGetLinkHighlights(linkId, auth);
   const removeHighlight = useRemoveHighlight(linkId, auth);
@@ -99,6 +101,7 @@ export default function ReadableHighlightsSheet(
       }}
       containerStyle={{
         backgroundColor: theme["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

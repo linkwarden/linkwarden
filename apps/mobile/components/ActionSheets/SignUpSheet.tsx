@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useColorScheme } from "nativewind";
 import { Check } from "lucide-react-native";
 import {
@@ -43,6 +44,7 @@ export default function SignUpSheet() {
   const { auth, instanceInfo, signUp } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const { height } = useWindowDimensions();
   const theme = rawTheme[colorScheme as ThemeName];
   const [isLoading, setIsLoading] = useState(false);
@@ -137,6 +139,7 @@ export default function SignUpSheet() {
       }}
       containerStyle={{
         backgroundColor: theme["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

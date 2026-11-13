@@ -5,6 +5,7 @@ import ActionSheet, {
   SheetProps,
 } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useColorScheme } from "nativewind";
 import { isAtLeastInstanceVersion } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +24,7 @@ export default function VerifyEmailSheet({
     useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const { height } = useWindowDimensions();
   const theme = rawTheme[colorScheme as ThemeName];
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,7 @@ export default function VerifyEmailSheet({
       }}
       containerStyle={{
         backgroundColor: theme["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

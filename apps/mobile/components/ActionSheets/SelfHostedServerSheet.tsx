@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useColorScheme } from "nativewind";
 import { ChevronDown, ChevronRight, X } from "lucide-react-native";
 import { Button } from "@/components/ui/Button";
@@ -39,6 +40,7 @@ export default function SelfHostedServerSheet() {
   const { auth, setInstance } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const [server, setServer] = useState(
     auth.instance && auth.instance !== cloudInstance ? auth.instance : ""
@@ -128,6 +130,7 @@ export default function SelfHostedServerSheet() {
       }}
       containerStyle={{
         backgroundColor: theme["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

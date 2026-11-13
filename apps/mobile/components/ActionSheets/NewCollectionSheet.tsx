@@ -8,6 +8,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useCreateCollection } from "@linkwarden/router/collections";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import SheetHeader from "./SheetHeader";
 
 export default function NewCollectionSheet() {
@@ -21,6 +22,7 @@ export default function NewCollectionSheet() {
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   const closeSheet = () => {
     actionSheetRef.current?.hide();
@@ -39,6 +41,7 @@ export default function NewCollectionSheet() {
       }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
       onClose={() => {

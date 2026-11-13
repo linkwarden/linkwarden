@@ -6,6 +6,7 @@ import ActionSheet, {
 } from "react-native-actions-sheet";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useUser } from "@linkwarden/router/user";
 import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -29,6 +30,7 @@ export default function DeleteAccountSheet() {
   const { colorScheme } = useColorScheme();
   const theme = rawTheme[colorScheme as ThemeName];
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   const { auth, signOut } = useAuthStore();
   const { data: user } = useUser(auth);
@@ -96,7 +98,7 @@ export default function DeleteAccountSheet() {
       ref={actionSheetRef}
       gestureEnabled
       indicatorStyle={{ display: "none" }}
-      containerStyle={{ backgroundColor: theme["base-100"] }}
+      containerStyle={{ backgroundColor: theme["base-100"], ...sideInsets }}
       safeAreaInsets={insets}
       onClose={reset}
     >

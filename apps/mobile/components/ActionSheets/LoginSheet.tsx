@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import ActionSheet, { SheetManager } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useColorScheme } from "nativewind";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -24,6 +25,7 @@ export default function LoginSheet() {
   const { auth, signIn, instanceInfo, fetchInstanceInfo } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const { height } = useWindowDimensions();
   const theme = rawTheme[colorScheme as ThemeName];
   const [method, setMethod] = useState<"password" | "token">("password");
@@ -94,6 +96,7 @@ export default function LoginSheet() {
       }}
       containerStyle={{
         backgroundColor: theme["base-100"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >

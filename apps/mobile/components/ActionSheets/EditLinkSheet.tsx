@@ -41,6 +41,7 @@ import {
 import { customHeadersFor } from "@/lib/customHeaders";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { useTags } from "@linkwarden/router/tags";
 import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
 import SheetHeader from "./SheetHeader";
@@ -581,6 +582,7 @@ export default function EditLinkSheet() {
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
 
   return (
     <ActionSheet
@@ -592,6 +594,7 @@ export default function EditLinkSheet() {
       initialRoute="main"
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     />

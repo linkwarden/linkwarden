@@ -7,6 +7,7 @@ import ActionSheet, {
 import { ChevronDown, Minus, Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSideInsets } from "@/lib/sideInsets";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { Button } from "@/components/ui/Button";
 import * as DropdownMenu from "zeego/dropdown-menu";
@@ -126,6 +127,7 @@ export default function ReaderSettingsSheet(
 ) {
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
+  const sideInsets = useSideInsets();
   const theme = rawTheme[colorScheme as ThemeName];
   const { reader, resetReader, updateReader } = useReaderStore();
 
@@ -141,6 +143,7 @@ export default function ReaderSettingsSheet(
       }}
       containerStyle={{
         backgroundColor: theme["base-200"],
+        ...sideInsets,
       }}
       safeAreaInsets={insets}
     >
