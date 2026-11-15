@@ -33,6 +33,7 @@ type Props = {
   setEditMode?: (mode: boolean) => void;
   links: LinkIncludingShortenedCollectionAndTags[];
   allowCustomOrder?: boolean;
+  allowBestMatch?: boolean;
 };
 
 const LinkListOptions = ({
@@ -46,6 +47,7 @@ const LinkListOptions = ({
   setEditMode,
   links,
   allowCustomOrder,
+  allowBestMatch,
 }: Props) => {
   const { selectedIds, setSelected, clearSelected, selectionCount } =
     useLinkStore();
@@ -148,6 +150,7 @@ const LinkListOptions = ({
               }}
               t={t}
               allowCustomOrder={allowCustomOrder}
+              allowBestMatch={allowBestMatch}
             />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>

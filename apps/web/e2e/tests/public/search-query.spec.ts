@@ -1,6 +1,7 @@
 import { APIRequestContext, Page } from "@playwright/test";
 import { expect, test } from "../../index";
 import { auth, createCollection, createUser, TestUser } from "@/e2e/data/api";
+import { Sort } from "@linkwarden/types/global";
 
 const unique = () =>
   `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -146,5 +147,53 @@ test.describe("Search query", () => {
     await expect(page.getByText("Code A sample", { exact: true })).toHaveCount(
       0
     );
+  });
+
+  test("Search results come in best match order until another sort is picked", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "searcher");
+    const collection = await createCollection(request, owner);
+    await createNamedLink(request, owner, collection.id, "Sort probe alpha");
+    await createNamedLink(request, owner, collection.id, "Sort probe beta");
+    await login(page, owner);
+
+    // The sort the next search request asks for
+    const nextSearchSort = () =>
+      page
+        .waitForRequest(
+          (req) =>
+            req.url().includes("/api/v1/search?") &&
+            req.url().includes("searchQueryString=")
+        )
+        .then((req) => new URL(req.url()).searchParams.get("sort"));
+
+    const first = nextSearchSort();
+    await page.goto("/search?q=" + encodeURIComponent("sort probe"));
+    expect(await first).toBe(String(Sort.BestMatch));
+    await expect(
+      page.getByText("Sort probe alpha", { exact: true }).first()
+    ).toBeVisible();
+
+    await page.locator("button:has(i.bi-chevron-expand)").click();
+    await expect(
+      page.getByRole("menuitemradio", { name: "Best Match" })
+    ).toHaveAttribute("aria-checked", "true");
+    await expect(
+      page.getByRole("menuitemradio", { name: "Custom Order" })
+    ).toHaveCount(0);
+
+    const picked = nextSearchSort();
+    await page.getByRole("menuitemradio", { name: "Name (A-Z)" }).click();
+    expect(await picked).toBe(String(Sort.NameAZ));
+
+    // The pick holds for the next search, and other lists keep their own sort.
+    const again = nextSearchSort();
+    await page.goto("/search?q=" + encodeURIComponent("probe"));
+    expect(await again).toBe(String(Sort.NameAZ));
+    expect(
+      await page.evaluate(() => localStorage.getItem("linkSort"))
+    ).toBeNull();
   });
 });

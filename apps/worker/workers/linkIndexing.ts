@@ -60,6 +60,7 @@ async function setupLinksIndexSchema() {
     .updateFilterableAttributes([
       "collectionOwnerId",
       "collectionMemberIds",
+      "collectionId",
       "collectionName",
       "tags",
       "pinnedBy",
@@ -86,6 +87,29 @@ async function setupLinksIndexSchema() {
   await meiliClient
     .index("links")
     .waitForTask(updateSortableAttributes.taskUid, {
+      timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
+    })
+    .catch((err) => {
+      console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
+    });
+
+  // Meilisearch's default order with "attribute" moved ahead of "proximity", so a
+  // link whose title has the words beats one whose page text has them closer
+  // together. Changing the ranking rules doesn't make Meilisearch reindex.
+  const updateRankingRules = await meiliClient
+    .index("links")
+    .updateRankingRules([
+      "words",
+      "typo",
+      "attribute",
+      "proximity",
+      "sort",
+      "exactness",
+    ]);
+
+  await meiliClient
+    .index("links")
+    .waitForTask(updateRankingRules.taskUid, {
       timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
     })
     .catch((err) => {

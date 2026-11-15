@@ -21,6 +21,8 @@ type Props = {
    * hand-made order means anything.
    */
   allowCustomOrder?: boolean;
+  // Whether the list is search results, the only place best match means anything
+  allowBestMatch?: boolean;
 };
 
 export default function SortDropdown({
@@ -28,6 +30,7 @@ export default function SortDropdown({
   setSort,
   t,
   allowCustomOrder,
+  allowBestMatch,
 }: Props) {
   const queryClient = useQueryClient();
 
@@ -52,6 +55,12 @@ export default function SortDropdown({
           value={sortBy.toString()}
           onValueChange={handleValueChange}
         >
+          {allowBestMatch && (
+            <DropdownMenuRadioItem value={Sort.BestMatch.toString()}>
+              {t("best_match")}
+            </DropdownMenuRadioItem>
+          )}
+
           {allowCustomOrder && (
             <DropdownMenuRadioItem value={Sort.Custom.toString()}>
               {t("custom_order")}

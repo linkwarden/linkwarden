@@ -1,4 +1,5 @@
 import { useLinks } from "@linkwarden/router/links";
+import { Sort } from "@linkwarden/types/global";
 import {
   View,
   Platform,
@@ -95,7 +96,7 @@ export default function LinksScreen() {
 
   const { links, data } = useLinks(
     {
-      sort: 0,
+      sort: search ? Sort.BestMatch : Sort.DateNewestFirst,
       searchQueryString: decodeURIComponent(search ?? ""),
       collectionId: Number(collectionId),
       pinnedOnly: section === "pinned-links",

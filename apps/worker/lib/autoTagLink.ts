@@ -175,6 +175,8 @@ export default async function autoTagLink(user: User, linkId: number) {
           })),
         },
         aiTagged: true,
+        // The link was usually indexed already, without these tags
+        indexVersion: null,
       },
     });
   } catch (err) {

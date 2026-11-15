@@ -9,6 +9,7 @@ const { linksIndex } = vi.hoisted(() => ({
   linksIndex: {
     updateFilterableAttributes: vi.fn(),
     updateSortableAttributes: vi.fn(),
+    updateRankingRules: vi.fn(),
     addDocuments: vi.fn(),
     waitForTask: vi.fn(),
   },
@@ -107,6 +108,7 @@ describe("startIndexing", () => {
   beforeEach(() => {
     linksIndex.updateFilterableAttributes.mockResolvedValue({ taskUid: 1 });
     linksIndex.updateSortableAttributes.mockResolvedValue({ taskUid: 2 });
+    linksIndex.updateRankingRules.mockResolvedValue({ taskUid: 4 });
     linksIndex.addDocuments.mockResolvedValue({ taskUid: 3 });
     linksIndex.waitForTask.mockResolvedValue({ status: "succeeded" });
     vi.mocked(getLinkBatch).mockImplementation(linkBatchFromInclude as any);
@@ -186,5 +188,40 @@ describe("startIndexing", () => {
 
     expect(linksIndex.addDocuments).toHaveBeenCalledTimes(1);
     expect(prisma.link.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("lets search scope results to a collection", async () => {
+    await runOneBatch();
+
+    expect(linksIndex.updateFilterableAttributes).toHaveBeenCalledWith(
+      expect.arrayContaining(["collectionId"])
+    );
+    expect(indexedDocs()[0].collectionId).toBe(5);
+  });
+
+  it("ranks which field matched ahead of how close the words are", async () => {
+    await runOneBatch();
+
+    expect(linksIndex.updateRankingRules).toHaveBeenCalledWith([
+      "words",
+      "typo",
+      "attribute",
+      "proximity",
+      "sort",
+      "exactness",
+    ]);
+    expect(linksIndex.waitForTask).toHaveBeenCalledWith(4, expect.anything());
+  });
+
+  it("still indexes when Meilisearch rejects a settings change", async () => {
+    linksIndex.waitForTask.mockImplementation(async (taskUid: number) => {
+      if (taskUid === 4) throw new Error("ranking rules task failed");
+      return { status: "succeeded" };
+    });
+
+    await runOneBatch();
+
+    expect(indexedDocs()).toHaveLength(1);
+    expect(prisma.link.updateMany).toHaveBeenCalled();
   });
 });

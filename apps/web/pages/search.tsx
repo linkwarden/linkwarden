@@ -12,7 +12,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
 import { NextPageWithLayout } from "./_app";
-import useLinkSort from "@/hooks/useLinkSort";
+import useSearchSort from "@/hooks/useSearchSort";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ const Page: NextPageWithLayout = () => {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
-  const [sortBy, setSortBy] = useLinkSort();
+  const [sortBy, setSortBy] = useSearchSort();
 
   const [editMode, setEditMode] = useState(false);
 
@@ -47,6 +47,7 @@ const Page: NextPageWithLayout = () => {
         editMode={editMode}
         setEditMode={setEditMode}
         links={links}
+        allowBestMatch
       >
         <PageHeader
           icon={"bi-search"}

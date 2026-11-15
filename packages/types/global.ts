@@ -91,6 +91,8 @@ export enum Sort {
   NameAZ = 2,
   NameZA = 3,
   Custom = 4,
+  // How well a link matches the search text. Without search text it's newest first.
+  BestMatch = 5,
 }
 
 export enum TagSort {

@@ -50,6 +50,8 @@ export default async function updateLinkById(
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } }
           : undefined,
+        // Pinned-only searches filter on who pinned it in Meilisearch
+        indexVersion: null,
       },
       include: {
         collection: true,

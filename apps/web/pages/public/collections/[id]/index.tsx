@@ -31,6 +31,7 @@ import {
 import useTheme from "@/hooks/useTheme";
 import { Separator } from "@/components/ui/separator";
 import useLinkSort from "@/hooks/useLinkSort";
+import tagSearch from "@/lib/client/tagSearch";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -49,7 +50,7 @@ export default function PublicCollections() {
         "/public/collections/" +
           router.query.id +
           "?q=" +
-          encodeURIComponent(tag || "")
+          encodeURIComponent(tagSearch(tag))
       );
     } else {
       return router.push("/public/collections/" + router.query.id);
@@ -269,7 +270,7 @@ export default function PublicCollections() {
                   .filter((item, pos, self) => self.indexOf(item) === pos)
                   .sort((a, b) => a.localeCompare(b))
                   .map((e, i) => {
-                    const active = router.query.q === e;
+                    const active = router.query.q === tagSearch(e);
                     return (
                       <button
                         className="max-w-full"

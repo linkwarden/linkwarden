@@ -31,10 +31,21 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      # For searchLinks.integration.test.ts only, which wipes it
+      meilisearch:
+        image: getmeili/meilisearch:v1.13.3
+        env:
+          MEILI_MASTER_KEY: integration_tests_master_key
+          MEILI_NO_ANALYTICS: "true"
+        ports:
+          - 7700:7700
     env:
       DATABASE_URL: postgresql://postgres:password@localhost:5432/linkwarden
       NEXTAUTH_SECRET: very_sensitive_secret
       NEXTAUTH_URL: http://127.0.0.1:3000/api/v1/auth
+      # Not MEILI_HOST, so no other test starts using it
+      MEILI_TEST_HOST: http://localhost:7700
+      MEILI_TEST_KEY: integration_tests_master_key
 
     steps:
       - name: Checkout

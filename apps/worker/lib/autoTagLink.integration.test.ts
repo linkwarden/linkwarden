@@ -91,4 +91,42 @@ describe.sequential("autoTagLink integration", () => {
     ]);
     expect(saved.aiTagged).toBe(true);
   });
+
+  it("has the link indexed again, so search sees its new tags", async () => {
+    const suffix = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const user = await prisma.user.create({
+      data: {
+        username: `auto_tag_test_${suffix}`,
+        email: `auto_tag_test_${suffix}@example.com`,
+        aiTaggingMethod: AiTaggingMethod.GENERATE,
+      },
+    });
+    createdUserIds.push(user.id);
+
+    const collection = await prisma.collection.create({
+      data: { name: "Tagging test", ownerId: user.id, createdById: user.id },
+    });
+    // Already indexed, which is usually the case by the time it gets tagged
+    const link = await prisma.link.create({
+      data: {
+        url: "https://example.com/compost",
+        name: "Compost",
+        metaDescription: "Keeping a compost pile warm",
+        collectionId: collection.id,
+        createdById: user.id,
+        collectionOrder: 1,
+        indexVersion: 1,
+      },
+    });
+
+    generateText.mockResolvedValue({ text: JSON.stringify(["Gardening"]) });
+    await autoTagLink(user, link.id);
+
+    const saved = await prisma.link.findUniqueOrThrow({
+      where: { id: link.id },
+      include: { tags: true },
+    });
+    expect(saved.tags.map((tag) => tag.name)).toEqual(["Gardening"]);
+    expect(saved.indexVersion).toBeNull();
+  });
 });
