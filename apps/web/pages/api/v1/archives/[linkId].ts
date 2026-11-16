@@ -130,6 +130,12 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   if (contentType?.startsWith("text/html")) {
     res.setHeader("Content-Security-Policy", "sandbox");
   }
+
+  if (Buffer.isBuffer(file)) {
+    res.setHeader("Content-Length", file.length);
+    return res.end(file);
+  }
+
   return res.send(file);
 }
 
