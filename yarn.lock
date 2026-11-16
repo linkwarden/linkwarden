@@ -4854,6 +4854,7 @@ __metadata:
     "@linkwarden/filesystem": "npm:*"
     "@linkwarden/prisma": "npm:*"
     "@linkwarden/types": "npm:*"
+    axios: "npm:^1.20.0"
     clsx: "npm:^2.1.1"
     jimp: "npm:^0.22.10"
     meilisearch: "npm:^0.48.2"
