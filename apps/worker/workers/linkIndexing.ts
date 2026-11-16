@@ -98,7 +98,22 @@ async function setupLinksIndexSchema() {
 export async function startIndexing(interval = 10) {
   if (!meiliClient) return;
 
-  await setupLinksIndexSchema();
+  // Meilisearch may not be reachable yet (e.g. both containers starting after a
+  // reboot). startIndexing() is not awaited by the worker, so an error here would
+  // be an unhandled rejection that ends the process. Retry until it succeeds.
+  while (true) {
+    try {
+      await setupLinksIndexSchema();
+      break;
+    } catch (err) {
+      console.error(
+        "\x1b[34m%s\x1b[0m",
+        "Error setting up the Meilisearch links index, retrying:",
+        err
+      );
+      await delay(interval);
+    }
+  }
 
   console.log("\x1b[34m%s\x1b[0m", "Starting link indexing...");
 
