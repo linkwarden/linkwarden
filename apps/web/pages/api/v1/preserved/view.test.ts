@@ -22,8 +22,8 @@ const createMockResponse = () => {
   };
 
   const res = {
-    setHeader(name: string, value: string) {
-      state.headers.set(name, value);
+    setHeader(name: string, value: string | number) {
+      state.headers.set(name, String(value));
       return res;
     },
     status(code: number) {
@@ -38,6 +38,12 @@ const createMockResponse = () => {
       state.sentBody = body;
       return res;
     },
+    end(body?: any) {
+      if (body !== undefined) {
+        state.sentBody = body;
+      }
+      return res;
+    },
   };
 
   return { res: res as any, state };
@@ -45,7 +51,10 @@ const createMockResponse = () => {
 
 describe("/api/v1/preserved/view", () => {
   beforeEach(() => {
-    vi.stubEnv("NEXT_PUBLIC_USER_CONTENT_DOMAIN", "https://content.example.com");
+    vi.stubEnv(
+      "NEXT_PUBLIC_USER_CONTENT_DOMAIN",
+      "https://content.example.com"
+    );
   });
 
   afterEach(() => {
@@ -88,6 +97,46 @@ describe("/api/v1/preserved/view", () => {
       'attachment; filename="Webpage.html"'
     );
     expect(state.sentBody).toBe("<html>ok</html>");
+  });
+
+  it("serves binary buffer archives using res.end with Content-Length to avoid JSON stringification", async () => {
+    vi.mocked(decodePreservedFormatToken).mockResolvedValue({
+      scope: "preserved-format",
+      linkId: 11,
+      filePath: "archives/7/11.html",
+      format: ArchivedFormat.monolith,
+      iat: 100,
+      exp: Math.floor(Date.now() / 1000) + 60,
+    } as any);
+    const bufferPayload = Buffer.from(
+      "<html><body>binary monolith content</body></html>"
+    );
+    vi.mocked(readFile).mockResolvedValue({
+      file: bufferPayload,
+      contentType: "text/html",
+      status: 200,
+    } as any);
+
+    const { res, state } = createMockResponse();
+    await handler(
+      {
+        method: "GET",
+        query: { token: "abc" },
+        headers: {
+          host: "content.example.com",
+        },
+      } as any,
+      res
+    );
+
+    expect(state.statusCode).toBe(200);
+    expect(state.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+    expect(state.headers.get("Content-Length")).toBe(
+      String(bufferPayload.length)
+    );
+    expect(state.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(state.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
+    expect(state.sentBody).toBe(bufferPayload);
   });
 
   it("rejects requests on the wrong host", async () => {
@@ -187,6 +236,8 @@ describe("/api/v1/preserved/view", () => {
     );
 
     expect(state.statusCode).toBe(401);
-    expect(state.jsonBody).toEqual({ response: "Invalid archived format token." });
+    expect(state.jsonBody).toEqual({
+      response: "Invalid archived format token.",
+    });
   });
 });

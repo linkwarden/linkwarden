@@ -171,6 +171,11 @@ export default async function handler(
       );
     }
 
+    if (Buffer.isBuffer(file)) {
+      res.setHeader("Content-Length", file.length);
+      return res.status(200).end(file);
+    }
+
     return res.status(200).send(file);
   } catch (error: any) {
     return res.status(500).json({

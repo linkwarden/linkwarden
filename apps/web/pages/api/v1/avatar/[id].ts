@@ -33,9 +33,13 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       `uploads/avatar/${queryId}.jpg`
     );
 
-    return res
-      .setHeader("Content-Type", contentType)
-      .status(status as number)
-      .send(file);
+    res.setHeader("Content-Type", contentType).status(status as number);
+
+    if (Buffer.isBuffer(file)) {
+      res.setHeader("Content-Length", file.length);
+      return res.end(file);
+    }
+
+    return res.send(file);
   }
 }

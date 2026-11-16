@@ -27,8 +27,8 @@ const createMockResponse = () => {
   };
 
   const res = {
-    setHeader(name: string, value: string) {
-      state.headers.set(name, value);
+    setHeader(name: string, value: string | number) {
+      state.headers.set(name, String(value));
       return res;
     },
     status(code: number) {
@@ -43,6 +43,12 @@ const createMockResponse = () => {
       state.sentBody = body;
       return res;
     },
+    end(body?: any) {
+      if (body !== undefined) {
+        state.sentBody = body;
+      }
+      return res;
+    },
   };
 
   return { res: res as any, state };
@@ -50,7 +56,10 @@ const createMockResponse = () => {
 
 describe("/api/v1/archives/[linkId] GET", () => {
   beforeEach(() => {
-    vi.stubEnv("NEXT_PUBLIC_USER_CONTENT_DOMAIN", "https://content.example.com");
+    vi.stubEnv(
+      "NEXT_PUBLIC_USER_CONTENT_DOMAIN",
+      "https://content.example.com"
+    );
   });
 
   afterEach(() => {
@@ -108,5 +117,45 @@ describe("/api/v1/archives/[linkId] GET", () => {
       "private, max-age=31536000, immutable"
     );
     expect(state.sentBody).toBe("<html>ok</html>");
+  });
+
+  it("serves binary buffer archives using res.end with Content-Length to avoid JSON stringification", async () => {
+    vi.mocked(verifyToken).mockResolvedValue({ id: 7 } as any);
+    vi.mocked(resolveAccessibleArchive).mockResolvedValue({
+      status: 200,
+      response: {
+        filePath: "archives/5/10.html",
+      },
+    } as any);
+    const bufferPayload = Buffer.from(
+      "<html><body>binary archive content</body></html>"
+    );
+    vi.mocked(readFile).mockResolvedValue({
+      file: bufferPayload,
+      contentType: "text/html",
+      status: 200,
+    } as any);
+
+    const { res, state } = createMockResponse();
+    await handler(
+      {
+        method: "GET",
+        query: { linkId: "10", format: "4" },
+        headers: {
+          authorization: "Bearer test-token",
+        },
+      } as any,
+      res
+    );
+
+    expect(state.statusCode).toBe(200);
+    expect(state.headers.get("Content-Type")).toBe("text/html");
+    expect(state.headers.get("Content-Length")).toBe(
+      String(bufferPayload.length)
+    );
+    expect(state.headers.get("Cache-Control")).toBe(
+      "private, max-age=31536000, immutable"
+    );
+    expect(state.sentBody).toBe(bufferPayload);
   });
 });
