@@ -9,6 +9,10 @@ import { ssoEmailVerified } from "@/lib/api/ssoEmailVerified";
 import isTokenRevoked from "@/lib/api/isTokenRevoked";
 import { SESSION_MAX_AGE } from "@/lib/api/setSessionCookie";
 import captureEvent from "@/lib/api/captureEvent";
+import {
+  isNewSsoUsersDisabled,
+  isRegistrationDisabled,
+} from "@/lib/api/registration";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { User } from "@linkwarden/prisma/client";
 import crypto from "crypto";
@@ -43,7 +47,6 @@ function sanitizeAccount(account: LinkAccountInput): LinkAccountInput {
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
-const newSsoUsersDisabled = process.env.DISABLE_NEW_SSO_USERS === "true";
 const adapter = PrismaAdapter(prisma);
 const linkAccount = adapter.linkAccount;
 
@@ -191,6 +194,18 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         )
           return false;
 
+        // The email provider creates a user for any unknown address once the
+        // sign-in link is opened, so it has to respect disabled registration.
+        if (account?.provider === "email" && isRegistrationDisabled()) {
+          const existingUser = user.email
+            ? await prisma.user.findUnique({
+                where: { email: user.email.toLowerCase().trim() },
+              })
+            : null;
+
+          if (!existingUser) return false;
+        }
+
         if (!(user as User).emailVerified && !email?.verificationRequest) {
           const parentSubscriptionId = (user as User).parentSubscriptionId;
 
@@ -233,15 +248,27 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         }
 
         if (account?.provider !== "credentials") {
-          // registration via SSO can be separately disabled
-          const existingUser = await prisma.account.findFirst({
-            where: {
-              providerAccountId: account?.providerAccountId,
-            },
-          });
+          // Email sign-ins are handled above and never get an account row,
+          // so only SSO providers are checked here. Existing users may still
+          // sign in and get the provider linked below.
+          if (account?.type !== "email" && isNewSsoUsersDisabled()) {
+            const existingAccount = await prisma.account.findFirst({
+              where: {
+                provider: account?.provider,
+                providerAccountId: account?.providerAccountId,
+              },
+            });
 
-          if (!existingUser && newSsoUsersDisabled) {
-            return false;
+            const existingUser =
+              !existingAccount && user.email
+                ? await prisma.user.findFirst({
+                    where: {
+                      email: { equals: user.email.trim(), mode: "insensitive" },
+                    },
+                  })
+                : null;
+
+            if (!existingAccount && !existingUser) return false;
           }
 
           // If user is already registered, link the provider
