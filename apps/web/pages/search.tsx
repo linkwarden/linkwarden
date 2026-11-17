@@ -52,7 +52,7 @@ const Page: NextPageWithLayout = () => {
         <PageHeader
           icon={"bi-search"}
           title={t("search_results")}
-          description={`${t("results_for")} "${router.query.q as string}"`}
+          description={`${t("results_for")}: ${router.query.q as string}`}
         />
       </LinkListOptions>
 
