@@ -109,6 +109,39 @@ test.describe("Search query", () => {
     ).toHaveCount(0);
   });
 
+  test("The search modal keeps the query after searching", async ({
+    page,
+    request,
+  }) => {
+    const owner = await createUser(request, "searcher");
+    const collection = await createCollection(request, owner);
+    const query = 'rust "error handling" 100%';
+    await createNamedLink(request, owner, collection.id, "Rust notes");
+    await login(page, owner);
+
+    const box = page.getByPlaceholder("Search for Links");
+    await page.getByRole("button", { name: "Search for Links" }).click();
+    await box.fill(query);
+    await box.press("Enter");
+    await expect(page).toHaveURL("/search?q=" + encodeURIComponent(query));
+    await expect(box).toHaveCount(0);
+
+    // Opening it again on the results shows what was searched, ready to change
+    await page.getByRole("button", { name: "Search for Links" }).click();
+    await expect(box).toHaveValue(query);
+    await expect(box).toBeFocused();
+    await page.keyboard.type(" OR go");
+    await box.press("Enter");
+    await expect(page).toHaveURL(
+      "/search?q=" + encodeURIComponent(query + " OR go")
+    );
+
+    // Anywhere else it starts empty
+    await page.goto("/dashboard");
+    await page.getByRole("button", { name: "Search for Links" }).click();
+    await expect(box).toHaveValue("");
+  });
+
   test("A public collection search uses the query as typed, % included", async ({
     page,
     request,

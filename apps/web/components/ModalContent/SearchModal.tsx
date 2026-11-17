@@ -39,7 +39,13 @@ export default function SearchModal({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  // On the search page, the box starts with what was searched, so it can be
+  // changed without typing it again
+  const [searchQuery, setSearchQuery] = useState(() =>
+    router.pathname === "/search" && typeof router.query.q === "string"
+      ? router.query.q
+      : ""
+  );
   const [recents, setRecents] = useState<RecentSearch[]>(getRecentSearches);
 
   useEffect(() => {
