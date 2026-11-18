@@ -1,6 +1,7 @@
 import { meiliClient } from "@linkwarden/lib/meilisearchClient";
 import { delay } from "@linkwarden/lib/utils";
 import { prisma } from "@linkwarden/prisma";
+import { Prisma } from "@linkwarden/prisma/client";
 import getLinkBatch from "../lib/getLinkBatch";
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 
@@ -130,41 +131,45 @@ export async function startIndexing(interval = 10) {
   const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
   while (true) {
-    const links = await getLinkBatch({
-      where: {
-        AND: [
-          {
-            OR: [
-              { indexVersion: { not: MEILI_INDEX_VERSION } },
-              { indexVersion: null },
-            ],
-          },
-          {
-            ...(process.env.STRIPE_SECRET_KEY
-              ? {
-                  createdBy: {
-                    OR: [
-                      { subscriptions: { is: { active: true } } },
-                      { parentSubscription: { is: { active: true } } },
-                      ...(REQUIRE_CC
-                        ? []
-                        : [
-                            {
-                              createdAt: {
-                                gte: new Date(
-                                  new Date().getTime() -
-                                    Number(TRIAL_PERIOD_DAYS) * 86400000
-                                ),
-                              },
+    // Shared with the "left" count below, so it only counts links this worker
+    // is going to index.
+    const where: Prisma.LinkWhereInput = {
+      AND: [
+        {
+          OR: [
+            { indexVersion: { not: MEILI_INDEX_VERSION } },
+            { indexVersion: null },
+          ],
+        },
+        {
+          ...(process.env.STRIPE_SECRET_KEY
+            ? {
+                createdBy: {
+                  OR: [
+                    { subscriptions: { is: { active: true } } },
+                    { parentSubscription: { is: { active: true } } },
+                    ...(REQUIRE_CC
+                      ? []
+                      : [
+                          {
+                            createdAt: {
+                              gte: new Date(
+                                new Date().getTime() -
+                                  Number(TRIAL_PERIOD_DAYS) * 86400000
+                              ),
                             },
-                          ]),
-                    ],
-                  },
-                }
-              : {}),
-          },
-        ],
-      },
+                          },
+                        ]),
+                  ],
+                },
+              }
+            : {}),
+        },
+      ],
+    };
+
+    const links = await getLinkBatch({
+      where,
       take: takeCount,
       include: {
         collection: {
@@ -245,14 +250,7 @@ export async function startIndexing(interval = 10) {
         data: { indexVersion: MEILI_INDEX_VERSION },
       });
 
-    const indexesLeft = await prisma.link.count({
-      where: {
-        OR: [
-          { indexVersion: { not: MEILI_INDEX_VERSION } },
-          { indexVersion: null },
-        ],
-      },
-    });
+    const indexesLeft = await prisma.link.count({ where });
 
     console.log(
       "\x1b[34m%s\x1b[0m",

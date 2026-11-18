@@ -121,6 +121,7 @@ describe("startIndexing", () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it("does not send the collection owner's password hash to Meilisearch", async () => {
@@ -175,6 +176,111 @@ describe("startIndexing", () => {
       { indexVersion: { not: MEILI_INDEX_VERSION } },
       { indexVersion: null },
     ]);
+  });
+
+  it("logs how many links it indexed and how many are left", async () => {
+    vi.mocked(prisma.link.count).mockResolvedValue(7);
+
+    await runOneBatch();
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.anything(),
+      "Indexed 1 link, 7 left."
+    );
+  });
+
+  it("logs nothing and counts nothing when there are no links to index", async () => {
+    vi.mocked(getLinkBatch).mockResolvedValue([]);
+
+    await runOneBatch();
+
+    expect(prisma.link.count).not.toHaveBeenCalled();
+    expect(console.log).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.stringContaining("left")
+    );
+  });
+
+  it("picks up everyone's links when there's no billing", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "");
+
+    await runOneBatch();
+
+    const { where } = vi.mocked(getLinkBatch).mock.calls[0][0] as any;
+    expect(where.AND[1]).toEqual({});
+  });
+
+  it("only picks up links by subscribers and users on trial when there's billing", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("NEXT_PUBLIC_REQUIRE_CC", "");
+    vi.stubEnv("NEXT_PUBLIC_TRIAL_PERIOD_DAYS", "7");
+    const before = Date.now();
+
+    await runOneBatch();
+
+    const { where } = vi.mocked(getLinkBatch).mock.calls[0][0] as any;
+    const [subscriber, seatHolder, onTrial] = where.AND[1].createdBy.OR;
+    expect(subscriber).toEqual({ subscriptions: { is: { active: true } } });
+    expect(seatHolder).toEqual({
+      parentSubscription: { is: { active: true } },
+    });
+    const trialStart = onTrial.createdAt.gte.getTime();
+    expect(trialStart).toBeGreaterThanOrEqual(before - 7 * 86400000);
+    expect(trialStart).toBeLessThanOrEqual(Date.now() - 7 * 86400000);
+  });
+
+  it("leaves users on trial out when a card is required up front", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("NEXT_PUBLIC_REQUIRE_CC", "true");
+
+    await runOneBatch();
+
+    const { where } = vi.mocked(getLinkBatch).mock.calls[0][0] as any;
+    expect(where.AND[1].createdBy.OR).toEqual([
+      { subscriptions: { is: { active: true } } },
+      { parentSubscription: { is: { active: true } } },
+    ]);
+  });
+
+  it("counts only the links it's going to index as left", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_123");
+    vi.stubEnv("NEXT_PUBLIC_REQUIRE_CC", "");
+
+    await runOneBatch();
+
+    const { where } = vi.mocked(getLinkBatch).mock.calls[0][0] as any;
+    expect(where.AND[1].createdBy).toBeDefined();
+    expect(prisma.link.count).toHaveBeenCalledWith({ where });
+  });
+
+  it("still counts links indexed with an older version as left", async () => {
+    vi.stubEnv("STRIPE_SECRET_KEY", "");
+
+    await runOneBatch();
+
+    const { where } = vi.mocked(prisma.link.count).mock.calls[0][0] as any;
+    expect(JSON.stringify(where)).toContain(
+      JSON.stringify([
+        { indexVersion: { not: MEILI_INDEX_VERSION } },
+        { indexVersion: null },
+      ])
+    );
+  });
+
+  it("logs zero indexed links when Meilisearch rejects the documents", async () => {
+    vi.mocked(prisma.link.count).mockResolvedValue(1);
+    linksIndex.waitForTask.mockImplementation(async (taskUid: number) =>
+      taskUid === 3
+        ? { status: "failed", error: { message: "payload too large" } }
+        : { status: "succeeded" }
+    );
+
+    await runOneBatch();
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.anything(),
+      "Indexed 0 links, 1 left."
+    );
   });
 
   it("does not mark links as indexed when Meilisearch rejects the documents", async () => {
