@@ -1,0 +1,40 @@
+# Opens the Dashboard tab from the tab bar. The dashboard's title also reads
+# "Dashboard", so look inside the tab bar.
+appId: app.linkwarden
+---
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      # Scrolling a list can shrink the tab bar to the current tab's button.
+      # Tapping that button brings the other tabs back and leaves the tab's
+      # screens as they are.
+      - runFlow:
+          when:
+            notVisible:
+              text: "Dashboard"
+              childOf:
+                text: "Tab Bar"
+          commands:
+            - tapOn:
+                selected: true
+                childOf:
+                  text: "Tab Bar"
+            - waitForAnimationToEnd
+      - tapOn:
+          text: "Dashboard"
+          childOf:
+            text: "Tab Bar|Toolbar"
+            containsDescendants:
+              - text: "Dashboard"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Dashboard"
+          id: ".*navigation_bar_item_.*_label_view"
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-stat-links"
+    timeout: 15000

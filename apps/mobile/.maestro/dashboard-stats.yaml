@@ -1,0 +1,146 @@
+appId: app.linkwarden
+name: Open each page from the dashboard's stats
+onFlowComplete:
+  - runFlow:
+      when:
+        true: ${!!output.collectionId}
+      commands:
+        - runScript:
+            file: scripts/dashboard-stats.js
+            env:
+              BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+              USERNAME: ${TEST_USERNAME || "user1"}
+              PASSWORD: ${TEST_PASSWORD || "11111111"}
+              ACTION: delete
+              COLLECTION_ID: ${output.collectionId}
+              TAG_ID: ${output.tagId}
+---
+- evalScript: ${output.name = "Maestro stats " + Date.now()}
+- runScript:
+    file: scripts/dashboard-stats.js
+    env:
+      BASE_URL: ${E2E_BASE_URL || "http://localhost:3000"}
+      USERNAME: ${TEST_USERNAME || "user1"}
+      PASSWORD: ${TEST_PASSWORD || "11111111"}
+      ACTION: create
+      NAME: ${output.name}
+- assertTrue: ${!!output.collectionId && !!output.tagId}
+- runFlow: subflows/launch.yaml
+- runFlow: subflows/login.yaml
+
+# Links opens the Links tab, newest link first
+- tapOn:
+    id: "dashboard-stat-links"
+- assertVisible:
+    text: "Links"
+    selected: true
+- extendedWaitUntil:
+    visible: "${output.name}, example.com.*"
+    timeout: 15000
+# A search left in the Links tab stays applied when the stat opens it again
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: "Search"
+          childOf:
+            id: "Links"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          id: ".*:id/search_button"
+- inputText: "zzyzxnomatch"
+# The keyboard covers the tab bar
+- pressKey: Enter
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    notVisible: "${output.name}, example.com.*"
+    timeout: 15000
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-links"
+- assertVisible:
+    text: "Links"
+    selected: true
+- assertVisible: "zzyzxnomatch"
+- assertNotVisible: "${output.name}, example.com.*"
+
+# Collections opens the Collections tab on its list, even with a collection
+# left open there
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-collections"
+- assertVisible:
+    text: "Collections"
+    selected: true
+- runFlow: subflows/no-back-button.yaml
+- scrollUntilVisible:
+    element: "${output.name}, .*"
+    centerElement: true
+- tapOn: "${output.name}, .*"
+- extendedWaitUntil:
+    visible: "${output.name}, example.com.*"
+    timeout: 15000
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-collections"
+- assertVisible:
+    text: "Collections"
+    selected: true
+- assertNotVisible: "${output.name}, example.com.*"
+- runFlow: subflows/no-back-button.yaml
+
+# Tags does the same for the Tags tab
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-tags"
+- assertVisible:
+    text: "Tags"
+    selected: true
+- runFlow: subflows/no-back-button.yaml
+- scrollUntilVisible:
+    element: "${output.name}, .*"
+    centerElement: true
+- tapOn: "${output.name}, .*"
+- extendedWaitUntil:
+    visible: "${output.name}, example.com.*"
+    timeout: 15000
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-tags"
+- assertVisible:
+    text: "Tags"
+    selected: true
+- assertNotVisible: "${output.name}, example.com.*"
+- runFlow: subflows/no-back-button.yaml
+
+# Pinned Links opens the same page as the Pinned Links section's View All
+- runFlow: subflows/dashboard-tab.yaml
+- tapOn:
+    id: "dashboard-stat-pinned-links"
+- extendedWaitUntil:
+    notVisible:
+      id: "dashboard-stat-pinned-links"
+    timeout: 15000
+- assertVisible: "Pinned Links"
+- assertVisible:
+    text: "Dashboard"
+    selected: true
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          id: "BackButton"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-stat-pinned-links"
+    timeout: 15000

@@ -15,7 +15,11 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/globa
 import LinkListing from "@/components/LinkListing";
 import EdgeFade from "@/components/ui/EdgeFade";
 import { useColorScheme } from "nativewind";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
+import type {
+  NavigationProp,
+  ParamListBase,
+} from "expo-router/react-navigation";
 
 // Don't use prisma client's DashboardSectionType, it'll crash in production (React Native)
 type DashboardSectionType =
@@ -54,6 +58,14 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
   const { colorScheme } = useColorScheme();
 
   const router = useRouter();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  // router.navigate("/(tabs)/collections") would stack a second list on top
+  // of a collection or tag left open in that tab, and clear the list's search
+  // while its search bar still shows the text. pop goes back to the list
+  // instead, and merge keeps its search.
+  const openTab = (tab: "links" | "collections" | "tags") =>
+    navigation.navigate(tab, { screen: "index", pop: true, merge: true });
 
   switch (sectionData.type) {
     case "STATS":
@@ -65,12 +77,16 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               value={numberOfLinks}
               icon={<Link size={23} color="white" />}
               color="#9c00cc"
+              onPress={() => openTab("links")}
+              testID="dashboard-stat-links"
             />
             <DashboardItem
               name={collectionsLength === 1 ? "Collection" : "Collections"}
               value={collectionsLength}
               icon={<Folder size={23} color="white" fill="white" />}
               color="#0096cc"
+              onPress={() => openTab("collections")}
+              testID="dashboard-stat-collections"
             />
           </View>
           <View className="flex-row gap-4">
@@ -79,12 +95,16 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               value={numberOfTags}
               icon={<Hash size={23} color="white" />}
               color="#00cc99"
+              onPress={() => openTab("tags")}
+              testID="dashboard-stat-tags"
             />
             <DashboardItem
               name={"Pinned Links"}
               value={numberOfPinnedLinks}
               icon={<Pin size={23} color="white" fill="white" />}
               color="#cc6d00"
+              onPress={() => router.navigate("/(tabs)/dashboard/pinned-links")}
+              testID="dashboard-stat-pinned-links"
             />
           </View>
         </View>

@@ -1,0 +1,14 @@
+# Checks that the screen is the first one of its tab, with no back button.
+appId: app.linkwarden
+---
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertNotVisible:
+          id: "BackButton"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - assertNotVisible: "Navigate up"
