@@ -1,4 +1,5 @@
 import { autoTagPreservedLinks } from "./workers/autoTagPreservedLinks";
+import { startIndexCleanup } from "./workers/indexCleanup";
 import { startIndexing } from "./workers/linkIndexing";
 import { linkProcessing } from "./workers/linkProcessing";
 import { migrationWorker } from "./workers/migrationWorker";
@@ -16,6 +17,7 @@ async function init() {
   linkProcessing(workerIntervalInSeconds);
   autoTagPreservedLinks(workerIntervalInSeconds);
   startIndexing(workerIntervalInSeconds);
+  startIndexCleanup();
   // trialEndEmailWorker();
 }
 
