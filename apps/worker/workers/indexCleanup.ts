@@ -2,6 +2,7 @@ import { meiliClient } from "@linkwarden/lib/meilisearchClient";
 import { delay } from "@linkwarden/lib/utils";
 import { prisma } from "@linkwarden/prisma";
 import { Prisma } from "@linkwarden/prisma/client";
+import type { MeiliSearchApiError } from "meilisearch";
 
 // Takes the links of users who've been without a subscription or trial for a
 // while out of Meilisearch, where they'd otherwise sit for good, as the
@@ -15,6 +16,7 @@ const DAY = 86400000;
 // How long a user has to be without a subscription or trial
 const UNSUBSCRIBED_DAYS = 30;
 const HOURS_BETWEEN_RUNS = 24;
+const MINUTES_BETWEEN_INDEX_CHECKS = 1;
 const USERS_PER_PAGE = 500;
 const COLLECTIONS_PER_PAGE = 500;
 const DOCUMENTS_PER_BATCH = 1000;
@@ -304,14 +306,16 @@ export async function cleanUpIndex(enabled: boolean) {
         .map((document) => Number(document.id))
         .filter((id) => Number.isInteger(id));
 
-      // Would otherwise go around forever
-      if (documentIds.some((id) => justCleared.has(id)))
+      const links = await getClearableLinks(documentIds, seenAsPrivate);
+      const linkIds = links.map((link) => link.id);
+
+      // A document deleted on the last page can be back because its user
+      // subscribed again and the indexing worker sent it, and then its link
+      // stays. One that would be deleted again would go around forever.
+      if (linkIds.some((id) => justCleared.has(id)))
         throw new Error(
           "Meilisearch still has documents it reported as deleted."
         );
-
-      const links = await getClearableLinks(documentIds, seenAsPrivate);
-      const linkIds = links.map((link) => link.id);
 
       if (enabled && linkIds.length > 0) {
         await clearLinks(linkIds);
@@ -356,7 +360,55 @@ export async function startIndexCleanup() {
     `Starting index cleanup${enabled ? "" : " (log only)"}...`
   );
 
+  const index = meiliClient.index("links");
+
+  // The indexing worker sets the index up when it starts. A run before that,
+  // or while Meilisearch can't be reached, would fail and leave the next try
+  // a day away, so it waits for the index instead. Gives "missing" until the
+  // index is set up, or the error when Meilisearch can't be asked, such as
+  // with a wrong key.
+  const checkIndex = async (): Promise<
+    "ready" | "missing" | { error: unknown }
+  > => {
+    try {
+      const attributes = await index.getFilterableAttributes();
+      return attributes.includes("collectionOwnerId") ? "ready" : "missing";
+    } catch (error) {
+      return (error as MeiliSearchApiError)?.cause?.code === "index_not_found"
+        ? "missing"
+        : { error };
+    }
+  };
+  // What it's waiting on was logged once, and is logged again when that
+  // changes instead of every minute
+  let lastLogged: string | null = null;
+
   while (true) {
+    const state = await checkIndex();
+
+    if (state !== "ready") {
+      const problem = state === "missing" ? state : String(state.error);
+
+      if (problem !== lastLogged) {
+        if (state === "missing")
+          console.log(
+            "\x1b[34m%s\x1b[0m",
+            "Index cleanup is waiting for the links index to be set up..."
+          );
+        else
+          console.error(
+            "\x1b[34m%s\x1b[0m",
+            "Index cleanup can't check the links index, retrying every minute:",
+            state.error
+          );
+      }
+
+      lastLogged = problem;
+      await delay(MINUTES_BETWEEN_INDEX_CHECKS * 60);
+      continue;
+    }
+    lastLogged = null;
+
     try {
       const { users, owners, links, collections } = await cleanUpIndex(enabled);
 

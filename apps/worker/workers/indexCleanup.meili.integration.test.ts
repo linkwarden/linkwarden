@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { MeiliSearch } from "meilisearch";
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 import { prisma } from "@linkwarden/prisma";
-import { cleanUpIndex } from "./indexCleanup";
+import { cleanUpIndex, startIndexCleanup } from "./indexCleanup";
 import { startIndexing } from "./linkIndexing";
 
 // Runs the cleanup and the indexing worker against a real database
@@ -11,7 +11,7 @@ import { startIndexing } from "./linkIndexing";
 // that Meilisearch aren't in the way. Without MEILI_TEST_HOST the suite is
 // skipped.
 
-const { scope, Stop, INDEX } = vi.hoisted(() => {
+const { scope, Stop, INDEX, delays, connection } = vi.hoisted(() => {
   process.env.INDEX_TAKE_COUNT = "500";
 
   return {
@@ -20,6 +20,10 @@ const { scope, Stop, INDEX } = vi.hoisted(() => {
     scope: { userIds: [] as number[], linkIds: [] as number[] },
     Stop: class Stop extends Error {},
     INDEX: `links_cleanup_${Date.now().toString(36)}`,
+    // How long each wait between runs was, in seconds
+    delays: [] as number[],
+    // Set to reach Meilisearch some other way, such as with a wrong key
+    connection: { host: null as string | null, apiKey: null as string | null },
   };
 });
 
@@ -37,14 +41,22 @@ vi.mock("@linkwarden/lib/meilisearchClient", async () => {
       getIndex: () => client.getIndex(INDEX),
       createIndex: (_uid: string, options: any) =>
         client.createIndex(INDEX, options),
-      index: () => client.index(INDEX),
+      index: () =>
+        (connection.host || connection.apiKey
+          ? new MeiliSearch({
+              host: connection.host ?? process.env.MEILI_TEST_HOST!,
+              apiKey: connection.apiKey ?? process.env.MEILI_TEST_KEY,
+            })
+          : client
+        ).index(INDEX),
     },
   };
 });
 
 vi.mock("@linkwarden/lib/utils", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@linkwarden/lib/utils")>()),
-  delay: async () => {
+  delay: async (seconds: number) => {
+    delays.push(seconds);
     throw new Stop();
   },
 }));
@@ -375,5 +387,100 @@ describe.skipIf(!process.env.MEILI_TEST_HOST)(
       expect((await cleanUpIndex(true)).links).toBe(0);
       expect(await documentsOf(leaving.id)).toBe(1209);
     }, 120000);
+
+    it("waits for the indexing worker to set up a new index before its first run", async () => {
+      const leaving = await subscriber("fresh");
+      await cancel(leaving.subscriptionId, 60);
+      const publicCollection = await collection(leaving.id, {
+        isPublic: true,
+      });
+      const ids = await links(3, publicCollection, leaving.id);
+
+      // A Meilisearch without the index, as on a new instance
+      const wipe = await meili.deleteIndex(INDEX).catch(() => null);
+      if (wipe) await meili.waitForTask(wipe.taskUid);
+
+      vi.stubEnv("UNSUBSCRIBED_INDEX_CLEANUP", "true");
+      const log = vi.spyOn(console, "log").mockImplementation(() => {});
+      const error = vi.mocked(console.error);
+      error.mockClear();
+
+      delays.length = 0;
+      await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+      expect(delays).toEqual([60]);
+
+      // Created, but not set up yet
+      const created = await meili.createIndex(INDEX, { primaryKey: "id" });
+      await meili.waitForTask(created.taskUid);
+      delays.length = 0;
+      await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+      expect(delays).toEqual([60]);
+
+      expect(error).not.toHaveBeenCalled();
+      expect(await isPublic(publicCollection)).toBe(true);
+      log.mockRestore();
+
+      // The indexing worker sets it up and, while they paid, indexed the links
+      await prisma.subscription.update({
+        where: { id: leaving.subscriptionId },
+        data: { active: true, currentPeriodEnd: daysAgo(-30) },
+      });
+      await runIndexing();
+      expect(await documentsOf(leaving.id)).toBe(3);
+      await cancel(leaving.subscriptionId, 60);
+
+      const after = vi.spyOn(console, "log").mockImplementation(() => {});
+      delays.length = 0;
+      await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+      after.mockRestore();
+
+      expect(delays).toEqual([86400]);
+      expect(error).not.toHaveBeenCalled();
+      expect(await documentsOf(leaving.id)).toBe(0);
+      expect(await versionsOf(ids)).toEqual([null]);
+      expect(await isPublic(publicCollection)).toBe(false);
+
+      // Gone, so the other test here doesn't find someone to clear
+      await prisma.user.delete({ where: { id: leaving.id } });
+      scope.userIds.splice(scope.userIds.indexOf(leaving.id), 1);
+    }, 60000);
+
+    it("logs why it can't check the index when Meilisearch errors", async () => {
+      vi.stubEnv("UNSUBSCRIBED_INDEX_CLEANUP", "true");
+      const log = vi.spyOn(console, "log").mockImplementation(() => {});
+      const error = vi.mocked(console.error);
+
+      // A wrong key, then nothing listening where Meilisearch should be
+      const cases = [
+        { apiKey: "not-the-key", host: null, logged: /API key is invalid/ },
+        { apiKey: null, host: "http://127.0.0.1:1", logged: /has failed/ },
+      ];
+
+      try {
+        for (const { apiKey, host, logged } of cases) {
+          connection.apiKey = apiKey;
+          connection.host = host;
+          error.mockClear();
+          log.mockClear();
+          delays.length = 0;
+
+          await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+
+          expect(delays).toEqual([60]);
+          expect(error).toHaveBeenCalledTimes(1);
+          expect(error.mock.calls[0][1]).toBe(
+            "Index cleanup can't check the links index, retrying every minute:"
+          );
+          expect(String(error.mock.calls[0][2])).toMatch(logged);
+          expect(log.mock.calls.map((call) => call[1])).not.toContain(
+            "Index cleanup is waiting for the links index to be set up..."
+          );
+        }
+      } finally {
+        connection.apiKey = null;
+        connection.host = null;
+        log.mockRestore();
+      }
+    }, 60000);
   }
 );

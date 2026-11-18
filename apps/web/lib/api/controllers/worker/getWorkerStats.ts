@@ -1,4 +1,5 @@
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
+import { linksToIndexWhere } from "@linkwarden/lib/linksToIndex";
 import { prisma } from "@linkwarden/prisma";
 import { WorkerStats } from "@linkwarden/types/global";
 
@@ -33,13 +34,10 @@ export default async function getWorkerStats(userId: number) {
     },
   });
 
+  // Like the indexing worker's own count, so links it leaves alone, such as
+  // ones by users without a subscription or trial, don't show as waiting
   const searchPending = await prisma.link.count({
-    where: {
-      OR: [
-        { indexVersion: { not: MEILI_INDEX_VERSION } },
-        { indexVersion: null },
-      ],
-    },
+    where: linksToIndexWhere(),
   });
 
   const searchDone = await prisma.link.count({

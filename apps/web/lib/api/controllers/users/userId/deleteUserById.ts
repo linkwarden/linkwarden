@@ -258,6 +258,14 @@ export default async function deleteUserById(
           }
         }
 
+        // Take everyone with a seat on their subscription off it here instead
+        // of leaving it to the database, so those accounts show as changed now.
+        // The worker's index cleanup goes by that to give them their 30 days.
+        await prisma.user.updateMany({
+          where: { parentSubscription: { is: { userId: queryId } } },
+          data: { parentSubscriptionId: null },
+        });
+
         // Finally, delete the user
         await prisma.user.delete({
           where: { id: queryId },

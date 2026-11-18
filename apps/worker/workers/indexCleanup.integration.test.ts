@@ -16,12 +16,17 @@ import { startIndexing } from "./linkIndexing";
 // Runs the cleanup against a real database (DATABASE_URL) with a made-up
 // Meilisearch index that filters, pages and deletes like the real one.
 
-const { scope, Stop, index } = vi.hoisted(() => {
+const { scope, Stop, index, delays, waits } = vi.hoisted(() => {
   process.env.INDEX_TAKE_COUNT = "500";
 
   type Doc = { id: number | string; collectionOwnerId: number };
 
   const docs = new Map<number | string, Doc>();
+  // Like the error Meilisearch's client throws for an index that isn't there
+  const notFound = () =>
+    Object.assign(new Error("Index `links` not found."), {
+      cause: { code: "index_not_found" },
+    });
   const tasks = new Map<number, () => void>();
   let nextTask = 1;
 
@@ -34,6 +39,11 @@ const { scope, Stop, index } = vi.hoisted(() => {
       keepsDocuments: false,
     },
     fetchError: null as Error | null,
+    // What's filterable, as the indexing worker sets it up when it starts.
+    // Null while there's no index.
+    filterable: ["collectionOwnerId"] as string[] | null,
+    // Thrown when the settings are asked for
+    settingsError: null as Error | null,
     // Run in the middle of a fetch, or while a deletion is waited for
     onFetch: null as null | (() => Promise<unknown>),
     onWait: null as null | (() => Promise<unknown>),
@@ -56,6 +66,8 @@ const { scope, Stop, index } = vi.hoisted(() => {
         keepsDocuments: false,
       };
       index.fetchError = null;
+      index.filterable = ["collectionOwnerId"];
+      index.settingsError = null;
       index.onFetch = null;
       index.onWait = null;
       index.fetches = [];
@@ -67,6 +79,9 @@ const { scope, Stop, index } = vi.hoisted(() => {
       index.fetches.push(params);
       if (index.onFetch) await index.onFetch();
       if (index.fetchError) throw index.fetchError;
+      if (!index.filterable) throw notFound();
+      if (!index.filterable.includes("collectionOwnerId"))
+        throw new Error("Attribute `collectionOwnerId` is not filterable.");
 
       const match = /^collectionOwnerId IN \[([\d, ]+)\]$/.exec(params.filter);
       if (!match) throw new Error(`Unexpected filter: ${params.filter}`);
@@ -130,7 +145,15 @@ const { scope, Stop, index } = vi.hoisted(() => {
       return { status: "succeeded" };
     },
 
-    updateFilterableAttributes: async () => ({ taskUid: nextTask++ }),
+    getFilterableAttributes: async () => {
+      if (index.settingsError) throw index.settingsError;
+      if (!index.filterable) throw notFound();
+      return index.filterable;
+    },
+    updateFilterableAttributes: async (attributes: string[]) => {
+      index.filterable = attributes;
+      return { taskUid: nextTask++ };
+    },
     updateSortableAttributes: async () => ({ taskUid: nextTask++ }),
     updateRankingRules: async () => ({ taskUid: nextTask++ }),
   };
@@ -141,6 +164,14 @@ const { scope, Stop, index } = vi.hoisted(() => {
     scope: { userIds: [] as number[], linkIds: [] as number[] },
     Stop: class Stop extends Error {},
     index,
+    // How long each wait between runs was, in seconds
+    delays: [] as number[],
+    // How many waits a loop gets before it's stopped, and what changes
+    // after each one before that
+    waits: {
+      stopAfter: 1,
+      between: null as null | ((waited: number) => void),
+    },
   };
 });
 
@@ -155,8 +186,10 @@ vi.mock("@linkwarden/lib/meilisearchClient", () => ({
 // Both loops wait between runs; stop them there
 vi.mock("@linkwarden/lib/utils", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@linkwarden/lib/utils")>()),
-  delay: async () => {
-    throw new Stop();
+  delay: async (seconds: number) => {
+    delays.push(seconds);
+    if (delays.length >= waits.stopAfter) throw new Stop();
+    waits.between?.(delays.length);
   },
 }));
 
@@ -390,6 +423,9 @@ afterEach(async () => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
   index.reset();
+  delays.length = 0;
+  waits.stopAfter = 1;
+  waits.between = null;
   scope.linkIds = [];
   for (const id of scope.userIds.splice(0, scope.userIds.length)) {
     await prisma.user.delete({ where: { id } }).catch(() => {});
@@ -969,6 +1005,30 @@ describe.sequential("indexCleanup with a real database", () => {
   });
 
   describe("next to the indexing worker", () => {
+    it("keeps going when someone subscribes again and their documents come back mid-run", async () => {
+      // A full batch, so it looks for more after it
+      const back = await unsubscribedWithLinks(1000);
+      const gone = await unsubscribedWithLinks(3);
+      let fetches = 0;
+      index.onFetch = async () => {
+        // Right after their documents were deleted, they subscribe again and
+        // the indexing worker sends the documents back
+        if (++fetches !== 2) return;
+        await prisma.subscription.update({
+          where: { id: back.subscriptionId },
+          data: { active: true, currentPeriodEnd: daysAgo(-30) },
+        });
+        await runIndexing();
+      };
+
+      const result = await cleanUpIndex(true);
+
+      expect(result.users).toBe(2);
+      await expectUntouched(back.ids);
+      // Someone after them in the same run still gets cleared
+      await expectCleared(gone.ids);
+    });
+
     it("has a link sent again that got marked as indexed while its document was deleted", async () => {
       const gone = await unsubscribedWithLinks(3);
       index.onWait = () =>
@@ -1062,6 +1122,93 @@ describe.sequential("indexCleanup with a real database", () => {
         "Removed 3 links of unsubscribed users from the index.",
         "Index cleanup: 1 user unsubscribed for over 30 days, 3 links of 1 of them removed from the index, 1 public collection made private.",
       ]);
+    });
+
+    it("waits for the index to be set up instead of failing and waiting a day", async () => {
+      const gone = await unsubscribedWithLinks(3, true);
+      vi.stubEnv("UNSUBSCRIBED_INDEX_CLEANUP", "true");
+
+      // No index yet, then one without the settings the indexing worker adds
+      for (const filterable of [null, []]) {
+        index.filterable = filterable;
+        delays.length = 0;
+        await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+        expect(delays).toEqual([60]);
+      }
+
+      expect(console.error).not.toHaveBeenCalled();
+      expect(logged()).toContain(
+        "Index cleanup is waiting for the links index to be set up..."
+      );
+      await expectUntouched(gone.ids);
+      expect(await isPublic(gone.collectionId)).toBe(true);
+
+      // Once the indexing worker has started
+      await runIndexing();
+      delays.length = 0;
+      await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+
+      expect(delays).toEqual([86400]);
+      await expectCleared(gone.ids);
+      expect(await isPublic(gone.collectionId)).toBe(false);
+    });
+
+    it("logs why it can't check the index, but not again every minute", async () => {
+      const gone = await unsubscribedWithLinks(3, true);
+      vi.stubEnv("UNSUBSCRIBED_INDEX_CLEANUP", "true");
+
+      const unreachable = new Error(
+        "Request to http://meilisearch:7700/indexes/links/settings/filterable-attributes has failed"
+      );
+      const wrongKey = Object.assign(
+        new Error("The provided API key is invalid."),
+        { cause: { code: "invalid_api_key" } }
+      );
+
+      // What Meilisearch answers at each check: down, then a wrong key, then
+      // up without the index, then set up, and later without it again
+      const answers = [
+        unreachable,
+        unreachable,
+        wrongKey,
+        wrongKey,
+        "missing",
+        "missing",
+        "ready",
+        "missing",
+      ] as const;
+      const answer = (state: (typeof answers)[number]) => {
+        index.settingsError = state instanceof Error ? state : null;
+        index.filterable = state === "ready" ? ["collectionOwnerId"] : null;
+      };
+      answer(answers[0]);
+      waits.stopAfter = answers.length;
+      waits.between = (waited) => answer(answers[waited]);
+
+      await expect(startIndexCleanup()).rejects.toBeInstanceOf(Stop);
+
+      expect(delays).toEqual([60, 60, 60, 60, 60, 60, 86400, 60]);
+      expect(vi.mocked(console.error).mock.calls).toEqual([
+        [
+          expect.anything(),
+          "Index cleanup can't check the links index, retrying every minute:",
+          unreachable,
+        ],
+        [
+          expect.anything(),
+          "Index cleanup can't check the links index, retrying every minute:",
+          wrongKey,
+        ],
+      ]);
+      expect(
+        logged().filter(
+          (line) =>
+            line ===
+            "Index cleanup is waiting for the links index to be set up..."
+        )
+      ).toHaveLength(2);
+      await expectCleared(gone.ids);
+      expect(await isPublic(gone.collectionId)).toBe(false);
     });
 
     it("does nothing without billing", async () => {
