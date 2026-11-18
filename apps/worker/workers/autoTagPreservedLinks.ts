@@ -2,7 +2,7 @@ import { delay } from "@linkwarden/lib/utils";
 import { prisma } from "@linkwarden/prisma";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import autoTagLink from "../lib/autoTagLink";
-import getLinkBatchFairly from "../lib/getLinkBatchFairly";
+import getLinkBatchFairly, { countLinksLeft } from "../lib/getLinkBatchFairly";
 
 const AUTO_TAG_TAKE_COUNT = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
@@ -32,6 +32,8 @@ export async function autoTagPreservedLinks(interval = 10) {
       continue;
     }
 
+    let taggedCount = 0;
+
     const autoTagPromises = links.map(
       async (link: LinkWithCollectionOwnerAndTags) => {
         try {
@@ -41,6 +43,8 @@ export async function autoTagPreservedLinks(interval = 10) {
           );
 
           await autoTagLink(link.collection.owner, link.id);
+
+          taggedCount++;
 
           console.log(
             "\x1b[34m%s\x1b[0m",
@@ -70,6 +74,16 @@ export async function autoTagPreservedLinks(interval = 10) {
     );
 
     await Promise.allSettled(autoTagPromises);
+
+    const linksLeft = await countLinksLeft("tags");
+
+    console.log(
+      "\x1b[34m%s\x1b[0m",
+      `Auto-tagged ${taggedCount} link${
+        taggedCount === 1 ? "" : "s"
+      }, ${linksLeft} left.`
+    );
+
     await delay(interval);
   }
 }

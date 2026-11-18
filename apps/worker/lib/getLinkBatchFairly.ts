@@ -9,33 +9,77 @@ type PickLinksOptions = {
 const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
 const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
+// The links a batch is picked from, before narrowing them down to the users
+// below.
+const linkWhere = (mode: PickLinksOptions["mode"]): Prisma.LinkWhereInput =>
+  mode === "tags"
+    ? {
+        url: { not: null },
+        type: "url",
+        lastPreserved: { not: null },
+        aiTagged: false,
+        collection: {
+          is: {
+            owner: {
+              is: {
+                aiTaggingMethod: { not: "DISABLED" },
+              },
+            },
+          },
+        },
+      }
+    : {
+        url: { not: null },
+        lastPreserved: null,
+      };
+
+// The users whose links get picked: with billing on, ones with a subscription
+// or trial, and with email on, ones who verified their email.
+const userWhere = (): Prisma.UserWhereInput => ({
+  ...(process.env.STRIPE_SECRET_KEY
+    ? {
+        OR: [
+          { subscriptions: { is: { active: true } } },
+          { parentSubscription: { is: { active: true } } },
+          ...(REQUIRE_CC
+            ? []
+            : [
+                {
+                  createdAt: {
+                    gte: new Date(
+                      new Date().getTime() -
+                        Number(TRIAL_PERIOD_DAYS) * 86400000
+                    ),
+                  },
+                },
+              ]),
+        ],
+      }
+    : {}),
+  ...(process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true"
+    ? {
+        emailVerified: { not: null },
+      }
+    : {}),
+});
+
+// How many links are left for the worker running in `mode`, counting only the
+// ones getLinkBatchFairly is going to pick.
+export const countLinksLeft = (mode: PickLinksOptions["mode"]) =>
+  prisma.link.count({
+    where: {
+      ...linkWhere(mode),
+      createdBy: { is: userWhere() },
+    },
+  });
+
 export default async function getLinkBatchFairly({
   maxBatchLinks,
   mode,
 }: PickLinksOptions) {
   if (maxBatchLinks <= 0) return [];
 
-  const baseLinkWhere: Prisma.LinkWhereInput =
-    mode === "tags"
-      ? {
-          url: { not: null },
-          type: "url",
-          lastPreserved: { not: null },
-          aiTagged: false,
-          collection: {
-            is: {
-              owner: {
-                is: {
-                  aiTaggingMethod: { not: "DISABLED" },
-                },
-              },
-            },
-          },
-        }
-      : {
-          url: { not: null },
-          lastPreserved: null,
-        };
+  const baseLinkWhere = linkWhere(mode);
 
   const userLinksOrderBy: Prisma.LinkOrderByWithRelationInput[] =
     mode === "tags"
@@ -49,31 +93,7 @@ export default async function getLinkBatchFairly({
           ...baseLinkWhere,
         },
       },
-      ...(process.env.STRIPE_SECRET_KEY
-        ? {
-            OR: [
-              { subscriptions: { is: { active: true } } },
-              { parentSubscription: { is: { active: true } } },
-              ...(REQUIRE_CC
-                ? []
-                : [
-                    {
-                      createdAt: {
-                        gte: new Date(
-                          new Date().getTime() -
-                            Number(TRIAL_PERIOD_DAYS) * 86400000
-                        ),
-                      },
-                    },
-                  ]),
-            ],
-          }
-        : {}),
-      ...(process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true"
-        ? {
-            emailVerified: { not: null },
-          }
-        : {}),
+      ...userWhere(),
     },
     orderBy: [{ lastPickedAt: { sort: "asc", nulls: "first" } }, { id: "asc" }],
     select: { id: true, lastPickedAt: true },
