@@ -574,4 +574,49 @@ describe.sequential("importFromHTMLFile integration", () => {
     ]);
     expect(new Set(links.map((link) => link.collectionOrder)).size).toBe(5);
   });
+
+  it("imports a file with a stylesheet jsdom can't read, without logging the stylesheet", async () => {
+    const user = await createTestUser();
+    const css =
+      "@layer base{a{color:red}}.card{color:blue;&:hover{color:green}}";
+
+    const html = `<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<html>
+<head>
+<style>${css}</style>
+</head>
+<body>
+<style>${css}</style>
+<DL><p>
+<DT><A HREF="https://example.com/styled">Styled</A></DT>
+</DL><p>
+</body>
+</html>`;
+
+    const spies = (["error", "warn", "log", "info"] as const).map((method) =>
+      vi.spyOn(console, method).mockImplementation(() => {})
+    );
+
+    try {
+      const result = await importFromHTMLFile(user.id, html);
+      expect(result).toEqual({ response: "Success.", status: 200 });
+
+      const logged = spies
+        .flatMap((spy) => spy.mock.calls.flat())
+        .map(String)
+        .join("\n");
+      expect(logged).not.toContain("Could not parse CSS stylesheet");
+      expect(logged).not.toContain("@layer base");
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+
+    const links = await prisma.link.findMany({
+      where: { createdById: user.id },
+      select: { url: true, name: true },
+    });
+    expect(links).toEqual([
+      { url: "https://example.com/styled", name: "Styled" },
+    ]);
+  });
 });

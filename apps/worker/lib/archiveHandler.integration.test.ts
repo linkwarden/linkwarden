@@ -7,7 +7,7 @@ import {
   it,
   vi,
 } from "vitest";
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import type { Browser } from "playwright";
 import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "./archiveHandler";
@@ -93,7 +93,11 @@ const browserShowing = (html: string) => {
     setContent: vi.fn(),
     content: vi.fn(async () => html),
     evaluate: vi.fn(async (inPage: () => unknown) => {
-      vi.stubGlobal("document", new JSDOM(html).window.document);
+      vi.stubGlobal(
+        "document",
+        new JSDOM(html, { virtualConsole: new VirtualConsole() }).window
+          .document
+      );
       try {
         return inPage();
       } finally {
@@ -198,4 +202,37 @@ describe.sequential("archiveHandler integration", () => {
       expect(saved.textContent).toMatch(/😀\s*$/);
     }
   );
+
+  it("saves reader text for a page with a stylesheet jsdom can't read, without logging the stylesheet", async () => {
+    const css = `@layer base{a{color:red}}.card{color:blue;&:hover{color:green}}${".filler{color:red}".repeat(
+      500
+    )}`;
+    const words = Array.from({ length: 400 }, (_, i) => `word${i}`).join(" ");
+    const article = `<html><head><title>Styled</title><style>${css}</style></head><body><style>${css}</style><article><h1>Styled</h1><p>${words}</p></article></body></html>`;
+    const link = await createTestLink({ readable: true });
+    const spies = (["error", "warn", "log", "info"] as const).map((method) =>
+      vi.spyOn(console, method).mockImplementation(() => {})
+    );
+
+    try {
+      await archiveHandler(link, browserShowing(article));
+
+      const logged = spies
+        .flatMap((spy) => spy.mock.calls.flat())
+        .map(String)
+        .join("\n");
+      expect(logged).not.toContain("Could not parse CSS stylesheet");
+      expect(logged).not.toContain("@layer base");
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+
+    const saved = await prisma.link.findUniqueOrThrow({
+      where: { id: link.id },
+    });
+    expect(saved.readable).toBe(
+      `archives/${link.collectionId}/${link.id}_readability.json`
+    );
+    expect(saved.textContent).toContain(words);
+  });
 });

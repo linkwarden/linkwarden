@@ -1,4 +1,4 @@
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 
 // Attributes that cause monolith to fetch a remote resource at archive time.
@@ -107,7 +107,10 @@ export default async function sanitizeHtmlForMonolith(
   html: string,
   baseUrl?: string | null
 ): Promise<string> {
-  const dom = new JSDOM(html, { url: baseUrl || undefined });
+  const dom = new JSDOM(html, {
+    url: baseUrl || undefined,
+    virtualConsole: new VirtualConsole(),
+  });
   const { document } = dom.window;
   const cache = new Map<string, Promise<boolean>>();
 

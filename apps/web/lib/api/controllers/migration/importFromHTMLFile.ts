@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { createFolder } from "@linkwarden/filesystem";
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
@@ -21,7 +21,7 @@ export default async function importFromHTMLFile(
   userId: number,
   rawData: string
 ) {
-  const dom = new JSDOM(rawData);
+  const dom = new JSDOM(rawData, { virtualConsole: new VirtualConsole() });
   const document = dom.window.document;
 
   // remove bad tags

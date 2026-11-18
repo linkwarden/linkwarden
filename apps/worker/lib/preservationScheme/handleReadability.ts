@@ -1,5 +1,5 @@
 import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import DOMPurify from "dompurify";
 import { prisma } from "@linkwarden/prisma";
 import { createFile } from "@linkwarden/filesystem";
@@ -16,7 +16,10 @@ const handleReadability = async (
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
-  const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
+  const dom = new JSDOM(cleanedUpContent, {
+    url: link.url || "",
+    virtualConsole: new VirtualConsole(),
+  });
 
   const article = new Readability(dom.window.document).parse();
   const articleText = shortenText(
