@@ -14,6 +14,7 @@ import {
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
 import LinkIcon from "./LinkIcon";
+import LinkPlaceholder from "./LinkPlaceholder";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -117,9 +118,7 @@ function LinkCard({
                     unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
-                  <div
-                    className={`bg-gray-50 ${imageHeightClass} bg-opacity-80`}
-                  ></div>
+                  <LinkPlaceholder link={link} className={imageHeightClass} />
                 ) : (
                   <div
                     className={`${imageHeightClass} bg-opacity-80 skeleton rounded-none`}

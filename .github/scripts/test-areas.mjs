@@ -57,6 +57,7 @@ const suites = {
         "tests/public/session-revocation.spec.ts",
       ],
       "Search and no-email": [
+        "tests/public/link-card-placeholders.spec.ts",
         "tests/public/no-email.spec.ts",
         "tests/public/public-collection-links.spec.ts",
         "tests/public/search-query.spec.ts",

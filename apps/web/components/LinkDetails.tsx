@@ -17,6 +17,7 @@ import { useUser } from "@linkwarden/router/user";
 import { handleLinkAnchorClick } from "@/lib/client/openLink";
 import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
+import LinkPlaceholder from "./LinkViews/LinkComponents/LinkPlaceholder";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
 import Icon from "./Icon";
@@ -174,7 +175,7 @@ export default function LinkDetails({
               unoptimized
             />
           ) : link.preview === "unavailable" ? (
-            <div className="bg-gray-50 duration-100 h-40"></div>
+            <LinkPlaceholder link={link} className="duration-100 h-40" />
           ) : (
             <div className="h-40 skeleton rounded-none"></div>
           )}

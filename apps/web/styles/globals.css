@@ -225,3 +225,19 @@
   --rv-mark-bg: oklch(var(--p) / 0.5);
   --rv-mark-color: oklch(var(--bc));
 }
+
+/* Link card banner when there's no preview (LinkPlaceholder), tinted per site on top */
+[data-theme="dark"] {
+  --link-placeholder-ground: color-mix(
+    in oklab,
+    oklch(var(--bc)) 3%,
+    oklch(var(--b2))
+  );
+}
+[data-theme="light"] {
+  --link-placeholder-ground: color-mix(
+    in oklab,
+    oklch(var(--bc)) 4%,
+    oklch(var(--b2))
+  );
+}

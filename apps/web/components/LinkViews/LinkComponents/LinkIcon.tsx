@@ -1,11 +1,12 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Icon from "@/components/Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { getLinkPlaceholder } from "@linkwarden/lib/linkPlaceholder";
 
 function LinkIcon({
   link,
@@ -35,6 +36,31 @@ function LinkIcon({
   const [loadedFavicon, setLoadedFavicon] = useState<string>();
   const faviconLoaded =
     faviconSrc !== undefined && loadedFavicon === faviconSrc;
+
+  // Without a custom icon or favicon a link shows its site's initial, and the
+  // type icons take the site's color, like the banner of a card without a
+  // preview (LinkPlaceholder)
+  const site = useMemo(
+    () => getLinkPlaceholder({ url: link.url, name: link.name }),
+    [link.url, link.name]
+  );
+
+  // Mixed in oklab, like the placeholder's background (see LinkPlaceholder)
+  const siteColor = `color-mix(in oklab, ${site.color} 60%, oklch(var(--bc)))`;
+
+  const initialIcon = site.initial ? (
+    <LinkPlaceholderIcon
+      iconClasses={iconClasses}
+      initial={site.initial}
+      color={siteColor}
+    />
+  ) : (
+    <LinkPlaceholderIcon
+      iconClasses={iconClasses}
+      icon="bi-link-45deg"
+      color={siteColor}
+    />
+  );
 
   return (
     <div onClick={() => onClick && onClick()}>
@@ -75,31 +101,30 @@ function LinkIcon({
                 setLoadedFavicon(faviconSrc);
             }}
           />
-          {!faviconLoaded && (
-            <LinkPlaceholderIcon
-              iconClasses={iconClasses}
-              icon="bi-link-45deg"
-            />
-          )}
+          {!faviconLoaded && initialIcon}
         </>
       ) : link.type === "pdf" ? (
         <LinkPlaceholderIcon
           iconClasses={iconClasses}
           icon="bi-file-earmark-pdf"
+          color={siteColor}
         />
       ) : link.type === "image" ? (
         <LinkPlaceholderIcon
           iconClasses={iconClasses}
           icon="bi-file-earmark-image"
+          color={siteColor}
         />
-      ) : // : link.type === "monolith" ? (
-      //   <LinkPlaceholderIcon
-      //     iconClasses={iconClasses + dimension}
-      //     size={size}
-      //     icon="bi-filetype-html"
-      //   />
-      // )
-      undefined}
+      ) : (
+        // : link.type === "monolith" ? (
+        //   <LinkPlaceholderIcon
+        //     iconClasses={iconClasses + dimension}
+        //     size={size}
+        //     icon="bi-filetype-html"
+        //   />
+        // )
+        initialIcon
+      )}
     </div>
   );
 }
@@ -107,18 +132,28 @@ function LinkIcon({
 const LinkPlaceholderIcon = ({
   iconClasses,
   icon,
+  initial,
+  color,
 }: {
   iconClasses: string;
-  icon: string;
+  icon?: string;
+  initial?: string;
+  color: string;
 }) => {
   return (
     <div
       className={clsx(
         iconClasses,
-        "aspect-square text-4xl text-[oklch(var(--p))]"
+        "aspect-square",
+        initial ? "text-2xl" : "text-4xl"
       )}
+      style={{ color }}
     >
-      <i className={`${icon} m-auto`}></i>
+      {initial ? (
+        <span className="m-auto font-semibold leading-none">{initial}</span>
+      ) : (
+        <i className={`${icon} m-auto`}></i>
+      )}
     </div>
   );
 };

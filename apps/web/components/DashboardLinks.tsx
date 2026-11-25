@@ -19,6 +19,7 @@ import { useUser } from "@linkwarden/router/user";
 import { useRouter } from "next/router";
 import openLink from "@/lib/client/openLink";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
+import LinkPlaceholder from "./LinkViews/LinkComponents/LinkPlaceholder";
 import LinkFormats from "./LinkViews/LinkComponents/LinkFormats";
 import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
 import LinkPin from "./LinkViews/LinkComponents/LinkPin";
@@ -183,7 +184,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
                     unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
-                  <div className={`bg-gray-50 h-40 bg-opacity-80`}></div>
+                  <LinkPlaceholder link={link} className="h-40" />
                 ) : (
                   <div
                     className={`h-40 bg-opacity-80 skeleton rounded-none`}
