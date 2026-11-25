@@ -1,4 +1,11 @@
-import { View, Text, Alert, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -122,7 +129,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         }}
       />
 
-      <View className="px-8 pb-5">
+      <ScrollView className="px-8 pb-5" keyboardShouldPersistTaps="handled">
         <Input
           placeholder="Name"
           className="mb-4 bg-base-100"
@@ -145,13 +152,13 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
           className="mb-4"
           onPress={() => router?.navigate("collections", { link })}
         >
-          <View className="flex-row items-center gap-2 w-[90%]">
+          <View className="flex-1 flex-row items-center gap-2 overflow-hidden">
             <Folder
               size={20}
               fill={link?.collection.color || "gray"}
               color={link?.collection.color || "gray"}
             />
-            <Text numberOfLines={1} className="w-[90%] text-base-content">
+            <Text numberOfLines={1} className="flex-1 shrink text-base-content">
               {link?.collection.name}
             </Text>
           </View>
@@ -167,11 +174,11 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
           onPress={() => router?.navigate("tags", { link })}
         >
           {link?.tags && link?.tags.length > 0 ? (
-            <View className="flex-row flex-wrap items-center gap-2 w-[90%]">
+            <View className="flex-1 flex-row flex-wrap items-center gap-2 overflow-hidden">
               {link.tags.map((tag) => (
                 <View
                   key={tag.id}
-                  className="bg-neutral rounded-md h-7 px-2 py-1"
+                  className="bg-neutral rounded-md max-w-[80%] px-2 py-1"
                 >
                   <Text numberOfLines={1} className="text-base-100">
                     {tag.name}
@@ -258,7 +265,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         >
           <Text className="text-base-100">Save</Text>
         </Button>
-      </View>
+      </ScrollView>
     </>
   );
 };
