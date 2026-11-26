@@ -184,7 +184,11 @@ export function Card({ link, editMode, dashboardType }: Props) {
                     unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
-                  <LinkPlaceholder link={link} className="h-40" />
+                  <LinkPlaceholder
+                    link={link}
+                    className="h-40"
+                    blur={show.icon}
+                  />
                 ) : (
                   <div
                     className={`h-40 bg-opacity-80 skeleton rounded-none`}

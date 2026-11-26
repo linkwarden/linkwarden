@@ -175,7 +175,7 @@ export default function LinkDetails({
               unoptimized
             />
           ) : link.preview === "unavailable" ? (
-            <LinkPlaceholder link={link} className="duration-100 h-40" />
+            <LinkPlaceholder link={link} className="duration-100 h-40" blur />
           ) : (
             <div className="h-40 skeleton rounded-none"></div>
           )}

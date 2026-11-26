@@ -118,7 +118,11 @@ function LinkCard({
                     unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
-                  <LinkPlaceholder link={link} className={imageHeightClass} />
+                  <LinkPlaceholder
+                    link={link}
+                    className={imageHeightClass}
+                    blur={show.icon}
+                  />
                 ) : (
                   <div
                     className={`${imageHeightClass} bg-opacity-80 skeleton rounded-none`}
