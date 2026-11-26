@@ -1,10 +1,9 @@
 import { verifyGoogleIdentityToken } from "@/lib/api/google";
 import createSession from "@/lib/api/controllers/session/createSession";
 import captureEvent from "@/lib/api/captureEvent";
+import { isNewSsoUsersDisabled } from "@/lib/api/registration";
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-const newSsoUsersDisabled = process.env.DISABLE_NEW_SSO_USERS === "true";
 
 export default async function googleMobileAuth(
   req: NextApiRequest,
@@ -83,7 +82,7 @@ export default async function googleMobileAuth(
   }
 
   if (!user) {
-    if (newSsoUsersDisabled)
+    if (isNewSsoUsersDisabled())
       return res.status(403).json({ response: "Sign ups are disabled." });
 
     const fullName =
