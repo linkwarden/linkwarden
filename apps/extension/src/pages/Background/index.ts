@@ -243,13 +243,20 @@ async function genericOnClick(
       }
       break;
     }
-    default:
+    default: {
+      // The context menu is registered for page, selection, link, editable,
+      // image, video, and audio contexts, so save what was actually
+      // clicked (info.linkUrl / info.srcUrl) instead of unconditionally
+      // saving the active tab.
+      const targetUrl = info.linkUrl || info.srcUrl || tab.url;
+      const targetTitle =
+        info.selectionText || (targetUrl === tab.url ? tab.title : targetUrl);
       // Handle cases where sync is enabled or not
       if (syncBookmarks && hasAPI("bookmarks.create")) {
         browser.bookmarks.create({
           parentId: "1",
-          title: tab.title,
-          url: tab.url,
+          title: targetTitle,
+          url: targetUrl,
         });
       } else {
         const config = await getConfig();
@@ -258,13 +265,13 @@ async function genericOnClick(
           const newLink = await postLinkFetch(
             baseUrl,
             {
-              url: tab.url,
+              url: targetUrl,
               collection: {
-                name: "Unorganized",
+                name: config.defaultCollection,
               },
               tags: [],
-              name: tab.title,
-              description: tab.title,
+              name: targetTitle,
+              description: targetTitle,
             },
             config.apiKey
           );
@@ -278,6 +285,7 @@ async function genericOnClick(
           console.error(error);
         }
       }
+    }
   }
 }
 browser.runtime.onInstalled.addListener(async function () {
