@@ -979,7 +979,7 @@ describe.sequential("import files integration", () => {
           49,
           "t"
         )}">${pastLimit(254, "n")}</A>
-<DD>${pastLimit(254, "d")}
+<DD>${pastLimit(2047, "d")}
 </DL><p>
 `
       );
@@ -1006,7 +1006,7 @@ describe.sequential("import files integration", () => {
           collection: "Imports",
           url: keptUrl,
           name: kept(254, "n"),
-          description: kept(254, "d"),
+          description: kept(2047, "d"),
           tags: [kept(49, "t")],
         },
       ]);
@@ -1021,13 +1021,13 @@ describe.sequential("import files integration", () => {
           collections: [
             {
               name: pastLimit(254, "f"),
-              description: pastLimit(254, "c"),
+              description: pastLimit(2047, "c"),
               color: pastLimit(50, "#"),
               links: [
                 {
                   url: longUrl,
                   name: pastLimit(254, "n"),
-                  description: pastLimit(254, "d"),
+                  description: pastLimit(2047, "d"),
                   importDate: null,
                   createdAt: "2024-01-01T00:00:00.000Z",
                   tags: [{ name: pastLimit(49, "t") }],
@@ -1055,10 +1055,10 @@ describe.sequential("import files integration", () => {
         }))
       ).toEqual([
         {
-          collection: [kept(254, "f"), kept(254, "c"), kept(50, "#")],
+          collection: [kept(254, "f"), kept(2047, "c"), kept(50, "#")],
           url: keptUrl,
           name: kept(254, "n"),
-          description: kept(254, "d"),
+          description: kept(2047, "d"),
           tags: [kept(49, "t")],
         },
       ]);

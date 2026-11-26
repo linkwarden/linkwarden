@@ -237,7 +237,7 @@ const createLink = async (
 
   tags = tags?.map((tag) => shortenText(tag.trim(), 49));
   name = shortenText(name?.trim(), 254);
-  description = shortenText(description?.trim(), 254);
+  description = shortenText(description?.trim(), 2047);
 
   const collectionOrder = await nextCollectionOrder(collectionId);
 
