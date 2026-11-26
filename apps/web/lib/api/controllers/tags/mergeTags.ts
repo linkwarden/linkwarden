@@ -42,24 +42,51 @@ export default async function mergeTags(
   ).map((link) => link.id);
 
   const { newTag } = await prisma.$transaction(async (tx) => {
-    await tx.tag.deleteMany({
+    // The merge target may already exist for this user (the primary use
+    // case for merging). Creating it again would violate the
+    // @@unique([name, ownerId]) constraint, and deleting it first would
+    // erase its archival/ai settings, so resolve it up front: reuse the
+    // existing tag as the destination and never delete it.
+    const existingTag = await tx.tag.findUnique({
       where: {
-        ownerId: userId,
-        id: {
-          in: tagIds,
+        name_ownerId: {
+          name: newTagName,
+          ownerId: userId,
         },
       },
     });
 
-    const newTag = await tx.tag.create({
-      data: {
-        name: newTagName,
+    const sourceTagIds = existingTag
+      ? tagIds.filter((id) => id !== existingTag.id)
+      : tagIds;
+
+    await tx.tag.deleteMany({
+      where: {
         ownerId: userId,
-        links: {
-          connect: affectedLinks.map((id) => ({ id })),
+        id: {
+          in: sourceTagIds,
         },
       },
     });
+
+    const newTag = existingTag
+      ? await tx.tag.update({
+          where: { id: existingTag.id },
+          data: {
+            links: {
+              connect: affectedLinks.map((id) => ({ id })),
+            },
+          },
+        })
+      : await tx.tag.create({
+          data: {
+            name: newTagName,
+            ownerId: userId,
+            links: {
+              connect: affectedLinks.map((id) => ({ id })),
+            },
+          },
+        });
 
     await tx.link.updateMany({
       where: {
