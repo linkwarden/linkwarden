@@ -50,7 +50,7 @@ export default async function importFromLinkwarden(
             },
           },
           name: shortenText(e.name?.trim(), 254),
-          description: shortenText(e.description?.trim(), 254),
+          description: shortenText(e.description?.trim(), 2047),
           color: shortenText(e.color?.trim(), 50),
           createdBy: {
             connect: {
@@ -91,7 +91,7 @@ export default async function importFromLinkwarden(
         data: {
           url: shortenText(link.url?.trim(), 2047),
           name: shortenText(link.name?.trim(), 254),
-          description: shortenText(link.description?.trim(), 254),
+          description: shortenText(link.description?.trim(), 2047),
           importDate: new Date(link.importDate || link.createdAt),
           collectionOrder,
           collection: {
