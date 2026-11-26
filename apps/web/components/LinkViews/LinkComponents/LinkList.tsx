@@ -113,6 +113,12 @@ function LinkList({
               </div>
             )}
 
+            {show.description && link.description && (
+              <p className="mt-1 line-clamp-2 text-xs text-neutral">
+                {unescapeString(link.description)}
+              </p>
+            )}
+
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
                 {show.link && (
