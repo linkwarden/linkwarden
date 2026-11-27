@@ -4,6 +4,9 @@ import { prisma } from "@linkwarden/prisma";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import { ArchivalSettings } from "@linkwarden/types/global";
 
+const SCREENSHOT_TIMEOUT_MS =
+  Number(process.env.SCREENSHOT_TIMEOUT_MS) || 30_000;
+
 const handleScreenshotAndPdf = async (
   link: LinkWithCollectionOwnerAndTags,
   page: Page,
@@ -24,7 +27,11 @@ const handleScreenshotAndPdf = async (
     ) {
       processingPromises.push(
         page
-          .screenshot({ fullPage: true, type: "jpeg" })
+          .screenshot({
+            fullPage: true,
+            type: "jpeg",
+            timeout: SCREENSHOT_TIMEOUT_MS,
+          })
           .then(async (screenshot) => {
             if (
               Buffer.byteLength(screenshot) >
