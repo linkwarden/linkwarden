@@ -4,6 +4,7 @@ export default async function sendToWayback(url: string) {
   const headers = {
     Accept: "text/html,application/xhtml+xml,application/xml",
     "Accept-Encoding": "gzip, deflate",
+    "Content-Type": "application/x-www-form-urlencoded",
     Dnt: "1",
     "Upgrade-Insecure-Requests": "1",
     "User-Agent":
@@ -11,7 +12,10 @@ export default async function sendToWayback(url: string) {
   };
 
   await axios
-    .get(`https://web.archive.org/save/${url}`, {
+    .post(`https://web.archive.org/save/${url}`, {
+      url: url,
+      capture_outlinks: "1"
+    }, {
       headers: headers,
     })
     .then((response) => {
