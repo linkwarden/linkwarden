@@ -5,6 +5,7 @@ import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 import { safeFetch } from "@linkwarden/lib/safeFetch";
 import { UnsafeUrlError } from "@linkwarden/lib/ssrf";
+import { resolvePageAssetUrl } from "./resolvePageAssetUrl";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -24,16 +25,10 @@ const handleArchivePreview = async (
   let previewGenerated = false;
 
   if (ogImageUrl && !link.preview?.startsWith("archive")) {
-    if (
-      !ogImageUrl.startsWith("http://") &&
-      !ogImageUrl.startsWith("https://")
-    ) {
-      const origin = await page.evaluate(() => document.location.origin);
-      ogImageUrl =
-        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
-    }
-
     try {
+      const origin = await page.evaluate(() => document.location.origin);
+      ogImageUrl = resolvePageAssetUrl(ogImageUrl, origin);
+
       const imageResponse = await safeFetch(ogImageUrl);
 
       if (imageResponse.ok) {
@@ -46,7 +41,7 @@ const handleArchivePreview = async (
       }
     } catch (error) {
       if (!(error instanceof UnsafeUrlError)) {
-        throw error;
+        console.warn("Unable to generate preview from page metadata", error);
       }
     }
   }
